@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <!-- IE9以降のレンダリングで、最新の標準をサポート -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>keeP A Log</title>
+    <!-- スタイルシート -->
+    <link rel="stylesheet" href="css/pal.css"       type="text/css"/>
+    <link rel="stylesheet" href="css/pal.shell.css" type="text/css"/>
+
+    <!-- bootstrap -->
+    <!--
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/jquery.simplecolorpicker.css" rel="stylesheet">
+    <link href="css/jquery.simplecolorpicker-glyphicons.css" rel="stylesheet">
+    <link href="css/jquery.simplecolorpicker-regularfont.css" rel="stylesheet">
+    <link href="css/jquery.simplecolorpicker-fontawesome.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/nob.view.css"  type="text/css"/>
+    -->
+
+    <!-- サードパーティ javascript -->
+    <script src="/js/jq/jquery-3.1.1.js"        ></script>
+    <script src="/js/jq/jquery.event.gevent.js" ></script>
+    <!--
+    <script src="/js/jq/taffy.js"></script>
+    <script src="/js/jq/jquery.uriAnchor.js"></script>
+    <script src="/js/jq/jquery.validate.js"></script>
+    <script src="/js/jq/js.cookie.js"></script>
+    <script src="/js/jq/moment.js"></script>
+    <script src="/js/jq/ja.js"></script>
+    <script src="/js/jq/jquery.simplecolorpicker.js"></script>
+    <script src="/js/jq/underscore-min.js"></script>
+    <script src="/js/jq/jquery.event.ue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    -->
+
+    <!-- 自作のjavascript -->
+    <script src="/js/pal.js"        ></script>
+    <script src="/js/pal.shell.js"  ></script>
+    <script src="/js/module_template.js"  ></script>
+    <!--
+    <script src="/js/nob.router.js"     ></script>
+    <script src="/js/nob.presenter.js"  ></script>
+    <script src="/js/nob.view.js"       ></script>
+    <script src="/js/nob.resource.js"   ></script>
+    <script src="/js/nb.data.js"          ></script>
+    <script src="/js/nb.fake.js"          ></script>
+    <script src="/js/nb.model.js"         ></script>
+    <script src="/js/nb.util_b.js"        ></script>
+    <script src="/js/nb.tab.js"           ></script>
+    <script src="/js/nb.calendar.js"      ></script>
+    <script src="/js/nb.localBusiness.js" ></script>
+    <script src="/js/nb.paint.js"         ></script>
+    <script src="/js/nb.task.js"          ></script>
+    <script src="/js/nb.list.js"          ></script>
+    <script src="/js/nb.laboratory.js"    ></script>
+    -->
+
+    <!-- メインページのテンプレート -->
+    <template id="main-page">
+
+      <header class="pal-shell-header">
+        <div class="pal-shell-header-title">
+          keeP-A-Log
+        </div>
+        <div class="pal-shell-header-blank">
+        </div>
+        <div class="pal-shell-header-blank">
+        </div>
+        <div class="pal-shell-header-blank">
+        </div>
+        <div class="pal-shell-header-blank">
+        </div>
+        <nav class="pal-shell-header-login">
+          ログインする
+        </nav>
+        <nav class="pal-shell-header-signup">
+          初めて利用する
+        </nav>
+        <div class="pal-shell-header-menu">
+          メニュー
+        </div>
+      </header>
+
+      <section class="pal-shell-section">
+        <!--
+        <article class="pal-shell-section-article">
+          Article1
+        </article>
+        <article class="pal-shell-section-article">
+          Article2
+        </article>
+        -->
+      </section>
+
+      <footer class="pal-shell-footer">
+        Footer
+      </footer>
+
+      <menu class="pal-shell-menu-list" style="display:none;">
+      </menu>
+
+    </template>
+
+    <!-- テスト用 -->
+    <template id="hello-world">
+      <h1>Hello World!</h1>
+    </template>
+
+    <script type="text/template" id="home">
+      <header class="nob-header">
+        <a href="/">
+          <img alt="NoteBook" src="/images/note.jpg" height="38px"/>
+        </a>
+        <h1>NoteBook</h1>
+        <div>
+          <a href="#!signup">アカウントを作成する</a>
+          <a href="#!login">ログインする</a>
+        </div>
+      </header>
+    </script>
+
+    <script type="text/template" id="signup">
+      <form>
+        <label for="email">E-mailアドレス</label>
+        <input name="email" type="text" required/>
+        <br />
+        <label for="password">パスワード</label>
+        <input name="password" type="password" required/>
+        <br />
+        <label for="passconf">パスワード(確認)</label>
+        <input name="passconf" type="password" required/>
+        <br />
+        <input type="submit" value="signup" />
+      </form>
+    </script>
+
+    <script type="text/template" id="login">
+      <form>
+        <label for="email">E-mailアドレス</label>
+        <input name="email" type="text" required/>
+        <br />
+        <label for="password">パスワード</label>
+        <input name="password" type="password" required/>
+        <br />
+        <input type="submit" value="login" />
+      </form>
+    </script>
+
+    <script type="text/dust" id="localBusiness-template">
+      <div class="container-fluid">
+        <p id="localBusiness-msg"></p>
+        <div id="local-business" />
+        <a>
+          <span class="glyphicon glyphicon-plus localBusiness-plus">
+          </span>
+        </a>
+        <a>
+          <span class="glyphicon glyphicon-minus localBusiness-minus">
+          </span>
+        </a>
+        <form id="create-localBusiness-form" class="form-horizontal">
+          <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">名:</label>
+            <div class="col-sm-10">
+              <input id="name" name="name" type="text" class="form-control" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="postalCode" class="col-sm-2 control-label">郵便番号:</label>
+            <div class="col-sm-10">
+              <input id="postalCode" name="postalCode" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addressRegion" class="col-sm-2 control-label">都道府県:</label>
+            <div class="col-sm-10">
+              <input id="addressRegion" name="addressRegion" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addressLocality" class="col-sm-2 control-label">市区町村:</label>
+            <div class="col-sm-10">
+              <input id="addressLocality" name="addressLocality" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="streetAddress" class="col-sm-2 control-label">町名・地番:</label>
+            <div class="col-sm-10">
+              <input id="streetAddress" name="streetAddress" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="telephone" class="col-sm-2 control-label">電話番号:</label>
+            <div class="col-sm-10">
+              <input id="telephone" name="telephone" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="faxNumber" class="col-sm-2 control-label">fax:</label>
+            <div class="col-sm-10">
+              <input id="faxNumber" name="faxNumber" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="openingHours" class="col-sm-2 control-label">オープン:</label>
+            <div class="col-sm-10">
+              <input id="openingHours" name="openingHours" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="url" class="col-sm-2 control-label">url:</label>
+            <div class="col-sm-10">
+              <input id="url" name="url" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button id="create-local-business-button" class="btn btn-default">
+                追加
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </script>
+    <!-- localBusiness-template -->
+
+    <!-- localBusiness-microdata-template -->
+    <script type="text/dust" id="localBusiness-microdata-template">
+      <div itemscope itemtype="http://schema.org/LocalBusiness" data-id="{_id}">
+
+        <span itemprop="name">{name}</span>
+        <span itemprop="description"></span>
+        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+          <span itemprop="addressResion">{addressRegion}</span>
+          <span itemprop="addressLocality">{addressLocality}</span>
+          <span itemprop="streetAddress">{streetAddress}</span>
+        </div>
+        <span itemprop="telephone">{telephone}</span>
+        <br />
+        <a itemprop="url" href="{url}">{url}</a>
+        <br />
+        <meta itemprop="openingHours" content="{openingHours}">{openingHours}
+        <div class="btn-group pull-right">
+          <button class="localBusiness-edit btn" type="button">
+            <span class="glyphicon glyphicon-edit" />
+          </button>
+          <button class="localBusiness-remove btn" type="button">
+            <span class="glyphicon glyphicon-trash" />
+          </button>
+        </div>
+
+      </div>
+    </script>
+
+    <!-- Include all compiled plugins (below), or include individudal files as needed -->
+    <!--
+    <script src="js/jq/bootstrap.js"></script>
+    -->
+    <script>
+      $( function () { pal.initModule( $('#pal' ) ); });
+    </script>
+  </head>
+  <body>
+    <div id="pal"></div>
+  </body>
+</html>

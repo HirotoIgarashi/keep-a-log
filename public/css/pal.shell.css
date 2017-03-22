@@ -1,0 +1,79 @@
+/*
+ * pal.shell.css
+ * シェルスタイル
+*/
+
+.pal-shell-header {
+  display     : table;
+  width       : 100%;
+  background  : #9999cc;
+}
+  .pal-shell-header-title,
+  .pal-shell-header-blank,
+  .pal-shell-header-login,
+  .pal-shell-header-signup,
+  .pal-shell-header-menu {
+    display       : table-cell;
+    width         : 12.5%; /* テーブルセルが8個あるので */
+    padding       : 4px 6px;
+    color         : #fff;
+  }
+  .pal-shell-header-title {
+  }
+  .pal-shell-header-login {
+    text-align  : center;
+    cursor      : pointer;
+  }
+    .pal-shell-header-login:hover {
+      background  : #333399;
+    }
+  .pal-shell-header-signup {
+    text-align  : center;
+    cursor      : pointer;
+  }
+    .pal-shell-header-signup:hover {
+      background  : #333399;
+    }
+  .pal-shell-header-menu {
+    text-align  : center;
+    cursor      : pointer;
+  }
+    .pal-shell-header-menu:hover {
+      background  : #333399;
+    }
+
+.pal-shell-section {
+  display     : block;
+  height      : 90%;
+}
+  .pal-shell-section-article {
+    display : block;
+    height  : 80px;
+  }
+
+.pal-shell-footer {
+  background  : #9999cc;
+  color       : #fff;
+  text-align  : center;
+}
+
+.pal-shell-menu-list {
+  position    : fixed;
+  top         : 25px;
+  right       : 0px;
+  left        : 87.5%;
+  background  : #333399;
+  color       : #fff;
+  text-align  : center;
+}
+  .pal-shell-menu-list li {
+    list-style-position : inside;
+    cursor              : pointer;
+    line-height: 1.8;
+  }
+    .pal-shell-menu-item-one {
+    }
+    .pal-shell-menu-item-two {
+    }
+    .pal-shell-menu-item-three {
+    }

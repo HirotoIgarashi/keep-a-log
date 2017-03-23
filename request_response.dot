@@ -4,6 +4,15 @@ digraph http {
     rankdir = LR;
   ];
   // nodeの定義
+  node [
+    fontname="IPAPGothic"
+  ];
+
+  // edgeの定義
+  edge [
+    fontname="IPAPGothic"
+  ];
+
   "Webブラウザ" [shape = box];
   "Webサーバ" [shape = box];
 

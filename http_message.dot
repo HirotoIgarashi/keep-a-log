@@ -1,0 +1,12 @@
+digraph http {
+  // graphの定義
+  graph [
+    rankdir = LR;
+  ];
+  // nodeの定義
+  node [
+    shape = record,
+  ];
+  httpmessage [label = " スタートライン | ヘッダ | 空行 | ボディ "];
+
+}

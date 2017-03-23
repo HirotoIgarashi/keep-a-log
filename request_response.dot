@@ -1,0 +1,13 @@
+digraph http {
+  // graphの定義
+  graph [
+    rankdir = LR;
+  ];
+  // nodeの定義
+  "Webブラウザ" [shape = box];
+  "Webサーバ" [shape = box];
+
+  // edgeの定義
+  "Webブラウザ" -> "Webサーバ" [label = "リクエストメッセージ"];
+  "Webサーバ" -> "Webブラウザ" [label = "レスポンスメッセージ"];
+}

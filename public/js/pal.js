@@ -14,11 +14,9 @@
 pal = (function ( ){
   'use strict';
   var initModule = function ( $container ) {
-    // spa.data.initModule();
-    // spa.model.initModule();
 
-    if ( pal.shell && $container ) {
-      pal.shell.initModule( $container );
+    if ( pal.bom && $container ) {
+      pal.bom.initModule( $container );
     }
   };
 

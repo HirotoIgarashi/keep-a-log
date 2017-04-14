@@ -3,61 +3,65 @@
  * シェルスタイル
 */
 
-.pal-shell-header {
+.pal-dom-header {
   display     : table;
   width       : 100%;
   background  : #9999cc;
 }
-  .pal-shell-header-title,
-  .pal-shell-header-blank,
-  .pal-shell-header-login,
-  .pal-shell-header-signup,
-  .pal-shell-header-menu {
+  .pal-dom-header-title,
+  .pal-dom-header-blank,
+  .pal-dom-header-login,
+  .pal-dom-header-signup,
+  .pal-dom-header-menu {
     display       : table-cell;
     width         : 12.5%; /* テーブルセルが8個あるので */
-    padding       : 4px 6px;
+    padding       : 4px 12px;
     color         : #fff;
   }
-  .pal-shell-header-title {
-  }
-  .pal-shell-header-login {
-    text-align  : center;
+  .pal-dom-header-title {
     cursor      : pointer;
   }
-    .pal-shell-header-login:hover {
+    .pal-dom-header-title:hover {
       background  : #333399;
     }
-  .pal-shell-header-signup {
+  .pal-dom-header-login {
     text-align  : center;
     cursor      : pointer;
   }
-    .pal-shell-header-signup:hover {
+    .pal-dom-header-login:hover {
       background  : #333399;
     }
-  .pal-shell-header-menu {
+  .pal-dom-header-signup {
     text-align  : center;
     cursor      : pointer;
   }
-    .pal-shell-header-menu:hover {
+    .pal-dom-header-signup:hover {
+      background  : #333399;
+    }
+  .pal-dom-header-menu {
+    text-align  : center;
+    cursor      : pointer;
+  }
+    .pal-dom-header-menu:hover {
       background  : #333399;
     }
 
-.pal-shell-section {
+.pal-dom-section {
   display     : block;
   height      : 90%;
 }
-  .pal-shell-section-article {
+  .pal-dom-section-article {
     display : block;
     height  : 80px;
   }
 
-.pal-shell-footer {
+.pal-dom-footer {
   background  : #9999cc;
   color       : #fff;
   text-align  : center;
 }
 
-.pal-shell-menu-list {
+.pal-dom-menu-list {
   position    : fixed;
   top         : 25px;
   right       : 0px;
@@ -66,14 +70,14 @@
   color       : #fff;
   text-align  : center;
 }
-  .pal-shell-menu-list li {
+  .pal-dom-menu-list li {
     list-style-position : inside;
     cursor              : pointer;
     line-height: 1.8;
   }
-    .pal-shell-menu-item-one {
+    .pal-dom-menu-item-one {
     }
-    .pal-shell-menu-item-two {
+    .pal-dom-menu-item-two {
     }
-    .pal-shell-menu-item-three {
+    .pal-dom-menu-item-three {
     }

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
   <head>
     <!-- IE9以降のレンダリングで、最新の標準をサポート -->
@@ -8,7 +8,8 @@
     <title>keeP A Log</title>
     <!-- スタイルシート -->
     <link rel="stylesheet" href="css/pal.css"       type="text/css"/>
-    <link rel="stylesheet" href="css/pal.shell.css" type="text/css"/>
+    <link rel="stylesheet" href="css/pal.dom.css" type="text/css"/>
+    <link rel="stylesheet" href="css/pal.top.css" type="text/css"/>
 
     <!-- bootstrap -->
     <!--
@@ -39,8 +40,11 @@
 
     <!-- 自作のjavascript -->
     <script src="/js/pal.js"        ></script>
-    <script src="/js/pal.shell.js"  ></script>
-    <script src="/js/module_template.js"  ></script>
+    <script src="/js/pal.bom.js"  ></script>
+    <script src="/js/pal.dom.js"  ></script>
+    <script src="/js/pal.top.js"  ></script>
+    <script src="/js/pal.login.js"  ></script>
+    <script src="/js/pal.util_b.js"  ></script>
     <!--
     <script src="/js/nob.router.js"     ></script>
     <script src="/js/nob.presenter.js"  ></script>
@@ -49,7 +53,6 @@
     <script src="/js/nb.data.js"          ></script>
     <script src="/js/nb.fake.js"          ></script>
     <script src="/js/nb.model.js"         ></script>
-    <script src="/js/nb.util_b.js"        ></script>
     <script src="/js/nb.tab.js"           ></script>
     <script src="/js/nb.calendar.js"      ></script>
     <script src="/js/nb.localBusiness.js" ></script>
@@ -62,52 +65,52 @@
     <!-- メインページのテンプレート -->
     <template id="main-page">
 
-      <header class="pal-shell-header">
-        <div class="pal-shell-header-title">
+      <header class="pal-dom-header">
+        <div class="pal-dom-header-title">
           keeP-A-Log
         </div>
-        <div class="pal-shell-header-blank">
+        <div class="pal-dom-header-blank">
         </div>
-        <div class="pal-shell-header-blank">
+        <div class="pal-dom-header-blank">
         </div>
-        <div class="pal-shell-header-blank">
+        <div class="pal-dom-header-blank">
         </div>
-        <div class="pal-shell-header-blank">
+        <div class="pal-dom-header-blank">
         </div>
-        <nav class="pal-shell-header-login">
+        <nav class="pal-dom-header-login">
           ログインする
         </nav>
-        <nav class="pal-shell-header-signup">
+        <nav class="pal-dom-header-signup">
           初めて利用する
         </nav>
-        <div class="pal-shell-header-menu">
+        <div class="pal-dom-header-menu">
           メニュー
         </div>
       </header>
 
-      <section class="pal-shell-section">
+      <section class="pal-dom-section">
         <!--
-        <article class="pal-shell-section-article">
+        <article class="pal-dom-section-article">
           Article1
         </article>
-        <article class="pal-shell-section-article">
+        <article class="pal-dom-section-article">
           Article2
         </article>
         -->
       </section>
 
-      <footer class="pal-shell-footer">
+      <footer class="pal-dom-footer">
         Footer
       </footer>
 
-      <menu class="pal-shell-menu-list" style="display:none;">
+      <menu class="pal-dom-menu-list" style="display:none;">
       </menu>
 
     </template>
 
     <!-- テスト用 -->
-    <template id="hello-world">
-      <h1>Hello World!</h1>
+    <template id="top-page">
+      <h1 class="pal-top-hello">Hello World!</h1>
     </template>
 
     <script type="text/template" id="home">
@@ -138,7 +141,7 @@
       </form>
     </script>
 
-    <script type="text/template" id="login">
+    <template id="login">
       <form>
         <label for="email">E-mailアドレス</label>
         <input name="email" type="text" required/>
@@ -148,7 +151,7 @@
         <br />
         <input type="submit" value="login" />
       </form>
-    </script>
+    </template>
 
     <script type="text/dust" id="localBusiness-template">
       <div class="container-fluid">

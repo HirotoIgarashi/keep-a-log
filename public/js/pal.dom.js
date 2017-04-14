@@ -1,6 +1,6 @@
 /*
- * pal.shell.js
- * PALのshellモジュール
+ * pal.dom.js
+ * PALのDOM(Document Object Model)制御モジュール
 */
 
 /*jslint          browser : true, continue  : true,
@@ -11,7 +11,7 @@
 */
 /*global $, pal */
 
-pal.shell = (function () {
+pal.dom = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -28,36 +28,29 @@ pal.shell = (function () {
     menuMap = [
       {
         title           : 'メニュー1',
-        class_property  : 'pal-shell-menu-item-one'
+        class_property  : 'pal-dom-menu-item-one'
       },
       {
         title           : 'メニュー2',
-        class_property  : 'pal-shell-menu-item-two'
+        class_property  : 'pal-dom-menu-item-two'
       },
       {
         title           : 'シンプルなリスト',
-        class_property  : 'pal-shell-menu-item-three'
+        class_property  : 'pal-dom-menu-item-three'
       }
     ],
     jqueryMap = {},
 
     supportsTemplate,
     setJqueryMap,
-    setHistory,
     makeList,
     toggleMenu,
+    onClickTop,
     onClickLogin, onClickSignup, onClickMenu,
+    setSection,
     initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
   //--------------------- ユーティリティメソッド開始 -----------------
-  // ユーティリティメソッド/setHistory/開始
-  setHistory = function( url ) {
-    if ( window.history && window.history.pushState ) {
-      // window.history.pushState( state, title, url );
-      window.history.pushState( null, null, '#' + url );
-    }
-  };
-  // ユーティリティメソッド/setHistory/終了
   // ユーティリティメソッド/supportsTemplate/開始
   // <template>の機能を検知する
   // 概要:
@@ -103,11 +96,12 @@ pal.shell = (function () {
 
     jqueryMap = {
       $container  : $container,
-      $login      : $container.find( '.pal-shell-header-login' ),
-      $signup     : $container.find( '.pal-shell-header-signup' ),
-      $menu       : $container.find( '.pal-shell-header-menu' ),
-      $section    : $container.find( '.pal-shell-section' ),
-      $menu_list  : $container.find( '.pal-shell-menu-list' )
+      $top        : $container.find( '.pal-dom-header-title' ),
+      $login      : $container.find( '.pal-dom-header-login' ),
+      $signup     : $container.find( '.pal-dom-header-signup' ),
+      $menu       : $container.find( '.pal-dom-header-menu' ),
+      $section    : $container.find( '.pal-dom-section' ),
+      $menu_list  : $container.find( '.pal-dom-menu-list' )
     };
   };
   // DOMメソッド/setJqueryMap/終了
@@ -136,23 +130,54 @@ pal.shell = (function () {
     return true;
   };
   // DOMメソッド/toggleMenu/終了
+
+  // DOMメソッド/setSection/開始
+  // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を取得して対応するモジュールを初期化する。
+  // 必須引数: なし
+  // オプション引数: なし
+  // 設定:
+  //  * current_location_hash: カレントのハッシュの値を格納する。
+  // 戻り値: なし
+  // 例外発行: なし
+  // 
+  setSection = function () {
+    var current_location_hash;
+
+    current_location_hash = pal.bom.getLocationHash();
+
+    switch ( current_location_hash ) {
+      case '':
+        pal.top.initModule( jqueryMap.$section );
+        break;
+      case '#login':
+        pal.login.initModule( jqueryMap.$section );
+        break;
+      case '#signup':
+        console.log( '#signupがクリックされました' );
+        //pal.signup.initModule();
+        break;
+      default:
+        break;
+    }
+  };
+  // DOMメソッド/setSection/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- イベントハンドラ開始 ----------------------
-  onClickLogin = function ( /* event */ ) {
-    setHistory( 'login' );
+  onClickTop = function ( /* event */ ) {
+    pal.bom.setLocationHash( '' );
+  };
 
-    return false;
+  onClickLogin = function ( /* event */ ) {
+    pal.bom.setLocationHash( 'login' );
   };
 
   onClickSignup = function ( /* event */ ) {
-    setHistory( 'signup' );
-
-    return false;
+    pal.bom.setLocationHash( 'signup' );
   };
   
   onClickMenu = function ( /* event */ ) {
-    setHistory( 'menu' );
+    pal.bom.setLocationHash( 'menu' );
     toggleMenu( stateMap.is_menu_retracted );
 
     return false;
@@ -164,7 +189,7 @@ pal.shell = (function () {
 
   // --------------------- パブリックメソッド開始 --------------------
   // パブリックメソッド/initModule/開始
-  // 用例: pal.shell.initModule( $('#app_div_id') );
+  // 用例: pal.dom.initModule( $('#app_div_id') );
   // 目的:
   // 引数:
   //  * $append_target (例: $('#app_div_id'))
@@ -176,9 +201,8 @@ pal.shell = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var
-      mainPage  = document.querySelector( '#main-page' ).content,
-      menu_html = makeList( menuMap );
+    var mainPage = document.querySelector( '#main-page' ).content,
+        menu_html = makeList( menuMap );
 
     // HTMLをロードし、jQueryコレクションをマッピングする
     stateMap.$container = $container;
@@ -194,7 +218,7 @@ pal.shell = (function () {
     setJqueryMap();
 
     // 機能モジュールを設定して初期化する/開始
-    pal.module.initModule( jqueryMap.$section );
+    pal.top.initModule( jqueryMap.$section );
     // 機能モジュールを設定して初期化する/終了
 
     // メニューにアイテムを追加する。
@@ -202,12 +226,14 @@ pal.shell = (function () {
       .html( menu_html );
 
     // メニューのアイテムをjqueryMapに追加する。
-    jqueryMap.$menu_item1 = jqueryMap.$container.find( '.pal-shell-item-one' );
-    jqueryMap.$menu_item2 = jqueryMap.$container.find( '.pal-shell-item-two' );
-    jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-shell-item-three' );
-    console.log( jqueryMap );
+    jqueryMap.$menu_item1 = jqueryMap.$container.find( '.pal-dom-item-one' );
+    jqueryMap.$menu_item2 = jqueryMap.$container.find( '.pal-dom-item-two' );
+    jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-dom-item-three' );
 
     // クリックハンドラをバインドする
+    jqueryMap.$top
+      .click( onClickTop );
+
     jqueryMap.$login
       .attr( 'title', configMap.login_title )
       .click( onClickLogin );
@@ -223,6 +249,9 @@ pal.shell = (function () {
   };
   // パブリックメソッド/initModule/終了
 
-  return { initModule : initModule };
+  return {
+    initModule  : initModule,
+    setSection  : setSection
+  };
   // --------------------- パブリックメソッド終了 --------------------
 }());

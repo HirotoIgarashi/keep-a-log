@@ -1,6 +1,6 @@
 /*
- * module_template.js
- * ブラウザ機能モジュール用のテンプレート
+ * pal.top.js
+ * TOPページを表示する機能
 */
 
 /*jslint          browser : true, continue  : true,
@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.module = (function () {
+pal.top = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -30,15 +30,9 @@ pal.module = (function () {
   // ユーティリティメソッド/example_method/開始
   // 目的:
   // 必須引数:
-  //  * do_extend(プール値) trueはスライダーを拡大し、falseは格納する。
   // オプション引数:
-  //  * callback(関数) アニメーションの完了後に実行される。
   // 設定:
-  //  * chat_extend_time, chat_retract_time
-  //  * chat_extend_height
-  // 戻り値: boolean
-  //  * true: スライダーアニメーションが動作した。
-  //  * false: スライダーアニメーションが動作していない。
+  // 戻り値:
   // 例外発行: なし
   // example_method = function () {
   //   var example;
@@ -89,13 +83,12 @@ pal.module = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var helloWorld  = pal.util_b.getTplContent( 'test' );
+    var top_page  = pal.util_b.getTplContent( 'top-page' );
 
     stateMap.$container = $container;
     setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
-    jqueryMap.$container.html( helloWorld );
+    jqueryMap.$container.html( top_page );
 
     return true;
   };

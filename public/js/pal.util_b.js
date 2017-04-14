@@ -1,5 +1,5 @@
 /*
- * spa.util_b.js
+ * pal.util_b.js
  * JavaScriptブラウザユーティリティ
  *
  * Michael S. Mikowskiがコンパイル
@@ -13,9 +13,9 @@
   regexp  : true, sloppy  : true, vars      : true,
   white   : true
 */
-/*global $, spa, getComputedStyle */
+/*global $, pal, getComputedStyle */
 
-spa.util_b = (function () {
+pal.util_b = (function () {
   'use strict';
   //------------------ モジュールスコープ変数開始 ---------------------
   var
@@ -31,7 +31,10 @@ spa.util_b = (function () {
       }
     },
 
-    decodeHtml, encodeHtml, getEmSize;
+    decodeHtml,
+    encodeHtml,
+    getEmSize,
+    getTplContent;
 
   configMap.encode_noamp_map = $.extend(
     {}, configMap.encode_noamp_map
@@ -86,13 +89,32 @@ spa.util_b = (function () {
   };
   // getEmSize終了
 
+  // getTplContent開始
+  // 目的: テンプレートからコンテンツを取得して返す。
+  // 必須引数: IDの値
+  // オプション引数: なし
+  // 設定:
+  // 戻り値: 引数のIDの値のコンテンツ
+  // 例外発行: なし
+  getTplContent = function ( template_id ) {
+    var tpl,
+        content;
+
+    tpl = document.getElementById( template_id );
+    content = tpl.content.cloneNode( true );
+                                 
+    return content;
+  };
+
+  // getTplContent終了
   //------------------ ユーティリティメソッド終了 ---------------------
 
   //------------------ パブリックメソッド開始 -------------------------
   return {
-    decodeHtml  : decodeHtml,
-    encodeHtml  : encodeHtml,
-    getEmSize   : getEmSize
+    decodeHtml    : decodeHtml,
+    encodeHtml    : encodeHtml,
+    getEmSize     : getEmSize,
+    getTplContent : getTplContent
   };
   //------------------ パブリックメソッド終了 -------------------------
 }());

@@ -9,47 +9,56 @@
   background      : #9999cc;
 }
   .pal-dom-header-title,
+  .pal-dom-header-blank,
   .pal-dom-header-login,
   .pal-dom-header-signup,
   .pal-dom-header-menu {
-    height: 24px;
-    color         : #fff;
+    height          : 32px;
+    color           : #fff;
+    text-align  : center;
+    padding-top     : 5px;
+    padding-right   : 2px;
+    padding-bottom  : 4px;
+    padding-left    : 2px;
+  }
+  .pal-dom-header-title,
+  .pal-dom-header-login,
+  .pal-dom-header-signup,
+  .pal-dom-header-menu {
+    cursor      : pointer;
   }
   .pal-dom-header-title {
-    cursor      : pointer;
-    flex-grow   : 20;
-    flex-shrink : 10;
-    flex-basis  : 90px;
+    flex-grow   : 0;
+    flex-shrink : 1;
+    flex-basis  : 94px;
   }
     .pal-dom-header-title:hover {
       background  : #333399;
     }
+  .pal-dom-header-blank {
+    flex-grow   : 20;
+    flex-shrink : 10;
+  }
   .pal-dom-header-login {
-    text-align  : center;
-    cursor      : pointer;
-    flex-grow   : 1;
+    flex-grow   : 0;
     flex-shrink : 1;
-    flex-basis  : 96px;
+    flex-basis  : 100px;
   }
     .pal-dom-header-login:hover {
       background  : #333399;
     }
   .pal-dom-header-signup {
-    text-align  : center;
-    cursor      : pointer;
-    flex-grow   : 1;
+    flex-grow   : 0;
     flex-shrink : 1;
-    flex-basis  : 112px;
+    flex-basis  : 116px;
   }
     .pal-dom-header-signup:hover {
       background  : #333399;
     }
   .pal-dom-header-menu {
-    text-align  : center;
-    cursor      : pointer;
-    flex-grow   : 1;
+    flex-grow   : 0;
     flex-shrink : 1;
-    flex-basis  : 64px;
+    flex-basis  : 68px;
   }
     .pal-dom-header-menu:hover {
       background  : #333399;

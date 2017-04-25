@@ -21,7 +21,8 @@ pal.bom = (function () {
   //--------------------- ユーティリティメソッド開始 -----------------
   // ユーティリティメソッド/setLocationHash/開始
   setLocationHash = function ( hash ) {
-    window.location = '#' + hash;
+    // window.location = '#' + hash;
+    window.location.hash = hash;
   };
   // ユーティリティメソッド/setLocationHash/終了
 
@@ -67,6 +68,9 @@ pal.bom = (function () {
     console.log("availHeight: " + screen.availHeight);
     console.log("colorDepth: " + screen.colorDepth);
     console.log("pixelDepth: " + screen.pixelDepth);
+
+    console.log( window.location.href );
+    console.log( window.location.pathname );
 
     if ( pal.dom && $container ) {
       pal.dom.initModule( $container );

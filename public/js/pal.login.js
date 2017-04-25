@@ -23,7 +23,8 @@ pal.login = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
 
-    setJqueryMap, configModule, initModule;
+    setJqueryMap, configModule, initModule,
+    onClickLogin;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -53,6 +54,11 @@ pal.login = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
+  onClickLogin = function ( event ) {
+    event.preventDefault();
+
+    console.log( 'loginボタンが押されました。' );
+  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -91,6 +97,10 @@ pal.login = (function () {
 
     // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
     jqueryMap.$container.html( loginPage );
+
+    jqueryMap.$login = $container.find( '.pal-login-button' );
+    console.log(jqueryMap.$login);
+    jqueryMap.$login.click( onClickLogin );
     return true;
   };
   // パブリックメソッド/initModule/終了

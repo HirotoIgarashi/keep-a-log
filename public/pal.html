@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <!-- IE9以降のレンダリングで、最新の標準をサポート -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <meta charset=utf-8">
     <meta name="viewport" content="width=device-width">
     <!--
     <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0">
@@ -10,21 +10,22 @@
     -->
     <title>keeP A Log</title>
     <!-- スタイルシート -->
-    <link rel="stylesheet" href="css/pal.css"       type="text/css"/>
-    <link rel="stylesheet" href="css/pal.dom.css" type="text/css"/>
-    <link rel="stylesheet" href="css/pal.top.css" type="text/css"/>
+    <link rel="stylesheet" href="css/pal.css">
+    <link rel="stylesheet" href="css/pal.dom.css">
+    <link rel="stylesheet" href="css/pal.top.css">
+    <link rel="stylesheet" href="css/pal.login.css">
 
     <!-- サードパーティ javascript -->
-    <script src="/js/jq/jquery-3.1.1.js"        ></script>
-    <script src="/js/jq/jquery.event.gevent.js" ></script>
+    <script src="js/jq/jquery-3.1.1.js"></script>
+    <script src="js/jq/jquery.event.gevent.js"></script>
 
     <!-- 自作のjavascript -->
-    <script src="/js/pal.js"        ></script>
-    <script src="/js/pal.bom.js"  ></script>
-    <script src="/js/pal.dom.js"  ></script>
-    <script src="/js/pal.top.js"  ></script>
-    <script src="/js/pal.login.js"  ></script>
-    <script src="/js/pal.util_b.js"  ></script>
+    <script src="js/pal.js"></script>
+    <script src="js/pal.bom.js"></script>
+    <script src="js/pal.dom.js"></script>
+    <script src="js/pal.top.js"></script>
+    <script src="js/pal.login.js"></script>
+    <script src="js/pal.util_b.js"></script>
 
     <!-- メインページのテンプレート -->
     <template id="main-page">
@@ -98,15 +99,16 @@
       </form>
     </script>
 
+    <!-- ログインページのテンプレート -->
     <template id="login">
+      <h1>IDとパスワードを入力してログインして下さい。</h1>
       <form>
-        <label for="email">E-mailアドレス</label>
-        <input name="email" type="text" required/>
-        <br />
-        <label for="password">パスワード</label>
-        <input name="password" type="password" required/>
-        <br />
-        <input type="submit" value="login" />
+        <h4 class="pal-login-h4" for="email">E-mailアドレス</h4>
+        <input class="pal-login-input" name="email" type="email" required>
+        <h4 class="pal-login-h4" for="password">パスワード</h4>
+        <input class="pal-login-input" name="password" type="password" required>
+        <br/>
+        <input class="pal-login-button" type="submit" value="login">
       </form>
     </template>
 

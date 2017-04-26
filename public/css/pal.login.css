@@ -1,0 +1,63 @@
+/*
+ * pal.login.css
+ * ログインページのスタイル
+*/
+
+/* input */
+.pal-login-input {
+  width             : 20em;
+  height            : 2em;
+  border            : 0.1em solid #ccc;
+  border-radius     : 0.2em;
+  background-color  : #f9f9f9;
+  padding           : 0em 1em;
+  font-size         : 1em;
+
+  border            : 5px solid white;
+  -webkit-box-shadow:
+    inset 0 0 8px   rgba(0, 0, 0, 0.1),
+          0 0 16px  rgba(0, 0, 0, 0.1);
+  -moz-box-shadow:
+    inset 0 0 8px   rgba(0, 0, 0, 0.1),
+          0 0 16px  rgba(0, 0, 0, 0.1);
+  box-shadow:
+    inset 0 0 8px   rgba(0, 0, 0, 0.1),
+          0 0 16px  rgba(0, 0, 0, 0.1);
+  padding     : 15px;
+  background  : rgba(255, 255, 255, 0.5);
+  margin      : 0 0 10px 0;
+}
+.pal-login-input:valid {
+  color: green;
+}
+.pal-login-input:invalid {
+  color: red;
+}
+.pal-login-input:required {
+  border-color: black;
+}
+.pal-login-input:required {
+  border-color: gray;
+}
+
+/* ボタン */
+.pal-login-button {
+  border            : 0.1em #333336 solid;
+  border-radius     : 0.2em;
+  text-decoration   : none;
+  color             : black;
+  padding           : 0.5em 1em;
+  background-color  : #f3f3f3;
+}
+.pal-login-button:hover {
+  background-color  : #cececc;
+}
+.pal-login-button:active {
+  background-color  : #a2b2bc;
+}
+
+/* ラベル */
+.pal-login-h4 {
+  margin-bottom   : 0em;
+  padding-bottom  : 0.5em;
+}

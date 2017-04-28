@@ -1,6 +1,6 @@
 /*
- * pal.login.js
- * login機能
+ * pal.top.js
+ * TOPページを表示する機能
 */
 
 /*jslint          browser : true, continue  : true,
@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.login = (function () {
+pal.list = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -23,8 +23,7 @@ pal.login = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
 
-    setJqueryMap, configModule, initModule,
-    onClickLogin;
+    setJqueryMap, configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -54,11 +53,6 @@ pal.login = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickLogin = function ( event ) {
-    event.preventDefault();
-
-    console.log( 'loginボタンが押されました。' );
-  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -89,18 +83,13 @@ pal.login = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var
-      loginPage = pal.util_b.getTplContent( 'login' );
+    var top_page  = pal.util_b.getTplContent( 'top-page' );
 
     stateMap.$container = $container;
     setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
-    jqueryMap.$container.html( loginPage );
+    jqueryMap.$container.html( top_page );
 
-    jqueryMap.$login = $container.find( '.pal-login-button' );
-    // console.log(jqueryMap.$login);
-    jqueryMap.$login.click( onClickLogin );
     return true;
   };
   // パブリックメソッド/initModule/終了

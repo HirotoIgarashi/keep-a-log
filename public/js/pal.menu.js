@@ -23,6 +23,7 @@ pal.menu = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
 
+    onClickSimpleList,
     setJqueryMap, configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -53,6 +54,9 @@ pal.menu = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
+  onClickSimpleList = function ( /* event */  ) {
+    pal.bom.setLocationHash( 'list' );
+  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -83,12 +87,19 @@ pal.menu = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var top_page  = pal.util_b.getTplContent( 'pal-menu' );
+    var menu_page  = pal.util_b.getTplContent( 'pal-menu' );
 
     stateMap.$container = $container;
     setJqueryMap();
 
-    jqueryMap.$container.html( top_page );
+    jqueryMap.$container.html( menu_page );
+
+    jqueryMap.$simple_list = $container.find( '#simple-list' );
+
+    jqueryMap.$hierarchy_list = $container.find( '#hierarchy-list' );
+
+    jqueryMap.$simple_list
+      .click( onClickSimpleList );
 
     return true;
   };

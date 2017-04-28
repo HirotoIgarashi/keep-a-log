@@ -44,7 +44,7 @@ pal.dom = (function () {
     supportsTemplate,
     setJqueryMap,
     makeList,
-    toggleMenu,
+    // toggleMenu,
     onClickTop,
     onClickLogin, onClickSignup, onClickMenu,
     setSection,
@@ -118,17 +118,17 @@ pal.dom = (function () {
   //  * true  - メニューの開閉を行った
   //  * false - メニューの開閉を行わなかった
   // 例外発行:
-  toggleMenu = function ( do_extend ) {
-    if ( do_extend ) {
-      jqueryMap.$menu_list.css({display:'block'});
-      stateMap.is_menu_retracted = false;
-    }
-    else {
-      jqueryMap.$menu_list.css({display:'none'});
-      stateMap.is_menu_retracted = true;
-    }
-    return true;
-  };
+  // toggleMenu = function ( do_extend ) {
+  //   if ( do_extend ) {
+  //     jqueryMap.$menu_list.css({display:'block'});
+  //     stateMap.is_menu_retracted = false;
+  //   }
+  //   else {
+  //     jqueryMap.$menu_list.css({display:'none'});
+  //     stateMap.is_menu_retracted = true;
+  //   }
+  //   return true;
+  // };
   // DOMメソッド/toggleMenu/終了
 
   // DOMメソッド/setSection/開始
@@ -157,8 +157,10 @@ pal.dom = (function () {
         //pal.signup.initModule();
         break;
       case '#menu':
-        console.log( '#menuがクリックされました' );
         pal.menu.initModule( jqueryMap.$section );
+        break;
+      case '#list':
+        pal.list.initModule( jqueryMap.$section );
         break;
       default:
         break;

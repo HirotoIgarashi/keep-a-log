@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/pal.dom.css">
     <link rel="stylesheet" href="css/pal.top.css">
     <link rel="stylesheet" href="css/pal.login.css">
+    <link rel="stylesheet" href="css/pal.menu.css">
 
     <!-- サードパーティ javascript -->
     <script src="js/jq/jquery-3.1.1.js"></script>
@@ -25,6 +26,7 @@
     <script src="js/pal.dom.js"></script>
     <script src="js/pal.top.js"></script>
     <script src="js/pal.login.js"></script>
+    <script src="js/pal.menu.js"></script>
     <script src="js/pal.util_b.js"></script>
 
     <!-- メインページのテンプレート -->
@@ -69,6 +71,14 @@
     <!-- テスト用 -->
     <template id="top-page">
       <h1 class="pal-top-hello">Hello World!</h1>
+    </template>
+
+    <!-- メニュー用 -->
+    <template id="pal-menu">
+      <div id="pal-menu-container">
+        <div class="pal-menu-nav" id="simple-list">シンプルなリスト</div>
+        <div class="pal-menu-nav" id="hierarchy-list">階層のあるリスト</div>
+      </div>
     </template>
 
     <script type="text/template" id="home">

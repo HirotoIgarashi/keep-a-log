@@ -156,6 +156,10 @@ pal.dom = (function () {
         console.log( '#signupがクリックされました' );
         //pal.signup.initModule();
         break;
+      case '#menu':
+        console.log( '#menuがクリックされました' );
+        pal.menu.initModule( jqueryMap.$section );
+        break;
       default:
         break;
     }
@@ -178,9 +182,9 @@ pal.dom = (function () {
   
   onClickMenu = function ( /* event */ ) {
     pal.bom.setLocationHash( 'menu' );
-    toggleMenu( stateMap.is_menu_retracted );
+    // toggleMenu( stateMap.is_menu_retracted );
 
-    return false;
+    // return false;
   };
   // --------------------- イベントハンドラ終了 ----------------------
 

@@ -65,11 +65,9 @@
     }
 
 .pal-dom-section {
-  display     : block;
   height      : 90%;
 }
   .pal-dom-section-article {
-    display : block;
     height  : 80px;
   }
 

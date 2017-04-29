@@ -1,245 +1,122 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <!-- IE9以降のレンダリングで、最新の標準をサポート -->
-    <meta charset=utf-8">
-    <meta name="viewport" content="width=device-width">
-    <!--
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    -->
-    <title>keeP A Log</title>
-    <!-- スタイルシート -->
-    <link rel="stylesheet" href="css/pal.css">
-    <link rel="stylesheet" href="css/pal.dom.css">
-    <link rel="stylesheet" href="css/pal.top.css">
-    <link rel="stylesheet" href="css/pal.login.css">
-    <link rel="stylesheet" href="css/pal.menu.css">
-    <link rel="stylesheet" href="css/pal.list.css">
+<!doctype html>
+<html class="no-js" lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>keeP A Log</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- サードパーティ javascript -->
-    <script src="js/jq/jquery-3.1.1.js"></script>
-    <script src="js/jq/jquery.event.gevent.js"></script>
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
 
-    <!-- 自作のjavascript -->
-    <script src="js/pal.js"></script>
-    <script src="js/pal.util_b.js"></script>
-    <script src="js/pal.bom.js"></script>
-    <script src="js/pal.dom.js"></script>
-    <script src="js/pal.top.js"></script>
-    <script src="js/pal.login.js"></script>
-    <script src="js/pal.menu.js"></script>
-    <script src="js/pal.list.js"></script>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
 
-    <!-- メインページのテンプレート -->
-    <template id="main-page">
+        <!-- スタイルシート -->
+        <link rel="stylesheet" href="css/pal.css">
+        <link rel="stylesheet" href="css/pal.dom.css">
+        <link rel="stylesheet" href="css/pal.top.css">
+        <link rel="stylesheet" href="css/pal.login.css">
+        <link rel="stylesheet" href="css/pal.menu.css">
+        <link rel="stylesheet" href="css/pal.list.css">
 
-      <header class="pal-dom-header">
-        <div class="pal-dom-header-title">
-          keeP-A-Log
-        </div>
-        <div class="pal-dom-header-blank"></div>
-        <nav class="pal-dom-header-login">
-          ログインする
-        </nav>
-        <nav class="pal-dom-header-signup">
-          初めて利用する
-        </nav>
-        <div class="pal-dom-header-menu">
-          メニュー
-        </div>
-      </header>
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
-      <section class="pal-dom-section">
-        <!--
-        <article class="pal-dom-section-article">
-          Article1
-        </article>
-        <article class="pal-dom-section-article">
-          Article2
-        </article>
-        -->
-      </section>
+        <!-- サードパーティ javascript -->
+        <script src="js/jq/jquery-3.1.1.js"></script>
+        <script src="js/jq/jquery.event.gevent.js"></script>
 
-      <footer class="pal-dom-footer">
-        Footer
-      </footer>
-
-      <menu class="pal-dom-menu-list" style="display:none;">
-      </menu>
-
-    </template>
-
-    <!-- テスト用 -->
-    <template id="top-page">
-      <h1 class="pal-top-hello">Hello World!</h1>
-    </template>
-
-    <!-- メニュー用 -->
-    <template id="pal-menu">
-      <div id="pal-menu-container">
-        <div class="pal-menu-nav" id="simple-list">シンプルなリスト</div>
-        <div class="pal-menu-nav" id="hierarchy-list">階層のあるリスト</div>
-      </div>
-    </template>
-
-    <script type="text/template" id="home">
-      <header class="nob-header">
-        <a href="/">
-          <img alt="NoteBook" src="/images/note.jpg" height="38px"/>
-        </a>
-        <h1>NoteBook</h1>
-        <div>
-          <a href="#!signup">アカウントを作成する</a>
-          <a href="#!login">ログインする</a>
-        </div>
-      </header>
-    </script>
-
-    <script type="text/template" id="signup">
-      <form>
-        <label for="email">E-mailアドレス</label>
-        <input name="email" type="text" required/>
-        <br />
-        <label for="password">パスワード</label>
-        <input name="password" type="password" required/>
-        <br />
-        <label for="passconf">パスワード(確認)</label>
-        <input name="passconf" type="password" required/>
-        <br />
-        <input type="submit" value="signup" />
-      </form>
-    </script>
-
-    <!-- ログインページのテンプレート -->
-    <template id="login">
-      <h1>IDとパスワードを入力してログインして下さい。</h1>
-      <form>
-        <h4 class="pal-login-h4" for="email">E-mailアドレス</h4>
-        <input class="pal-login-input" name="email" type="email" required>
-        <h4 class="pal-login-h4" for="password">パスワード</h4>
-        <input class="pal-login-input" name="password" type="password" required>
-        <br/>
-        <input class="pal-login-button" type="submit" value="login">
-      </form>
-    </template>
-
-    <script type="text/dust" id="localBusiness-template">
-      <div class="container-fluid">
-        <p id="localBusiness-msg"></p>
-        <div id="local-business" />
-        <a>
-          <span class="glyphicon glyphicon-plus localBusiness-plus">
-          </span>
-        </a>
-        <a>
-          <span class="glyphicon glyphicon-minus localBusiness-minus">
-          </span>
-        </a>
-        <form id="create-localBusiness-form" class="form-horizontal">
-          <div class="form-group">
-            <label for="name" class="col-sm-2 control-label">名:</label>
-            <div class="col-sm-10">
-              <input id="name" name="name" type="text" class="form-control" required />
+        <!-- メインページのテンプレート -->
+        <template id="main-page">
+          <header class="pal-dom-header">
+            <div class="pal-dom-header-title">
+              keeP-A-Log
             </div>
-          </div>
-          <div class="form-group">
-            <label for="postalCode" class="col-sm-2 control-label">郵便番号:</label>
-            <div class="col-sm-10">
-              <input id="postalCode" name="postalCode" type="text" class="form-control" />
+            <div class="pal-dom-header-blank"></div>
+            <nav class="pal-dom-header-login">
+              ログインする
+            </nav>
+            <nav class="pal-dom-header-signup">
+              初めて利用する
+            </nav>
+            <div class="pal-dom-header-menu">
+              メニュー
             </div>
-          </div>
-          <div class="form-group">
-            <label for="addressRegion" class="col-sm-2 control-label">都道府県:</label>
-            <div class="col-sm-10">
-              <input id="addressRegion" name="addressRegion" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="addressLocality" class="col-sm-2 control-label">市区町村:</label>
-            <div class="col-sm-10">
-              <input id="addressLocality" name="addressLocality" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="streetAddress" class="col-sm-2 control-label">町名・地番:</label>
-            <div class="col-sm-10">
-              <input id="streetAddress" name="streetAddress" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="telephone" class="col-sm-2 control-label">電話番号:</label>
-            <div class="col-sm-10">
-              <input id="telephone" name="telephone" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="faxNumber" class="col-sm-2 control-label">fax:</label>
-            <div class="col-sm-10">
-              <input id="faxNumber" name="faxNumber" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="openingHours" class="col-sm-2 control-label">オープン:</label>
-            <div class="col-sm-10">
-              <input id="openingHours" name="openingHours" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="url" class="col-sm-2 control-label">url:</label>
-            <div class="col-sm-10">
-              <input id="url" name="url" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button id="create-local-business-button" class="btn btn-default">
-                追加
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </script>
-    <!-- localBusiness-template -->
+          </header>
+          <section class="pal-dom-section">
+          </section>
+          <footer class="pal-dom-footer">
+            Footer
+          </footer>
+          <menu class="pal-dom-menu-list" style="display:none;">
+          </menu>
+        </template>
 
-    <!-- localBusiness-microdata-template -->
-    <script type="text/dust" id="localBusiness-microdata-template">
-      <div itemscope itemtype="http://schema.org/LocalBusiness" data-id="{_id}">
+        <!-- テスト用 -->
+        <template id="top-page">
+          <h1 class="pal-top-hello">Hello World!</h1>
+        </template>
 
-        <span itemprop="name">{name}</span>
-        <span itemprop="description"></span>
-        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-          <span itemprop="addressResion">{addressRegion}</span>
-          <span itemprop="addressLocality">{addressLocality}</span>
-          <span itemprop="streetAddress">{streetAddress}</span>
-        </div>
-        <span itemprop="telephone">{telephone}</span>
-        <br />
-        <a itemprop="url" href="{url}">{url}</a>
-        <br />
-        <meta itemprop="openingHours" content="{openingHours}">{openingHours}
-        <div class="btn-group pull-right">
-          <button class="localBusiness-edit btn" type="button">
-            <span class="glyphicon glyphicon-edit" />
-          </button>
-          <button class="localBusiness-remove btn" type="button">
-            <span class="glyphicon glyphicon-trash" />
-          </button>
-        </div>
+        <!-- メニュー用 -->
+        <template id="pal-menu">
+          <div id="pal-menu-container">
+            <div class="pal-menu-nav" id="simple-list">シンプルなリスト</div>
+            <div class="pal-menu-nav" id="hierarchy-list">階層のあるリスト</div>
+          </div>
+        </template>
 
-      </div>
-    </script>
+        <!-- ログインページのテンプレート -->
+        <template id="login">
+          <h1>IDとパスワードを入力してログインして下さい。</h1>
+          <form>
+            <h4 class="pal-login-h4" for="email">E-mailアドレス</h4>
+            <input class="pal-login-input" name="email" type="email" required>
+            <h4 class="pal-login-h4" for="password">パスワード</h4>
+            <input class="pal-login-input" name="password" type="password" required>
+            <br/>
+            <input class="pal-login-button" type="submit" value="login">
+          </form>
+        </template>
 
-    <!-- Include all compiled plugins (below), or include individudal files as needed -->
-    <!--
-    <script src="js/jq/bootstrap.js"></script>
-    -->
-    <script>
-      $( function () { pal.initModule( $('#pal' ) ); });
-    </script>
-  </head>
-  <body>
-    <div id="pal"></div>
-  </body>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <!-- <p>Hello world! This is HTML5 Boilerplate.</p> -->
+
+        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- 自作のjavascript -->
+        <script src="js/pal.js"></script>
+        <script src="js/pal.util_b.js"></script>
+        <script src="js/pal.bom.js"></script>
+        <script src="js/pal.dom.js"></script>
+        <script src="js/pal.top.js"></script>
+        <script src="js/pal.login.js"></script>
+        <script src="js/pal.menu.js"></script>
+        <script src="js/pal.list.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        </script>
+
+        <script>
+          $( function () { pal.initModule( $('#pal' ) ); });
+        </script>
+
+        <div id="pal"></div>
+    </body>
 </html>

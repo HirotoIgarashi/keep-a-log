@@ -3,7 +3,52 @@
  * ログインページのスタイル
 */
 
+/* flexの定義 */
+.flex-outer li,
+.flex-inner {
+  display     : flex;
+  flex-wrap   : wrap;
+  align-items : center;
+}
+.flex-outer > li > label,
+.flex-outer li p {
+  flex      : 1 0 120px;
+  max-width : 220px;
+}
+.flex-outer > li > label + *,
+.flex-inner {
+  flex      : 1 0 220px;
+}
+.flex-outer li button {
+  margin-left     : auto;
+  padding         : 8px 16px;
+  border          : none;
+  background      : #333;
+  color           : #f2f2f2;
+  text-transform  : uppercase;
+  letter-spacing  : .09em;
+  border-radius   : 2px;
+}
+.flex-inner li {
+  width : 140px;
+}
+.flex-inner {
+  justify-content : space-between;
+}
 /* input */
+/*
+ * .pal-login-input {
+ *   width             : 30em;
+ *   height            : 4em;
+ *   border            : 0.1em solid #ccc;
+ *   border-radius     : 0.5em;
+ *   background-color  : #efefef;
+ *   padding           : 0em 1em;
+ *   font-size         : 1.2em;
+ *   box-shadow        : 0em 0.1em 0.5em #ccc;
+ * }
+*/
+/*
 .pal-login-input {
   width             : 20em;
   height            : 2em;
@@ -27,6 +72,7 @@
   background  : rgba(255, 255, 255, 0.5);
   margin      : 0 0 10px 0;
 }
+*/
 .pal-login-input:valid {
   color: green;
 }
@@ -36,7 +82,7 @@
 .pal-login-input:required {
   border-color: black;
 }
-.pal-login-input:required {
+.pal-login-input:optional {
   border-color: gray;
 }
 
@@ -54,10 +100,4 @@
 }
 .pal-login-button:active {
   background-color  : #a2b2bc;
-}
-
-/* ラベル */
-.pal-login-h4 {
-  margin-bottom   : 0em;
-  padding-bottom  : 0.5em;
 }

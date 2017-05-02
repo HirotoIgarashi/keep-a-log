@@ -24,6 +24,7 @@ pal.login = (function () {
     jqueryMap = {},
 
     setJqueryMap, configModule, initModule,
+    onRecieveLogin,
     onClickLogin;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -55,9 +56,23 @@ pal.login = (function () {
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
   onClickLogin = function ( event ) {
+    var
+      xmlhttp,
+      pref = 'text',
+      url = 'user/login?pref=' + pref;
+
     event.preventDefault();
 
-    console.log( 'loginボタンが押されました。' );
+    xmlhttp = pal.util_b.getXmlHttp();
+    xmlhttp.open( 'POST', url, true );
+    xmlhttp.onreadystatechange = onRecieveLogin;
+    xmlhttp.send( null );
+
+  };
+
+  // Loginの結果の処理
+  onRecieveLogin = function () {
+    console.log( 'AjaxPOSTの処理結果を確認します。' );
   };
   // --------------------- イベントハンドラ終了 ----------------------
 
@@ -99,9 +114,10 @@ pal.login = (function () {
     jqueryMap.$container.html( loginPage );
 
     jqueryMap.$login = $container.find( '.pal-login-button' );
-    // console.log(jqueryMap.$login);
     jqueryMap.$login.click( onClickLogin );
+
     return true;
+
   };
   // パブリックメソッド/initModule/終了
 

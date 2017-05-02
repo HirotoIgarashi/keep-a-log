@@ -13,7 +13,7 @@
   regexp  : true, sloppy  : true, vars      : true,
   white   : true
 */
-/*global $, pal, getComputedStyle */
+/*global $, pal, getComputedStyle, ActiveXObject */
 
 pal.util_b = (function () {
   'use strict';
@@ -34,7 +34,7 @@ pal.util_b = (function () {
     decodeHtml,
     encodeHtml,
     getEmSize,
-    getTplContent;
+    getXmlHttp, getTplContent;
 
   configMap.encode_noamp_map = $.extend(
     {}, configMap.encode_noamp_map
@@ -72,7 +72,9 @@ pal.util_b = (function () {
       regex = configMap.regex_encode_html;
     }
     return input_str.replace(regex,
-      function ( match, name ) {
+      // function ( match, name ) {
+      // jslintがエラーとなるためnameを削除する。
+      function ( match ) {
         return lookup_map[ match ] || '';
       }
     );
@@ -102,11 +104,26 @@ pal.util_b = (function () {
 
     tpl = document.getElementById( template_id );
     content = tpl.content.cloneNode( true );
-                                 
+
     return content;
   };
-
   // getTplContent終了
+
+  // getXmlHttp開始
+  getXmlHttp = function () {
+    var xmlhttp = null;
+
+    if ( window.XMLHttpRequest ) {
+      xmlhttp = new XMLHttpRequest();
+    }
+    else if ( window.ActiveXObject ) {
+      xmlhttp = new ActiveXObject( "Miforsoft.XMLHTTP" );
+    }
+
+    return xmlhttp;
+
+  };
+  // getXmlHttp終了
   //------------------ ユーティリティメソッド終了 ---------------------
 
   //------------------ パブリックメソッド開始 -------------------------
@@ -114,7 +131,8 @@ pal.util_b = (function () {
     decodeHtml    : decodeHtml,
     encodeHtml    : encodeHtml,
     getEmSize     : getEmSize,
-    getTplContent : getTplContent
+    getTplContent : getTplContent,
+    getXmlHttp    : getXmlHttp
   };
   //------------------ パブリックメソッド終了 -------------------------
 }());

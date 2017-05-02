@@ -70,12 +70,28 @@
         <template id="login">
           <h1>IDとパスワードを入力してログインして下さい。</h1>
           <form>
-            <h4 class="pal-login-h4" for="email">E-mailアドレス</h4>
-            <input class="pal-login-input" name="email" type="email" required>
-            <h4 class="pal-login-h4" for="password">パスワード</h4>
-            <input class="pal-login-input" name="password" type="password" required>
-            <br/>
-            <input class="pal-login-button" type="submit" value="login">
+            <ul class="flex-outer">
+              <li>
+                <label class="pal-login-label" for="email">E-mailアドレス:</label>
+                <input class="pal-login-input" id="email" type="email" placeholder="Enter e-mail address" required>
+              </li>
+              <li>
+                <label class="pal-login-label" for="password">パスワード:</label>
+                <input class="pal-login-input" id="password" type="password" placeholder="Enter password" required>
+              </li>
+              <li>
+                <p>passwordの表示</p>
+                <ul class="flex-inner">
+                  <li>
+                    <input type="checkbox" id="show-password">
+                    <label for="show-password">show password</label>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <button class="pal-login-button" type="submit">login</button>
+              </li>
+            </ul>
           </form>
         </template>
 

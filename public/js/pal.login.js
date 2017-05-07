@@ -22,9 +22,9 @@ pal.login = (function () {
     },
     stateMap = { $container : null },
     jqueryMap = {},
-
-    setJqueryMap, configModule, initModule,
+    request = null,
     onRecieveLogin,
+    setJqueryMap, configModule, initModule,
     onClickLogin;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -48,7 +48,10 @@ pal.login = (function () {
   setJqueryMap = function () {
     var $container = stateMap.$container;
 
-    jqueryMap = { $container  : $container };
+    jqueryMap = {
+      $container  : $container,
+      $login      : $container.find( '.pal-dom-header-login' )
+    };
   };
   // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
@@ -57,23 +60,66 @@ pal.login = (function () {
   // 例: onClickButton = function ( event ) {};
   onClickLogin = function ( event ) {
     var
-      xmlhttp,
-      pref = 'text',
-      url = 'user/login?pref=' + pref;
+      requestType = 'POST',
+      url = 'session/create',
+      form_data_map = {};
 
     event.preventDefault();
 
-    xmlhttp = pal.util_b.getXmlHttp();
-    xmlhttp.open( 'POST', url, true );
-    xmlhttp.onreadystatechange = onRecieveLogin;
-    xmlhttp.send( null );
+    form_data_map.email     = $( '#email' ).val();
+    form_data_map.password  = $( '#password' ).val();
+
+    // XMLHttpRequestによる送信
+    request = pal.util_b.sendXmlHttpRequest(
+      requestType,
+      url,
+      true,
+      onRecieveLogin,
+      JSON.stringify( form_data_map )
+    );
 
   };
 
   // Loginの結果の処理
   onRecieveLogin = function () {
-    console.log( 'AjaxPOSTの処理結果を確認します。' );
+    var
+      message_area = document.getElementById('pal-login-message-area');
+
+    if ( request && request.readyState === 4 ) {
+      if ( request.status === 200 ) {
+        console.log( 'AjaxPOSTの処理結果を確認します。' );
+
+        console.log( request );
+
+        message_area.removeAttribute( 'hidden' );
+        message_area.textContent = 'ログインしました。ステータス: ' + request.status;
+
+        setTimeout( function () {
+          message_area.setAttribute( 'hidden', 'hidden' );
+          pal.bom.setLocationHash( '' );
+        }, 5000);
+      }
+      else {
+        message_area.removeAttribute( 'hidden' );
+        switch ( request.status ) {
+          case '401':
+            message_area.textContent = 'E-mailアドレスかパスワードが不正です。ステータス: ' + request.status;
+            break;
+          case '500':
+            message_area.textContent = 'サーバエラーが発生しました。ステータス: ' + request.status;
+            break;
+          default:
+            message_area.textContent = 'エラーが発生しました。ステータス: ' + request.status;
+        }
+
+        setTimeout( function () {
+          message_area.setAttribute( 'hidden', 'hidden' );
+        }, 5000);
+
+      }
+    }
   };
+
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -108,6 +154,7 @@ pal.login = (function () {
       loginPage = pal.util_b.getTplContent( 'login' );
 
     stateMap.$container = $container;
+
     setJqueryMap();
 
     // jqueryMap.$container.html( '<h1>Hello World!</h1>' );

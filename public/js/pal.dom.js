@@ -147,6 +147,7 @@ pal.dom = (function () {
 
     switch ( current_location_hash ) {
       case '':
+        console.log( 'hashが空白になりました。' );
         pal.top.initModule( jqueryMap.$section );
         break;
       case '#login':

@@ -1,0 +1,20 @@
+{ "type"  : "object",
+  "additionalPropertied"  : false,
+  "properties"  : {
+    "_id"       : {
+      "type"      : "string",
+      "minLength" : 25,
+      "maxlendth" : 25
+    },
+    "email"     : {
+      "type"      : "string",
+      "minLength" : 2,
+      "maxlendth" : 127
+    },
+    "password"  : {
+      "type"      : "string",
+      "minLength" : 2,
+      "maxlendth" : 127
+    }
+  }
+}

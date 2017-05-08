@@ -10,6 +10,7 @@
 }
   .pal-dom-header-title,
   .pal-dom-header-blank,
+  .pal-dom-header-logout,
   .pal-dom-header-login,
   .pal-dom-header-signup,
   .pal-dom-header-menu {
@@ -22,6 +23,7 @@
     padding-left    : 2px;
   }
   .pal-dom-header-title,
+  .pal-dom-header-logout,
   .pal-dom-header-login,
   .pal-dom-header-signup,
   .pal-dom-header-menu {
@@ -38,6 +40,11 @@
   .pal-dom-header-blank {
     flex-grow   : 20;
     flex-shrink : 1;
+  }
+  .pal-dom-header-logout {
+    flex-grow   : 0;
+    flex-shrink : 0;
+    flex-basis  : 100px;
   }
   .pal-dom-header-login {
     flex-grow   : 0;

@@ -42,15 +42,15 @@ app.use( bodyParser.urlencoded({ extended: false }));
 app.use( session({
   secret  : 'keepalog',
   cookie  : {
-    secure    : true,
+    secure    : false,
     httpOnly  : false,
-    expires   : new Date(Date.now() + 4 * 404800000)
+    expires   : new Date(Date.now() + 4 * 404800000) 
   },
   store         : new RedisStore({
-    host        : 'localhost',
-    port        : 6379,
-    client      : client,
-    disableTTL  : true
+    host       : 'localhost',
+    port       : 6379, 
+    client     : client,
+    disableTTL : true 
   }),
   saveUninitialized : false,
   resave            : false

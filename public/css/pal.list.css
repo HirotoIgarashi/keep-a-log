@@ -1,8 +1,10 @@
 /*
- * pal.top.css
- * トップページのスタイル
+ * pal.list.css
+ * シンプルリストページのスタイル
 */
 
-.pal-top-hello {
-  font-style: oblique;
+.pal-list-add {
+  height      : 26px;
+  width       : 26px;
+  margin-left : 10px;
 }

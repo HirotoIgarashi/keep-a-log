@@ -16,6 +16,7 @@ pal.dom = (function () {
   //--------------------- モジュールスコープ変数開始 -----------------
   var
     configMap = {
+      logout_title          : 'ログアウトします。',
       login_title           : 'IDとパスワードでログインします。',
       signup_title          : 'IDとパスワードを登録します。',
       menu_retracted_title  : 'クリックしてメニューを開きます',
@@ -45,9 +46,12 @@ pal.dom = (function () {
     setJqueryMap,
     makeList,
     // toggleMenu,
+    readSession,
     onClickTop,
-    onClickLogin, onClickSignup, onClickMenu,
+    onClickLogin, onClickLogout, onClickSignup, onClickMenu,
+    onReceiveSession,
     setSection,
+    request,  // XMLHttpRequest
     initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -86,6 +90,20 @@ pal.dom = (function () {
     return html;
   };
   // ユーティリティメソッド/makeList/終了
+  // ユーティリティメソッド/readSession/開始
+  readSession = function () {
+    var
+      requestType = 'GET',
+      url = '/session/read';
+
+    request = pal.util_b.sendXmlHttpRequest(
+      requestType,
+      url,
+      true,
+      onReceiveSession
+    );
+  };
+  // ユーティリティメソッド/readSession/終了
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -97,6 +115,8 @@ pal.dom = (function () {
     jqueryMap = {
       $container  : $container,
       $top        : $container.find( '.pal-dom-header-title' ),
+      $user_info  : $container.find( '.pal-dom-header-blank' ),
+      $logout     : $container.find( '.pal-dom-header-logout' ),
       $login      : $container.find( '.pal-dom-header-login' ),
       $signup     : $container.find( '.pal-dom-header-signup' ),
       $menu       : $container.find( '.pal-dom-header-menu' ),
@@ -147,11 +167,16 @@ pal.dom = (function () {
 
     switch ( current_location_hash ) {
       case '':
-        console.log( 'hashが空白になりました。' );
+        // サーバにSessionがあるかチェックしてメニューをコントロールする
+        readSession();
+        // console.log( 'hashが空白になりました。' );
         pal.top.initModule( jqueryMap.$section );
         break;
       case '#login':
         pal.login.initModule( jqueryMap.$section );
+        break;
+      case '#logout':
+        pal.logout.initModule( jqueryMap.$section );
         break;
       case '#signup':
         console.log( '#signupがクリックされました' );
@@ -175,6 +200,10 @@ pal.dom = (function () {
     pal.bom.setLocationHash( '' );
   };
 
+  onClickLogout = function ( /* event */ ) {
+    pal.bom.setLocationHash( 'logout' );
+  };
+
   onClickLogin = function ( /* event */ ) {
     pal.bom.setLocationHash( 'login' );
   };
@@ -185,9 +214,29 @@ pal.dom = (function () {
   
   onClickMenu = function ( /* event */ ) {
     pal.bom.setLocationHash( 'menu' );
-    // toggleMenu( stateMap.is_menu_retracted );
+  };
 
-    // return false;
+  onReceiveSession = function () {
+    var
+      response_map;
+
+    if ( request && request.readyState === 4 ) {
+      response_map = JSON.parse( request.responseText);
+
+      if (request.status === 200 ) {
+        jqueryMap.$logout.show();
+        jqueryMap.$login.hide();
+        jqueryMap.$signup.hide()
+        jqueryMap.$user_info.text( response_map.email );
+      }
+      else {
+        jqueryMap.$logout.hide();
+        jqueryMap.$login.show();
+        jqueryMap.$signup.show()
+        jqueryMap.$user_info.text( response_map.email );
+      }
+
+    }
   };
   // --------------------- イベントハンドラ終了 ----------------------
 
@@ -240,6 +289,10 @@ pal.dom = (function () {
     // クリックハンドラをバインドする
     jqueryMap.$top
       .click( onClickTop );
+
+    jqueryMap.$logout
+      .attr( 'title', configMap.logout_title )
+      .click( onClickLogout );
 
     jqueryMap.$login
       .attr( 'title', configMap.login_title )

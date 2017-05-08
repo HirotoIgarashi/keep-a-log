@@ -98,6 +98,20 @@
           <div id="pal-login-message-area" hidden="hidden"></div>
         </template>
 
+        <!-- ログアウトページのテンプレート -->
+        <template id="logout">
+          <h1>ログアウトします。</h1>
+          <button id="agree">はい</button>
+          <button id="cancel">キャンセル</button>
+          <div id="message-area"></div> 
+        </template>
+
+        <!-- シンプルリスト用 -->
+        <template id="list-page">
+          <h1>シンプルなリスト</h1>
+          <button class="pal-list-add">+</button>
+        </template>
+
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -119,6 +133,7 @@
         <script src="js/pal.dom.js"></script>
         <script src="js/pal.top.js"></script>
         <script src="js/pal.login.js"></script>
+        <script src="js/pal.logout.js"></script>
         <script src="js/pal.menu.js"></script>
         <script src="js/pal.list.js"></script>
 

@@ -1,6 +1,6 @@
 /*
- * pal.login.js
- * login機能
+ * pal.logout.js
+ * logout機能
 */
 
 /*jslint          browser : true, continue  : true,
@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.login = (function () {
+pal.logout = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -23,9 +23,9 @@ pal.login = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
     request = null,
-    onReceiveLogin,
+    onReceiveLogout,
     setJqueryMap, configModule, initModule,
-    onClickLogin;
+    onClickAgree, onClickCancel;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -49,8 +49,7 @@ pal.login = (function () {
     var $container = stateMap.$container;
 
     jqueryMap = {
-      $container  : $container,
-      $login      : $container.find( '.pal-dom-header-login' )
+      $container  : $container
     };
   };
   // DOMメソッド/setJqueryMap/終了
@@ -58,65 +57,56 @@ pal.login = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickLogin = function ( event ) {
+  onClickAgree = function ( event ) {
     var
-      requestType = 'POST',
-      url = '/session/create',
-      form_data_map = {};
+      requestType = 'GET',
+      url = '/session/delete';
 
     event.preventDefault();
-
-    form_data_map.email     = $( '#email' ).val();
-    form_data_map.password  = $( '#password' ).val();
 
     // XMLHttpRequestによる送信
     request = pal.util_b.sendXmlHttpRequest(
       requestType,
       url,
       true,
-      onReceiveLogin,
-      JSON.stringify( form_data_map )
+      onReceiveLogout
     );
 
   };
 
   // Loginの結果の処理
-  onReceiveLogin = function () {
-    var
-      message_area = document.getElementById('pal-login-message-area');
-
+  onReceiveLogout = function () {
     if ( request && request.readyState === 4 ) {
       if ( request.status === 200 ) {
-
-        message_area.removeAttribute( 'hidden' );
-        message_area.textContent = 'ログインしました。ステータス: ' + request.status;
+        jqueryMap.$message_area.text('ログアウトしました。ステータス: ' + request.status);
 
         setTimeout( function () {
-          message_area.setAttribute( 'hidden', 'hidden' );
           pal.bom.setLocationHash( '' );
         }, 2000);
       }
       else {
-        message_area.removeAttribute( 'hidden' );
         switch ( request.status ) {
+          case '404':
+            jqueryMap.$message_area.text('URLが存在しません。ステータス: ' + request.status);
+            break;
           case '401':
-            message_area.textContent = 'E-mailアドレスかパスワードが不正です。ステータス: ' + request.status;
+            jqueryMap.$message_area.text('エラーが発生しました。ステータス: ' + request.status);
             break;
           case '500':
-            message_area.textContent = 'サーバエラーが発生しました。ステータス: ' + request.status;
+            jqueryMap.$message_area.text('サーバエラーが発生しました。ステータス: ' + request.status);
             break;
           default:
-            message_area.textContent = 'エラーが発生しました。ステータス: ' + request.status;
+            jqueryMap.$message_area.text('エラーが発生しました。ステータス: ' + request.status);
         }
-
-        setTimeout( function () {
-          message_area.setAttribute( 'hidden', 'hidden' );
-        }, 5000);
-
       }
     }
   };
 
+  // キャンセルボタンクリックされたときの処理/開始
+  onClickCancel = function () {
+    pal.bom.setLocationHash( '' );
+  };
+  // キャンセルボタンクリックされたときの処理/終了
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -148,7 +138,7 @@ pal.login = (function () {
   //
   initModule = function ( $container ) {
     var
-      loginPage = pal.util_b.getTplContent( 'login' );
+      loginPage = pal.util_b.getTplContent( 'logout' );
 
     stateMap.$container = $container;
 
@@ -157,8 +147,12 @@ pal.login = (function () {
     // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
     jqueryMap.$container.html( loginPage );
 
-    jqueryMap.$login = $container.find( '.pal-login-button' );
-    jqueryMap.$login.click( onClickLogin );
+    jqueryMap.$agree        = $container.find( '#agree' );
+    jqueryMap.$cancel       = $container.find( '#cancel' );
+    jqueryMap.$message_area = $container.find( '#message-area' );
+
+    jqueryMap.$agree.click( onClickAgree );
+    jqueryMap.$cancel.click( onClickCancel );
 
     return true;
 

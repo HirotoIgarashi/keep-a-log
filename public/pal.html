@@ -109,7 +109,22 @@
         <!-- シンプルリスト用 -->
         <template id="list-page">
           <h1>シンプルなリスト</h1>
-          <button class="pal-list-add">new</button>
+          <div>
+            <button type="button" class="pal-list-new">new</button>
+          </div>
+          <div class="pal-list-new-form" style="display:none;">
+            <button type="button" class="pal-list-cancel">cancel</button>
+            <button type="button" class="pal-list-create">create</button>
+            <form>
+              <label>名前:</label><input type="text"></input>
+              <label>名前:</label><input type="text"></input>
+            </form>
+          </div>
+          <div id="status"></div>
+          <div>
+            <ul id="target">
+            </ul>
+          </div>
         </template>
 
     </head>

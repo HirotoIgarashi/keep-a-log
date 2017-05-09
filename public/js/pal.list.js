@@ -20,9 +20,10 @@ pal.list = (function () {
       settable_map  : { color_name: true },
       color_name    : 'blue'
     },
+    counter = 0,
     stateMap = { $container : null },
     jqueryMap = {},
-
+    onClickNew, onClickCancel, onClickCreate,
     setJqueryMap, configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -53,6 +54,27 @@ pal.list = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
+  onClickNew = function () {
+    console.log( 'newがクリックされました' );
+    jqueryMap.$form.show();
+    jqueryMap.$new.prop( "disabled", true );
+  };
+  onClickCancel = function () {
+    console.log( 'cancelがクリックされました' );
+    jqueryMap.$form.hide();
+    jqueryMap.$new.prop( "disabled", false );
+  };
+  onClickCreate = function () {
+    console.log( 'cancelがクリックされました' );
+    counter = counter + 1;
+    setTimeout(
+      function () {
+        jqueryMap.$form.hide();
+        jqueryMap.$new.prop( "disabled", false );
+        jqueryMap.$target.prepend( '<li>add data ' + counter + '</li>' );
+      },
+    1000);
+  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -89,6 +111,20 @@ pal.list = (function () {
     setJqueryMap();
 
     jqueryMap.$container.html( top_page );
+
+    jqueryMap.$new    = $container.find( '.pal-list-new' );
+    jqueryMap.$form   = $container.find( '.pal-list-new-form' );
+    jqueryMap.$cancel = $container.find( '.pal-list-cancel' );
+    jqueryMap.$create = $container.find( '.pal-list-create' );
+    jqueryMap.$status = $container.find( '#status' );
+    jqueryMap.$target = $container.find( '#target' );
+
+    // 最初にデータの件数を取得して表示する。
+    jqueryMap.$status.text( 'データ件数は0件です。' );
+
+    jqueryMap.$new.click( onClickNew );
+    jqueryMap.$cancel.click( onClickCancel );
+    jqueryMap.$create.click( onClickCreate );
 
     return true;
   };

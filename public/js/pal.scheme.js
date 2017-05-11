@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.list = (function () {
+pal.scheme = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var

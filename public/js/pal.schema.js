@@ -1,6 +1,6 @@
 /*
- * pal.top.js
- * TOPページを表示する機能
+ * pal.schema.js
+ * スキーマを生成して返す機能
 */
 
 /*jslint          browser : true, continue  : true,
@@ -16,19 +16,15 @@ pal.schema = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
-    configMap = {
-      settable_map  : { color_name: true },
-      color_name    : 'blue'
-    },
-    counter = 0,
-    stateMap = { $container : null },
-    jqueryMap = {},
-    onClickNew, onClickCancel, onClickCreate,
-    setJqueryMap, configModule, initModule,
+    configModule, initModule,
     objectCreate,
     extendObject,
-    sayHello, sayText, makeMammal,
-    catPrototype, makeCat, garfieldCat;
+    sayHello,sayText,
+    logName,
+    makeThing,
+    actionPrototype, makeAction,
+    makeMammal,
+    catPrototype, makeCat;
   
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -47,8 +43,15 @@ pal.schema = (function () {
   // ユーティリティメソッド/example_method/終了
 
   // 継承を設定するユーティリティ関数
-  // Object.create()を継承するための特定のブラウザに依存しないメソッド
-  // 新しいjsエンジン(v1.8.5+)はネイティブにサポートする
+  // 
+  // 目的:  Object.create()を継承するためのブラウザに依存しないメソッド
+  //        新しいjsエンジン(v1.8.5+)はネイティブにサポートする
+  // 必須引数:
+  // オプション引数:
+  //  arg: オブジェクトの定義
+  // 設定:
+  // 戻り値: オブジェクト
+  // 例外発行: なし
   objectCreate = function ( arg ) {
     if ( ! arg ) {
       return {};
@@ -60,7 +63,14 @@ pal.schema = (function () {
   
   Object.create = Object.create || objectCreate;
   
-  // オブジェクトを拡張するためのユーティリティ関数
+  // 目的: オブジェクトを拡張するためのユーティリティ関数
+  // 必須引数:
+  // オプション引数:
+  //  * orig_obj  : オリジナルのオブジェクト
+  //  * ext_obj   : 拡張するオブジェクト
+  // 設定:
+  // 戻り値: なし
+  // 例外発行: なし
   extendObject = function ( orig_obj, ext_obj ) {
     var key_name;
   
@@ -72,6 +82,9 @@ pal.schema = (function () {
   };
   
   // オブジェクトメソッド
+  logName = function () {
+    console.log( 'name:' + this.name );
+  };
   sayHello = function () {
     console.log( this.hello_text + ' says ' + this.name );
   };
@@ -80,6 +93,37 @@ pal.schema = (function () {
     console.warn( this.name + ' says ' + text );
   };
   
+  // makeThingコンストラクタ
+  makeThing = function( arg_map ) {
+    var thing = {
+      name            : '',
+      alternate_name  : '',
+      url             : '',
+      image           : '',
+      log_name        : logName
+    };
+
+    extendObject( thing, arg_map );
+
+    return thing;
+  };
+
+  // makeThingコンストラクタを使ってactionプロトタイプを作成する
+  actionPrototype = makeThing({
+    start_time  : '',
+    end_time    : '',
+    location    : ''
+  });
+
+  // actionコンストラクタ
+  makeAction = function ( arg_map ) {
+    var action = Object.create( actionPrototype );
+
+    extendObject( action, arg_map );
+  
+    return action;
+  
+  };
   // makeMammalコンストラクタ
   makeMammal = function( arg_map ) {
     var mammal = {
@@ -113,51 +157,12 @@ pal.schema = (function () {
   
   };
   
-  // catインスタンス
-  garfieldCat = makeCat({
-    name        : 'Garfield',
-    weight_lbs  : 8.6
-  });
-  
-  // catインスタンス呼び出し
-  garfieldCat.say_hello();
-  garfieldCat.say_text( 'Purr...' );
-
   //--------------------- ユーティリティメソッド終了 -----------------
-
   //--------------------- DOMメソッド開始 ----------------------------
-  // DOMメソッド/setJqueryMap/開始
-  setJqueryMap = function () {
-    var $container = stateMap.$container;
-
-    jqueryMap = { $container  : $container };
-  };
-  // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickNew = function () {
-    console.log( 'newがクリックされました' );
-    jqueryMap.$form.show();
-    jqueryMap.$new.prop( "disabled", true );
-  };
-  onClickCancel = function () {
-    console.log( 'cancelがクリックされました' );
-    jqueryMap.$form.hide();
-    jqueryMap.$new.prop( "disabled", false );
-  };
-  onClickCreate = function () {
-    console.log( 'createがクリックされました' );
-    counter = counter + 1;
-    setTimeout(
-      function () {
-        jqueryMap.$form.hide();
-        jqueryMap.$new.prop( "disabled", false );
-        jqueryMap.$target.prepend( '<li>add data ' + counter + '</li>' );
-      },
-    1000);
-  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -166,15 +171,12 @@ pal.schema = (function () {
   // 引数: 設定可能なキーバリューマップ
   //  * color_name  - 使用する色
   // 設定:
-  //  * configMap.settable_map 許可されたキーを宣言する
   // 戻り値: true
   // 例外発行: なし
   //
   configModule = function ( input_map ) {
     pal.butil.setConfigMap({
-      input_map     : input_map,
-      settable_map  : configMap.settable_map,
-      config_map    : configMap
+      input_map     : input_map
     });
     return true;
   };
@@ -182,41 +184,23 @@ pal.schema = (function () {
 
   // パブリックメソッド/initModule/開始
   // 目的: モジュールを初期化する
-  // 引数:
-  //  * $container この機能が使うjQuery要素
+  // 引数: なし
   // 戻り値: true
   // 例外発行: なし
   //
-  initModule = function ( $container ) {
-    var top_page  = pal.util_b.getTplContent( 'list-page' );
-
-    stateMap.$container = $container;
-    setJqueryMap();
-
-    jqueryMap.$container.html( top_page );
-
-    jqueryMap.$new    = $container.find( '.pal-list-new' );
-    jqueryMap.$form   = $container.find( '.pal-list-new-form' );
-    jqueryMap.$cancel = $container.find( '.pal-list-cancel' );
-    jqueryMap.$create = $container.find( '.pal-list-create' );
-    jqueryMap.$status = $container.find( '#status' );
-    jqueryMap.$target = $container.find( '#target' );
-
-    // 最初にデータの件数を取得して表示する。
-    jqueryMap.$status.text( 'データ件数は0件です。' );
-
-    jqueryMap.$new.click( onClickNew );
-    jqueryMap.$cancel.click( onClickCancel );
-    jqueryMap.$create.click( onClickCreate );
+  initModule = function () {
 
     return true;
+
   };
   // パブリックメソッド/initModule/終了
 
   // パブリックメソッドを返す
   return {
     configModule  : configModule,
-    initModule    : initModule
+    initModule    : initModule,
+    makeCat       : makeCat,
+    makeAction    : makeAction
   };
   // --------------------- パブリックメソッド終了 --------------------
 }());

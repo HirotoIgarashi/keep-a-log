@@ -24,11 +24,9 @@ pal.list = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
     onClickNew, onClickCancel, onClickCreate,
-    setJqueryMap, configModule, initModule,
-    objectCreate,
-    extendObject,
-    sayHello, sayText, makeMammal,
-    catPrototype, makeCat, garfieldCat;
+    breakfastAction,
+    garfieldCat,
+    setJqueryMap, configModule, initModule;
   
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -45,83 +43,6 @@ pal.list = (function () {
   //   return example;
   // };
   // ユーティリティメソッド/example_method/終了
-
-  // 継承を設定するユーティリティ関数
-  // Object.create()を継承するための特定のブラウザに依存しないメソッド
-  // 新しいjsエンジン(v1.8.5+)はネイティブにサポートする
-  objectCreate = function ( arg ) {
-    if ( ! arg ) {
-      return {};
-    }
-    function obj() { return undefined; }
-    obj.prototype = arg;
-    return new obj();
-  };
-  
-  Object.create = Object.create || objectCreate;
-  
-  // オブジェクトを拡張するためのユーティリティ関数
-  extendObject = function ( orig_obj, ext_obj ) {
-    var key_name;
-  
-    for ( key_name in ext_obj ) {
-      if ( ext_obj.hasOwnProperty( key_name ) ) {
-        orig_obj[ key_name ] = ext_obj[ key_name ];
-      }
-    }
-  };
-  
-  // オブジェクトメソッド
-  sayHello = function () {
-    console.log( this.hello_text + ' says ' + this.name );
-  };
-  
-  sayText = function ( text ) {
-    console.warn( this.name + ' says ' + text );
-  };
-  
-  // makeMammalコンストラクタ
-  makeMammal = function( arg_map ) {
-    var mammal = {
-      is_warn_blooded : true,
-      has_fur         : true,
-      leg_count       : 4,
-      has_live_birth  : true,
-      hello_text      : 'grunt',
-      name            : 'anonymous',
-      say_hello       : sayHello,
-      say_text        : sayText
-    };
-    extendObject( mammal, arg_map );
-  
-    return mammal;
-  
-  };
-  
-  // makeMammalコンストラクタを使ってcatプロトタイプを作成する
-  catPrototype = makeMammal({
-    has_whiskers  : true,
-    hello_text    : 'meow'
-  });
-  
-  // catコンストラクタ
-  makeCat = function ( arg_map ) {
-    var cat = Object.create( catPrototype );
-    extendObject( cat, arg_map );
-  
-    return cat;
-  
-  };
-  
-  // catインスタンス
-  garfieldCat = makeCat({
-    name        : 'Garfield',
-    weight_lbs  : 8.6
-  });
-  
-  // catインスタンス呼び出し
-  garfieldCat.say_hello();
-  garfieldCat.say_text( 'Purr...' );
 
   //--------------------- ユーティリティメソッド終了 -----------------
 
@@ -208,6 +129,20 @@ pal.list = (function () {
     jqueryMap.$new.click( onClickNew );
     jqueryMap.$cancel.click( onClickCancel );
     jqueryMap.$create.click( onClickCreate );
+
+    breakfastAction = pal.schema.makeAction({
+      name        : '朝食'
+    });
+
+    breakfastAction.log_name();
+
+    garfieldCat = pal.schema.makeCat({
+      name        : 'Garfield',
+      weight_lbs  : 8.6
+    });
+    // catインスタンス呼び出し
+    garfieldCat.say_hello();
+    garfieldCat.say_text( 'Purr...' );
 
     return true;
   };

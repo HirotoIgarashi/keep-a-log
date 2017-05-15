@@ -20,14 +20,16 @@ pal.list = (function () {
       settable_map  : { color_name: true },
       color_name    : 'blue'
     },
-    counter = 0,
     stateMap = { $container : null },
     jqueryMap = {},
-    onClickNew, onClickCancel, onClickCreate,
-    breakfastAction,
+    action_list = [],
+    onClickNew, onClickCancel, onClickDone,
+    current_action_object, breakfastAction,
     garfieldCat,
+    name_element,
+    onFocusname, onBlurname,
     setJqueryMap, configModule, initModule;
-  
+
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -56,30 +58,130 @@ pal.list = (function () {
   // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
-  // --------------------- イベントハンドラ開始 ----------------------
-  // 例: onClickButton = function ( event ) {};
+  // --------------------- イベントリスナー開始 ----------------------
+  // イベントリスナー/onClickNew/開始 --------------------------------
+  // 目的:
+  // 必須引数:
+  // オプション引数:
+  // 設定:
+  //  * current_action_object : Actionオブジェクト
+  // 戻り値:
+  // 例外発行: なし
   onClickNew = function () {
+
     console.log( 'newがクリックされました' );
+
+    // Actionオブジェクトを生成する
+    current_action_object = pal.schema.makeAction({
+    });
+
+    console.log( current_action_object );
+
     jqueryMap.$form.show();
     jqueryMap.$new.prop( "disabled", true );
   };
+  // イベントリスナー/onClickNew/終了 --------------------------------
+
+  // イベントリスナー/onClickCancel/開始 --------------------------------
+  // 目的: フォームでキャンセルがクリックされた場合にフォームを隠し、
+  //       newボタンをクリック可能にする
+  // 必須引数: なし
+  // オプション引数: なし
+  // 設定:
+  //  * jqueryMap.$form : 隠す
+  //  * jqueryMap.$new  : 使用可能にする
+  // 戻り値:
+  // 例外発行: なし
   onClickCancel = function () {
-    console.log( 'cancelがクリックされました' );
     jqueryMap.$form.hide();
     jqueryMap.$new.prop( "disabled", false );
   };
-  onClickCreate = function () {
-    console.log( 'createがクリックされました' );
-    counter = counter + 1;
+  // イベントリスナー/onClickCancel/終了 --------------------------------
+
+  // イベントリスナー/onClickDone/開始 --------------------------------
+  // 目的: 完了(Done)ボタンがクリックされたときにリストに
+  //       Actionオブジェクトの内容を追加する。0.9秒待つ。
+  // 必須引数: なし
+  // オプション引数: なし
+  // 設定:
+  //  * jqueryMap.$form   : フォームを隠し、内容をクリアする
+  //  * jqueryMap.$new    : newボタンをdisabledにする
+  //  * jqueryMap.$targe  : Actionオブジェクトを表示するul要素に追加する
+  //  * jqueryMap.$status : 件数を表示するdiv要素
+  //  * action_list       : Actionオブジェクトを格納しているリストに
+  //                        要素を追加する
+  // 戻り値: なし
+  // 例外発行: なし
+  onClickDone = function () {
+
     setTimeout(
       function () {
-        jqueryMap.$form.hide();
-        jqueryMap.$new.prop( "disabled", false );
-        jqueryMap.$target.prepend( '<li>add data ' + counter + '</li>' );
+        if ( current_action_object.name !== '' ) {
+          // フォームを隠す
+          jqueryMap.$form.hide();
+
+          // formの値をすべてクリアする
+          jqueryMap.$form
+            .find("textarea, :text, select")
+            .val("")
+            .end()
+            .find(":checked")
+            .prop("checked", false);
+
+          // newボタンを使用可能にする
+          jqueryMap.$new.prop( "disabled", false );
+
+          // 件数を表示する
+          jqueryMap.$target
+            .prepend( '<li>name: ' + current_action_object.name + '</li>' );
+
+          // リストに要素を追加する
+          action_list.push( current_action_object );
+
+          // 件数を表示する
+          jqueryMap.$status
+            .text( 'データ件数は' + action_list.length + '件です。' );
+
+          console.log( action_list );
+          console.log( JSON.stringify(action_list) );
+          window.localStorage
+            .setItem( 'action-list', JSON.stringify( action_list ) );
+        }
+
       },
-    1000);
+    800);
   };
-  // --------------------- イベントハンドラ終了 ----------------------
+  // イベントリスナー/onClickDone/終了 --------------------------------
+
+  // イベントリスナー/onFocusname/開始 --------------------------------
+  // 目的:
+  // 必須引数:
+  // オプション引数:
+  // 設定:
+  // 戻り値:
+  // 例外発行: なし
+  onFocusname = function ( event ) {
+    console.log( event );
+    console.log( 'フォーカスを取得しました。' );
+  };
+  // イベントリスナー/onFocusname/終了 --------------------------------
+
+  // イベントリスナー/onBlurname/開始 --------------------------------
+  // 目的:
+  // 必須引数:
+  // オプション引数:
+  // 設定:
+  // 戻り値:
+  // 例外発行: なし
+  onBlurname = function () {
+    console.log( event );
+    console.log( this.value );
+    current_action_object.name = this.value;
+    console.log( current_action_object );
+    console.log( 'フォーカスを失いました。' );
+  };
+  // イベントリスナー/onBlurname/終了 --------------------------------
+  // --------------------- イベントリスナー終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
   // パブリックメソッド/configModule/開始
@@ -109,12 +211,12 @@ pal.list = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var top_page  = pal.util_b.getTplContent( 'list-page' );
+    var list_page  = pal.util_b.getTplContent( 'list-page' );
 
     stateMap.$container = $container;
     setJqueryMap();
 
-    jqueryMap.$container.html( top_page );
+    jqueryMap.$container.html( list_page );
 
     jqueryMap.$new    = $container.find( '.pal-list-new' );
     jqueryMap.$form   = $container.find( '.pal-list-new-form' );
@@ -124,11 +226,18 @@ pal.list = (function () {
     jqueryMap.$target = $container.find( '#target' );
 
     // 最初にデータの件数を取得して表示する。
-    jqueryMap.$status.text( 'データ件数は0件です。' );
+    jqueryMap.$status.text( 'データ件数は' + action_list.length + '件です。' );
 
     jqueryMap.$new.click( onClickNew );
     jqueryMap.$cancel.click( onClickCancel );
-    jqueryMap.$create.click( onClickCreate );
+    jqueryMap.$create.click( onClickDone );
+
+    name_element = document.getElementById( "pal-list-name" );
+    console.log( name_element );
+
+    // nameフィールドにイベントリスナーを追加する
+    name_element.addEventListener( 'focus', onFocusname, true );
+    name_element.addEventListener( 'blur', onBlurname, true );
 
     breakfastAction = pal.schema.makeAction({
       name        : '朝食'

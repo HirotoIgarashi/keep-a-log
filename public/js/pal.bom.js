@@ -50,27 +50,27 @@ pal.bom = (function () {
   // --------------------- パブリックメソッド開始 --------------------
   initModule = function ( $container ) {
 
-    console.log("navigatorオブジェクト");
-    console.log("userAgent: " + navigator.userAgent);
-    console.log("appName: " + navigator.appName);
-    console.log("appCodeName: " + navigator.appCodeName);
-    console.log("appVersion: " + navigator.appVersion);
-    console.log("appMinorVersion: " + navigator.appMinorVersion);
-    console.log("platform: " + navigator.platform);
-    console.log("cookieEnabled: " + navigator.cookieEnabled);
-    console.log("onLine: " + navigator.onLine);
-    console.log("userLanguage: " + navigator.userLanguage);
+    // console.log("navigatorオブジェクト");
+    // console.log("userAgent: " + navigator.userAgent);
+    // console.log("appName: " + navigator.appName);
+    // console.log("appCodeName: " + navigator.appCodeName);
+    // console.log("appVersion: " + navigator.appVersion);
+    // console.log("appMinorVersion: " + navigator.appMinorVersion);
+    // console.log("platform: " + navigator.platform);
+    // console.log("cookieEnabled: " + navigator.cookieEnabled);
+    // console.log("onLine: " + navigator.onLine);
+    // console.log("userLanguage: " + navigator.userLanguage);
 
-    console.log("screenオブジェクト");
-    console.log("availTop: " + screen.availTop);
-    console.log("availLeft: " + screen.availLeft);
-    console.log("availWidth: " + screen.availWidth);
-    console.log("availHeight: " + screen.availHeight);
-    console.log("colorDepth: " + screen.colorDepth);
-    console.log("pixelDepth: " + screen.pixelDepth);
+    // console.log("screenオブジェクト");
+    // console.log("availTop: " + screen.availTop);
+    // console.log("availLeft: " + screen.availLeft);
+    // console.log("availWidth: " + screen.availWidth);
+    // console.log("availHeight: " + screen.availHeight);
+    // console.log("colorDepth: " + screen.colorDepth);
+    // console.log("pixelDepth: " + screen.pixelDepth);
 
-    console.log( window.location.href );
-    console.log( window.location.pathname );
+    // console.log( window.location.href );
+    // console.log( window.location.pathname );
 
     if ( pal.dom && $container ) {
       pal.dom.initModule( $container );

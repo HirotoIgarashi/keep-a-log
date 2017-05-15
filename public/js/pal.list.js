@@ -24,10 +24,12 @@ pal.list = (function () {
     jqueryMap = {},
     action_list = [],
     onClickNew, onClickCancel, onClickDone,
-    current_action_object, breakfastAction,
-    garfieldCat,
+    current_action_object,
+    // breakfastAction,
+    // garfieldCat,
     name_element,
-    onFocusname, onBlurname,
+    onBlurname,
+    renderList,
     setJqueryMap, configModule, initModule;
 
   //--------------------- モジュールスコープ変数終了 -----------------
@@ -56,6 +58,13 @@ pal.list = (function () {
     jqueryMap = { $container  : $container };
   };
   // DOMメソッド/setJqueryMap/終了
+
+  // DOMメソッド/renderList/開始
+  renderList = function ( render_object ) {
+    jqueryMap.$target
+      .prepend( '<li>name: ' + render_object.name + '</li>' );
+  };
+  // DOMメソッド/renderList/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- イベントリスナー開始 ----------------------
@@ -69,13 +78,9 @@ pal.list = (function () {
   // 例外発行: なし
   onClickNew = function () {
 
-    console.log( 'newがクリックされました' );
-
     // Actionオブジェクトを生成する
     current_action_object = pal.schema.makeAction({
     });
-
-    console.log( current_action_object );
 
     jqueryMap.$form.show();
     jqueryMap.$new.prop( "disabled", true );
@@ -131,9 +136,8 @@ pal.list = (function () {
           // newボタンを使用可能にする
           jqueryMap.$new.prop( "disabled", false );
 
-          // 件数を表示する
-          jqueryMap.$target
-            .prepend( '<li>name: ' + current_action_object.name + '</li>' );
+          // Actionオブジェクトを表示する
+          renderList( current_action_object );
 
           // リストに要素を追加する
           action_list.push( current_action_object );
@@ -142,8 +146,6 @@ pal.list = (function () {
           jqueryMap.$status
             .text( 'データ件数は' + action_list.length + '件です。' );
 
-          console.log( action_list );
-          console.log( JSON.stringify(action_list) );
           window.localStorage
             .setItem( 'action-list', JSON.stringify( action_list ) );
         }
@@ -153,32 +155,21 @@ pal.list = (function () {
   };
   // イベントリスナー/onClickDone/終了 --------------------------------
 
-  // イベントリスナー/onFocusname/開始 --------------------------------
-  // 目的:
-  // 必須引数:
-  // オプション引数:
-  // 設定:
-  // 戻り値:
-  // 例外発行: なし
-  onFocusname = function ( event ) {
-    console.log( event );
-    console.log( 'フォーカスを取得しました。' );
-  };
-  // イベントリスナー/onFocusname/終了 --------------------------------
-
   // イベントリスナー/onBlurname/開始 --------------------------------
-  // 目的:
-  // 必須引数:
-  // オプション引数:
+  // 目的: フォーカスが外れた時に入力された値を取得して
+  //       Actionオブジェクトにセットする。
+  //       input要素にname属性があることが前提。
+  // 必須引数: なし
+  // オプション引数: なし
   // 設定:
-  // 戻り値:
+  //  * current_action_object: Actionオブジェクトのうち、input要素の
+  //                           name属性に一致するプロパティの値
+  // 戻り値: なし
   // 例外発行: なし
   onBlurname = function () {
-    console.log( event );
-    console.log( this.value );
-    current_action_object.name = this.value;
-    console.log( current_action_object );
-    console.log( 'フォーカスを失いました。' );
+
+    current_action_object[ this.name ] = this.value;
+
   };
   // イベントリスナー/onBlurname/終了 --------------------------------
   // --------------------- イベントリスナー終了 ----------------------
@@ -211,7 +202,9 @@ pal.list = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var list_page  = pal.util_b.getTplContent( 'list-page' );
+    var
+      i = 0,
+      list_page  = pal.util_b.getTplContent( 'list-page' );
 
     stateMap.$container = $container;
     setJqueryMap();
@@ -225,6 +218,13 @@ pal.list = (function () {
     jqueryMap.$status = $container.find( '#status' );
     jqueryMap.$target = $container.find( '#target' );
 
+    // localStorageからaction-listの値を読み込む
+    action_list = JSON.parse( window.localStorage.getItem( 'action-list' ) );
+    // リストの表示
+    for ( i; i < action_list.length; i++ ) {
+      renderList( action_list[i] );
+    }
+
     // 最初にデータの件数を取得して表示する。
     jqueryMap.$status.text( 'データ件数は' + action_list.length + '件です。' );
 
@@ -233,25 +233,23 @@ pal.list = (function () {
     jqueryMap.$create.click( onClickDone );
 
     name_element = document.getElementById( "pal-list-name" );
-    console.log( name_element );
 
     // nameフィールドにイベントリスナーを追加する
-    name_element.addEventListener( 'focus', onFocusname, true );
     name_element.addEventListener( 'blur', onBlurname, true );
 
-    breakfastAction = pal.schema.makeAction({
-      name        : '朝食'
-    });
+    // breakfastAction = pal.schema.makeAction({
+    //   name        : '朝食'
+    // });
 
-    breakfastAction.log_name();
+    // breakfastAction.log_name();
 
-    garfieldCat = pal.schema.makeCat({
-      name        : 'Garfield',
-      weight_lbs  : 8.6
-    });
-    // catインスタンス呼び出し
-    garfieldCat.say_hello();
-    garfieldCat.say_text( 'Purr...' );
+    // garfieldCat = pal.schema.makeCat({
+    //   name        : 'Garfield',
+    //   weight_lbs  : 8.6
+    // });
+    // // catインスタンス呼び出し
+    // garfieldCat.say_hello();
+    // garfieldCat.say_text( 'Purr...' );
 
     return true;
   };

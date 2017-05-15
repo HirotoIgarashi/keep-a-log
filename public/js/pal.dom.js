@@ -287,21 +287,26 @@ pal.dom = (function () {
     jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-dom-item-three' );
 
     // クリックハンドラをバインドする
+    // ヘッダーのトップ
     jqueryMap.$top
       .click( onClickTop );
 
+    // ヘッダーのログアウト
     jqueryMap.$logout
       .attr( 'title', configMap.logout_title )
       .click( onClickLogout );
 
+    // ヘッダーのログイン
     jqueryMap.$login
       .attr( 'title', configMap.login_title )
       .click( onClickLogin );
 
+    // ヘッダーのサインアップ
     jqueryMap.$signup
       .attr( 'title', configMap.signup_title )
       .click( onClickSignup );
 
+    // ヘッダーのメニュー
     jqueryMap.$menu
       .attr( 'title', configMap.menu_retracted_title )
       .click( onClickMenu );

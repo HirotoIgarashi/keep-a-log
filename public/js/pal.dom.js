@@ -45,7 +45,6 @@ pal.dom = (function () {
     supportsTemplate,
     setJqueryMap,
     makeList,
-    // toggleMenu,
     readSession,
     onClickTop,
     onClickLogin, onClickLogout, onClickSignup, onClickMenu,
@@ -96,6 +95,7 @@ pal.dom = (function () {
       requestType = 'GET',
       url = '/session/read';
 
+    // AjaxによりGETする
     request = pal.util_b.sendXmlHttpRequest(
       requestType,
       url,
@@ -115,7 +115,8 @@ pal.dom = (function () {
     jqueryMap = {
       $container  : $container,
       $top        : $container.find( '.pal-dom-header-title' ),
-      $user_info  : $container.find( '.pal-dom-header-blank' ),
+      $user_info  : $container.find( '#pal-dom-user-info' ),
+      $date_info  : $container.find( '#pal-dom-date-info' ),
       $logout     : $container.find( '.pal-dom-header-logout' ),
       $login      : $container.find( '.pal-dom-header-login' ),
       $signup     : $container.find( '.pal-dom-header-signup' ),
@@ -310,6 +311,12 @@ pal.dom = (function () {
     jqueryMap.$menu
       .attr( 'title', configMap.menu_retracted_title )
       .click( onClickMenu );
+
+    io.connect().on( 'message',
+      function ( count ) {
+        jqueryMap.$date_info.html( count );
+      }
+    );
 
   };
   // パブリックメソッド/initModule/終了

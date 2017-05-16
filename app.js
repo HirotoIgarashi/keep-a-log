@@ -18,17 +18,29 @@ var
   path          = require( 'path'             ),
   favicon       = require( 'serve-favicon'    ),
   logger        = require( 'morgan'           ),
-  // cookieParser  = require( 'cookie-parser'    ),
   session       = require( 'express-session'  ),
   bodyParser    = require( 'body-parser'      ),
-  redis         = require( 'redis' ),
-  RedisStore    = require( 'connect-redis' )( session ),
-  client        = redis.createClient(),
+  redis         = require( 'redis'            ),
+  RedisStore    = require( 'connect-redis'    )( session ),
+  client        = redis.createClient(         ),
   routes        = require( './lib/routes'     ),
-
-  app           = express(                  ),
-  server        = http.createServer( app );
+  app           = express(                    ),
+  server        = http.createServer( app      ),
+  io            = require( 'socket.io'        )( server ),
+  send_date,
+  countIdx = 0;
 // ---------------- モジュールスコープ変数終了 -------------------
+
+// ---------------- ユーティリティメソッド開始 -------------------
+send_date = function () {
+  var
+    now = new Date(),
+    now_date;
+
+  now_date = now.toFormat( 'YYYY年MM月DD日 HH24時MI分SS秒' );
+  io.sockets.send( now_date );
+};
+// ---------------- ユーティリティメソッド終了 -------------------
 
 // ---------------- サーバ構成開始 -------------------------------
 app.set('port', process.env.PORT || 3000 );
@@ -81,4 +93,8 @@ routes.configRoutes( app, server );
 server.listen( app.get( 'port' ) );
 
 console.log( 'Express server listening on port ' + app.get( 'port' ));
+
+// 一秒ごとにカウントアップする
+require( 'date-utils' );
+setInterval( send_date, 1000 );
 // ---------------- サーバ起動終了 -------------------------------

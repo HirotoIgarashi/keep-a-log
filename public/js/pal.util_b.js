@@ -245,7 +245,7 @@ pal.util_b = (function () {
     var
       object_list;
 
-    console.log( 'createObjectLocalが呼ばれました' );
+    // console.log( 'createObjectLocalが呼ばれました' );
 
     // keyの値をlocalStorageから読み込む
     object_list = JSON.parse(
@@ -256,14 +256,12 @@ pal.util_b = (function () {
       object_list = [];
     }
 
-    console.log( object_list );
-
     // リストにobjectを追加する
     object_list.push( object );
 
     // localStorageにリストを追加する
     window.localStorage
-      .setItem( 'action-list', JSON.stringify( object_list ) );
+      .setItem( local_storage_key, JSON.stringify( object_list ) );
 
     if ( callback ) {
       callback( object );
@@ -292,7 +290,7 @@ pal.util_b = (function () {
   // 戻り値: keyの値
   // 例外発行: なし
   readObjectLocal = function ( local_storage_key ) {
-    console.log( 'readObjectLocalが呼ばれました' );
+    // console.log( 'readObjectLocalが呼ばれました' );
 
     // localStorageからaction-listの値を読み込む
 

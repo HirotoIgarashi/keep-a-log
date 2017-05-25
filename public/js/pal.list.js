@@ -24,9 +24,10 @@ pal.list = (function () {
     jqueryMap = {},
     action_list = [],
     onClickNew, onClickCancel, onClickCreate,
-    current_action_object,
+    action_object,
     name_element,
     onBlurInput,
+    onChangeObject,
     save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
@@ -102,7 +103,7 @@ pal.list = (function () {
   // 戻り値:
   // 例外発行: なし
   sync_number_of_data = function ( element, object ) {
-    console.log( 'sync_object_and_domが呼ばれました。' );
+    console.log( 'sync_number_of_dataが呼ばれました。' );
     element.text( 'データ件数は' + object.length + '件です。' );
   };
   // ユーティリティメソッド/sync_number_of_data/終了
@@ -144,7 +145,7 @@ pal.list = (function () {
   // 必須引数:
   // オプション引数:
   // 設定:
-  //  * current_action_object : Actionオブジェクトの生成
+  //  * action_object : Actionオブジェクトの生成
   //  * jqueryMap.$form       : 表示する
   //  * jqueryMap.$new_button : クリック出来なくする。 
   // 戻り値:
@@ -152,8 +153,14 @@ pal.list = (function () {
   onClickNew = function () {
 
     // Actionオブジェクトを生成する
-    current_action_object = pal.schema.makeAction({
+    action_object = pal.schema.makeAction({
     });
+
+    // change関数を追加する
+    addChange( action_object );
+
+    // action_objectが変更されたときのコールバック関数をセットする
+    action_object.change( onChangeObject );
 
     jqueryMap.$form.show();
     jqueryMap.$new_button.prop( "disabled", true );
@@ -195,7 +202,7 @@ pal.list = (function () {
 
     setTimeout(
       function () {
-        if ( current_action_object.name !== '' ) {
+        if ( action_object.name !== '' ) {
           // フォームを隠す
           jqueryMap.$form.hide();
 
@@ -210,29 +217,8 @@ pal.list = (function () {
           // newボタンを使用可能にする
           jqueryMap.$new_button.prop( "disabled", false );
 
-          // change関数を追加する
-          addChange( current_action_object );
-
-          // オブジェクトをlocalStorageに保存する。コールバックとして
-          // DOMを更新する関数をセットする。
-          pal.util_b.createObjectLocal(
-            'action-list',
-            current_action_object
-          );
-
-          // リストに要素を追加する
-          sync_object_and_dom(
-            jqueryMap.$target,
-            pal.util_b.readObjectLocal( 'action-list' )
-          );
-
-          // 件数を表示する
-          sync_number_of_data(
-            jqueryMap.$status,
-            pal.util_b.readObjectLocal( 'action-list' )
-          );
-
-          save_object_remote( current_action_object );
+          // changeイベントを発生させる
+          action_object.change();
 
         }
 
@@ -248,16 +234,42 @@ pal.list = (function () {
   // 必須引数: なし
   // オプション引数: なし
   // 設定:
-  //  * current_action_object: Actionオブジェクトのうち、input要素の
+  //  * action_object: Actionオブジェクトのうち、input要素の
   //                           name属性に一致するプロパティの値
   // 戻り値: なし
   // 例外発行: なし
   onBlurInput = function () {
 
-    current_action_object[ this.name ] = this.value;
+    action_object[ this.name ] = this.value;
 
   };
   // イベントリスナー/onBlurInput/終了 --------------------------------
+  onChangeObject = function () {
+    console.log( '変更されました', this );
+
+    // オブジェクトをlocalStorageに保存する。コールバックとして
+    // DOMを更新する関数をセットする。
+    pal.util_b.createObjectLocal(
+      'action-list',
+      this
+    );
+
+    // リストに要素を追加する
+    sync_object_and_dom(
+      jqueryMap.$target,
+      pal.util_b.readObjectLocal( 'action-list' )
+    );
+
+    // 件数を表示する
+    sync_number_of_data(
+      jqueryMap.$status,
+      pal.util_b.readObjectLocal( 'action-list' )
+    );
+
+    // サーバのMongoDBを更新する
+    save_object_remote( action_object );
+
+  };
   // --------------------- イベントリスナー終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -307,19 +319,18 @@ pal.list = (function () {
     // localStorageからaction-listの値を読み込む
     action_list = pal.util_b.readObjectLocal( 'action-list' );
 
-    sync_object_and_dom(
-      jqueryMap.$target,
-      pal.util_b.readObjectLocal( 'action-list' )
-    );
-
-    // if ( action_list.lenth !== 0 ) {
     if ( action_list ) {
-      console.log( action_list );
 
-      // 最初にデータの件数を取得して表示する。
+      // ObjectをDOM要素の変換する
+      sync_object_and_dom(
+        jqueryMap.$target,
+        action_list
+      );
+
+      // データの件数を取得して表示する。
       sync_number_of_data(
         jqueryMap.$status,
-        pal.util_b.readObjectLocal( 'action-list' )
+        action_list
       );
 
     }

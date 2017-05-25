@@ -26,25 +26,25 @@ pal.dom = (function () {
       $container        : null,
       is_menu_retracted : true
     },
-    menuMap = [
-      {
-        title           : 'メニュー1',
-        class_property  : 'pal-dom-menu-item-one'
-      },
-      {
-        title           : 'メニュー2',
-        class_property  : 'pal-dom-menu-item-two'
-      },
-      {
-        title           : 'シンプルなリスト',
-        class_property  : 'pal-dom-menu-item-three'
-      }
-    ],
+    // menuMap = [
+    //   {
+    //     title           : 'メニュー1',
+    //     class_property  : 'pal-dom-menu-item-one'
+    //   },
+    //   {
+    //     title           : 'メニュー2',
+    //     class_property  : 'pal-dom-menu-item-two'
+    //   },
+    //   {
+    //     title           : 'シンプルなリスト',
+    //     class_property  : 'pal-dom-menu-item-three'
+    //   }
+    // ],
     jqueryMap = {},
 
     supportsTemplate,
     setJqueryMap,
-    makeList,
+    // makeList,
     readSession,
     onClickTop,
     onClickLogin, onClickLogout, onClickSignup, onClickMenu,
@@ -74,20 +74,20 @@ pal.dom = (function () {
   // ユーティリティメソッド/supportsTemplate/終了
 
   // ユーティリティメソッド/makeList/開始
-  makeList = function ( item_list ) {
-    var
-      i, html = '';
+  // makeList = function ( item_list ) {
+  //   var
+  //     i, html = '';
 
-    html += '<ul style="list-style-type:none">';
+  //   html += '<ul style="list-style-type:none">';
 
-    for ( i = 0; i < menuMap.length; i++ ) {
-      html += '<li class="' + item_list[i].class_property + '">' + item_list[i].title + '</li>';
-    }
+  //   for ( i = 0; i < menuMap.length; i++ ) {
+  //     html += '<li class="' + item_list[i].class_property + '">' + item_list[i].title + '</li>';
+  //   }
 
-    html += '</ul>';
+  //   html += '</ul>';
 
-    return html;
-  };
+  //   return html;
+  // };
   // ユーティリティメソッド/makeList/終了
   // ユーティリティメソッド/readSession/開始
   readSession = function () {
@@ -258,8 +258,8 @@ pal.dom = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var mainPage = document.querySelector( '#main-page' ).content,
-        menu_html = makeList( menuMap );
+    var mainPage = document.querySelector( '#main-page' ).content;
+        // menu_html = makeList( menuMap );
 
     // HTMLをロードし、jQueryコレクションをマッピングする
     stateMap.$container = $container;
@@ -278,14 +278,14 @@ pal.dom = (function () {
     pal.top.initModule( jqueryMap.$section );
     // 機能モジュールを設定して初期化する/終了
 
-    // メニューにアイテムを追加する。
-    jqueryMap.$menu_list
-      .html( menu_html );
+    // // メニューにアイテムを追加する。
+    // jqueryMap.$menu_list
+    //   .html( menu_html );
 
-    // メニューのアイテムをjqueryMapに追加する。
-    jqueryMap.$menu_item1 = jqueryMap.$container.find( '.pal-dom-item-one' );
-    jqueryMap.$menu_item2 = jqueryMap.$container.find( '.pal-dom-item-two' );
-    jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-dom-item-three' );
+    // // メニューのアイテムをjqueryMapに追加する。
+    // jqueryMap.$menu_item1 = jqueryMap.$container.find( '.pal-dom-item-one' );
+    // jqueryMap.$menu_item2 = jqueryMap.$container.find( '.pal-dom-item-two' );
+    // jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-dom-item-three' );
 
     // クリックハンドラをバインドする
     // ヘッダーのトップ

@@ -35,9 +35,22 @@ var
 send_date = function () {
   var
     now = new Date(),
-    now_date;
+    now_date,
+    ddd,
+    ddd_map = {
+      Mon: '月曜日',
+      Tue: '火曜日',
+      Wed: '水曜日',
+      Thu: '木曜日',
+      Fri: '金曜日',
+      Sat: '土曜日',
+      Sun: '日曜日'
+    };
 
-  now_date = now.toFormat( 'YYYY年MM月DD日 HH24時MI分SS秒' );
+  ddd = now.toFormat( 'DDD' );
+  now_date = now.toFormat( 'YYYY年MM月DD日 ' + ddd_map[ddd] + ' HH24時MI分SS秒' );
+
+  // WebSocketでメッセージを送信する
   io.sockets.send( now_date );
 };
 // ---------------- ユーティリティメソッド終了 -------------------

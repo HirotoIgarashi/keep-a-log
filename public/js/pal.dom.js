@@ -227,13 +227,13 @@ pal.dom = (function () {
       if (request.status === 200 ) {
         jqueryMap.$logout.show();
         jqueryMap.$login.hide();
-        jqueryMap.$signup.hide()
+        jqueryMap.$signup.hide();
         jqueryMap.$user_info.text( response_map.email );
       }
       else {
         jqueryMap.$logout.hide();
         jqueryMap.$login.show();
-        jqueryMap.$signup.show()
+        jqueryMap.$signup.show();
         jqueryMap.$user_info.text( response_map.email );
       }
 
@@ -312,11 +312,17 @@ pal.dom = (function () {
       .attr( 'title', configMap.menu_retracted_title )
       .click( onClickMenu );
 
-    io.connect().on( 'message',
-      function ( count ) {
-        jqueryMap.$date_info.html( count );
-      }
+    setInterval(
+      function () {
+        jqueryMap.$date_info.html( pal.util_b.getNowJp() );
+      },
+      1000
     );
+    // io.connect().on( 'message',
+    //   function ( count ) {
+    //     jqueryMap.$date_info.html( count );
+    //   }
+    // );
 
   };
   // パブリックメソッド/initModule/終了

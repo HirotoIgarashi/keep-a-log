@@ -49,3 +49,19 @@
 #pal-list-form-content {
   margin: 12px;
 }
+.pal-list-div {
+  display : block;
+  width   : 100%;
+}
+.pal-list-label,
+.pal-list-input {
+  display : inline-block;
+  margin  : 3px;
+}
+.pal-list-label {
+  width   : 15%;
+  text-align  : right;
+}
+.pal-list-input {
+  width   : 50%;
+}

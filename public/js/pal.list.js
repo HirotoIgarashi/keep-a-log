@@ -217,9 +217,11 @@ pal.list = (function () {
   // 例外発行: なし
   onBlurInput = function () {
     console.log( 'onBlurInputが呼ばれました' );
+    console.log( this );
+    console.log( this.name );
 
-    // action_object[ this.name ] = this.value;
-    action_object.name = this.value;
+    action_object[ this.name ] = this.value;
+    // action_object.name = this.value;
 
   };
   // DOMイベントリスナー/onBlurInput/終了 -----------------------------
@@ -287,9 +289,10 @@ pal.list = (function () {
       action_proto_names,
       action_list,
       action_object_local = {},
-      form_content,
+      // form_content,
       form_fragment,
       form_element,
+      div_element,
       label_element,
       input_element,
       tmp_action_object,
@@ -326,23 +329,43 @@ pal.list = (function () {
     // プロパティの値を取得し、マップを生成する
 
     action_proto_names = Object.getOwnPropertyNames( Object.getPrototypeOf( tmp_action_object ) );
-    for ( i = 0; i < action_proto_names.length; i += 1 ) {
-      console.log( action_proto_names[i] );
-    }
 
     // フラグメントのルートを生成
     form_fragment = document.createDocumentFragment();
 
-    // Form要素を追加
+    // form要素を追加
     form_element =  document.createElement( 'form' );
-    console.log( form_element );
+    form_element.setAttribute( 'class', 'pal-list-form' );
 
     // マップの値からlabel要素とinput要素を生成
-    label_element = document.createElement( 'label' );
-    form_element.appendChild( label_element );
+    for ( i = 0; i < action_proto_names.length; i += 1 ) {
+      // labelとinputの入れ物
+      div_element = document.createElement( 'div' );
+      // label要素
+      console.log( action_proto_names[i] );
+      label_element = document.createElement( 'label' );
+      label_element.textContent = action_proto_names[i] + ': ';
+      label_element.setAttribute( 'class', 'pal-list-label' );
 
-    input_element = document.createElement( 'input' );
-    form_element.appendChild( input_element );
+      div_element.appendChild( label_element );
+      div_element.setAttribute( 'class', 'pal-list-div' );
+
+      // input要素
+      input_element = document.createElement( 'input' );
+      input_element.setAttribute( 'name', action_proto_names[i] );
+      input_element.setAttribute( 'type', 'text' );
+      input_element.setAttribute( 'class', 'pal-list-input' );
+
+      // nameフィールドにイベントリスナーを追加する
+      input_element.addEventListener( 'blur', onBlurInput, false );
+
+      div_element.appendChild( input_element );
+
+      form_element.appendChild( div_element );
+      // 改行する
+      // form_element.appendChild( document.createElement( 'br' ) );
+    }
+
 
     // フラグメントのルートに追加する
     form_fragment.appendChild( form_element );
@@ -388,10 +411,10 @@ pal.list = (function () {
     jqueryMap.$cancel.click( onClickCancel );
     jqueryMap.$create.click( onClickCreate );
 
-    form_content = document.getElementById( "pal-list-form-content" );
+    // form_content = document.getElementById( "pal-list-form-content" );
 
     // nameフィールドにイベントリスナーを追加する
-    form_content.addEventListener( 'blur', onBlurInput, true );
+    // form_content.addEventListener( 'blur', onBlurInput, true );
 
     return true;
   };

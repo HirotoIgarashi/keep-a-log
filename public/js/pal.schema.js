@@ -17,6 +17,7 @@ pal.schema = (function () {
   //--------------------- モジュールスコープ変数開始 -----------------
   var
     configModule, initModule,
+    addChange,
     objectCreate,
     extendObject,
     sayHello,sayText,
@@ -42,9 +43,32 @@ pal.schema = (function () {
   // };
   // ユーティリティメソッド/example_method/終了
 
-  // 継承を設定するユーティリティ関数
-  // 
-  // 目的:  Object.create()を継承するためのブラウザに依存しないメソッド
+  // ユーティリティメソッド/addChange/開始
+  addChange = function ( ob ) {
+    var i;
+
+    ob.change = function ( callback ) {
+      if ( callback ) {
+        if ( !this._change ) {
+          this._change = [];
+        }
+        this._change.push( callback );
+      }
+      else {
+        if ( !this._change ) {
+          return;
+        }
+        for ( i = 0; i < this._change.length; i++ ) {
+          this._change[i].apply( this );
+        }
+      }
+    };
+  };
+  // ユーティリティメソッド/addChange/終了
+
+  // ユーティリティメソッド/objectCreate/開始
+  // 目的:  継承を設定するユーティリティ関数
+  //        Object.create()を継承するためのブラウザに依存しないメソッド
   //        新しいjsエンジン(v1.8.5+)はネイティブにサポートする
   // 必須引数:
   // オプション引数:
@@ -60,6 +84,7 @@ pal.schema = (function () {
     obj.prototype = arg;
     return new obj();
   };
+  // ユーティリティメソッド/objectCreate/終了
   
   Object.create = Object.create || objectCreate;
   
@@ -121,6 +146,9 @@ pal.schema = (function () {
 
     extendObject( action, arg_map );
   
+    // actionオブジェクトにchange関数を追加する
+    addChange( action );
+
     return action;
   
   };

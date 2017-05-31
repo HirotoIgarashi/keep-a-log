@@ -26,25 +26,9 @@ pal.dom = (function () {
       $container        : null,
       is_menu_retracted : true
     },
-    // menuMap = [
-    //   {
-    //     title           : 'メニュー1',
-    //     class_property  : 'pal-dom-menu-item-one'
-    //   },
-    //   {
-    //     title           : 'メニュー2',
-    //     class_property  : 'pal-dom-menu-item-two'
-    //   },
-    //   {
-    //     title           : 'シンプルなリスト',
-    //     class_property  : 'pal-dom-menu-item-three'
-    //   }
-    // ],
     jqueryMap = {},
-
     supportsTemplate,
     setJqueryMap,
-    // makeList,
     readSession,
     onClickTop,
     onClickLogin, onClickLogout, onClickSignup, onClickMenu,
@@ -73,22 +57,6 @@ pal.dom = (function () {
   };
   // ユーティリティメソッド/supportsTemplate/終了
 
-  // ユーティリティメソッド/makeList/開始
-  // makeList = function ( item_list ) {
-  //   var
-  //     i, html = '';
-
-  //   html += '<ul style="list-style-type:none">';
-
-  //   for ( i = 0; i < menuMap.length; i++ ) {
-  //     html += '<li class="' + item_list[i].class_property + '">' + item_list[i].title + '</li>';
-  //   }
-
-  //   html += '</ul>';
-
-  //   return html;
-  // };
-  // ユーティリティメソッド/makeList/終了
   // ユーティリティメソッド/readSession/開始
   readSession = function () {
     var
@@ -126,31 +94,6 @@ pal.dom = (function () {
     };
   };
   // DOMメソッド/setJqueryMap/終了
-
-  // DOMメソッド/toggleMenu/開始
-  // 概要:
-  // 用例:
-  // 目的: メニューの開閉
-  // 引数:
-  //  * do_extend - trueの場合、メニューを開く。falseの場合は閉じる
-  // 設定:
-  // 動作:
-  // 戻り値: boolean
-  //  * true  - メニューの開閉を行った
-  //  * false - メニューの開閉を行わなかった
-  // 例外発行:
-  // toggleMenu = function ( do_extend ) {
-  //   if ( do_extend ) {
-  //     jqueryMap.$menu_list.css({display:'block'});
-  //     stateMap.is_menu_retracted = false;
-  //   }
-  //   else {
-  //     jqueryMap.$menu_list.css({display:'none'});
-  //     stateMap.is_menu_retracted = true;
-  //   }
-  //   return true;
-  // };
-  // DOMメソッド/toggleMenu/終了
 
   // DOMメソッド/setSection/開始
   // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を取得して対応するモジュールを初期化する。
@@ -278,15 +221,6 @@ pal.dom = (function () {
     pal.top.initModule( jqueryMap.$section );
     // 機能モジュールを設定して初期化する/終了
 
-    // // メニューにアイテムを追加する。
-    // jqueryMap.$menu_list
-    //   .html( menu_html );
-
-    // // メニューのアイテムをjqueryMapに追加する。
-    // jqueryMap.$menu_item1 = jqueryMap.$container.find( '.pal-dom-item-one' );
-    // jqueryMap.$menu_item2 = jqueryMap.$container.find( '.pal-dom-item-two' );
-    // jqueryMap.$menu_item3 = jqueryMap.$container.find( '.pal-dom-item-three' );
-
     // クリックハンドラをバインドする
     // ヘッダーのトップ
     jqueryMap.$top
@@ -318,12 +252,6 @@ pal.dom = (function () {
       },
       1000
     );
-    // io.connect().on( 'message',
-    //   function ( count ) {
-    //     jqueryMap.$date_info.html( count );
-    //   }
-    // );
-
   };
   // パブリックメソッド/initModule/終了
 

@@ -3,8 +3,49 @@
  * シンプルリストページのスタイル
 */
 
-.pal-list-add {
-  height      : 26px;
-  /* width       : 36px; */
-  margin-left : 10px;
+.pal-list-button {
+  display               : inline-block;
+  width                 : 200px;
+  height                : 36px;
+  text-align            : center;
+  text-decoration       : none;
+  line-height           : 36px;
+  outline               : none;
+  position              : relative;
+  background-color      : #9999cc;
+  border-radius         : 4px;
+  color                 : #fff;
+  -webkit-transition    : none;
+  /* box-shadow            : 0 3px 0 #9999cc; */
+  /* text-shadow           : 0 1px 1px rgba(0, 0, 0, .3); */
+}
+.pal-list-button:hover {
+  background-color  : #cccccc;
+  box-shadow        : 0 3px 0 #9999cc;
+}
+.pal-list-button:active {
+  top         : 3px;
+  box-shadow  : none;
+}
+.pal-list-button::before,
+.pal-list-button::after {
+  position  : absolute;
+  z-index   : -1;
+  display   : block;
+  content   : '';
+}
+.pal-list-button,
+.pal-list-button::before,
+.pal-list-button::after {
+  -webkit-box-sizing  : border-box;
+  -moz-box-sizing     : border-box;
+  box-sizing          : border-box;
+  -webkit-transition  : all .3px;
+  transition          : all .3s;
+}
+.pal-list-content {
+  margin: 5px;
+}
+#pal-list-form-content {
+  margin: 12px;
 }

@@ -22,17 +22,16 @@ pal.list = (function () {
     },
     stateMap = { $container : null },
     jqueryMap = {},
-    action_list = [],
     onClickNew, onClickCancel, onClickCreate,
     action_object,
-    name_element,
+    action_object_list = [],
+    // input_element,
     onBlurInput,
     onChangeObject,
     save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
-    setJqueryMap, configModule, initModule,
-    addChange;
+    setJqueryMap, configModule, initModule;
 
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -63,10 +62,10 @@ pal.list = (function () {
   //   var example;
   //   return example;
   // };
-  save_object_remote = function ( object ) {
+  save_object_remote = function ( /* object */ ) {
 
-    console.log( 'save_object_remoteが呼び出されました' );
-    console.log( object );
+    // console.log( object );
+    return undefined;
 
   };
   // ユーティリティメソッド/save_object_remote/終了
@@ -81,14 +80,8 @@ pal.list = (function () {
   // 戻り値:
   // 例外発行: なし
   sync_object_and_dom = function ( element, object ) {
-    var
-      i;
 
-    console.log( 'sync_object_and_domが呼ばれました。' );
-
-    for ( i = 0; i < object.length; i++ ) {
-      element.prepend( '<li>name: ' + object[i].name + '</li>' );
-    }
+    element.prepend( '<li>name: ' + object.name + '</li>' );
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了
@@ -103,30 +96,12 @@ pal.list = (function () {
   // 戻り値:
   // 例外発行: なし
   sync_number_of_data = function ( element, object ) {
-    console.log( 'sync_number_of_dataが呼ばれました。' );
+
     element.text( 'データ件数は' + object.length + '件です。' );
+
   };
   // ユーティリティメソッド/sync_number_of_data/終了
-  addChange = function ( ob ) {
-    var i;
 
-    ob.change = function ( callback ) {
-      if ( callback ) {
-        if ( !this._change ) {
-          this._change = [];
-        }
-        this._change.push( callback );
-      }
-      else {
-        if ( !this._change ) {
-          return;
-        }
-        for ( i = 0; i < this._change.length; i++ ) {
-          this._change[i].apply( this );
-        }
-      }
-    };
-  };
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -139,8 +114,8 @@ pal.list = (function () {
   // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
-  // --------------------- イベントリスナー開始 ----------------------
-  // イベントリスナー/onClickNew/開始 --------------------------------
+  // --------------------- DOMイベントリスナー開始 -------------------
+  // DOMイベントリスナー/onClickNew/開始 -----------------------------
   // 目的:
   // 必須引数:
   // オプション引数:
@@ -153,11 +128,7 @@ pal.list = (function () {
   onClickNew = function () {
 
     // Actionオブジェクトを生成する
-    action_object = pal.schema.makeAction({
-    });
-
-    // change関数を追加する
-    addChange( action_object );
+    action_object = pal.schema.makeAction({});
 
     // action_objectが変更されたときのコールバック関数をセットする
     action_object.change( onChangeObject );
@@ -165,9 +136,9 @@ pal.list = (function () {
     jqueryMap.$form.show();
     jqueryMap.$new_button.prop( "disabled", true );
   };
-  // イベントリスナー/onClickNew/終了 --------------------------------
+  // DOMイベントリスナー/onClickNew/終了 -----------------------------
 
-  // イベントリスナー/onClickCancel/開始 --------------------------------
+  // DOMイベントリスナー/onClickCancel/開始 --------------------------
   // 目的: フォームでキャンセルがクリックされた場合にフォームを隠し、
   //       newボタンをクリック可能にする
   // 必須引数: なし
@@ -181,9 +152,9 @@ pal.list = (function () {
     jqueryMap.$form.hide();
     jqueryMap.$new_button.prop( "disabled", false );
   };
-  // イベントリスナー/onClickCancel/終了 --------------------------------
+  // DOMイベントリスナー/onClickCancel/終了 ---------------------------
 
-  // イベントリスナー/onClickCreate/開始 --------------------------------
+  // DOMイベントリスナー/onClickCreate/開始 ----------------------------
   // 目的: 完了(Done)ボタンがクリックされたときにリストに
   //       Actionオブジェクトの内容を追加する。0.9秒待つ。
   // 必須引数: なし
@@ -194,14 +165,24 @@ pal.list = (function () {
   //  * jqueryMap.$targe      : Actionオブジェクトを表示するul要素に
   //                            追加する
   //  * jqueryMap.$status     : 件数を表示するdiv要素
-  //  * action_list           : Actionオブジェクトを格納しているリストに
+  //  * action_object_list    : Actionオブジェクトを格納しているリストに
   //                            要素を追加する
   // 戻り値: なし
   // 例外発行: なし
   onClickCreate = function () {
 
+    // local_idプロパティにtime stampをセットする
+    action_object._local_id = pal.util_b.getTimestamp();
+
+    // changeイベントを発生させる
+    action_object.change();
+
+    // action_object_listに追加する
+    action_object_list.push( action_object );
+
     setTimeout(
       function () {
+
         if ( action_object.name !== '' ) {
           // フォームを隠す
           jqueryMap.$form.hide();
@@ -216,18 +197,14 @@ pal.list = (function () {
 
           // newボタンを使用可能にする
           jqueryMap.$new_button.prop( "disabled", false );
-
-          // changeイベントを発生させる
-          action_object.change();
-
         }
 
       },
     800);
   };
-  // イベントリスナー/onClickCreate/終了 --------------------------------
+  // DOMイベントリスナー/onClickCreate/終了 ---------------------------
 
-  // イベントリスナー/onBlurInput/開始 --------------------------------
+  // DOMイベントリスナー/onBlurInput/開始 -----------------------------
   // 目的: フォーカスが外れた時に入力された値を取得して
   //       Actionオブジェクトにセットする。
   //       input要素にname属性があることが前提。
@@ -239,25 +216,29 @@ pal.list = (function () {
   // 戻り値: なし
   // 例外発行: なし
   onBlurInput = function () {
+    console.log( 'onBlurInputが呼ばれました' );
 
-    action_object[ this.name ] = this.value;
+    // action_object[ this.name ] = this.value;
+    action_object.name = this.value;
 
   };
-  // イベントリスナー/onBlurInput/終了 --------------------------------
+  // DOMイベントリスナー/onBlurInput/終了 -----------------------------
+  // --------------------- DOMイベントリスナー終了 --------------------
+
+  // ------------------ カスタムイベントリスナー開始 ------------------
   onChangeObject = function () {
     console.log( '変更されました', this );
 
-    // オブジェクトをlocalStorageに保存する。コールバックとして
-    // DOMを更新する関数をセットする。
+    // オブジェクトをlocalStorageに保存する。
     pal.util_b.createObjectLocal(
       'action-list',
       this
     );
 
-    // リストに要素を追加する
+    // DOM要素のリストに要素を追加する
     sync_object_and_dom(
       jqueryMap.$target,
-      pal.util_b.readObjectLocal( 'action-list' )
+      this
     );
 
     // 件数を表示する
@@ -270,7 +251,7 @@ pal.list = (function () {
     save_object_remote( action_object );
 
   };
-  // --------------------- イベントリスナー終了 ----------------------
+  // ------------------ カスタムイベントリスナー終了 ------------------
 
   // --------------------- パブリックメソッド開始 --------------------
   // パブリックメソッド/configModule/開始
@@ -294,6 +275,7 @@ pal.list = (function () {
 
   // パブリックメソッド/initModule/開始
   // 目的: モジュールを初期化する
+  //       * localStorageからaction-listを読み込み、Action Objectを生成する
   // 引数:
   //  * $container この機能が使うjQuery要素
   // 戻り値: true
@@ -301,7 +283,17 @@ pal.list = (function () {
   //
   initModule = function ( $container ) {
     var
-      // i = 0,
+      property,
+      action_proto_names,
+      action_list,
+      action_object_local = {},
+      form_content,
+      form_fragment,
+      form_element,
+      label_element,
+      input_element,
+      tmp_action_object,
+      i = 0,
       list_page  = pal.util_b.getTplContent( 'list-page' );
 
     stateMap.$container = $container;
@@ -309,29 +301,85 @@ pal.list = (function () {
 
     jqueryMap.$container.html( list_page );
 
-    jqueryMap.$new_button = $container.find( '.pal-list-new' );
-    jqueryMap.$form       = $container.find( '.pal-list-new-form' );
-    jqueryMap.$cancel     = $container.find( '.pal-list-cancel' );
-    jqueryMap.$create     = $container.find( '.pal-list-create' );
-    jqueryMap.$status     = $container.find( '#status' );
-    jqueryMap.$target     = $container.find( '#target' );
+    jqueryMap.$new_button   = $container.find( '#new' );
+    jqueryMap.$form         = $container.find( '.pal-list-new-form' );
+    jqueryMap.$form_content = $container.find( '#pal-list-form-content' );
+    jqueryMap.$cancel       = $container.find( '#cancel' );
+    jqueryMap.$create       = $container.find( '#done' );
+    jqueryMap.$status       = $container.find( '#status' );
+    jqueryMap.$target       = $container.find( '#target' );
 
-    // localStorageからaction-listの値を読み込む
+    console.log( jqueryMap.$form_content );
+
+    // action schemaを基にformを生成する
+    // 生成結果は
+    // <form class="pal-list-form">
+    //  <label>名前:</label>
+    //  <input id="pal-list-name" name="name" type="text">
+    // </form>
+    // となるように
+
+    // action objectを生成する
+    tmp_action_object = pal.schema.makeAction( action_object_local );
+    console.log( tmp_action_object );
+
+    // プロパティの値を取得し、マップを生成する
+
+    action_proto_names = Object.getOwnPropertyNames( Object.getPrototypeOf( tmp_action_object ) );
+    for ( i = 0; i < action_proto_names.length; i += 1 ) {
+      console.log( action_proto_names[i] );
+    }
+
+    // フラグメントのルートを生成
+    form_fragment = document.createDocumentFragment();
+
+    // Form要素を追加
+    form_element =  document.createElement( 'form' );
+    console.log( form_element );
+
+    // マップの値からlabel要素とinput要素を生成
+    label_element = document.createElement( 'label' );
+    form_element.appendChild( label_element );
+
+    input_element = document.createElement( 'input' );
+    form_element.appendChild( input_element );
+
+    // フラグメントのルートに追加する
+    form_fragment.appendChild( form_element );
+
+    // form contentに追加する
+    jqueryMap.$form_content.html( form_fragment );
+
+
+    // action objectを削除する -> deleteでオブジェクトは削除できません。
+    // delete tmp_action_object;
+
+    // localStorageからプロパティ名action-listの値を読み込む
     action_list = pal.util_b.readObjectLocal( 'action-list' );
 
     if ( action_list ) {
 
-      // ObjectをDOM要素の変換する
-      sync_object_and_dom(
-        jqueryMap.$target,
-        action_list
-      );
+      for ( i = 0; i < action_list.length; i += 1 ) {
 
-      // データの件数を取得して表示する。
-      sync_number_of_data(
-        jqueryMap.$status,
-        action_list
-      );
+        // action_list[i]はaction object
+        // propertyはプロパティ
+        for ( property in action_list[i] ) {
+
+          if ( typeof action_list[i][property] === 'string' ) {
+            action_object_local[property] = action_list[i][property];
+          }
+
+        }
+
+        action_object = pal.schema.makeAction( action_object_local );
+
+        // action_objectが変更されたときのコールバック関数をセットする
+        action_object.change( onChangeObject );
+
+        // changeイベントを発生させる
+        action_object.change();
+
+      }
 
     }
 
@@ -340,10 +388,10 @@ pal.list = (function () {
     jqueryMap.$cancel.click( onClickCancel );
     jqueryMap.$create.click( onClickCreate );
 
-    name_element = document.getElementById( "pal-list-name" );
+    form_content = document.getElementById( "pal-list-form-content" );
 
     // nameフィールドにイベントリスナーを追加する
-    name_element.addEventListener( 'blur', onBlurInput, true );
+    form_content.addEventListener( 'blur', onBlurInput, true );
 
     return true;
   };

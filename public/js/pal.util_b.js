@@ -34,6 +34,7 @@ pal.util_b = (function () {
     decodeHtml,
     encodeHtml,
     getEmSize,
+    getTimestamp,
     sendXmlHttpRequest,
     init_send_request,
     getTplContent,
@@ -46,6 +47,7 @@ pal.util_b = (function () {
   configMap.encode_noamp_map = $.extend(
     {}, configMap.encode_noamp_map
   );
+
   delete configMap.encode_noamp_map['&'];
   //------------------ モジュールスコープ変数終了 ---------------------
 
@@ -97,6 +99,21 @@ pal.util_b = (function () {
     );
   };
   // getEmSize終了
+
+  // getTimestamp開始
+  // 目的: 現在日時のDate.parseの値を文字列で返す。
+  getTimestamp = function () {
+    var
+      now_date,
+      now_parse;
+
+      now_date = new Date();
+
+      now_parse = Date.parse( now_date.toString() ).toString();
+
+      return now_parse;
+  };
+  // getTimestamp終了
 
   // getTplContent/開始
   // 目的: テンプレートからコンテンツを取得して返す。
@@ -243,6 +260,8 @@ pal.util_b = (function () {
   // 例外発行: なし
   createObjectLocal = function ( local_storage_key, object, callback ) {
     var
+      i,
+      found_index,
       object_list;
 
     // console.log( 'createObjectLocalが呼ばれました' );
@@ -256,10 +275,23 @@ pal.util_b = (function () {
       object_list = [];
     }
 
-    // リストにobjectを追加する
-    object_list.push( object );
+    for ( i = 0; i < object_list.length; i += 1 ) {
 
-    // localStorageにリストを追加する
+      if ( object_list[i]._local_id === object._local_id ) {
+        found_index = i;
+      }
+    }
+
+    if ( found_index !== undefined ) {
+      // リストのオブジェクトを置き換える
+      object_list[found_index] = object;
+    }
+    else {
+      // リストにobjectを追加する
+      object_list.push( object );
+    }
+
+    // localStorageにリストを追加/上書きする
     window.localStorage
       .setItem( local_storage_key, JSON.stringify( object_list ) );
 
@@ -290,11 +322,13 @@ pal.util_b = (function () {
   // 戻り値: keyの値
   // 例外発行: なし
   readObjectLocal = function ( local_storage_key ) {
+    var item;
     // console.log( 'readObjectLocalが呼ばれました' );
 
     // localStorageからaction-listの値を読み込む
+    item = window.localStorage.getItem( local_storage_key );
 
-    return JSON.parse( window.localStorage.getItem( local_storage_key ) );
+    return JSON.parse( item );
 
   };
   // ユーティリティメソッド/readObjectLocal/終了
@@ -305,6 +339,7 @@ pal.util_b = (function () {
     decodeHtml          : decodeHtml,
     encodeHtml          : encodeHtml,
     getEmSize           : getEmSize,
+    getTimestamp        : getTimestamp,
     getTplContent       : getTplContent,
     sendXmlHttpRequest  : sendXmlHttpRequest,
     getNowJp            : getNowJp,

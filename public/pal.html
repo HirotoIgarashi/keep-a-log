@@ -113,15 +113,17 @@
         <!-- シンプルリスト用 -->
         <template id="list-page">
           <h1>シンプルなリスト</h1>
-          <div>
-            <button type="button" class="pal-list-new">new</button>
+          <div class="pal-list-content">
+            <input type="button" id="new" class="pal-list-button" value="new">
           </div>
-          <div class="pal-list-new-form" style="display:none;">
-            <button type="button" class="pal-list-cancel">cancel</button>
-            <button type="button" class="pal-list-create">done</button>
-            <form>
-              <label>名前:</label><input id="pal-list-name" name="name" type="text"></input>
-            </form>
+          <div class="pal-list-new-form pal-list-content" style="display:none;">
+            <input type="button" id="cancel" class="pal-list-button" value="cancel">
+            <input type="button" id="done" class="pal-list-button" value="done">
+            <div id="pal-list-form-content">
+              <form class="pal-list-form">
+                <label>名前:</label><input id="pal-list-name" name="name" type="text"></input>
+              </form>
+            </div>
           </div>
           <div id="status"></div>
           <div>
@@ -147,6 +149,7 @@
         <!-- 自作のjavascript -->
         <script src="js/pal.js"></script>
         <script src="js/pal.util_b.js"></script>
+        <script src="js/pal.util.js"></script>
         <script src="js/pal.bom.js"></script>
         <script src="js/pal.dom.js"></script>
         <script src="js/pal.top.js"></script>

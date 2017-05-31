@@ -1,5 +1,5 @@
 /*
- * spa.util.js
+ * pal.util.js
  * 汎用JavaScriptユーティリティ
  *
  * Michael S. Mikowski - mmikowski at gmail dot com
@@ -18,7 +18,7 @@
 */
 /*global $, spa */
 
-spa.util = (function () {
+pal.util = (function () {
   var makeError, setConfigMap;
 
   // パブリックコンストラクタ/makeError/開始

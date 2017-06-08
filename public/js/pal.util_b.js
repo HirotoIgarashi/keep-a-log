@@ -38,7 +38,8 @@ pal.util_b = (function () {
     sendXmlHttpRequest,
     init_send_request,
     getTplContent,
-    getNowJp,
+    getNowDateJp,
+    getIsoExtFormat,
     createObjectLocal,
     updateObjectLocal,
     deleteObjectLocal,
@@ -133,14 +134,14 @@ pal.util_b = (function () {
   };
   // getTplContent/終了
 
-  // getNowJp/開始
-  // 目的: テンプレートからコンテンツを取得して返す。
+  // getNowDateJp/開始
+  // 目的: 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
   // 必須引数: IDの値
   // オプション引数: なし
   // 設定:
   // 戻り値: 引数のIDの値のコンテンツ
   // 例外発行: なし
-  getNowJp = function () {
+  getNowDateJp = function () {
     var
       day_jp = {
         0 : '日曜日',
@@ -165,7 +166,35 @@ pal.util_b = (function () {
 
     return now_jp;
   };
-  // getNowJp/開始
+  // getNowDateJp/終了
+
+  // getIsoExtFormat/開始
+  // 目的: ISO9601の拡張形式に変換して返す
+  //       schema.orgで使用するので秒以下は不要
+  //       YYYY-MM-DDThh:mm
+  // 必須引数: Dateオブジェクト
+  // オプション引数: なし
+  // 設定:
+  // 戻り値: ISO9601形式の文字列
+  // 例外発行: なし
+  getIsoExtFormat = function ( date_object ) {
+
+    function pad( number ) {
+      if ( number < 10 ) {
+        return '0' + number;
+      }
+      return number;
+    }
+    // YYYY-MM-DDThh:mmの文字列を生成する(:ssは不要)
+
+    return date_object.getFullYear() +
+      '-' + pad( date_object.getMonth() + 1 ) +
+      '-' + pad( date_object.getDate() ) +
+      'T' + pad( date_object.getHours() ) +
+      ':' + pad( date_object.getMinutes() )
+      ;
+  };
+  // getIsoExtFormat/終了
 
   // sendXmlHttpRequest開始
   // 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
@@ -261,10 +290,21 @@ pal.util_b = (function () {
   createObjectLocal = function ( local_storage_key, object, callback ) {
     var
       i,
+      property,
       found_index,
-      object_list;
+      object_list,
+      copy_object = {};
 
     // console.log( 'createObjectLocalが呼ばれました' );
+
+    // プロパティの値がstringかつ値がある場合のみcopy_objectにコピーする
+    for ( property in object ) {
+
+      if ( typeof object[property] === 'string' && object[property] !== '' ) {
+        copy_object[property] = object[property];
+      }
+
+    }
 
     // keyの値をlocalStorageから読み込む
     object_list = JSON.parse(
@@ -275,20 +315,21 @@ pal.util_b = (function () {
       object_list = [];
     }
 
+    // localStorageに同じ_local_idがある場合はindexを取得する
     for ( i = 0; i < object_list.length; i += 1 ) {
-
-      if ( object_list[i]._local_id === object._local_id ) {
+      if ( object_list[i]._local_id === copy_object._local_id ) {
         found_index = i;
       }
     }
 
+    // indexがある場合は上書きし、ない場合は追加する
     if ( found_index !== undefined ) {
       // リストのオブジェクトを置き換える
-      object_list[found_index] = object;
+      object_list[found_index] = copy_object;
     }
     else {
       // リストにobjectを追加する
-      object_list.push( object );
+      object_list.push( copy_object );
     }
 
     // localStorageにリストを追加/上書きする
@@ -342,7 +383,8 @@ pal.util_b = (function () {
     getTimestamp        : getTimestamp,
     getTplContent       : getTplContent,
     sendXmlHttpRequest  : sendXmlHttpRequest,
-    getNowJp            : getNowJp,
+    getNowDateJp        : getNowDateJp,
+    getIsoExtFormat     : getIsoExtFormat,
     createObjectLocal   : createObjectLocal,
     updateObjectLocal   : updateObjectLocal,
     deleteObjectLocal   : deleteObjectLocal,

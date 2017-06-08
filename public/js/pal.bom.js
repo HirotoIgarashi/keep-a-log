@@ -13,15 +13,17 @@
 
 pal.bom = (function () {
   'use strict';
-  var initModule,
-      setLocationHash, getLocationHash,
-      onHashchange;
+  var
+    initModule,
+    setLocationHash,
+    getLocationHash,
+    onHashchange;
   //--------------------- モジュールスコープ変数開始 -----------------
   //--------------------- モジュールスコープ変数終了 -----------------
+
   //--------------------- ユーティリティメソッド開始 -----------------
   // ユーティリティメソッド/setLocationHash/開始
   setLocationHash = function ( hash ) {
-    // window.location = '#' + hash;
     window.location.hash = hash;
   };
   // ユーティリティメソッド/setLocationHash/終了

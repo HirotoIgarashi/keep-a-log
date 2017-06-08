@@ -22,10 +22,14 @@ pal.schema = (function () {
     extendObject,
     sayHello,sayText,
     logName,
+    makeFormFragment,
+    makeElement,
     makeThing,
-    actionPrototype, makeAction,
+    actionPrototype,
+    makeAction,
     makeMammal,
-    catPrototype, makeCat;
+    catPrototype, makeCat,
+    date_type_list = [ 'startTime', 'endTime' ];
   
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -118,14 +122,158 @@ pal.schema = (function () {
     console.warn( this.name + ' says ' + text );
   };
   
+  // makeFromFragment/開始
+  makeFormFragment = function ( event_listener ) {
+    var
+      prop_names,
+      form_fragment,
+      form_element,
+      div_element,
+      label_element,
+      input_element,
+      i;
+
+    // プロパティの値を取得し、マップを生成する
+    prop_names = Object.getOwnPropertyNames( Object.getPrototypeOf( this ) );
+
+    // フラグメントのルートを生成
+    form_fragment = document.createDocumentFragment();
+
+    // form要素を追加
+    form_element =  document.createElement( 'form' );
+    form_element.setAttribute( 'class', 'pal-list-form' );
+
+    // マップの値からlabel要素とinput要素を生成
+    for ( i = 0; i < prop_names.length; i += 1 ) {
+
+      // プロパティ値がfunctionだったら何もしない
+      if ( typeof this[prop_names[i]] !== 'function' ) {
+
+        // labelとinputの入れ物を生成する
+        div_element = document.createElement( 'div' );
+        div_element.setAttribute( 'class', 'pal-list-div' );
+
+        // label要素を生成する
+        label_element = document.createElement( 'label' );
+        label_element.textContent = prop_names[i] + ': ';
+        label_element.setAttribute( 'class', 'pal-list-label' );
+
+        // 入れ物にlabel要素を追加する
+        div_element.appendChild( label_element );
+
+        // input要素を生成する
+        input_element = document.createElement( 'input' );
+        input_element.setAttribute( 'name', prop_names[i] );
+        input_element.setAttribute( 'class', 'pal-list-input' );
+
+        // プロバティの値のタイプがDateだったら'datetime-local'をセットする
+        // if ( this[prop_names[i]] instanceof Date ) {
+        if ( date_type_list.indexOf( prop_names[i] ) >= 0 ) {
+          input_element.setAttribute( 'type', 'datetime-local' );
+
+        }
+        else {
+          input_element.setAttribute( 'type', 'text' );
+        }
+
+        // nameフィールドにイベントリスナーを追加する
+        input_element.addEventListener( 'blur', event_listener, false );
+
+        // 入れ物にinput要素を追加する
+        div_element.appendChild( input_element );
+
+        // form要素に入れ物のdiv要素を追加する
+        form_element.appendChild( div_element );
+      }
+
+    }
+
+    // フラグメントのルートに追加する
+    form_fragment.appendChild( form_element );
+
+    return form_fragment;
+  };
+  // makeFormFragment/終了
+
+  // makeElement/開始
+  makeElement = function () {
+    var
+      i,
+      prop_names,
+      fragment,
+      prop_element,
+      list_wrapper,
+      crud_wrapper,
+      schema_wrapper;
+
+    // プロパティの値を取得し、マップを生成する
+    prop_names = Object.getOwnPropertyNames( Object.getPrototypeOf( this ) );
+    fragment = document.createDocumentFragment();
+
+    // listのwrapperを生成する
+    list_wrapper = document.createElement( 'div' );
+    list_wrapper.setAttribute( 'class', 'g' );
+    list_wrapper.setAttribute( 'data-local-id', this._local_id );
+
+    // crudのwrappperを生成する
+    crud_wrapper = document.createElement( 'div' ); 
+    crud_wrapper.setAttribute( 'class', 'crud_wrapper' );
+
+    // schemaのwrapperを生成する
+    schema_wrapper = document.createElement( 'div' );
+    schema_wrapper.setAttribute( 'itemscope', '' );
+    schema_wrapper.setAttribute( 'class', 'action-wrapper' );
+    schema_wrapper.setAttribute( 'itemtype', 'http://schema.org/Action' );
+
+    // プロパティの値をセットする
+    for ( i = 0; i < prop_names.length; i += 1 ) {
+
+      // プロパティ値がfunctionだったら何もしない
+      if ( typeof this[prop_names[i]] !== 'function' ) {
+
+        if ( prop_names[i] === 'name' ) {
+          prop_element = document.createElement( 'div' );
+        }
+        else {
+          prop_element = document.createElement( 'span' );
+        }
+
+        // itempropをセットする
+        prop_element.setAttribute( 'itemprop', prop_names[i] );
+
+        // startTimeやendTimeの場合の処理
+        if ( this[ prop_names[i] ] !== '' && date_type_list.indexOf( prop_names[i] ) >= 0 ) {
+          prop_element.setAttribute( 'content', this[ prop_names[i] ] );
+          prop_element.textContent = prop_names[ i ] + ': ' + this[ prop_names[i] ];
+        }
+        else {
+          prop_element.textContent = this[ prop_names[i] ];
+        }
+
+      }
+
+      schema_wrapper.appendChild( prop_element );
+    }
+
+    list_wrapper.appendChild( crud_wrapper );
+    list_wrapper.appendChild( schema_wrapper );
+
+    fragment.appendChild( list_wrapper );
+
+    return fragment;
+  };
+  // makeElement/終了
+
   // makeThingコンストラクタ
   makeThing = function( arg_map ) {
     var thing = {
-      name            : '',
-      alternate_name  : '',
-      url             : '',
-      image           : '',
-      log_name        : logName
+      name                : '',
+      alternate_name      : '',
+      url                 : '',
+      image               : '',
+      log_name            : logName,
+      make_form_fragment  : makeFormFragment,
+      make_element        : makeElement
     };
 
     extendObject( thing, arg_map );
@@ -135,9 +283,9 @@ pal.schema = (function () {
 
   // makeThingコンストラクタを使ってactionプロトタイプを作成する
   actionPrototype = makeThing({
-    start_time  : '',
-    end_time    : '',
-    location    : ''
+    startTime : '',
+    endTime   : '',
+    location  : ''
   });
 
   // actionコンストラクタ
@@ -186,6 +334,7 @@ pal.schema = (function () {
   };
   
   //--------------------- ユーティリティメソッド終了 -----------------
+
   //--------------------- DOMメソッド開始 ----------------------------
   //--------------------- DOMメソッド終了 ----------------------------
 

@@ -133,6 +133,7 @@ pal.dom = (function () {
         pal.list.initModule( jqueryMap.$section );
         break;
       default:
+        console.log( 'hashが変更されました', current_location_hash );
         break;
     }
   };
@@ -231,24 +232,24 @@ pal.dom = (function () {
       .attr( 'title', configMap.logout_title )
       .click( onClickLogout );
 
-    // ヘッダーのログイン
+    // ヘッダーのログイン要素
     jqueryMap.$login
       .attr( 'title', configMap.login_title )
       .click( onClickLogin );
 
-    // ヘッダーのサインアップ
+    // ヘッダーのサインアップ要素
     jqueryMap.$signup
       .attr( 'title', configMap.signup_title )
       .click( onClickSignup );
 
-    // ヘッダーのメニュー
+    // ヘッダーのメニュー要素
     jqueryMap.$menu
       .attr( 'title', configMap.menu_retracted_title )
       .click( onClickMenu );
 
     setInterval(
       function () {
-        jqueryMap.$date_info.html( pal.util_b.getNowJp() );
+        jqueryMap.$date_info.html( pal.util_b.getNowDateJp() );
       },
       1000
     );

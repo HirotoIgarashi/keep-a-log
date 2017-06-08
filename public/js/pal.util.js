@@ -16,10 +16,15 @@
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-/*global $, spa */
+/*global $, pal */
 
 pal.util = (function () {
-  var makeError, setConfigMap;
+  var
+    makeError,
+    setConfigMap,
+    clearFormAll,
+    clearForm,
+    clearElement;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -75,8 +80,62 @@ pal.util = (function () {
   };
   // パブリックメソッド/setConfigMap/終了
 
+  // パブリックメソッド/clearFormAll/開始
+  // 目的: Form要素の値をすべてクリアする
+  // 引数: なし
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  clearFormAll = function () {
+    var
+      i;
+
+    for ( i = 0; i < document.forms.length; i += 1 ) {
+      clearForm( document.forms[i] );
+    }
+
+  };
+  // パブリックメソッド/clearFormAll/終了
+  clearForm = function( form ) {
+    var
+      i;
+
+    for ( i = 0; i < form.elements.length; i += 1 ) {
+      clearElement( form.elements[i] );
+    }
+  };
+
+  clearElement = function( element ) {
+    switch( element.type ) {
+      case 'hidden':
+      case 'submit':
+      case 'reset':
+      case 'button':
+      case 'image':
+        return;
+      case 'file':
+        return;
+      case 'text':
+      case 'password':
+      case 'textarea':
+      case 'datetime-local':
+        element.value = '';
+        return;
+      case 'checkbox':
+      case 'radio':
+        element.checked = false;
+        return;
+      case 'select-one':
+      case 'select-multiple':
+        element.selectedIndex = 0;
+        return;
+      default:
+    }
+  };
+
   return {
     makeError     : makeError,
-    setConfigMap  : setConfigMap
+    setConfigMap  : setConfigMap,
+    clearFormAll  : clearFormAll
   };
 }());

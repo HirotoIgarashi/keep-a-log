@@ -28,6 +28,8 @@ pal.list = (function () {
     // input_element,
     onBlurInput,
     onChangeObject,
+    onHashchange,
+    onClickTarget,
     save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
@@ -80,8 +82,12 @@ pal.list = (function () {
   // 戻り値:
   // 例外発行: なし
   sync_object_and_dom = function ( element, object ) {
+    var
+      fragment;
 
-    element.prepend( '<li>name: ' + object.name + '</li>' );
+    fragment = object.make_element();
+
+    element.prepend( fragment );
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了
@@ -149,6 +155,9 @@ pal.list = (function () {
   // 戻り値:
   // 例外発行: なし
   onClickCancel = function () {
+    // formの値をすべてクリアする
+    pal.util.clearFormAll();
+
     jqueryMap.$form.hide();
     jqueryMap.$new_button.prop( "disabled", false );
   };
@@ -167,11 +176,13 @@ pal.list = (function () {
   //  * jqueryMap.$status     : 件数を表示するdiv要素
   //  * action_object_list    : Actionオブジェクトを格納しているリストに
   //                            要素を追加する
+  //  * _local_id             : _local_idプロパティにtimestampをセットする
   // 戻り値: なし
   // 例外発行: なし
   onClickCreate = function () {
+    console.log( 'createがクリックされました' );
 
-    // local_idプロパティにtime stampをセットする
+    // _local_idプロパティにtime stampをセットする
     action_object._local_id = pal.util_b.getTimestamp();
 
     // changeイベントを発生させる
@@ -188,12 +199,7 @@ pal.list = (function () {
           jqueryMap.$form.hide();
 
           // formの値をすべてクリアする
-          jqueryMap.$form
-            .find("textarea, :text, select")
-            .val("")
-            .end()
-            .find(":checked")
-            .prop("checked", false);
+          pal.util.clearFormAll();
 
           // newボタンを使用可能にする
           jqueryMap.$new_button.prop( "disabled", false );
@@ -216,20 +222,74 @@ pal.list = (function () {
   // 戻り値: なし
   // 例外発行: なし
   onBlurInput = function () {
-    console.log( 'onBlurInputが呼ばれました' );
-    console.log( this );
-    console.log( this.name );
 
     action_object[ this.name ] = this.value;
     // action_object.name = this.value;
 
   };
   // DOMイベントリスナー/onBlurInput/終了 -----------------------------
+
+  // DOMイベントリスナー/onHashchange/開始 -----------------------------
+  onHashchange = function ( /* event */ ) {
+    switch ( location.hash ) {
+      case '#list/new':
+        onClickNew();
+        break;
+      case '#list/cancel':
+        onClickCancel();
+        break;
+      case '#list/create':
+        onClickCreate();
+        break;
+      default:
+        break;
+    }
+  };
+  // DOMイベントリスナー/onHashchange/終了 -----------------------------
+
+  // DOMイベントリスナー/onClickTarget/開始 -----------------------------
+  onClickTarget = function ( event ) {
+    var
+      current_node,
+      fragment,
+      edit_cancel_anchor,
+      edit_anchor,
+      delete_anchor;
+
+    current_node = event.target;
+
+    // nodeのclassがgになるまで親要素をたどる
+    while ( current_node.getAttribute( 'class' ) !== 'g' ) {
+      current_node = current_node.parentNode;
+    }
+
+    fragment = document.createDocumentFragment();
+
+    edit_cancel_anchor = document.createElement( 'a' );
+    edit_cancel_anchor.setAttribute( 'href', '#/list/edit-cancel' );
+    edit_cancel_anchor.textContent = 'cancel';
+
+    edit_anchor = document.createElement( 'a' );
+    edit_anchor.setAttribute( 'href', '#/list/edit' );
+    edit_anchor.textContent = 'edit';
+
+    delete_anchor = document.createElement( 'a' );
+    delete_anchor.setAttribute( 'href', '#/list/delete' );
+    delete_anchor.textContent = 'delete';
+
+    fragment.appendChild( edit_cancel_anchor );
+    fragment.appendChild( edit_anchor );
+    fragment.appendChild( delete_anchor );
+
+    console.log( current_node.firstElementChild );
+    current_node.firstElementChild.appendChild( fragment );
+
+  };
+  // DOMイベントリスナー/onClickTarget/終了 -----------------------------
   // --------------------- DOMイベントリスナー終了 --------------------
 
   // ------------------ カスタムイベントリスナー開始 ------------------
   onChangeObject = function () {
-    console.log( '変更されました', this );
 
     // オブジェクトをlocalStorageに保存する。
     pal.util_b.createObjectLocal(
@@ -286,16 +346,12 @@ pal.list = (function () {
   initModule = function ( $container ) {
     var
       property,
-      action_proto_names,
       action_list,
       action_object_local = {},
       // form_content,
       form_fragment,
-      form_element,
-      div_element,
-      label_element,
-      input_element,
       tmp_action_object,
+      target,
       i = 0,
       list_page  = pal.util_b.getTplContent( 'list-page' );
 
@@ -312,8 +368,6 @@ pal.list = (function () {
     jqueryMap.$status       = $container.find( '#status' );
     jqueryMap.$target       = $container.find( '#target' );
 
-    console.log( jqueryMap.$form_content );
-
     // action schemaを基にformを生成する
     // 生成結果は
     // <form class="pal-list-form">
@@ -324,51 +378,9 @@ pal.list = (function () {
 
     // action objectを生成する
     tmp_action_object = pal.schema.makeAction( action_object_local );
-    console.log( tmp_action_object );
 
-    // プロパティの値を取得し、マップを生成する
-
-    action_proto_names = Object.getOwnPropertyNames( Object.getPrototypeOf( tmp_action_object ) );
-
-    // フラグメントのルートを生成
-    form_fragment = document.createDocumentFragment();
-
-    // form要素を追加
-    form_element =  document.createElement( 'form' );
-    form_element.setAttribute( 'class', 'pal-list-form' );
-
-    // マップの値からlabel要素とinput要素を生成
-    for ( i = 0; i < action_proto_names.length; i += 1 ) {
-      // labelとinputの入れ物
-      div_element = document.createElement( 'div' );
-      // label要素
-      console.log( action_proto_names[i] );
-      label_element = document.createElement( 'label' );
-      label_element.textContent = action_proto_names[i] + ': ';
-      label_element.setAttribute( 'class', 'pal-list-label' );
-
-      div_element.appendChild( label_element );
-      div_element.setAttribute( 'class', 'pal-list-div' );
-
-      // input要素
-      input_element = document.createElement( 'input' );
-      input_element.setAttribute( 'name', action_proto_names[i] );
-      input_element.setAttribute( 'type', 'text' );
-      input_element.setAttribute( 'class', 'pal-list-input' );
-
-      // nameフィールドにイベントリスナーを追加する
-      input_element.addEventListener( 'blur', onBlurInput, false );
-
-      div_element.appendChild( input_element );
-
-      form_element.appendChild( div_element );
-      // 改行する
-      // form_element.appendChild( document.createElement( 'br' ) );
-    }
-
-
-    // フラグメントのルートに追加する
-    form_fragment.appendChild( form_element );
+    // form要素を取得する。event_listenerにonBlurInputをセットする
+    form_fragment = tmp_action_object.make_form_fragment( onBlurInput );
 
     // form contentに追加する
     jqueryMap.$form_content.html( form_fragment );
@@ -383,7 +395,6 @@ pal.list = (function () {
     if ( action_list ) {
 
       for ( i = 0; i < action_list.length; i += 1 ) {
-
         // action_list[i]はaction object
         // propertyはプロパティ
         for ( property in action_list[i] ) {
@@ -401,20 +412,30 @@ pal.list = (function () {
 
         // changeイベントを発生させる
         action_object.change();
-
       }
 
     }
-
-    // イベントリスナーを追加する
-    jqueryMap.$new_button.click( onClickNew );
-    jqueryMap.$cancel.click( onClickCancel );
-    jqueryMap.$create.click( onClickCreate );
 
     // form_content = document.getElementById( "pal-list-form-content" );
 
     // nameフィールドにイベントリスナーを追加する
     // form_content.addEventListener( 'blur', onBlurInput, true );
+
+    // URIのハッシュ変更イベントを処理する。
+    // これはすべての機能モジュールを設定して初期化した後に行う。
+    // そうしないと、トリガーイベントを処理できる状態になっていない。
+    // トリガーイベントはアンカーがロード状態と見なせることを保証するために使う
+    //
+    if ( window.hasOwnProperty("onhashchange") ) {
+      window.addEventListener( "hashchange", onHashchange, false );
+    }
+    else {
+      alert("このブラウザはhashchangeイベントをサポートしていません");
+    }
+
+    target = document.getElementById( 'target' );
+
+    target.addEventListener( "click", onClickTarget, false );
 
     return true;
   };

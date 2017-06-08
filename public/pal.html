@@ -114,21 +114,16 @@
         <template id="list-page">
           <h1>シンプルなリスト</h1>
           <div class="pal-list-content">
-            <input type="button" id="new" class="pal-list-button" value="new">
+            <a href="#list/new">new</a>
           </div>
           <div class="pal-list-new-form pal-list-content" style="display:none;">
-            <input type="button" id="cancel" class="pal-list-button" value="cancel">
-            <input type="button" id="done" class="pal-list-button" value="done">
+            <a href="#list/cancel">cancel</a>
+            <a href="#list/create">create</a>
             <div id="pal-list-form-content">
-              <form class="pal-list-form">
-                <label>名前:</label><input id="pal-list-name" name="name" type="text"></input>
-              </form>
             </div>
           </div>
           <div id="status"></div>
-          <div>
-            <ul id="target">
-            </ul>
+          <div id="target">
           </div>
         </template>
 

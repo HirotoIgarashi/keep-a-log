@@ -23,6 +23,7 @@ pal.list = (function () {
     stateMap = { $container : null },
     jqueryMap = {},
     onClickNew, onClickCancel, onClickCreate,
+    make_anchor_element,
     action_object,
     action_object_list = [],
     // input_element,
@@ -33,7 +34,177 @@ pal.list = (function () {
     save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
-    setJqueryMap, configModule, initModule;
+    setJqueryMap, configModule, initModule,
+    list_ui;
+
+    list_ui = {
+      state       : undefined,
+      states      : {
+        start_state : {
+          initialize  : function ( target ) {
+            this.target = target;
+            console.log( 'start_state initialize' );
+          },
+          enter       : function () {
+            console.log( 'start_state enter' );
+          },
+          execute     : function () {
+            console.log( 'start_state execute' );
+          },
+          load        : function () {
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit        : function () {
+            console.log( 'start_state exit' );
+          }
+        },
+        list_form   : {
+          initialize  : function ( target ) {
+            this.target = target;
+            console.log( 'list_form initialize' );
+          },
+          enter       : function () {
+            var
+              new_anchor,
+              new_target;
+
+            // <a href="#/list/new">new</a>を作成する
+            new_anchor = make_anchor_element( '#list/new', 'new' );
+
+            new_target = document.getElementById( "new-anchor" );
+            new_target.appendChild( new_anchor );
+
+            // locationを#listに戻す
+            pal.bom.setLocationHash( '#list' );
+
+            console.log( 'list_form enter' );
+          },
+          execute     : function () {
+            console.log( 'list_form execute' );
+          },
+          click_new     : function () {
+            onClickNew();
+
+            this.target.changeState( this.target.states.new_form );
+          },
+          click_detail  : function () {
+            console.log( 'list_form click_detail' );
+            this.target.changeState( this.target.states.detail_form );
+          },
+          exit        : function () {
+            var
+              new_target;
+
+            new_target = document.getElementById( "new-anchor" );
+            while ( new_target.firstChild ) {
+              new_target.removeChild( new_target.firstChild );
+            }
+            console.log( 'list_form exit' );
+          }
+        },
+        new_form    : {
+          initialize  : function ( target ) {
+            this.target = target;
+            console.log( 'new_form initialize' );
+          },
+          enter       : function () {
+            console.log( 'new_form enter' );
+          },
+          execute     : function () {
+            console.log( 'new_form execute' );
+          },
+          cancel_new  : function () {
+            onClickCancel();
+            this.target.changeState( this.target.states.list_form );
+          },
+          create_new  : function () {
+            console.log( 'new_form create_new' );
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit        : function () {
+            console.log( 'new_form exit' );
+          }
+        },
+        detail_form : {
+          initialize  : function ( target ) {
+            this.target = target;
+            console.log( 'detail_form initialize' );
+          },
+          enter       : function () {
+            console.log( 'detail_form enter' );
+          },
+          execute     : function () {
+            console.log( 'detail_form execute' );
+          },
+          cancel_detail : function () {
+            console.log( 'detail_form cancel_detail' );
+            this.target.changeState( this.target.states.list_form );
+          },
+          edit_detail   : function () {
+            console.log( 'detail_form edit_detail' );
+            this.target.changeState( this.target.states.edit_form );
+          },
+          delete_detail : function () {
+            console.log( 'detail_form delete_detail' );
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit        : function () {
+            console.log( 'detail_form exit' );
+          }
+        },
+        edit_form   : {
+          initialize  : function ( target ) {
+            this.target = target;
+            console.log( 'edit_form initialize' );
+          },
+          enter       : function () {
+            console.log( 'edit_form enter' );
+          },
+          execute     : function () {
+            console.log( 'edit_form execute' );
+          },
+          cancel_edit : function () {
+            console.log( 'edit_form cancel_edit' );
+            this.target.changeState( this.target.states.detail_form );
+          },
+          update_edit : function () {
+            console.log( 'edit_form update_edit' );
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit        : function () {
+            console.log( 'edit_form exit' );
+          }
+        }
+      },
+      initialize  : function () {
+        this.states.start_state.initialize( this );
+        this.states.list_form.initialize( this );
+        this.states.new_form.initialize( this );
+        this.states.edit_form.initialize( this );
+        this.states.detail_form.initialize( this );
+
+        // 初期状態をセットする
+        this.state = this.states.start_state;
+      },
+      load          : function () { this.state.load(); },
+      click_new     : function () { this.state.click_new(); },
+      cancel_new    : function () { this.state.cancel_new(); },
+      create_new    : function () { this.state.create_new(); },
+      click_detail  : function () { this.state.click_detail(); },
+      cancel_detail : function () { this.state.cancel_detail(); },
+      edit_detail   : function () { this.state.edit_detail(); },
+      delete_detail : function () { this.state.delete_detail(); },
+      cancel_edit   : function () { this.state.cancel_edit(); },
+      update_edit   : function () { this.state.update_edit(); },
+      changeState : function ( state ) {
+        if ( this.state !== state ) {
+          this.state.exit();
+          this.state = state;
+          this.state.enter();
+          this.state.execute();
+        }
+      }
+    };
 
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -118,6 +289,19 @@ pal.list = (function () {
     jqueryMap = { $container  : $container };
   };
   // DOMメソッド/setJqueryMap/終了
+
+  // DOMメソッド/make_anchor_element/開始
+  make_anchor_element = function ( href, text ) {
+    var
+      element;
+
+    element = document.createElement( 'a' );
+    element.setAttribute( 'href', href );
+    element.textContent = text; 
+
+    return element;
+  };
+  // DOMメソッド/make_anchor_element/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- DOMイベントリスナー開始 -------------------
@@ -233,10 +417,10 @@ pal.list = (function () {
   onHashchange = function ( /* event */ ) {
     switch ( location.hash ) {
       case '#list/new':
-        onClickNew();
+        list_ui.click_new();
         break;
       case '#list/cancel':
-        onClickCancel();
+        list_ui.cancel_new();
         break;
       case '#list/create':
         onClickCreate();
@@ -257,6 +441,7 @@ pal.list = (function () {
       delete_anchor;
 
     current_node = event.target;
+    console.log( current_node );
 
     // nodeのclassがgになるまで親要素をたどる
     while ( current_node.getAttribute( 'class' ) !== 'g' ) {
@@ -265,17 +450,11 @@ pal.list = (function () {
 
     fragment = document.createDocumentFragment();
 
-    edit_cancel_anchor = document.createElement( 'a' );
-    edit_cancel_anchor.setAttribute( 'href', '#/list/edit-cancel' );
-    edit_cancel_anchor.textContent = 'cancel';
+    edit_cancel_anchor = make_anchor_element( '#/list/edit-cancel', 'cancel' );
 
-    edit_anchor = document.createElement( 'a' );
-    edit_anchor.setAttribute( 'href', '#/list/edit' );
-    edit_anchor.textContent = 'edit';
+    edit_anchor = make_anchor_element( '#/list/edit', 'edit' );
 
-    delete_anchor = document.createElement( 'a' );
-    delete_anchor.setAttribute( 'href', '#/list/delete' );
-    delete_anchor.textContent = 'delete';
+    delete_anchor = make_anchor_element( '#/list/delete', 'delete' );
 
     fragment.appendChild( edit_cancel_anchor );
     fragment.appendChild( edit_anchor );
@@ -348,7 +527,6 @@ pal.list = (function () {
       property,
       action_list,
       action_object_local = {},
-      // form_content,
       form_fragment,
       tmp_action_object,
       target,
@@ -436,6 +614,36 @@ pal.list = (function () {
     target = document.getElementById( 'target' );
 
     target.addEventListener( "click", onClickTarget, false );
+
+    list_ui.initialize();
+    // 最初の画面を描画する
+    list_ui.load();
+
+
+    // // create_anchorをクリックする
+    // list_ui.create_new();
+
+    // // detail_anchorをクリックする
+    // list_ui.click_detail();
+    // // detail formをキャンセルする
+    // list_ui.cancel_detail();
+
+    // // detail_anchorをクリックする
+    // list_ui.click_detail();
+    // // delete_anchorをクリックする
+    // list_ui.delete_detail();
+
+    // // detail_anchorをクリックする
+    // list_ui.click_detail();
+    // // edit_anchorをクリックする
+    // list_ui.edit_detail();
+    // // cancele_edit_ahchorをクリックする
+    // list_ui.cancel_edit();
+
+    // // edit_anchorをクリックする
+    // list_ui.edit_detail();
+    // // update_edit_ahchorをクリックする
+    // list_ui.update_edit();
 
     return true;
   };

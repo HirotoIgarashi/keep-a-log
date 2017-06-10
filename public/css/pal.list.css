@@ -41,10 +41,11 @@
   -webkit-transition  : all .3px;
   transition          : all .3s;
 }
-.pal-list-content {
-  margin        : 5px;
-  margin-bottom : 26px;
-}
+/*.pal-list-content {
+*  margin        : 5px;
+*  margin-bottom : 26px;
+*}
+*/
 #pal-list-form-content {
   margin: 12px;
 }

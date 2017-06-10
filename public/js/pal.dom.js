@@ -133,7 +133,6 @@ pal.dom = (function () {
         pal.list.initModule( jqueryMap.$section );
         break;
       default:
-        console.log( 'hashが変更されました', current_location_hash );
         break;
     }
   };

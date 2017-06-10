@@ -22,7 +22,6 @@ pal.list = (function () {
     },
     stateMap = { $container : null },
     jqueryMap = {},
-    onClickNew, onClickCancel, onClickCreate,
     make_anchor_element,
     action_object,
     action_object_list = [],
@@ -35,7 +34,8 @@ pal.list = (function () {
     sync_object_and_dom,
     sync_number_of_data,
     setJqueryMap, configModule, initModule,
-    list_ui;
+    list_ui,
+    current_node;
 
     list_ui = {
       state       : undefined,
@@ -43,32 +43,109 @@ pal.list = (function () {
         start_state : {
           initialize  : function ( target ) {
             this.target = target;
-            console.log( 'start_state initialize' );
           },
           enter       : function () {
-            console.log( 'start_state enter' );
+            return false;
           },
           execute     : function () {
             console.log( 'start_state execute' );
           },
           load        : function () {
+            var
+              property,
+              i = 0,
+              tmp_action_object,
+              action_list,
+              action_object_local = {},
+              $container,
+              form_fragment,
+              detail_anchor,
+              list_page  = pal.util_b.getTplContent( 'list-page' );
+
+            setJqueryMap();
+            $container = jqueryMap.$container;
+
+            jqueryMap.$container.html( list_page );
+
+            // action objectを生成する
+            tmp_action_object = pal.schema.makeAction(
+              action_object_local );
+
+            // form要素を取得する。event_listenerにonBlurInputをセットする
+            form_fragment = tmp_action_object.make_form_fragment(
+              onBlurInput );
+
+            jqueryMap.$form         = $container.find(
+              '.pal-list-new-form' );
+            jqueryMap.$form_content = $container.find(
+              '#pal-list-form-content' );
+            jqueryMap.$cancel       = $container.find( '#cancel' );
+            jqueryMap.$create       = $container.find( '#done' );
+            jqueryMap.$status       = $container.find( '#status' );
+            jqueryMap.$target       = $container.find( '#target' );
+
+            // form contentに追加する
+            jqueryMap.$form_content.html( form_fragment );
+
+            // action objectを削除する -> deleteでオブジェクトは削除できません。
+            // delete tmp_action_object;
+
+            // action schemaを基にformを生成する
+            // 生成結果は
+            // <form class="pal-list-form">
+            //  <label>名前:</label>
+            //  <input id="pal-list-name" name="name" type="text">
+            // </form>
+            // となるように
+
+            // localStorageからプロパティ名action-listの値を読み込む
+            action_list = pal.util_b.readObjectLocal( 'action-list' );
+
+            if ( action_list ) {
+
+              for ( i = 0; i < action_list.length; i += 1 ) {
+                // action_list[i]はaction object
+                // propertyはプロパティ
+                for ( property in action_list[i] ) {
+
+                  if ( typeof action_list[i][property] === 'string' ) {
+                    action_object_local[property] = action_list[i][property];
+                  }
+
+                }
+
+                action_object = pal.schema.makeAction( action_object_local );
+
+                // action_objectが変更されたときのコールバック関数をセットする
+                action_object.change( onChangeObject );
+
+                // changeイベントを発生させる
+                action_object.change();
+              }
+
+            }
+
+            detail_anchor = document.getElementById( 'target' );
+
+            detail_anchor.addEventListener( "click", onClickTarget, false );
+
+            // list_formステートに遷移する
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
-            console.log( 'start_state exit' );
+            return false;
           }
         },
         list_form   : {
           initialize  : function ( target ) {
             this.target = target;
-            console.log( 'list_form initialize' );
           },
           enter       : function () {
             var
               new_anchor,
               new_target;
 
-            // <a href="#/list/new">new</a>を作成する
+            // <a href="#list/new">new</a>を作成する
             new_anchor = make_anchor_element( '#list/new', 'new' );
 
             new_target = document.getElementById( "new-anchor" );
@@ -76,14 +153,26 @@ pal.list = (function () {
 
             // locationを#listに戻す
             pal.bom.setLocationHash( '#list' );
-
-            console.log( 'list_form enter' );
           },
           execute     : function () {
-            console.log( 'list_form execute' );
+            return false;
           },
           click_new     : function () {
-            onClickNew();
+            // 目的:
+            // 必須引数:
+            // オプション引数:
+            // 設定:
+            //  * action_object : Actionオブジェクトの生成
+            //  * jqueryMap.$form       : 表示する
+            // 戻り値:
+            // 例外発行: なし
+            // Actionオブジェクトを生成する
+            action_object = pal.schema.makeAction({});
+
+            // action_objectが変更されたときのコールバック関数をセットする
+            action_object.change( onChangeObject );
+
+            jqueryMap.$form.show();
 
             this.target.changeState( this.target.states.new_form );
           },
@@ -105,7 +194,6 @@ pal.list = (function () {
         new_form    : {
           initialize  : function ( target ) {
             this.target = target;
-            console.log( 'new_form initialize' );
           },
           enter       : function () {
             console.log( 'new_form enter' );
@@ -114,11 +202,63 @@ pal.list = (function () {
             console.log( 'new_form execute' );
           },
           cancel_new  : function () {
-            onClickCancel();
+            // 目的: フォームでキャンセルがクリックされた場合にフォームを隠し、
+            //       newボタンをクリック可能にする
+            // 必須引数: なし
+            // オプション引数: なし
+            // 設定:
+            //  * jqueryMap.$form       : フォームを隠す
+            // 戻り値:
+            // 例外発行: なし
+            // formの値をすべてクリアする
+            pal.util.clearFormAll();
+
+            jqueryMap.$form.hide();
+
             this.target.changeState( this.target.states.list_form );
           },
           create_new  : function () {
+            // 目的: createボタンがクリックされたときにリストに
+            //       Actionオブジェクトの内容を追加する。0.9秒待つ。
+            // 必須引数: なし
+            // オプション引数: なし
+            // 設定:
+            //  * jqueryMap.$form       : フォームを隠し、内容をクリアする
+            //  * jqueryMap.$targe      : Actionオブジェクトを表示するul要素に
+            //                            追加する
+            //  * jqueryMap.$status     : 件数を表示するdiv要素
+            //  * action_object_list    : Actionオブジェクトを格納しているリストに
+            //                            要素を追加する
+            //  * _local_id             : _local_idプロパティにtimestampをセットする
+            // 戻り値: なし
+            // 例外発行: なし
+            console.log( 'createがクリックされました' );
+
+            // _local_idプロパティにtime stampをセットする
+            action_object._local_id = pal.util_b.getTimestamp();
+
+            // changeイベントを発生させる
+            action_object.change();
+
+            // action_object_listに追加する
+            action_object_list.push( action_object );
+
+            setTimeout(
+              function () {
+
+                if ( action_object.name !== '' ) {
+                  // フォームを隠す
+                  jqueryMap.$form.hide();
+
+                  // formの値をすべてクリアする
+                  pal.util.clearFormAll();
+                }
+
+              },
+            800);
+
             console.log( 'new_form create_new' );
+
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
@@ -131,10 +271,33 @@ pal.list = (function () {
             console.log( 'detail_form initialize' );
           },
           enter       : function () {
-            console.log( 'detail_form enter' );
+            var
+              fragment,
+              edit_cancel_anchor,
+              edit_anchor,
+              delete_anchor,
+              detail_anchor;
+
+            fragment = document.createDocumentFragment();
+
+            edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'cancel' );
+
+            edit_anchor = make_anchor_element( '#list/edit', 'edit' );
+
+            delete_anchor = make_anchor_element( '#list/delete', 'delete' );
+
+            fragment.appendChild( edit_cancel_anchor );
+            fragment.appendChild( edit_anchor );
+            fragment.appendChild( delete_anchor );
+
+            current_node.firstElementChild.appendChild( fragment );
+
+            detail_anchor = document.getElementById( 'target' );
+            detail_anchor.removeEventListener( "click", onClickTarget, false );
           },
           execute     : function () {
             console.log( 'detail_form execute' );
+            // return false;
           },
           cancel_detail : function () {
             console.log( 'detail_form cancel_detail' );
@@ -155,7 +318,6 @@ pal.list = (function () {
         edit_form   : {
           initialize  : function ( target ) {
             this.target = target;
-            console.log( 'edit_form initialize' );
           },
           enter       : function () {
             console.log( 'edit_form enter' );
@@ -305,95 +467,6 @@ pal.list = (function () {
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- DOMイベントリスナー開始 -------------------
-  // DOMイベントリスナー/onClickNew/開始 -----------------------------
-  // 目的:
-  // 必須引数:
-  // オプション引数:
-  // 設定:
-  //  * action_object : Actionオブジェクトの生成
-  //  * jqueryMap.$form       : 表示する
-  //  * jqueryMap.$new_button : クリック出来なくする。 
-  // 戻り値:
-  // 例外発行: なし
-  onClickNew = function () {
-
-    // Actionオブジェクトを生成する
-    action_object = pal.schema.makeAction({});
-
-    // action_objectが変更されたときのコールバック関数をセットする
-    action_object.change( onChangeObject );
-
-    jqueryMap.$form.show();
-    jqueryMap.$new_button.prop( "disabled", true );
-  };
-  // DOMイベントリスナー/onClickNew/終了 -----------------------------
-
-  // DOMイベントリスナー/onClickCancel/開始 --------------------------
-  // 目的: フォームでキャンセルがクリックされた場合にフォームを隠し、
-  //       newボタンをクリック可能にする
-  // 必須引数: なし
-  // オプション引数: なし
-  // 設定:
-  //  * jqueryMap.$form       : フォームを隠す
-  //  * jqueryMap.$new_button : ボタンを使用可能にする
-  // 戻り値:
-  // 例外発行: なし
-  onClickCancel = function () {
-    // formの値をすべてクリアする
-    pal.util.clearFormAll();
-
-    jqueryMap.$form.hide();
-    jqueryMap.$new_button.prop( "disabled", false );
-  };
-  // DOMイベントリスナー/onClickCancel/終了 ---------------------------
-
-  // DOMイベントリスナー/onClickCreate/開始 ----------------------------
-  // 目的: 完了(Done)ボタンがクリックされたときにリストに
-  //       Actionオブジェクトの内容を追加する。0.9秒待つ。
-  // 必須引数: なし
-  // オプション引数: なし
-  // 設定:
-  //  * jqueryMap.$form       : フォームを隠し、内容をクリアする
-  //  * jqueryMap.$new_button : newボタンをdisabledにする
-  //  * jqueryMap.$targe      : Actionオブジェクトを表示するul要素に
-  //                            追加する
-  //  * jqueryMap.$status     : 件数を表示するdiv要素
-  //  * action_object_list    : Actionオブジェクトを格納しているリストに
-  //                            要素を追加する
-  //  * _local_id             : _local_idプロパティにtimestampをセットする
-  // 戻り値: なし
-  // 例外発行: なし
-  onClickCreate = function () {
-    console.log( 'createがクリックされました' );
-
-    // _local_idプロパティにtime stampをセットする
-    action_object._local_id = pal.util_b.getTimestamp();
-
-    // changeイベントを発生させる
-    action_object.change();
-
-    // action_object_listに追加する
-    action_object_list.push( action_object );
-
-    setTimeout(
-      function () {
-
-        if ( action_object.name !== '' ) {
-          // フォームを隠す
-          jqueryMap.$form.hide();
-
-          // formの値をすべてクリアする
-          pal.util.clearFormAll();
-
-          // newボタンを使用可能にする
-          jqueryMap.$new_button.prop( "disabled", false );
-        }
-
-      },
-    800);
-  };
-  // DOMイベントリスナー/onClickCreate/終了 ---------------------------
-
   // DOMイベントリスナー/onBlurInput/開始 -----------------------------
   // 目的: フォーカスが外れた時に入力された値を取得して
   //       Actionオブジェクトにセットする。
@@ -423,7 +496,13 @@ pal.list = (function () {
         list_ui.cancel_new();
         break;
       case '#list/create':
-        onClickCreate();
+        list_ui.create_new();
+        break;
+      case '#list/detail':
+        list_ui.click_detail();
+        break;
+      case '#list/cancel-detail':
+        list_ui.cancel_detail();
         break;
       default:
         break;
@@ -433,35 +512,17 @@ pal.list = (function () {
 
   // DOMイベントリスナー/onClickTarget/開始 -----------------------------
   onClickTarget = function ( event ) {
-    var
-      current_node,
-      fragment,
-      edit_cancel_anchor,
-      edit_anchor,
-      delete_anchor;
 
     current_node = event.target;
-    console.log( current_node );
 
     // nodeのclassがgになるまで親要素をたどる
     while ( current_node.getAttribute( 'class' ) !== 'g' ) {
       current_node = current_node.parentNode;
     }
+    console.log( current_node );
 
-    fragment = document.createDocumentFragment();
-
-    edit_cancel_anchor = make_anchor_element( '#/list/edit-cancel', 'cancel' );
-
-    edit_anchor = make_anchor_element( '#/list/edit', 'edit' );
-
-    delete_anchor = make_anchor_element( '#/list/delete', 'delete' );
-
-    fragment.appendChild( edit_cancel_anchor );
-    fragment.appendChild( edit_anchor );
-    fragment.appendChild( delete_anchor );
-
-    console.log( current_node.firstElementChild );
-    current_node.firstElementChild.appendChild( fragment );
+    // locationを#list/detailにする
+    pal.bom.setLocationHash( '#list/detail' );
 
   };
   // DOMイベントリスナー/onClickTarget/終了 -----------------------------
@@ -523,81 +584,14 @@ pal.list = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var
-      property,
-      action_list,
-      action_object_local = {},
-      form_fragment,
-      tmp_action_object,
-      target,
-      i = 0,
-      list_page  = pal.util_b.getTplContent( 'list-page' );
 
     stateMap.$container = $container;
-    setJqueryMap();
 
-    jqueryMap.$container.html( list_page );
+    // State Patternを初期化する
+    list_ui.initialize();
+    // 最初の画面を描画する
+    list_ui.load();
 
-    jqueryMap.$new_button   = $container.find( '#new' );
-    jqueryMap.$form         = $container.find( '.pal-list-new-form' );
-    jqueryMap.$form_content = $container.find( '#pal-list-form-content' );
-    jqueryMap.$cancel       = $container.find( '#cancel' );
-    jqueryMap.$create       = $container.find( '#done' );
-    jqueryMap.$status       = $container.find( '#status' );
-    jqueryMap.$target       = $container.find( '#target' );
-
-    // action schemaを基にformを生成する
-    // 生成結果は
-    // <form class="pal-list-form">
-    //  <label>名前:</label>
-    //  <input id="pal-list-name" name="name" type="text">
-    // </form>
-    // となるように
-
-    // action objectを生成する
-    tmp_action_object = pal.schema.makeAction( action_object_local );
-
-    // form要素を取得する。event_listenerにonBlurInputをセットする
-    form_fragment = tmp_action_object.make_form_fragment( onBlurInput );
-
-    // form contentに追加する
-    jqueryMap.$form_content.html( form_fragment );
-
-
-    // action objectを削除する -> deleteでオブジェクトは削除できません。
-    // delete tmp_action_object;
-
-    // localStorageからプロパティ名action-listの値を読み込む
-    action_list = pal.util_b.readObjectLocal( 'action-list' );
-
-    if ( action_list ) {
-
-      for ( i = 0; i < action_list.length; i += 1 ) {
-        // action_list[i]はaction object
-        // propertyはプロパティ
-        for ( property in action_list[i] ) {
-
-          if ( typeof action_list[i][property] === 'string' ) {
-            action_object_local[property] = action_list[i][property];
-          }
-
-        }
-
-        action_object = pal.schema.makeAction( action_object_local );
-
-        // action_objectが変更されたときのコールバック関数をセットする
-        action_object.change( onChangeObject );
-
-        // changeイベントを発生させる
-        action_object.change();
-      }
-
-    }
-
-    // form_content = document.getElementById( "pal-list-form-content" );
-
-    // nameフィールドにイベントリスナーを追加する
-    // form_content.addEventListener( 'blur', onBlurInput, true );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。
@@ -611,17 +605,6 @@ pal.list = (function () {
       alert("このブラウザはhashchangeイベントをサポートしていません");
     }
 
-    target = document.getElementById( 'target' );
-
-    target.addEventListener( "click", onClickTarget, false );
-
-    list_ui.initialize();
-    // 最初の画面を描画する
-    list_ui.load();
-
-
-    // // create_anchorをクリックする
-    // list_ui.create_new();
 
     // // detail_anchorをクリックする
     // list_ui.click_detail();

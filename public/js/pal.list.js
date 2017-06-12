@@ -25,7 +25,6 @@ pal.list = (function () {
     make_anchor_element,
     action_object,
     action_object_list = [],
-    // input_element,
     onBlurInput,
     onChangeObject,
     onHashchange,
@@ -48,10 +47,26 @@ pal.list = (function () {
             return false;
           },
           execute     : function () {
-            console.log( 'start_state execute' );
+            return false;
+            // console.log( 'start_state execute' );
           },
           load        : function () {
+
+            // list_formステートに遷移する
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit        : function () {
+            return false;
+          }
+        },
+        list_form   : {
+          initialize  : function ( target ) {
+            this.target = target;
+          },
+          enter       : function () {
             var
+              new_anchor,
+              new_target,
               property,
               i = 0,
               tmp_action_object,
@@ -128,25 +143,8 @@ pal.list = (function () {
             detail_anchor = document.getElementById( 'target' );
 
             detail_anchor.addEventListener( "click", onClickTarget, false );
-
-            // list_formステートに遷移する
-            this.target.changeState( this.target.states.list_form );
-          },
-          exit        : function () {
-            return false;
-          }
-        },
-        list_form   : {
-          initialize  : function ( target ) {
-            this.target = target;
-          },
-          enter       : function () {
-            var
-              new_anchor,
-              new_target;
-
             // <a href="#list/new">new</a>を作成する
-            new_anchor = make_anchor_element( '#list/new', 'new' );
+            new_anchor = make_anchor_element( '#list/new', '新規作成' );
 
             new_target = document.getElementById( "new-anchor" );
             new_target.appendChild( new_anchor );
@@ -158,6 +156,27 @@ pal.list = (function () {
             return false;
           },
           click_new     : function () {
+            this.target.changeState( this.target.states.new_form );
+          },
+          click_detail  : function () {
+            console.log( 'list_form click_detail' );
+            this.target.changeState( this.target.states.detail_form );
+          },
+          exit        : function () {
+            var
+              new_target;
+
+            new_target = document.getElementById( "new-anchor" );
+            while ( new_target.firstChild ) {
+              new_target.removeChild( new_target.firstChild );
+            }
+          }
+        },
+        new_form    : {
+          initialize  : function ( target ) {
+            this.target = target;
+          },
+          enter       : function () {
             // 目的:
             // 必須引数:
             // オプション引数:
@@ -173,30 +192,6 @@ pal.list = (function () {
             action_object.change( onChangeObject );
 
             jqueryMap.$form.show();
-
-            this.target.changeState( this.target.states.new_form );
-          },
-          click_detail  : function () {
-            console.log( 'list_form click_detail' );
-            this.target.changeState( this.target.states.detail_form );
-          },
-          exit        : function () {
-            var
-              new_target;
-
-            new_target = document.getElementById( "new-anchor" );
-            while ( new_target.firstChild ) {
-              new_target.removeChild( new_target.firstChild );
-            }
-            console.log( 'list_form exit' );
-          }
-        },
-        new_form    : {
-          initialize  : function ( target ) {
-            this.target = target;
-          },
-          enter       : function () {
-            console.log( 'new_form enter' );
           },
           execute     : function () {
             console.log( 'new_form execute' );
@@ -268,7 +263,6 @@ pal.list = (function () {
         detail_form : {
           initialize  : function ( target ) {
             this.target = target;
-            console.log( 'detail_form initialize' );
           },
           enter       : function () {
             var
@@ -280,7 +274,7 @@ pal.list = (function () {
 
             fragment = document.createDocumentFragment();
 
-            edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'cancel' );
+            edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
 
             edit_anchor = make_anchor_element( '#list/edit', 'edit' );
 
@@ -503,6 +497,12 @@ pal.list = (function () {
         break;
       case '#list/cancel-detail':
         list_ui.cancel_detail();
+        break;
+      case '#list/edit':
+        list_ui.edit_detail();
+        break;
+      case '#list/delete':
+        list_ui.delete_detail();
         break;
       default:
         break;

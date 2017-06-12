@@ -269,6 +269,7 @@ pal.schema = (function () {
     var thing = {
       name                : '',
       alternate_name      : '',
+      description         : '',
       url                 : '',
       image               : '',
       log_name            : logName,

@@ -1,6 +1,6 @@
 /*
- * pal.top.js
- * TOPページを表示する機能
+ * pal.list.js
+ * カスタムオブジェクトをリスト表示する機能
 */
 
 /*jslint          browser : true, continue  : true,
@@ -51,6 +51,9 @@ pal.list = (function () {
             // console.log( 'start_state execute' );
           },
           load        : function () {
+
+            // action objectリストを初期化する
+            action_object_list = [];
 
             // list_formステートに遷移する
             this.target.changeState( this.target.states.list_form );
@@ -136,9 +139,15 @@ pal.list = (function () {
 
                 // changeイベントを発生させる
                 action_object.change();
+
+                // リストに追加する
+                action_object_list.push( action_object );
               }
 
             }
+
+            console.log( 'action_object length: ' );
+            console.log( action_object_list.length );
 
             detail_anchor = document.getElementById( 'target' );
 
@@ -265,7 +274,13 @@ pal.list = (function () {
             this.target = target;
           },
           enter       : function () {
+            // fragment
+            //  |- edit_cancel_anchor
+            //  |- edit_anchor
+            //  |- delete_anchor
+            //
             var
+              i,
               fragment,
               edit_cancel_anchor,
               edit_anchor,
@@ -274,11 +289,24 @@ pal.list = (function () {
 
             fragment = document.createDocumentFragment();
 
+            console.log( current_node.dataset.localId );
+            for ( i = 0; i < action_object_list.length; i += 1 ) {
+              console.log( current_node.dataset.localId );
+              console.log( action_object_list[i]._local_id );
+
+              if ( action_object_list[i]._local_id === current_node.dataset.localId ) {
+                console.log( 'matchした' );
+                action_object = action_object_list[i];
+              }
+            }
+
+            console.log( action_object._local_id );
+
             edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
 
-            edit_anchor = make_anchor_element( '#list/edit', 'edit' );
+            edit_anchor = make_anchor_element( '#list/edit', '編集' );
 
-            delete_anchor = make_anchor_element( '#list/delete', 'delete' );
+            delete_anchor = make_anchor_element( '#list/delete', '削除' );
 
             fragment.appendChild( edit_cancel_anchor );
             fragment.appendChild( edit_anchor );
@@ -286,6 +314,7 @@ pal.list = (function () {
 
             current_node.firstElementChild.appendChild( fragment );
 
+            // eventListerを削除する
             detail_anchor = document.getElementById( 'target' );
             detail_anchor.removeEventListener( "click", onClickTarget, false );
           },
@@ -338,7 +367,6 @@ pal.list = (function () {
         this.states.new_form.initialize( this );
         this.states.edit_form.initialize( this );
         this.states.detail_form.initialize( this );
-
         // 初期状態をセットする
         this.state = this.states.start_state;
       },
@@ -412,7 +440,7 @@ pal.list = (function () {
     var
       fragment;
 
-    fragment = object.make_element();
+    fragment = object.make_microdata_element();
 
     element.prepend( fragment );
 
@@ -605,11 +633,6 @@ pal.list = (function () {
       alert("このブラウザはhashchangeイベントをサポートしていません");
     }
 
-
-    // // detail_anchorをクリックする
-    // list_ui.click_detail();
-    // // detail formをキャンセルする
-    // list_ui.cancel_detail();
 
     // // detail_anchorをクリックする
     // list_ui.click_detail();

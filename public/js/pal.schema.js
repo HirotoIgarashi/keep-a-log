@@ -23,7 +23,8 @@ pal.schema = (function () {
     sayHello,sayText,
     logName,
     makeFormFragment,
-    makeElement,
+    makeMicrodataElement,
+    makeDetailElement,
     makeThing,
     actionPrototype,
     makeAction,
@@ -195,31 +196,39 @@ pal.schema = (function () {
   };
   // makeFormFragment/終了
 
-  // makeElement/開始
-  makeElement = function () {
+  // makeMicrodataElement/開始
+  // 目的: カスタムオブジェクトからHTML要素を生成する
+  //       thisはオブジェクト本体
+  // 必須引数: なし
+  // オプション引数: なし
+  // 設定:
+  // 戻り値:
+  //  * fragment  : 生成したHTML要素
+  // 例外発行: なし
+  makeMicrodataElement = function () {
     var
       i,
       prop_names,
-      fragment,
       prop_element,
       list_wrapper,
       crud_wrapper,
-      schema_wrapper;
+      schema_wrapper,
+      fragment;
 
-    // プロパティの値を取得し、マップを生成する
+    // プロパティの値を取得し、リストを生成する
     prop_names = Object.getOwnPropertyNames( Object.getPrototypeOf( this ) );
     fragment = document.createDocumentFragment();
 
-    // listのwrapperを生成する
+    // listを入れるwrapperを生成する
     list_wrapper = document.createElement( 'div' );
     list_wrapper.setAttribute( 'class', 'g' );
     list_wrapper.setAttribute( 'data-local-id', this._local_id );
 
-    // crudのwrappperを生成する
+    // crudを入れるwrappperを生成する
     crud_wrapper = document.createElement( 'div' ); 
     crud_wrapper.setAttribute( 'class', 'crud_wrapper' );
 
-    // schemaのwrapperを生成する
+    // schemaを入れるwrapperを生成する
     schema_wrapper = document.createElement( 'div' );
     schema_wrapper.setAttribute( 'itemscope', '' );
     schema_wrapper.setAttribute( 'class', 'action-wrapper' );
@@ -231,6 +240,7 @@ pal.schema = (function () {
       // プロパティ値がfunctionだったら何もしない
       if ( typeof this[prop_names[i]] !== 'function' ) {
 
+        // 名前のときは改行する
         if ( prop_names[i] === 'name' ) {
           prop_element = document.createElement( 'div' );
         }
@@ -262,19 +272,26 @@ pal.schema = (function () {
 
     return fragment;
   };
-  // makeElement/終了
+  // makeMicrodataElement/終了
+
+  // makeDetailElement/開始
+  makeDetailElement = function () {
+    return false;
+  };
+  // makeDetailElement/終了
 
   // makeThingコンストラクタ
   makeThing = function( arg_map ) {
     var thing = {
-      name                : '',
-      alternate_name      : '',
-      description         : '',
-      url                 : '',
-      image               : '',
-      log_name            : logName,
-      make_form_fragment  : makeFormFragment,
-      make_element        : makeElement
+      name                    : '',
+      alternate_name          : '',
+      description             : '',
+      url                     : '',
+      image                   : '',
+      log_name                : logName,
+      make_form_fragment      : makeFormFragment,
+      make_microdata_element  : makeMicrodataElement,
+      make_detail_element     : makeDetailElement
     };
 
     extendObject( thing, arg_map );

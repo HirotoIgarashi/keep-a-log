@@ -52,8 +52,8 @@ pal.list = (function () {
           },
           load        : function () {
 
-            // action objectリストを初期化する
-            action_object_list = [];
+            // // action objectリストを初期化する
+            // action_object_list = [];
 
             // list_formステートに遷移する
             this.target.changeState( this.target.states.list_form );
@@ -72,11 +72,11 @@ pal.list = (function () {
               new_target,
               property,
               i = 0,
-              tmp_action_object,
+              // tmp_action_object,
               action_list,
               action_object_local = {},
               $container,
-              form_fragment,
+              // form_fragment,
               detail_anchor,
               list_page  = pal.util_b.getTplContent( 'list-page' );
 
@@ -85,36 +85,13 @@ pal.list = (function () {
 
             jqueryMap.$container.html( list_page );
 
-            // action objectを生成する
-            tmp_action_object = pal.schema.makeAction(
-              action_object_local );
-
-            // form要素を取得する。event_listenerにonBlurInputをセットする
-            form_fragment = tmp_action_object.make_form_fragment(
-              onBlurInput );
-
-            jqueryMap.$form         = $container.find(
-              '.pal-list-new-form' );
-            jqueryMap.$form_content = $container.find(
-              '#pal-list-form-content' );
             jqueryMap.$cancel       = $container.find( '#cancel' );
             jqueryMap.$create       = $container.find( '#done' );
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
 
-            // form contentに追加する
-            jqueryMap.$form_content.html( form_fragment );
-
-            // action objectを削除する -> deleteでオブジェクトは削除できません。
-            // delete tmp_action_object;
-
-            // action schemaを基にformを生成する
-            // 生成結果は
-            // <form class="pal-list-form">
-            //  <label>名前:</label>
-            //  <input id="pal-list-name" name="name" type="text">
-            // </form>
-            // となるように
+            // action objectリストを初期化する
+            action_object_list = [];
 
             // localStorageからプロパティ名action-listの値を読み込む
             action_list = pal.util_b.readObjectLocal( 'action-list' );
@@ -158,8 +135,6 @@ pal.list = (function () {
             new_target = document.getElementById( "new-anchor" );
             new_target.appendChild( new_anchor );
 
-            // locationを#listに戻す
-            pal.bom.setLocationHash( '#list' );
           },
           execute     : function () {
             return false;
@@ -179,6 +154,9 @@ pal.list = (function () {
             while ( new_target.firstChild ) {
               new_target.removeChild( new_target.firstChild );
             }
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
           }
         },
         new_form    : {
@@ -195,12 +173,34 @@ pal.list = (function () {
             // 戻り値:
             // 例外発行: なし
             // Actionオブジェクトを生成する
+            var
+              form_fragment,
+              action_wrapper,
+              form_wrapper,
+              new_cancel,
+              new_create;
+
             action_object = pal.schema.makeAction({});
 
             // action_objectが変更されたときのコールバック関数をセットする
             action_object.change( onChangeObject );
 
-            jqueryMap.$form.show();
+            // キャンセル、生成アンカーを生成する
+            action_wrapper = document.getElementById( 'new-action-wrapper' );
+
+            new_cancel = make_anchor_element( '#list/cancel', 'キャンセル' );
+            new_create = make_anchor_element( '#list/create', '生成' );
+
+            action_wrapper.appendChild( new_cancel );
+            action_wrapper.appendChild( new_create );
+
+            // formを生成する
+            form_wrapper = document.getElementById( 'new-form-wrapper' );
+
+            // form要素を取得する。event_listenerにonBlurInputをセットする
+            form_fragment = action_object.makeFormElement( onBlurInput );
+            form_wrapper.appendChild( form_fragment );
+
           },
           execute     : function () {
             console.log( 'new_form execute' );
@@ -217,7 +217,8 @@ pal.list = (function () {
             // formの値をすべてクリアする
             pal.util.clearFormAll();
 
-            jqueryMap.$form.hide();
+            // locationを#listに戻す
+            pal.bom.setLocationHash( '#list/list' );
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -251,9 +252,6 @@ pal.list = (function () {
               function () {
 
                 if ( action_object.name !== '' ) {
-                  // フォームを隠す
-                  jqueryMap.$form.hide();
-
                   // formの値をすべてクリアする
                   pal.util.clearFormAll();
                 }
@@ -281,26 +279,25 @@ pal.list = (function () {
             //
             var
               i,
-              fragment,
+              crud_fragment,
+              message_wrapper,
+              message_element,
+              detail_fragment,
               edit_cancel_anchor,
               edit_anchor,
               delete_anchor,
               detail_anchor;
 
-            fragment = document.createDocumentFragment();
+            // crud_wrapperの中身を生成する
+            crud_fragment = document.createDocumentFragment();
 
-            console.log( current_node.dataset.localId );
+            // local_idが一致するオブジェクトを探して
+            // action_objectにセットする
             for ( i = 0; i < action_object_list.length; i += 1 ) {
-              console.log( current_node.dataset.localId );
-              console.log( action_object_list[i]._local_id );
-
               if ( action_object_list[i]._local_id === current_node.dataset.localId ) {
-                console.log( 'matchした' );
                 action_object = action_object_list[i];
               }
             }
-
-            console.log( action_object._local_id );
 
             edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
 
@@ -308,19 +305,38 @@ pal.list = (function () {
 
             delete_anchor = make_anchor_element( '#list/delete', '削除' );
 
-            fragment.appendChild( edit_cancel_anchor );
-            fragment.appendChild( edit_anchor );
-            fragment.appendChild( delete_anchor );
+            crud_fragment.appendChild( edit_cancel_anchor );
+            crud_fragment.appendChild( edit_anchor );
+            crud_fragment.appendChild( delete_anchor );
 
-            current_node.firstElementChild.appendChild( fragment );
+            // message_wrapperを生成する
+            message_wrapper = document.createDocumentFragment();
+
+            message_element = document.createElement( 'div' );
+            message_element.setAttribute( 'class', 'message-wrapper' );
+
+            message_element.textContent = '編集するには上の編集、削除するには上の削除をクリックしてください';
+
+            message_wrapper.appendChild( message_element );
+
+            // detail_formを生成する
+            detail_fragment = action_object.makeDetailElement();
+
+            // crud_wrapperの中身を追加する
+            current_node.firstElementChild.appendChild( crud_fragment );
+
+            // message_wrapperの中身を追加する
+            current_node.appendChild( message_wrapper );
+
+            // Action Objectの中身を追加する
+            current_node.appendChild( detail_fragment );
 
             // eventListerを削除する
             detail_anchor = document.getElementById( 'target' );
             detail_anchor.removeEventListener( "click", onClickTarget, false );
           },
           execute     : function () {
-            console.log( 'detail_form execute' );
-            // return false;
+            return false;
           },
           cancel_detail : function () {
             console.log( 'detail_form cancel_detail' );
@@ -332,10 +348,28 @@ pal.list = (function () {
           },
           delete_detail : function () {
             console.log( 'detail_form delete_detail' );
-            this.target.changeState( this.target.states.list_form );
+            this.target.changeState( this.target.states.delete_form );
           },
           exit        : function () {
-            console.log( 'detail_form exit' );
+            var
+              message_wrapper,
+              i;
+
+            // .crud-wrapperの中身を削除する
+            while ( current_node.firstElementChild.firstChild ) {
+              current_node.firstElementChild.removeChild(
+                current_node.firstElementChild.firstChild );
+            }
+
+            // .message_wrapperの中身を削除する
+            message_wrapper = document.getElementsByClassName( 'message-wrapper' );
+            for ( i = 0; i < message_wrapper.length; i += 1 ) {
+              message_wrapper[i].textContent = '';
+            }
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
+
           }
         },
         edit_form   : {
@@ -359,6 +393,28 @@ pal.list = (function () {
           exit        : function () {
             console.log( 'edit_form exit' );
           }
+        },
+        delete_form   : {
+          initialize      : function ( target ) {
+            this.target = target;
+          },
+          enter           : function () {
+            console.log( 'delete_form enter' );
+          },
+          execute         : function () {
+            console.log( 'delete_form execute' );
+          },
+          cancel_delete   : function () {
+            console.log( 'delete_form cancel_edit' );
+            this.target.changeState( this.target.states.detail_form );
+          },
+          confirm_delete  : function () {
+            console.log( 'delete_form confirm-delete' );
+            this.target.changeState( this.target.states.list_form );
+          },
+          exit            : function () {
+            console.log( 'delete_form exit' );
+          }
         }
       },
       initialize  : function () {
@@ -367,19 +423,22 @@ pal.list = (function () {
         this.states.new_form.initialize( this );
         this.states.edit_form.initialize( this );
         this.states.detail_form.initialize( this );
+        this.states.delete_form.initialize( this );
         // 初期状態をセットする
         this.state = this.states.start_state;
       },
-      load          : function () { this.state.load(); },
-      click_new     : function () { this.state.click_new(); },
-      cancel_new    : function () { this.state.cancel_new(); },
-      create_new    : function () { this.state.create_new(); },
-      click_detail  : function () { this.state.click_detail(); },
-      cancel_detail : function () { this.state.cancel_detail(); },
-      edit_detail   : function () { this.state.edit_detail(); },
-      delete_detail : function () { this.state.delete_detail(); },
-      cancel_edit   : function () { this.state.cancel_edit(); },
-      update_edit   : function () { this.state.update_edit(); },
+      load            : function () { this.state.load(); },
+      click_new       : function () { this.state.click_new(); },
+      cancel_new      : function () { this.state.cancel_new(); },
+      create_new      : function () { this.state.create_new(); },
+      click_detail    : function () { this.state.click_detail(); },
+      cancel_detail   : function () { this.state.cancel_detail(); },
+      edit_detail     : function () { this.state.edit_detail(); },
+      delete_detail   : function () { this.state.delete_detail(); },
+      cancel_edit     : function () { this.state.cancel_edit(); },
+      update_edit     : function () { this.state.update_edit(); },
+      cancel_delete   : function () { this.state.cancel_delete(); },
+      confirm_delete  : function () { this.state.confirm_delete(); },
       changeState : function ( state ) {
         if ( this.state !== state ) {
           this.state.exit();
@@ -393,18 +452,6 @@ pal.list = (function () {
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
-  // ユーティリティメソッド/example_method/開始
-  // 目的:
-  // 必須引数:
-  // オプション引数:
-  // 設定:
-  // 戻り値:
-  // 例外発行: なし
-  // example_method = function () {
-  //   var example;
-  //   return example;
-  // };
-  // ユーティリティメソッド/example_method/終了
 
   // ユーティリティメソッド/save_object_remote/開始
   // 目的: オブジェクトを受け取りWebSocketにより、リモートに保存する。
@@ -440,7 +487,7 @@ pal.list = (function () {
     var
       fragment;
 
-    fragment = object.make_microdata_element();
+    fragment = object.makeMicrodataElement();
 
     element.prepend( fragment );
 
@@ -624,7 +671,8 @@ pal.list = (function () {
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。
     // そうしないと、トリガーイベントを処理できる状態になっていない。
-    // トリガーイベントはアンカーがロード状態と見なせることを保証するために使う
+    // トリガーイベントはアンカーがロード状態と見なせることを
+    // 保証するために使う
     //
     if ( window.hasOwnProperty("onhashchange") ) {
       window.addEventListener( "hashchange", onHashchange, false );
@@ -632,12 +680,6 @@ pal.list = (function () {
     else {
       alert("このブラウザはhashchangeイベントをサポートしていません");
     }
-
-
-    // // detail_anchorをクリックする
-    // list_ui.click_detail();
-    // // delete_anchorをクリックする
-    // list_ui.delete_detail();
 
     // // detail_anchorをクリックする
     // list_ui.click_detail();

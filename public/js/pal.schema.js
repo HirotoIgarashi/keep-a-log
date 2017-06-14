@@ -22,7 +22,7 @@ pal.schema = (function () {
     extendObject,
     sayHello,sayText,
     logName,
-    makeFormFragment,
+    makeFormElement,
     makeMicrodataElement,
     makeDetailElement,
     makeThing,
@@ -123,8 +123,25 @@ pal.schema = (function () {
     console.warn( this.name + ' says ' + text );
   };
   
-  // makeFromFragment/開始
-  makeFormFragment = function ( event_listener ) {
+  // makeFormElement/開始
+  // 目的: カスタムオブジェクトからform要素を生成する
+  //       thisはアクションオブジェクト
+  //
+  //       form_fragment
+  //        |- form_element
+  //          |- div_element
+  //            |- label_element
+  //            |- input_element
+  //
+  // 必須引数:
+  //  * event_listener  : input要素のイベントリスナー
+  // オプション引数: なし
+  // 設定:
+  // 戻り値:
+  //  * form_fragment  : 生成したHTML要素
+  // 例外発行: なし
+  //
+  makeFormElement = function ( event_listener ) {
     var
       prop_names,
       form_fragment,
@@ -194,7 +211,7 @@ pal.schema = (function () {
 
     return form_fragment;
   };
-  // makeFormFragment/終了
+  // makeFormElement/終了
 
   // makeMicrodataElement/開始
   // 目的: カスタムオブジェクトからHTML要素を生成する
@@ -215,9 +232,10 @@ pal.schema = (function () {
       schema_wrapper,
       fragment;
 
+    fragment = document.createDocumentFragment();
+
     // プロパティの値を取得し、リストを生成する
     prop_names = Object.getOwnPropertyNames( Object.getPrototypeOf( this ) );
-    fragment = document.createDocumentFragment();
 
     // listを入れるwrapperを生成する
     list_wrapper = document.createElement( 'div' );
@@ -237,7 +255,7 @@ pal.schema = (function () {
     // プロパティの値をセットする
     for ( i = 0; i < prop_names.length; i += 1 ) {
 
-      // プロパティ値がfunctionだったら何もしない
+      // プロパティ値がfunctionだったらスキップする
       if ( typeof this[prop_names[i]] !== 'function' ) {
 
         // 名前のときは改行する
@@ -276,22 +294,48 @@ pal.schema = (function () {
 
   // makeDetailElement/開始
   makeDetailElement = function () {
-    return false;
+    var
+      fragment,
+      prop_names,
+      i,
+      div_element,
+      prop_element;
+
+    fragment = document.createDocumentFragment();
+
+    // 全体を入れるwrpperを生成する
+    div_element = document.createElement( 'div' );
+    div_element.setAttribute( 'class', 'detail-wrapper' );
+
+    // プロパティの値を取得し、リストを生成する
+    prop_names = Object.getOwnPropertyNames( Object.getPrototypeOf( this ) );
+    for ( i = 0; i < prop_names.length; i += 1 ) {
+      // プロパティ値がfunctionだったらスキップする
+      if ( typeof this[prop_names[i]] !== 'function' ) {
+        prop_element = document.createElement( 'div' );
+        prop_element.textContent = prop_names[i] + ': ' + this[ prop_names[i] ] ;
+        div_element.appendChild( prop_element );
+      }
+    }
+
+    fragment.appendChild( div_element ) ;
+
+    return fragment;
   };
   // makeDetailElement/終了
 
   // makeThingコンストラクタ
   makeThing = function( arg_map ) {
     var thing = {
-      name                    : '',
-      alternate_name          : '',
-      description             : '',
-      url                     : '',
-      image                   : '',
-      log_name                : logName,
-      make_form_fragment      : makeFormFragment,
-      make_microdata_element  : makeMicrodataElement,
-      make_detail_element     : makeDetailElement
+      name                  : '',
+      alternate_name        : '',
+      description           : '',
+      url                   : '',
+      image                 : '',
+      log_name              : logName,
+      makeFormElement       : makeFormElement,
+      makeMicrodataElement  : makeMicrodataElement,
+      makeDetailElement     : makeDetailElement
     };
 
     extendObject( thing, arg_map );

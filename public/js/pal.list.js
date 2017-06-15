@@ -155,8 +155,6 @@ pal.list = (function () {
               new_target.removeChild( new_target.firstChild );
             }
 
-            // .action-wrapper自体を削除する
-            current_node.removeChild( current_node.lastElementChild );
           }
         },
         new_form    : {
@@ -287,6 +285,9 @@ pal.list = (function () {
               edit_anchor,
               delete_anchor,
               detail_anchor;
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
 
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
@@ -595,6 +596,8 @@ pal.list = (function () {
       current_node = current_node.parentNode;
     }
     console.log( current_node );
+
+    // local_idを求める
 
     // locationを#list/detailにする
     pal.bom.setLocationHash( '#list/detail' );

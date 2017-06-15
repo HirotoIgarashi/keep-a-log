@@ -36,6 +36,7 @@ pal.list = (function () {
     list_ui,
     current_node;
 
+    // UIの状態遷移
     list_ui = {
       state       : undefined,
       states      : {
@@ -51,10 +52,6 @@ pal.list = (function () {
             // console.log( 'start_state execute' );
           },
           load        : function () {
-
-            // // action objectリストを初期化する
-            // action_object_list = [];
-
             // list_formステートに遷移する
             this.target.changeState( this.target.states.list_form );
           },
@@ -72,12 +69,11 @@ pal.list = (function () {
               new_target,
               property,
               i = 0,
-              // tmp_action_object,
               action_list,
               action_object_local = {},
               $container,
-              // form_fragment,
               detail_anchor,
+              // テンプレートからlist-pageを読み込む
               list_page  = pal.util_b.getTplContent( 'list-page' );
 
             setJqueryMap();
@@ -90,6 +86,7 @@ pal.list = (function () {
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
 
+            // action object listの生成/開始 ----------------------------
             // action objectリストを初期化する
             action_object_list = [];
 
@@ -97,7 +94,6 @@ pal.list = (function () {
             action_list = pal.util_b.readObjectLocal( 'action-list' );
 
             if ( action_list ) {
-
               for ( i = 0; i < action_list.length; i += 1 ) {
                 // action_list[i]はaction object
                 // propertyはプロパティ
@@ -111,7 +107,10 @@ pal.list = (function () {
 
                 action_object = pal.schema.makeAction( action_object_local );
 
-                // action_objectが変更されたときのコールバック関数をセットする
+                // action_objectが変更されたときのコールバック関数を
+                // セットする
+                // onChangeObjectから呼ばれるsync_object_and_domの中で
+                // DOMに追加される。
                 action_object.change( onChangeObject );
 
                 // changeイベントを発生させる
@@ -120,8 +119,8 @@ pal.list = (function () {
                 // リストに追加する
                 action_object_list.push( action_object );
               }
-
             }
+            // action object listの生成/終了 ----------------------------
 
             console.log( 'action_object length: ' );
             console.log( action_object_list.length );
@@ -150,7 +149,9 @@ pal.list = (function () {
             var
               new_target;
 
+            // 新規作成のアンカーを削除する
             new_target = document.getElementById( "new-anchor" );
+
             while ( new_target.firstChild ) {
               new_target.removeChild( new_target.firstChild );
             }
@@ -178,9 +179,9 @@ pal.list = (function () {
               new_cancel,
               new_create;
 
-            action_object = pal.schema.makeAction({});
-
+            // action objectを生成する
             // action_objectが変更されたときのコールバック関数をセットする
+            action_object = pal.schema.makeAction({});
             action_object.change( onChangeObject );
 
             // キャンセル、生成アンカーを生成する
@@ -204,8 +205,8 @@ pal.list = (function () {
             console.log( 'new_form execute' );
           },
           cancel_new  : function () {
-            // 目的: フォームでキャンセルがクリックされた場合にフォームを隠し、
-            //       newボタンをクリック可能にする
+            // 目的: フォームでキャンセルがクリックされた場合にフォームの
+            //        値をクリアする
             // 必須引数: なし
             // オプション引数: なし
             // 設定:
@@ -235,7 +236,6 @@ pal.list = (function () {
             //  * _local_id             : _local_idプロパティにtimestampをセットする
             // 戻り値: なし
             // 例外発行: なし
-            console.log( 'createがクリックされました' );
 
             // _local_idプロパティにtime stampをセットする
             action_object._local_id = pal.util_b.getTimestamp();
@@ -248,12 +248,10 @@ pal.list = (function () {
 
             setTimeout(
               function () {
-
                 if ( action_object.name !== '' ) {
                   // formの値をすべてクリアする
                   pal.util.clearFormAll();
                 }
-
               },
             800);
 
@@ -490,6 +488,10 @@ pal.list = (function () {
 
     fragment = object.makeMicrodataElement();
 
+    // DOMツリーの中にlocal idがあるかどうかで新規か変更かを判定する処理を
+    // 追加する
+
+    // ここまで
     element.prepend( fragment );
 
   };
@@ -615,6 +617,9 @@ pal.list = (function () {
       this
     );
 
+    // サーバのMongoDBを更新する
+    save_object_remote( action_object );
+
     // DOM要素のリストに要素を追加する
     sync_object_and_dom(
       jqueryMap.$target,
@@ -626,9 +631,6 @@ pal.list = (function () {
       jqueryMap.$status,
       pal.util_b.readObjectLocal( 'action-list' )
     );
-
-    // サーバのMongoDBを更新する
-    save_object_remote( action_object );
 
   };
   // ------------------ カスタムイベントリスナー終了 ------------------

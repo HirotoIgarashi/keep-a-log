@@ -139,7 +139,7 @@ pal.list = (function () {
             return false;
           },
           click_new     : function () {
-            this.target.changeState( this.target.states.new_form );
+            this.target.changeState( this.target.states.create_form );
           },
           click_detail  : function () {
             console.log( 'list_form click_detail' );
@@ -158,7 +158,7 @@ pal.list = (function () {
 
           }
         },
-        new_form    : {
+        create_form    : {
           initialize  : function ( target ) {
             this.target = target;
           },
@@ -202,7 +202,7 @@ pal.list = (function () {
 
           },
           execute     : function () {
-            console.log( 'new_form execute' );
+            console.log( 'create_form execute' );
           },
           cancel_new  : function () {
             // 目的: フォームでキャンセルがクリックされた場合にフォームの
@@ -255,12 +255,12 @@ pal.list = (function () {
               },
             800);
 
-            console.log( 'new_form create_new' );
+            console.log( 'create_form create_new' );
 
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
-            console.log( 'new_form exit' );
+            console.log( 'create_form exit' );
           }
         },
         detail_form : {
@@ -269,7 +269,7 @@ pal.list = (function () {
           },
           enter       : function () {
             // fragment
-            //  |- edit_cancel_anchor
+            //  |- cancel_anchor
             //  |- edit_anchor
             //  |- delete_anchor
             //
@@ -279,7 +279,7 @@ pal.list = (function () {
               message_wrapper,
               message_element,
               detail_fragment,
-              edit_cancel_anchor,
+              cancel_anchor,
               edit_anchor,
               delete_anchor,
               detail_anchor;
@@ -298,13 +298,13 @@ pal.list = (function () {
               }
             }
 
-            edit_cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
+            cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
 
             edit_anchor = make_anchor_element( '#list/edit', '編集' );
 
             delete_anchor = make_anchor_element( '#list/delete', '削除' );
 
-            crud_fragment.appendChild( edit_cancel_anchor );
+            crud_fragment.appendChild( cancel_anchor );
             crud_fragment.appendChild( edit_anchor );
             crud_fragment.appendChild( delete_anchor );
 
@@ -368,7 +368,6 @@ pal.list = (function () {
 
             // .action-wrapper自体を削除する
             current_node.removeChild( current_node.lastElementChild );
-
           }
         },
         edit_form   : {
@@ -398,6 +397,68 @@ pal.list = (function () {
             this.target = target;
           },
           enter           : function () {
+            // fragment
+            //  |- delete_cancel_anchor
+            //  |- delete_confirm_anchor
+            //
+            var
+              i,
+              crud_fragment,
+              message_wrapper,
+              message_element,
+              detail_fragment,
+              cancel_anchor,
+              confirm_anchor,
+              detail_anchor;
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
+
+            // crud_wrapperの中身を生成する
+            crud_fragment = document.createDocumentFragment();
+
+            // local_idが一致するオブジェクトを探して
+            // action_objectにセットする
+            for ( i = 0; i < action_object_list.length; i += 1 ) {
+              if ( action_object_list[i]._local_id === current_node.dataset.localId ) {
+                action_object = action_object_list[i];
+              }
+            }
+
+            console.log( action_object );
+
+            cancel_anchor = make_anchor_element( '#list/cancel-delete', 'キャンセル' );
+
+            confirm_anchor = make_anchor_element( '#list/confirm-delete', '削除の確認' );
+
+            crud_fragment.appendChild( cancel_anchor );
+            crud_fragment.appendChild( confirm_anchor );
+
+            // message_wrapperを生成する
+            message_wrapper = document.createDocumentFragment();
+
+            message_element = document.createElement( 'div' );
+            message_element.setAttribute( 'class', 'message-wrapper' );
+
+            message_element.textContent = 'データを削除します。削除の確認をクリックしてください';
+
+            message_wrapper.appendChild( message_element );
+
+            // detail_formを生成する
+            detail_fragment = action_object.makeDetailElement();
+
+            // crud_wrapperの中身を追加する
+            current_node.firstElementChild.appendChild( crud_fragment );
+
+            // message_wrapperの中身を追加する
+            current_node.appendChild( message_wrapper );
+
+            // Action Objectの中身を追加する
+            current_node.appendChild( detail_fragment );
+
+            // eventListerを削除する
+            detail_anchor = document.getElementById( 'target' );
+            detail_anchor.removeEventListener( "click", onClickTarget, false );
             console.log( 'delete_form enter' );
           },
           execute         : function () {
@@ -408,18 +469,38 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_delete  : function () {
-            console.log( 'delete_form confirm-delete' );
+            console.log( action_object._local_id );
+            action_object.change();
+            // delete action_object;
+
             this.target.changeState( this.target.states.list_form );
           },
           exit            : function () {
-            console.log( 'delete_form exit' );
+            var
+              message_wrapper,
+              i;
+
+            // .crud-wrapperの中身を削除する
+            while ( current_node.firstElementChild.firstChild ) {
+              current_node.firstElementChild.removeChild(
+                current_node.firstElementChild.firstChild );
+            }
+
+            // .message_wrapperの中身を削除する
+            message_wrapper = document.getElementsByClassName( 'message-wrapper' );
+            for ( i = 0; i < message_wrapper.length; i += 1 ) {
+              message_wrapper[i].textContent = '';
+            }
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
           }
         }
       },
       initialize  : function () {
         this.states.start_state.initialize( this );
         this.states.list_form.initialize( this );
-        this.states.new_form.initialize( this );
+        this.states.create_form.initialize( this );
         this.states.edit_form.initialize( this );
         this.states.detail_form.initialize( this );
         this.states.delete_form.initialize( this );
@@ -582,6 +663,12 @@ pal.list = (function () {
       case '#list/delete':
         list_ui.delete_detail();
         break;
+      case '#list/cancel-delete':
+        list_ui.cancel_delete();
+        break;
+      case '#list/confirm-delete':
+        list_ui.confirm_delete();
+        break;
       default:
         break;
     }
@@ -686,8 +773,6 @@ pal.list = (function () {
       alert("このブラウザはhashchangeイベントをサポートしていません");
     }
 
-    // // detail_anchorをクリックする
-    // list_ui.click_detail();
     // // edit_anchorをクリックする
     // list_ui.edit_detail();
     // // cancele_edit_ahchorをクリックする

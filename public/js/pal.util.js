@@ -22,6 +22,7 @@ pal.util = (function () {
   var
     makeError,
     setConfigMap,
+    addChange,
     clearFormAll,
     clearForm,
     clearElement;
@@ -46,6 +47,29 @@ pal.util = (function () {
     return error;
   };
   // パブリックコンストラクタ/makeError/終了
+
+  // ユーティリティメソッド/addChange/開始
+  addChange = function ( ob ) {
+    var i;
+
+    ob.change = function ( callback ) {
+      if ( callback ) {
+        if ( !this._change ) {
+          this._change = [];
+        }
+        this._change.push( callback );
+      }
+      else {
+        if ( !this._change ) {
+          return;
+        }
+        for ( i = 0; i < this._change.length; i++ ) {
+          this._change[i].apply( this );
+        }
+      }
+    };
+  };
+  // ユーティリティメソッド/addChange/終了
 
   // パブリックメソッド/setConfigMap/開始
   // 目的: 機能モジュールで構成を行うための共通コード
@@ -135,6 +159,7 @@ pal.util = (function () {
 
   return {
     makeError     : makeError,
+    addChange     : addChange,
     setConfigMap  : setConfigMap,
     clearFormAll  : clearFormAll
   };

@@ -24,7 +24,7 @@ pal.list = (function () {
     jqueryMap = {},
     make_anchor_element,
     action_object,
-    action_object_list = [],
+    action_object_list,
     onBlurInput,
     onChangeObject,
     onHashchange,
@@ -107,20 +107,24 @@ pal.list = (function () {
 
                 action_object = pal.schema.makeAction( action_object_local );
 
-                // action_objectが変更されたときのコールバック関数を
-                // セットする
-                // onChangeObjectから呼ばれるsync_object_and_domの中で
-                // DOMに追加される。
-                action_object.change( onChangeObject );
-
-                // changeイベントを発生させる
-                action_object.change();
-
                 // リストに追加する
                 action_object_list.push( action_object );
               }
             }
             // action object listの生成/終了 ----------------------------
+ 
+            // change関数を追加する
+            pal.util.addChange( action_object_list );
+
+            // action_objectが変更されたときのコールバック関数を
+            // セットする
+            // onChangeObjectから呼ばれるsync_object_and_domの中で
+            // DOMに追加される。
+            // コールバック関数を追加する
+            action_object_list.change( onChangeObject );
+
+            // changeイベントを発生させる
+            action_object_list.change();
 
             console.log( 'action_object length: ' );
             console.log( action_object_list.length );
@@ -182,7 +186,6 @@ pal.list = (function () {
             // action objectを生成する
             // action_objectが変更されたときのコールバック関数をセットする
             action_object = pal.schema.makeAction({});
-            action_object.change( onChangeObject );
 
             // キャンセル、生成アンカーを生成する
             action_wrapper = document.getElementById( 'new-action-wrapper' );
@@ -240,11 +243,11 @@ pal.list = (function () {
             // _local_idプロパティにtime stampをセットする
             action_object._local_id = pal.util_b.getTimestamp();
 
-            // changeイベントを発生させる
-            action_object.change();
-
             // action_object_listに追加する
             action_object_list.push( action_object );
+
+            // chageイベントを発生させる
+            action_object_list.change();
 
             setTimeout(
               function () {
@@ -425,8 +428,6 @@ pal.list = (function () {
               }
             }
 
-            console.log( action_object );
-
             cancel_anchor = make_anchor_element( '#list/cancel-delete', 'キャンセル' );
 
             confirm_anchor = make_anchor_element( '#list/confirm-delete', '削除の確認' );
@@ -469,9 +470,26 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_delete  : function () {
-            console.log( action_object._local_id );
-            action_object.change();
-            // delete action_object;
+            var
+              i,
+              index;
+
+            for ( i = 0; i < action_object_list.length; i += 1  ) {
+              if ( action_object_list[i]._local_id === action_object._local_id ) {
+                index = i;
+                break;
+              }
+            }
+
+            console.log( index );
+
+            if ( index ) {
+              action_object_list.splice( index, 1 );
+            }
+
+            console.log( action_object_list );
+            // chageイベントを発生させる
+            action_object_list.change();
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -563,17 +581,20 @@ pal.list = (function () {
   // 設定:
   // 戻り値:
   // 例外発行: なし
-  sync_object_and_dom = function ( element, object ) {
+  sync_object_and_dom = function ( element, action_list ) {
     var
+      i,
       fragment;
 
-    fragment = object.makeMicrodataElement();
+    for ( i = 0; i < action_list.length; i += 1 ) {
+      fragment = action_list[i].makeMicrodataElement();
+      element.prepend( fragment );
+    }
 
     // DOMツリーの中にlocal idがあるかどうかで新規か変更かを判定する処理を
     // 追加する
 
     // ここまで
-    element.prepend( fragment );
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了

@@ -17,7 +17,6 @@ pal.schema = (function () {
   //--------------------- モジュールスコープ変数開始 -----------------
   var
     configModule, initModule,
-    addChange,
     objectCreate,
     extendObject,
     sayHello,sayText,
@@ -47,29 +46,6 @@ pal.schema = (function () {
   //   return example;
   // };
   // ユーティリティメソッド/example_method/終了
-
-  // ユーティリティメソッド/addChange/開始
-  addChange = function ( ob ) {
-    var i;
-
-    ob.change = function ( callback ) {
-      if ( callback ) {
-        if ( !this._change ) {
-          this._change = [];
-        }
-        this._change.push( callback );
-      }
-      else {
-        if ( !this._change ) {
-          return;
-        }
-        for ( i = 0; i < this._change.length; i++ ) {
-          this._change[i].apply( this );
-        }
-      }
-    };
-  };
-  // ユーティリティメソッド/addChange/終了
 
   // ユーティリティメソッド/objectCreate/開始
   // 目的:  継承を設定するユーティリティ関数
@@ -357,7 +333,7 @@ pal.schema = (function () {
     extendObject( action, arg_map );
   
     // actionオブジェクトにchange関数を追加する
-    addChange( action );
+    // addChange( action );
 
     return action;
   

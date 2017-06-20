@@ -70,7 +70,7 @@ pal.list = (function () {
               property,
               i = 0,
               action_list,
-              action_object_local = {},
+              object_local = {},
               $container,
               detail_anchor,
               // テンプレートからlist-pageを読み込む
@@ -100,12 +100,12 @@ pal.list = (function () {
                 for ( property in action_list[i] ) {
 
                   if ( typeof action_list[i][property] === 'string' ) {
-                    action_object_local[property] = action_list[i][property];
+                    object_local[property] = action_list[i][property];
                   }
 
                 }
 
-                action_object = pal.schema.makeAction( action_object_local );
+                action_object = pal.schema.makeAction( object_local );
 
                 // リストに追加する
                 action_object_list.push( action_object );
@@ -126,8 +126,8 @@ pal.list = (function () {
             // changeイベントを発生させる
             action_object_list.change();
 
-            console.log( 'action_object length: ' );
-            console.log( action_object_list.length );
+            // console.log( 'action_object length: ' );
+            // console.log( action_object_list.length );
 
             detail_anchor = document.getElementById( 'target' );
 
@@ -146,7 +146,6 @@ pal.list = (function () {
             this.target.changeState( this.target.states.create_form );
           },
           click_detail  : function () {
-            console.log( 'list_form click_detail' );
             this.target.changeState( this.target.states.detail_form );
           },
           exit        : function () {
@@ -207,7 +206,7 @@ pal.list = (function () {
           execute     : function () {
             console.log( 'create_form execute' );
           },
-          cancel_new  : function () {
+          cancel_create  : function () {
             // 目的: フォームでキャンセルがクリックされた場合にフォームの
             //        値をクリアする
             // 必須引数: なし
@@ -224,7 +223,7 @@ pal.list = (function () {
 
             this.target.changeState( this.target.states.list_form );
           },
-          create_new  : function () {
+          confirm_create  : function () {
             // 目的: createボタンがクリックされたときにリストに
             //       Actionオブジェクトの内容を追加する。0.9秒待つ。
             // 必須引数: なし
@@ -258,7 +257,7 @@ pal.list = (function () {
               },
             800);
 
-            console.log( 'create_form create_new' );
+            console.log( 'create_form confirm_create' );
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -460,7 +459,6 @@ pal.list = (function () {
             // eventListerを削除する
             detail_anchor = document.getElementById( 'target' );
             detail_anchor.removeEventListener( "click", onClickTarget, false );
-            console.log( 'delete_form enter' );
           },
           execute         : function () {
             console.log( 'delete_form execute' );
@@ -472,18 +470,23 @@ pal.list = (function () {
           confirm_delete  : function () {
             var
               i,
+              find_flag = false,
               index;
 
+            // local idで一致しているものを探す
             for ( i = 0; i < action_object_list.length; i += 1  ) {
               if ( action_object_list[i]._local_id === action_object._local_id ) {
                 index = i;
+                find_flag = true;
                 break;
               }
             }
 
             console.log( index );
 
-            if ( index ) {
+            console.log( action_object_list );
+
+            if ( find_flag ) {
               action_object_list.splice( index, 1 );
             }
 
@@ -527,8 +530,8 @@ pal.list = (function () {
       },
       load            : function () { this.state.load(); },
       click_new       : function () { this.state.click_new(); },
-      cancel_new      : function () { this.state.cancel_new(); },
-      create_new      : function () { this.state.create_new(); },
+      cancel_create      : function () { this.state.cancel_create(); },
+      confirm_create      : function () { this.state.confirm_create(); },
       click_detail    : function () { this.state.click_detail(); },
       cancel_detail   : function () { this.state.cancel_detail(); },
       edit_detail     : function () { this.state.edit_detail(); },
@@ -667,10 +670,10 @@ pal.list = (function () {
         list_ui.click_new();
         break;
       case '#list/cancel':
-        list_ui.cancel_new();
+        list_ui.cancel_create();
         break;
       case '#list/create':
-        list_ui.create_new();
+        list_ui.confirm_create();
         break;
       case '#list/detail':
         list_ui.click_detail();

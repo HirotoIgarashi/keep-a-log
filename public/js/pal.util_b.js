@@ -287,58 +287,16 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値:
   // 例外発行: なし
-  createObjectLocal = function ( local_storage_key, object, callback ) {
-    var
-      i,
-      property,
-      found_index,
-      object_list,
-      copy_object = {};
-
-    // console.log( 'createObjectLocalが呼ばれました' );
-
-    // プロパティの値がstringかつ値がある場合のみcopy_objectにコピーする
-    for ( property in object ) {
-
-      if ( typeof object[property] === 'string' && object[property] !== '' ) {
-        copy_object[property] = object[property];
-      }
-
-    }
-
-    // keyの値をlocalStorageから読み込む
-    object_list = JSON.parse(
-      window.localStorage.getItem( local_storage_key )
-    );
-
-    if ( ! object_list ) {
-      object_list = [];
-    }
-
-    // localStorageに同じ_local_idがある場合はindexを取得する
-    for ( i = 0; i < object_list.length; i += 1 ) {
-      if ( object_list[i]._local_id === copy_object._local_id ) {
-        found_index = i;
-      }
-    }
-
-    // indexがある場合は上書きし、ない場合は追加する
-    if ( found_index !== undefined ) {
-      // リストのオブジェクトを置き換える
-      object_list[found_index] = copy_object;
-    }
-    else {
-      // リストにobjectを追加する
-      object_list.push( copy_object );
-    }
+  createObjectLocal = function ( local_storage_key, list, callback ) {
 
     // localStorageにリストを追加/上書きする
     window.localStorage
-      .setItem( local_storage_key, JSON.stringify( object_list ) );
+      .setItem( local_storage_key, JSON.stringify( list ) );
 
     if ( callback ) {
-      callback( object );
+      callback( list );
     }
+
   };
   // ユーティリティメソッド/createObjectLocal/終了
 
@@ -364,7 +322,6 @@ pal.util_b = (function () {
   // 例外発行: なし
   readObjectLocal = function ( local_storage_key ) {
     var item;
-    // console.log( 'readObjectLocalが呼ばれました' );
 
     // localStorageからaction-listの値を読み込む
     item = window.localStorage.getItem( local_storage_key );

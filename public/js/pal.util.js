@@ -68,6 +68,7 @@ pal.util = (function () {
         }
       }
     };
+
   };
   // ユーティリティメソッド/addChange/終了
 

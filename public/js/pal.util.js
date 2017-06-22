@@ -25,7 +25,8 @@ pal.util = (function () {
     addChange,
     clearFormAll,
     clearForm,
-    clearElement;
+    clearElement,
+    removeElementById;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -158,10 +159,31 @@ pal.util = (function () {
     }
   };
 
+  // パブリックメソッド/removeElementById/開始
+  // 目的: 引数のid値を持つHTML要素の下位の要素をすべて削除する
+  // 引数:
+  //  * element_id  : idの値
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  removeElementById = function ( element_id ) {
+    var
+      element;
+
+    // 新規作成のアンカーを削除する
+    element = document.getElementById( element_id );
+
+    while ( element.firstChild ) {
+      element.removeChild( element.firstChild );
+    }
+  };
+  // パブリックメソッド/removeElementById/終了
+
   return {
-    makeError     : makeError,
-    addChange     : addChange,
-    setConfigMap  : setConfigMap,
-    clearFormAll  : clearFormAll
+    makeError         : makeError,
+    addChange         : addChange,
+    setConfigMap      : setConfigMap,
+    clearFormAll      : clearFormAll,
+    removeElementById : removeElementById
   };
 }());

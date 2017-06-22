@@ -49,7 +49,6 @@ pal.list = (function () {
           },
           execute     : function () {
             return false;
-            // console.log( 'start_state execute' );
           },
           load        : function () {
             // list_formステートに遷移する
@@ -139,26 +138,18 @@ pal.list = (function () {
             new_target.appendChild( new_anchor );
 
           },
-          execute     : function () {
+          execute : function () {
             return false;
           },
-          click_new     : function () {
+          show_create_form  : function () {
             this.target.changeState( this.target.states.create_form );
           },
-          click_detail  : function () {
+          show_detail_form  : function () {
             this.target.changeState( this.target.states.detail_form );
           },
-          exit        : function () {
-            var
-              new_target;
-
+          exit  : function () {
             // 新規作成のアンカーを削除する
-            new_target = document.getElementById( "new-anchor" );
-
-            while ( new_target.firstChild ) {
-              new_target.removeChild( new_target.firstChild );
-            }
-
+            pal.util.removeElementById( 'new-anchor' );
           }
         },
         create_form    : {
@@ -204,7 +195,7 @@ pal.list = (function () {
 
           },
           execute     : function () {
-            console.log( 'create_form execute' );
+            return false;
           },
           cancel_create  : function () {
             // 目的: フォームでキャンセルがクリックされた場合にフォームの
@@ -257,12 +248,10 @@ pal.list = (function () {
               },
             800);
 
-            console.log( 'create_form confirm_create' );
-
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
-            console.log( 'create_form exit' );
+            return false;
           }
         },
         detail_form : {
@@ -340,15 +329,13 @@ pal.list = (function () {
             return false;
           },
           cancel_detail : function () {
-            console.log( 'detail_form cancel_detail' );
             this.target.changeState( this.target.states.list_form );
           },
-          edit_detail   : function () {
-            console.log( 'detail_form edit_detail' );
-            this.target.changeState( this.target.states.edit_form );
+          show_update_form   : function () {
+            console.log( 'detail_form show_update_form' );
+            this.target.changeState( this.target.states.update_form );
           },
-          delete_detail : function () {
-            console.log( 'detail_form delete_detail' );
+          show_delete_form : function () {
             this.target.changeState( this.target.states.delete_form );
           },
           exit        : function () {
@@ -372,26 +359,26 @@ pal.list = (function () {
             current_node.removeChild( current_node.lastElementChild );
           }
         },
-        edit_form   : {
+        update_form   : {
           initialize  : function ( target ) {
             this.target = target;
           },
           enter       : function () {
-            console.log( 'edit_form enter' );
+            console.log( 'update_form enter' );
           },
           execute     : function () {
-            console.log( 'edit_form execute' );
+            console.log( 'update_form execute' );
           },
-          cancel_edit : function () {
-            console.log( 'edit_form cancel_edit' );
+          cancel_update : function () {
+            console.log( 'update_form cancel_update' );
             this.target.changeState( this.target.states.detail_form );
           },
-          update_edit : function () {
-            console.log( 'edit_form update_edit' );
+          confirm_update : function () {
+            console.log( 'update_form confirm_update' );
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
-            console.log( 'edit_form exit' );
+            console.log( 'update_form exit' );
           }
         },
         delete_form   : {
@@ -461,10 +448,9 @@ pal.list = (function () {
             detail_anchor.removeEventListener( "click", onClickTarget, false );
           },
           execute         : function () {
-            console.log( 'delete_form execute' );
+            return false;
           },
           cancel_delete   : function () {
-            console.log( 'delete_form cancel_edit' );
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_delete  : function () {
@@ -482,15 +468,10 @@ pal.list = (function () {
               }
             }
 
-            console.log( index );
-
-            console.log( action_object_list );
-
             if ( find_flag ) {
               action_object_list.splice( index, 1 );
             }
 
-            console.log( action_object_list );
             // chageイベントを発生させる
             action_object_list.change();
 
@@ -522,24 +503,24 @@ pal.list = (function () {
         this.states.start_state.initialize( this );
         this.states.list_form.initialize( this );
         this.states.create_form.initialize( this );
-        this.states.edit_form.initialize( this );
+        this.states.update_form.initialize( this );
         this.states.detail_form.initialize( this );
         this.states.delete_form.initialize( this );
         // 初期状態をセットする
         this.state = this.states.start_state;
       },
       load            : function () { this.state.load(); },
-      click_new       : function () { this.state.click_new(); },
-      cancel_create      : function () { this.state.cancel_create(); },
-      confirm_create      : function () { this.state.confirm_create(); },
-      click_detail    : function () { this.state.click_detail(); },
-      cancel_detail   : function () { this.state.cancel_detail(); },
-      edit_detail     : function () { this.state.edit_detail(); },
-      delete_detail   : function () { this.state.delete_detail(); },
-      cancel_edit     : function () { this.state.cancel_edit(); },
-      update_edit     : function () { this.state.update_edit(); },
-      cancel_delete   : function () { this.state.cancel_delete(); },
-      confirm_delete  : function () { this.state.confirm_delete(); },
+      show_create_form  : function () { this.state.show_create_form(); },
+      cancel_create     : function () { this.state.cancel_create(); },
+      confirm_create    : function () { this.state.confirm_create(); },
+      show_detail_form  : function () { this.state.show_detail_form(); },
+      cancel_detail     : function () { this.state.cancel_detail(); },
+      show_update_form  : function () { this.state.show_update_form(); },
+      show_delete_form  : function () { this.state.show_delete_form(); },
+      cancel_update     : function () { this.state.cancel_update(); },
+      confirm_update    : function () { this.state.confirm_update(); },
+      cancel_delete     : function () { this.state.cancel_delete(); },
+      confirm_delete    : function () { this.state.confirm_delete(); },
       changeState : function ( state ) {
         if ( this.state !== state ) {
           this.state.exit();
@@ -667,7 +648,7 @@ pal.list = (function () {
   onHashchange = function ( /* event */ ) {
     switch ( location.hash ) {
       case '#list/new':
-        list_ui.click_new();
+        list_ui.show_create_form();
         break;
       case '#list/cancel':
         list_ui.cancel_create();
@@ -676,16 +657,16 @@ pal.list = (function () {
         list_ui.confirm_create();
         break;
       case '#list/detail':
-        list_ui.click_detail();
+        list_ui.show_detail_form();
         break;
       case '#list/cancel-detail':
         list_ui.cancel_detail();
         break;
       case '#list/edit':
-        list_ui.edit_detail();
+        list_ui.show_update_form();
         break;
       case '#list/delete':
-        list_ui.delete_detail();
+        list_ui.show_delete_form();
         break;
       case '#list/cancel-delete':
         list_ui.cancel_delete();
@@ -708,9 +689,6 @@ pal.list = (function () {
     while ( current_node.getAttribute( 'class' ) !== 'g' ) {
       current_node = current_node.parentNode;
     }
-    console.log( current_node );
-
-    // local_idを求める
 
     // locationを#list/detailにする
     pal.bom.setLocationHash( '#list/detail' );
@@ -796,16 +774,6 @@ pal.list = (function () {
     else {
       alert("このブラウザはhashchangeイベントをサポートしていません");
     }
-
-    // // edit_anchorをクリックする
-    // list_ui.edit_detail();
-    // // cancele_edit_ahchorをクリックする
-    // list_ui.cancel_edit();
-
-    // // edit_anchorをクリックする
-    // list_ui.edit_detail();
-    // // update_edit_ahchorをクリックする
-    // list_ui.update_edit();
 
     return true;
   };

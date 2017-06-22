@@ -26,7 +26,8 @@ pal.util = (function () {
     clearFormAll,
     clearForm,
     clearElement,
-    removeElementById;
+    removeElementById,
+    removeElement;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -179,11 +180,26 @@ pal.util = (function () {
   };
   // パブリックメソッド/removeElementById/終了
 
+  // パブリックメソッド/removeElementByElement/開始
+  // 目的: 引数のHTML要素の下位の要素をすべて削除する
+  // 引数:
+  //  * element  : HTML要素。この下の要素をすべて削除する
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  removeElement = function ( element ) {
+    while ( element.firstChild ) {
+      element.removeChild( element.firstChild );
+    }
+  };
+  // パブリックメソッド/removeElementById/終了
+
   return {
     makeError         : makeError,
     addChange         : addChange,
     setConfigMap      : setConfigMap,
     clearFormAll      : clearFormAll,
-    removeElementById : removeElementById
+    removeElementById : removeElementById,
+    removeElement     : removeElement
   };
 }());

@@ -125,9 +125,6 @@ pal.list = (function () {
             // changeイベントを発生させる
             action_object_list.change();
 
-            // console.log( 'action_object length: ' );
-            // console.log( action_object_list.length );
-
             detail_anchor = document.getElementById( 'target' );
 
             detail_anchor.addEventListener( "click", onClickTarget, false );
@@ -192,7 +189,6 @@ pal.list = (function () {
             // form要素を取得する。event_listenerにonBlurInputをセットする
             form_fragment = action_object.makeFormElement( onBlurInput );
             form_wrapper.appendChild( form_fragment );
-
           },
           execute     : function () {
             return false;
@@ -344,10 +340,7 @@ pal.list = (function () {
               i;
 
             // .crud-wrapperの中身を削除する
-            while ( current_node.firstElementChild.firstChild ) {
-              current_node.firstElementChild.removeChild(
-                current_node.firstElementChild.firstChild );
-            }
+            pal.util.removeElement( current_node.firstElementChild );
 
             // .message_wrapperの中身を削除する
             message_wrapper = document.getElementsByClassName( 'message-wrapper' );
@@ -364,7 +357,36 @@ pal.list = (function () {
             this.target = target;
           },
           enter       : function () {
-            console.log( 'update_form enter' );
+            // 目的:
+            // 必須引数:
+            // オプション引数:
+            // 設定:
+            //  * action_object : Actionオブジェクトの生成
+            //  * jqueryMap.$form       : 表示する
+            // 戻り値:
+            // 例外発行: なし
+            // Actionオブジェクトを生成する
+            var
+              // form_fragment,
+              target,
+              // form_wrapper,
+              cancel_update,
+              confirm_update;
+
+            // キャンセル、アップデートアンカーを生成する
+            cancel_update = make_anchor_element( '#list/cancel-update', 'キャンセル' );
+            confirm_update = make_anchor_element( '#list/confirm-update', '更新の確認' );
+
+            // crud_wrapperの中身を追加する
+            current_node.firstElementChild.appendChild( cancel_update );
+            current_node.firstElementChild.appendChild( confirm_update );
+
+            // formを生成する
+            // form_wrapper = document.getElementById( 'new-form-wrapper' );
+
+            // form要素を取得する。event_listenerにonBlurInputをセットする
+            // form_fragment = action_object.makeFormElement( onBlurInput );
+            // form_wrapper.appendChild( form_fragment );
           },
           execute     : function () {
             console.log( 'update_form execute' );
@@ -378,7 +400,8 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
-            console.log( 'update_form exit' );
+            // crud-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild );
           }
         },
         delete_form   : {
@@ -483,10 +506,11 @@ pal.list = (function () {
               i;
 
             // .crud-wrapperの中身を削除する
-            while ( current_node.firstElementChild.firstChild ) {
-              current_node.firstElementChild.removeChild(
-                current_node.firstElementChild.firstChild );
-            }
+            pal.util.removeElement( current_node.firstElementChild );
+            // while ( current_node.firstElementChild.firstChild ) {
+            //   current_node.firstElementChild.removeChild(
+            //     current_node.firstElementChild.firstChild );
+            // }
 
             // .message_wrapperの中身を削除する
             message_wrapper = document.getElementsByClassName( 'message-wrapper' );
@@ -673,6 +697,12 @@ pal.list = (function () {
         break;
       case '#list/confirm-delete':
         list_ui.confirm_delete();
+        break;
+      case '#list/cancel-update':
+        list_ui.cancel_update();
+        break;
+      case '#list/confirm-update':
+        list_ui.confirm_update();
         break;
       default:
         break;

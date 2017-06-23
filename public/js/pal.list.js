@@ -328,7 +328,6 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           show_update_form   : function () {
-            console.log( 'detail_form show_update_form' );
             this.target.changeState( this.target.states.update_form );
           },
           show_delete_form : function () {
@@ -368,7 +367,6 @@ pal.list = (function () {
             // Actionオブジェクトを生成する
             var
               // form_fragment,
-              target,
               // form_wrapper,
               cancel_update,
               confirm_update;

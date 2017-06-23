@@ -160,6 +160,9 @@ pal.schema = (function () {
         input_element.setAttribute( 'name', prop_names[i] );
         input_element.setAttribute( 'class', 'pal-list-input' );
 
+        // 値をセットする
+        input_element.value = this[prop_names[i]];
+
         // プロバティの値のタイプがDateだったら'datetime-local'をセットする
         // if ( this[prop_names[i]] instanceof Date ) {
         if ( date_type_list.indexOf( prop_names[i] ) >= 0 ) {

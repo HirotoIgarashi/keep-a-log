@@ -115,11 +115,10 @@ pal.list = (function () {
             // change関数を追加する
             pal.util.addChange( action_object_list );
 
-            // action_objectが変更されたときのコールバック関数を
-            // セットする
+            // action_objectが変更されたときのコールバック関数
+            // onChangeObjectをセットする
             // onChangeObjectから呼ばれるsync_object_and_domの中で
-            // DOMに追加される。
-            // コールバック関数を追加する
+            // DOMに追加する
             action_object_list.change( onChangeObject );
 
             // changeイベントを発生させる
@@ -166,22 +165,25 @@ pal.list = (function () {
             var
               form_fragment,
               action_wrapper,
+              action_fragment,
               form_wrapper,
               new_cancel,
               new_create;
 
             // action objectを生成する
-            // action_objectが変更されたときのコールバック関数をセットする
             action_object = pal.schema.makeAction({});
 
             // キャンセル、生成アンカーを生成する
             action_wrapper = document.getElementById( 'new-action-wrapper' );
+            action_fragment = document.createDocumentFragment();
 
             new_cancel = make_anchor_element( '#list/cancel', 'キャンセル' );
-            new_create = make_anchor_element( '#list/create', '生成' );
+            new_create = make_anchor_element( '#list/create', '作成の確認' );
 
-            action_wrapper.appendChild( new_cancel );
-            action_wrapper.appendChild( new_create );
+            action_fragment.appendChild( new_cancel );
+            action_fragment.appendChild( new_create );
+
+            action_wrapper.appendChild( action_fragment );
 
             // formを生成する
             form_wrapper = document.getElementById( 'new-form-wrapper' );
@@ -356,35 +358,37 @@ pal.list = (function () {
             this.target = target;
           },
           enter       : function () {
-            // 目的:
+            // 目的: オブジェクトを更新するフォームを作成・表示する
             // 必須引数:
             // オプション引数:
             // 設定:
             //  * action_object : Actionオブジェクトの生成
-            //  * jqueryMap.$form       : 表示する
             // 戻り値:
             // 例外発行: なし
             // Actionオブジェクトを生成する
             var
-              // form_fragment,
-              // form_wrapper,
+              action_fragment,
+              form_fragment,
               cancel_update,
-              confirm_update;
+              confirm_update,
+              property;
 
             // キャンセル、アップデートアンカーを生成する
+            action_fragment = document.createDocumentFragment();
             cancel_update = make_anchor_element( '#list/cancel-update', 'キャンセル' );
             confirm_update = make_anchor_element( '#list/confirm-update', '更新の確認' );
+            action_fragment.appendChild( cancel_update );
+            action_fragment.appendChild( confirm_update );
 
             // crud_wrapperの中身を追加する
-            current_node.firstElementChild.appendChild( cancel_update );
-            current_node.firstElementChild.appendChild( confirm_update );
+            current_node.firstElementChild.appendChild( action_fragment );
 
             // formを生成する
-            // form_wrapper = document.getElementById( 'new-form-wrapper' );
-
             // form要素を取得する。event_listenerにonBlurInputをセットする
-            // form_fragment = action_object.makeFormElement( onBlurInput );
-            // form_wrapper.appendChild( form_fragment );
+            form_fragment = action_object.makeFormElement( onBlurInput );
+
+            // formを表示する
+            current_node.appendChild( form_fragment );
           },
           execute     : function () {
             console.log( 'update_form execute' );
@@ -400,6 +404,7 @@ pal.list = (function () {
           exit        : function () {
             // crud-wrapperの中身を削除する
             pal.util.removeElement( current_node.firstElementChild );
+            pal.util.removeElement( current_node.lastElementChild );
           }
         },
         delete_form   : {

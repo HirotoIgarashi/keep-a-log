@@ -370,8 +370,7 @@ pal.list = (function () {
               action_fragment,
               form_fragment,
               cancel_update,
-              confirm_update,
-              property;
+              confirm_update;
 
             // キャンセル、アップデートアンカーを生成する
             action_fragment = document.createDocumentFragment();
@@ -391,14 +390,34 @@ pal.list = (function () {
             current_node.appendChild( form_fragment );
           },
           execute     : function () {
-            console.log( 'update_form execute' );
+            return false;
           },
           cancel_update : function () {
-            console.log( 'update_form cancel_update' );
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_update : function () {
-            console.log( 'update_form confirm_update' );
+            var
+              i,
+              find_flag = false,
+              index;
+
+            // local idで一致しているものを探す
+            for ( i = 0; i < action_object_list.length; i += 1  ) {
+              if ( action_object_list[i]._local_id === action_object._local_id ) {
+                index = i;
+                find_flag = true;
+              }
+            }
+
+            console.log( index );
+
+            if ( find_flag ) {
+              action_object_list.splice( index, 1, action_object );
+            }
+
+            // chageイベントを発生させる
+            action_object_list.change();
+
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {

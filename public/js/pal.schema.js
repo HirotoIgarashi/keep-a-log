@@ -20,7 +20,6 @@ pal.schema = (function () {
     objectCreate,
     extendObject,
     sayHello,sayText,
-    logName,
     makeFormElement,
     makeMicrodataElement,
     makeDetailElement,
@@ -29,7 +28,16 @@ pal.schema = (function () {
     makeAction,
     makeMammal,
     catPrototype, makeCat,
-    date_type_list = [ 'startTime', 'endTime' ];
+    date_type_list = [ 'startTime', 'endTime' ],
+    ja_trans = {
+      name            : 'タイトル',
+      alternate_name  : '別名',
+      description     : '説明',
+      image           : 'イメージ',
+      startTime       : '開始日時',
+      endTime         : '終了日時',
+      location        : '場所'
+    };
   
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -88,9 +96,6 @@ pal.schema = (function () {
   };
   
   // オブジェクトメソッド
-  logName = function () {
-    console.log( 'name:' + this.name );
-  };
   sayHello = function () {
     console.log( this.hello_text + ' says ' + this.name );
   };
@@ -149,7 +154,14 @@ pal.schema = (function () {
 
         // label要素を生成する
         label_element = document.createElement( 'label' );
-        label_element.textContent = prop_names[i] + ': ';
+
+        if ( ja_trans[ prop_names[i] ] ) {
+          label_element.textContent = ja_trans[ prop_names[i] ] + ': ';
+        }
+        else {
+          label_element.textContent = prop_names[i] + ': ';
+        }
+
         label_element.setAttribute( 'class', 'pal-list-label' );
 
         // 入れ物にlabel要素を追加する
@@ -251,7 +263,14 @@ pal.schema = (function () {
         // startTimeやendTimeの場合の処理
         if ( this[ prop_names[i] ] !== '' && date_type_list.indexOf( prop_names[i] ) >= 0 ) {
           prop_element.setAttribute( 'content', this[ prop_names[i] ] );
-          prop_element.textContent = prop_names[ i ] + ': ' + this[ prop_names[i] ];
+
+          if ( ja_trans[ prop_names[i] ] ) {
+            prop_element.textContent = ja_trans[ prop_names[ i ] ] + ': ' + this[ prop_names[i] ];
+          }
+          else {
+            prop_element.textContent = prop_names[ i ] + ': ' + this[ prop_names[i] ];
+          }
+
         }
         else {
           prop_element.textContent = this[ prop_names[i] ];
@@ -292,7 +311,14 @@ pal.schema = (function () {
       // プロパティ値がfunctionだったらスキップする
       if ( typeof this[prop_names[i]] !== 'function' ) {
         prop_element = document.createElement( 'div' );
-        prop_element.textContent = prop_names[i] + ': ' + this[ prop_names[i] ] ;
+
+        if ( ja_trans[ prop_names[i] ] ) {
+          prop_element.textContent = ja_trans[ prop_names[ i ] ] + ': ' + this[ prop_names[i] ];
+        }
+        else {
+          prop_element.textContent = prop_names[ i ] + ': ' + this[ prop_names[i] ];
+        }
+
         div_element.appendChild( prop_element );
       }
     }
@@ -311,7 +337,6 @@ pal.schema = (function () {
       description           : '',
       url                   : '',
       image                 : '',
-      log_name              : logName,
       makeFormElement       : makeFormElement,
       makeMicrodataElement  : makeMicrodataElement,
       makeDetailElement     : makeDetailElement

@@ -18,6 +18,9 @@ pal = (function ( ){
     if ( pal.bom && $container ) {
       pal.bom.initModule( $container );
     }
+
+    pal.socketio.initModule();
+
   };
 
   return { initModule : initModule };

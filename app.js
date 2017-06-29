@@ -25,34 +25,13 @@ var
   client        = redis.createClient(         ),
   routes        = require( './lib/routes'     ),
   app           = express(                    ),
-  server        = http.createServer( app      ),
-  io            = require( 'socket.io'        )( server ),
-  send_date,
-  countIdx = 0;
+  server        = http.createServer( app      );
+  // io            = require( 'socket.io'        )( server ),
+  // send_date,
+  // countIdx = 0;
 // ---------------- モジュールスコープ変数終了 -------------------
 
 // ---------------- ユーティリティメソッド開始 -------------------
-send_date = function () {
-  var
-    now = new Date(),
-    now_date,
-    ddd,
-    ddd_map = {
-      Mon: '月曜日',
-      Tue: '火曜日',
-      Wed: '水曜日',
-      Thu: '木曜日',
-      Fri: '金曜日',
-      Sat: '土曜日',
-      Sun: '日曜日'
-    };
-
-  ddd = now.toFormat( 'DDD' );
-  now_date = now.toFormat( 'YYYY年MM月DD日 ' + ddd_map[ddd] + ' HH24時MI分SS秒' );
-
-  // WebSocketでメッセージを送信する
-  io.sockets.send( now_date );
-};
 // ---------------- ユーティリティメソッド終了 -------------------
 
 // ---------------- サーバ構成開始 -------------------------------
@@ -107,7 +86,4 @@ server.listen( app.get( 'port' ) );
 
 console.log( 'Express server listening on port ' + app.get( 'port' ));
 
-// 一秒ごとにカウントアップする
-require( 'date-utils' );
-setInterval( send_date, 1000 );
 // ---------------- サーバ起動終了 -------------------------------

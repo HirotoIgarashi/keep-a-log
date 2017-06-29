@@ -80,8 +80,8 @@ pal.list = (function () {
 
             jqueryMap.$container.html( list_page );
 
-            jqueryMap.$cancel       = $container.find( '#cancel' );
-            jqueryMap.$create       = $container.find( '#done' );
+            // jqueryMap.$cancel       = $container.find( '#cancel' );
+            // jqueryMap.$create       = $container.find( '#done' );
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
 
@@ -173,7 +173,7 @@ pal.list = (function () {
             // action objectを生成する
             action_object = pal.schema.makeAction({});
 
-            // キャンセル、生成アンカーを生成する
+            // キャンセル、作成の確認アンカーを生成する
             action_wrapper = document.getElementById( 'new-action-wrapper' );
             action_fragment = document.createDocumentFragment();
 
@@ -813,6 +813,10 @@ pal.list = (function () {
     // 最初の画面を描画する
     list_ui.load();
 
+    // Socket.IOオブジェクトsioを生成する
+    pal.socketio.initModule( '/list' );
+
+    console.log( pal.socketio.readObjectList() );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

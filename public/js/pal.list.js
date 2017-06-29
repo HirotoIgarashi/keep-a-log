@@ -34,7 +34,13 @@ pal.list = (function () {
     sync_number_of_data,
     setJqueryMap, configModule, initModule,
     list_ui,
-    current_node;
+    current_node,
+    onObjectListRead,
+    onObjectCreate,
+    onObjectRead,
+    onObjectUpdate,
+    onObjectDelete;
+
 
     // UIの状態遷移
     list_ui = {
@@ -236,6 +242,8 @@ pal.list = (function () {
 
             // chageイベントを発生させる
             action_object_list.change();
+
+            pal.socketio.createObject( action_object, onObjectCreate );
 
             setTimeout(
               function () {
@@ -776,6 +784,29 @@ pal.list = (function () {
   };
   // ------------------ カスタムイベントリスナー終了 ------------------
 
+  // ------------------ メッセージリスナー開始 ------------------
+  onObjectListRead = function( data ) {
+    console.log( data, 'を受信しました' );
+  };
+
+  onObjectCreate = function( data ) {
+    console.log( data, 'を受信しました' );
+  };
+
+  onObjectRead = function( data ) {
+    console.log( data, 'を受信しました' );
+  };
+
+  onObjectUpdate = function( data ) {
+    console.log( data, 'を受信しました' );
+  };
+
+  onObjectDelete = function( data ) {
+    console.log( data, 'を受信しました' );
+  };
+
+  // ------------------ メッセージリスナー終了 ------------------
+
   // --------------------- パブリックメソッド開始 --------------------
   // パブリックメソッド/configModule/開始
   // 目的: 許可されたキーの構成を調整する
@@ -816,7 +847,7 @@ pal.list = (function () {
     // Socket.IOオブジェクトsioを生成する
     pal.socketio.initModule( '/list' );
 
-    console.log( pal.socketio.readObjectList() );
+    pal.socketio.readObjectList( onObjectListRead );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

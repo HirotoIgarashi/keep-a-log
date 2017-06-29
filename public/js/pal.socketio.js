@@ -44,44 +44,66 @@ pal.socketio = (function () {
   };
 
   // メソッド/createObject/開始
-  createObject = function ( object ) {
-    console.log( object );
+  createObject = function ( object, callback ) {
+
+    stateMap.sio.on( 'objectcreate', callback );
+    stateMap.sio.emit( 'createobject', JSON.stringify( object ) );
+
   };
   // メソッド/createObject/終了
 
   // メソッド/readObject/開始
-  readObject = function ( remote_id ) {
+  readObject = function ( remote_id, callback ) {
     console.log( remote_id );
+
+    stateMap.sio.on( 'objectread', callback );
+    stateMap.sio.emit( 'readobject', JSON.stringify( remote_id ) );
+
   };
   // メソッド/readObject/終了
 
   // メソッド/updateObject/開始
-  updateObject = function ( object, remote_id ) {
+  updateObject = function ( object, remote_id, callback ) {
     console.log( object, remote_id );
+
+    stateMap.sio.on( 'objectupdate', callback );
+    stateMap.sio.emit( 'updateobject', JSON.stringify( object ) );
+
   };
   // メソッド/updateObject/終了
 
   // メソッド/deleteObject/開始
-  deleteObject = function ( remote_id ) {
+  deleteObject = function ( remote_id, callback ) {
     console.log( remote_id );
+
+    stateMap.sio.on( 'objectdelete', callback );
+    stateMap.sio.emit( 'deleteobject', JSON.stringify( remote_id ) );
+
   };
   // メソッド/deleteObject/終了
 
   // メソッド/getObjectRemoteId/開始
-  getRemoteId = function ( key, value ) {
+  getRemoteId = function ( key, value, callback ) {
     console.log( key, value );
+
+    stateMap.sio.on( 'remoteidget', callback );
+    stateMap.sio.emit( 'getremoteid', JSON.stringify( { key: value } ) );
+
   };
   // メソッド/getObjectRemoteId/終了
 
   // メソッド/readObjectList/開始
-  readObjectList = function () {
-    stateMap.sio.emit( 'readobject' );
+  readObjectList = function ( callback ) {
 
-    return false;
+    console.log( 'readObjectListが呼ばれました' );
+    stateMap.sio.on( 'objectread', callback );
+    stateMap.sio.emit( 'readobject', JSON.stringify( { test : 'test' } ) );
+
   };
   // メソッド/readObjectList/終了
 
   initModule = function ( namespace ) {
+
     getSio( namespace );
 
     return false;

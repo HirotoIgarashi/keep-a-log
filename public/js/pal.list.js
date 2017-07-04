@@ -39,7 +39,8 @@ pal.list = (function () {
     onObjectCreate,
     onObjectRead,
     onObjectUpdate,
-    onObjectDelete;
+    onObjectDelete,
+    custom_array;
 
 
     // UIの状態遷移
@@ -86,38 +87,13 @@ pal.list = (function () {
 
             jqueryMap.$container.html( list_page );
 
-            // jqueryMap.$cancel       = $container.find( '#cancel' );
-            // jqueryMap.$create       = $container.find( '#done' );
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
 
-            // action object listの生成/開始 ----------------------------
+            // action object listの生成 ----------------------------
             // action objectリストを初期化する
-            action_object_list = [];
+            action_object_list = pal.array.readObjectList();
 
-            // localStorageからプロパティ名action-listの値を読み込む
-            action_list = pal.util_b.readObjectLocal( 'action-list' );
-
-            if ( action_list ) {
-              for ( i = 0; i < action_list.length; i += 1 ) {
-                // action_list[i]はaction object
-                // propertyはプロパティ
-                for ( property in action_list[i] ) {
-
-                  if ( typeof action_list[i][property] === 'string' ) {
-                    object_local[property] = action_list[i][property];
-                  }
-
-                }
-
-                action_object = pal.schema.makeAction( object_local );
-
-                // リストに追加する
-                action_object_list.push( action_object );
-              }
-            }
-            // action object listの生成/終了 ----------------------------
- 
             // change関数を追加する
             pal.util.addChange( action_object_list );
 
@@ -839,6 +815,9 @@ pal.list = (function () {
 
     stateMap.$container = $container;
 
+    // custom_arrayの初期化
+    pal.array.initModule();
+
     // State Patternを初期化する
     list_ui.initialize();
     // 最初の画面を描画する
@@ -848,6 +827,11 @@ pal.list = (function () {
     pal.socketio.initModule( '/list' );
 
     pal.socketio.readObjectList( onObjectListRead );
+
+    custom_array = pal.array.readObjectList();
+
+    console.log( custom_array );
+    console.log( 'custom_array length: ', custom_array.length );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

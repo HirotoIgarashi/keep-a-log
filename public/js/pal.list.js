@@ -26,10 +26,10 @@ pal.list = (function () {
     action_object,
     action_object_list,
     onBlurInput,
-    onChangeObject,
+    onChangeObjectArray,
     onHashchange,
     onClickTarget,
-    save_object_remote,
+    // save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
     setJqueryMap, configModule, initModule,
@@ -37,10 +37,8 @@ pal.list = (function () {
     current_node,
     onObjectListRead,
     onObjectCreate,
-    onObjectRead,
     onObjectUpdate,
-    onObjectDelete,
-    custom_array;
+    onObjectDelete;
 
 
     // UIの状態遷移
@@ -73,10 +71,6 @@ pal.list = (function () {
             var
               new_anchor,
               new_target,
-              property,
-              i = 0,
-              action_list,
-              object_local = {},
               $container,
               detail_anchor,
               // テンプレートからlist-pageを読み込む
@@ -92,16 +86,16 @@ pal.list = (function () {
 
             // action object listの生成 ----------------------------
             // action objectリストを初期化する
-            action_object_list = pal.array.readObjectList();
+            action_object_list = pal.array.readObjectArray();
 
             // change関数を追加する
             pal.util.addChange( action_object_list );
 
             // action_objectが変更されたときのコールバック関数
-            // onChangeObjectをセットする
-            // onChangeObjectから呼ばれるsync_object_and_domの中で
+            // onChangeObjectArrayをセットする
+            // onChangeObjectArrayから呼ばれるsync_object_and_domの中で
             // DOMに追加する
-            action_object_list.change( onChangeObject );
+            action_object_list.change( onChangeObjectArray );
 
             // changeイベントを発生させる
             action_object_list.change();
@@ -214,7 +208,9 @@ pal.list = (function () {
             action_object._local_id = pal.util_b.getTimestamp();
 
             // action_object_listに追加する
-            action_object_list.push( action_object );
+            action_object_list.createObject( action_object, onObjectCreate );
+            // action_object_listを更新する
+            action_object_list = pal.array.readObjectArray();
 
             // chageイベントを発生させる
             action_object_list.change();
@@ -380,24 +376,11 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_update : function () {
-            var
-              i,
-              find_flag = false,
-              index;
 
-            // local idで一致しているものを探す
-            for ( i = 0; i < action_object_list.length; i += 1  ) {
-              if ( action_object_list[i]._local_id === action_object._local_id ) {
-                index = i;
-                find_flag = true;
-              }
-            }
+            action_object_list.updateObject( action_object, onObjectUpdate );
 
-            console.log( index );
-
-            if ( find_flag ) {
-              action_object_list.splice( index, 1, action_object );
-            }
+            // action_object_listを更新する
+            action_object_list = pal.array.readObjectArray();
 
             // chageイベントを発生させる
             action_object_list.change();
@@ -483,23 +466,12 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_delete  : function () {
-            var
-              i,
-              find_flag = false,
-              index;
 
-            // local idで一致しているものを探す
-            for ( i = 0; i < action_object_list.length; i += 1  ) {
-              if ( action_object_list[i]._local_id === action_object._local_id ) {
-                index = i;
-                find_flag = true;
-                break;
-              }
-            }
+            // action_object_listから削除する
+            action_object_list.deleteObject( action_object, onObjectDelete );
 
-            if ( find_flag ) {
-              action_object_list.splice( index, 1 );
-            }
+            // action_object_listを更新する
+            action_object_list = pal.array.readObjectArray();
 
             // chageイベントを発生させる
             action_object_list.change();
@@ -513,10 +485,6 @@ pal.list = (function () {
 
             // .crud-wrapperの中身を削除する
             pal.util.removeElement( current_node.firstElementChild );
-            // while ( current_node.firstElementChild.firstChild ) {
-            //   current_node.firstElementChild.removeChild(
-            //     current_node.firstElementChild.firstChild );
-            // }
 
             // .message_wrapperの中身を削除する
             message_wrapper = document.getElementsByClassName( 'message-wrapper' );
@@ -578,12 +546,14 @@ pal.list = (function () {
   //   var example;
   //   return example;
   // };
-  save_object_remote = function ( /* object */ ) {
 
-    // console.log( object );
-    return undefined;
+  // save_object_remote = function ( /* object */ ) {
 
-  };
+  //   // console.log( object );
+  //   return undefined;
+
+  // };
+
   // ユーティリティメソッド/save_object_remote/終了
 
   // ユーティリティメソッド/sync_object_and_dom/開始
@@ -734,16 +704,16 @@ pal.list = (function () {
   // --------------------- DOMイベントリスナー終了 --------------------
 
   // ------------------ カスタムイベントリスナー開始 ------------------
-  onChangeObject = function () {
+  onChangeObjectArray = function () {
 
-    // オブジェクトをlocalStorageに保存する。
-    pal.util_b.createObjectLocal(
-      'action-list',
-      this
-    );
+    // // オブジェクトをlocalStorageに保存する。
+    // pal.util_b.createObjectLocal(
+    //   'action-list',
+    //   this
+    // );
 
     // サーバのMongoDBを更新する
-    save_object_remote( action_object );
+    // save_object_remote( action_object );
 
     // DOM要素のリストに要素を追加する
     sync_object_and_dom(
@@ -766,19 +736,27 @@ pal.list = (function () {
   };
 
   onObjectCreate = function( data ) {
-    console.log( data, 'を受信しました' );
-  };
+    console.log( 'オブジェクトを作成しました' );
 
-  onObjectRead = function( data ) {
-    console.log( data, 'を受信しました' );
+    if ( data ) {
+      console.log( data, 'を受信しました' );
+    }
   };
 
   onObjectUpdate = function( data ) {
-    console.log( data, 'を受信しました' );
+    console.log( 'オブジェクトを変更しました' );
+
+    if ( data ) {
+      console.log( data, 'を受信しました' );
+    }
   };
 
   onObjectDelete = function( data ) {
-    console.log( data, 'を受信しました' );
+    console.log( 'オブジェクトを削除しました' );
+
+    if ( data ) {
+      console.log( data, 'を受信しました' );
+    }
   };
 
   // ------------------ メッセージリスナー終了 ------------------
@@ -827,11 +805,6 @@ pal.list = (function () {
     pal.socketio.initModule( '/list' );
 
     pal.socketio.readObjectList( onObjectListRead );
-
-    custom_array = pal.array.readObjectList();
-
-    console.log( custom_array );
-    console.log( 'custom_array length: ', custom_array.length );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

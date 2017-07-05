@@ -17,7 +17,7 @@ pal.array = (function () {
     initModule,
     custom_array,
     readObject,
-    readObjectList;
+    readObjectArray;
     // createObject,
     // readObject,
     // updateObject,
@@ -26,26 +26,71 @@ pal.array = (function () {
   custom_array = [];
 
   custom_array.createObject = function ( object, callback ) {
-    console.log( object );
+
+    custom_array.push( object );
+
+    // オブジェクトをlocalStorageに保存する。
+    pal.util_b.createObjectLocal( 'action-list', custom_array );
+
     callback();
   };
 
   readObject = function ( map ) {
+
     console.log( map );
+
     return custom_array;
   };
 
   custom_array.updateObject = function ( object, callback ) {
-    console.log( object );
+    var
+      i,
+      find_flag = false,
+      index;
+
+    // local idで一致しているものを探す
+    for ( i = 0; i < custom_array.length; i += 1  ) {
+      if ( custom_array[i]._local_id === object._local_id ) {
+        index = i;
+        find_flag = true;
+      }
+    }
+
+    if ( find_flag ) {
+      custom_array.splice( index, 1, object );
+    }
+
+    // オブジェクトをlocalStorageに保存する。
+    pal.util_b.createObjectLocal( 'action-list', custom_array );
+
     callback();
   };
 
   custom_array.deleteObject = function ( object, callback ) {
-    console.log( object );
+    var
+      i,
+      find_flag = false,
+      index;
+
+    // local idで一致しているものを探す
+    for ( i = 0; i < custom_array.length; i += 1  ) {
+      if ( custom_array[i]._local_id === object._local_id ) {
+        index = i;
+        find_flag = true;
+      }
+    }
+
+    if ( find_flag ) {
+      custom_array.splice( index, 1 );
+    }
+
+    // オブジェクトをlocalStorageに保存する。
+    pal.util_b.createObjectLocal( 'action-list', custom_array );
+
     callback();
   };
 
-  readObjectList = function () {
+  readObjectArray = function () {
     return custom_array;
   };
 
@@ -86,7 +131,7 @@ pal.array = (function () {
   return {
     initModule      : initModule,
     readObject      : readObject,
-    readObjectList  : readObjectList
+    readObjectArray : readObjectArray
     // createObject  : createObject,
     // readObject    : readObject,
     // updateObject  : updateObject,

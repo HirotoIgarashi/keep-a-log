@@ -24,7 +24,7 @@ pal.list = (function () {
     jqueryMap = {},
     make_anchor_element,
     action_object,
-    action_object_list,
+    object_array,
     onBlurInput,
     onChangeObjectArray,
     onHashchange,
@@ -39,7 +39,6 @@ pal.list = (function () {
     onObjectCreate,
     onObjectUpdate,
     onObjectDelete;
-
 
     // UIの状態遷移
     list_ui = {
@@ -85,20 +84,20 @@ pal.list = (function () {
             jqueryMap.$target       = $container.find( '#target' );
 
             // action object listの生成 ----------------------------
-            // action objectリストを初期化する
-            action_object_list = pal.array.readObjectArray();
+            // localStorageからaction objectリストを読み込む
+            object_array = pal.array.readObjectArray();
 
             // change関数を追加する
-            pal.util.addChange( action_object_list );
+            pal.util.addChange( object_array );
 
             // action_objectが変更されたときのコールバック関数
             // onChangeObjectArrayをセットする
             // onChangeObjectArrayから呼ばれるsync_object_and_domの中で
             // DOMに追加する
-            action_object_list.change( onChangeObjectArray );
+            object_array.change( onChangeObjectArray );
 
             // changeイベントを発生させる
-            action_object_list.change();
+            object_array.change();
 
             detail_anchor = document.getElementById( 'target' );
 
@@ -198,7 +197,7 @@ pal.list = (function () {
             //  * jqueryMap.$targe      : Actionオブジェクトを表示するul要素に
             //                            追加する
             //  * jqueryMap.$status     : 件数を表示するdiv要素
-            //  * action_object_list    : Actionオブジェクトを格納しているリストに
+            //  * object_array    : Actionオブジェクトを格納しているリストに
             //                            要素を追加する
             //  * _local_id             : _local_idプロパティにtimestampをセットする
             // 戻り値: なし
@@ -207,15 +206,15 @@ pal.list = (function () {
             // _local_idプロパティにtime stampをセットする
             action_object._local_id = pal.util_b.getTimestamp();
 
-            // action_object_listに追加する
-            action_object_list.createObject( action_object, onObjectCreate );
-            // action_object_listを更新する
-            action_object_list = pal.array.readObjectArray();
+            // object_arrayに追加する
+            object_array.createObject( action_object, onObjectCreate );
+            // object_arrayを更新する
+            object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            action_object_list.change();
+            object_array.change();
 
-            pal.socketio.createObject( action_object, onObjectCreate );
+            // pal.socketio.createObject( action_object, onObjectCreate );
 
             setTimeout(
               function () {
@@ -261,9 +260,9 @@ pal.list = (function () {
 
             // local_idが一致するオブジェクトを探して
             // action_objectにセットする
-            for ( i = 0; i < action_object_list.length; i += 1 ) {
-              if ( action_object_list[i]._local_id === current_node.dataset.localId ) {
-                action_object = action_object_list[i];
+            for ( i = 0; i < object_array.length; i += 1 ) {
+              if ( object_array[i]._local_id === current_node.dataset.localId ) {
+                action_object = object_array[i];
               }
             }
 
@@ -377,13 +376,13 @@ pal.list = (function () {
           },
           confirm_update : function () {
 
-            action_object_list.updateObject( action_object, onObjectUpdate );
+            object_array.updateObject( action_object, onObjectUpdate );
 
-            // action_object_listを更新する
-            action_object_list = pal.array.readObjectArray();
+            // object_arrayを更新する
+            object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            action_object_list.change();
+            object_array.change();
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -420,9 +419,9 @@ pal.list = (function () {
 
             // local_idが一致するオブジェクトを探して
             // action_objectにセットする
-            for ( i = 0; i < action_object_list.length; i += 1 ) {
-              if ( action_object_list[i]._local_id === current_node.dataset.localId ) {
-                action_object = action_object_list[i];
+            for ( i = 0; i < object_array.length; i += 1 ) {
+              if ( object_array[i]._local_id === current_node.dataset.localId ) {
+                action_object = object_array[i];
               }
             }
 
@@ -467,14 +466,14 @@ pal.list = (function () {
           },
           confirm_delete  : function () {
 
-            // action_object_listから削除する
-            action_object_list.deleteObject( action_object, onObjectDelete );
+            // object_arrayから削除する
+            object_array.deleteObject( action_object, onObjectDelete );
 
-            // action_object_listを更新する
-            action_object_list = pal.array.readObjectArray();
+            // object_arrayを更新する
+            object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            action_object_list.change();
+            object_array.change();
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -547,15 +546,6 @@ pal.list = (function () {
   //   return example;
   // };
 
-  // save_object_remote = function ( /* object */ ) {
-
-  //   // console.log( object );
-  //   return undefined;
-
-  // };
-
-  // ユーティリティメソッド/save_object_remote/終了
-
   // ユーティリティメソッド/sync_object_and_dom/開始
   // 目的: DOM要素を受け取りObjectの値と同期させる
   //  * element  : 同期させるDOM要素
@@ -577,8 +567,6 @@ pal.list = (function () {
 
     // DOMツリーの中にlocal idがあるかどうかで新規か変更かを判定する処理を
     // 追加する
-
-    // ここまで
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了
@@ -691,6 +679,10 @@ pal.list = (function () {
 
     current_node = event.target;
 
+    // class=gの外側がクリックされたときの処理
+    if ( current_node.getAttribute( 'id' ) === 'target' ) {
+      return true;
+    }
     // nodeのclassがgになるまで親要素をたどる
     while ( current_node.getAttribute( 'class' ) !== 'g' ) {
       current_node = current_node.parentNode;
@@ -699,18 +691,14 @@ pal.list = (function () {
     // locationを#list/detailにする
     pal.bom.setLocationHash( '#list/detail' );
 
+    return true;
+
   };
   // DOMイベントリスナー/onClickTarget/終了 -----------------------------
   // --------------------- DOMイベントリスナー終了 --------------------
 
   // ------------------ カスタムイベントリスナー開始 ------------------
   onChangeObjectArray = function () {
-
-    // // オブジェクトをlocalStorageに保存する。
-    // pal.util_b.createObjectLocal(
-    //   'action-list',
-    //   this
-    // );
 
     // サーバのMongoDBを更新する
     // save_object_remote( action_object );
@@ -793,7 +781,7 @@ pal.list = (function () {
 
     stateMap.$container = $container;
 
-    // custom_arrayの初期化
+    // custom_arrayの初期化 localStorageから読み込む
     pal.array.initModule();
 
     // State Patternを初期化する

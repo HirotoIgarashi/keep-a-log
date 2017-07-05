@@ -18,10 +18,6 @@ pal.array = (function () {
     custom_array,
     readObject,
     readObjectArray;
-    // createObject,
-    // readObject,
-    // updateObject,
-    // deleteObject;
 
   custom_array = [];
 

@@ -87,7 +87,6 @@ pal.util = (function () {
     var
       input_map = arg_map.input_map,
       settable_map = arg_map.settable_map,
-      //config_map = arg_map.config_map,
       config_map = arg_map.configMap,
       key_name, error;
 

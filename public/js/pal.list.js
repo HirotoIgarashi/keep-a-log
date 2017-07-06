@@ -24,12 +24,12 @@ pal.list = (function () {
     jqueryMap = {},
     make_anchor_element,
     action_object,
+    previous_object = {},
     object_array,
     onBlurInput,
     onChangeObjectArray,
     onHashchange,
     onClickTarget,
-    // save_object_remote,
     sync_object_and_dom,
     sync_number_of_data,
     setJqueryMap, configModule, initModule,
@@ -351,6 +351,10 @@ pal.list = (function () {
               cancel_update,
               confirm_update;
 
+            // action_objectのバックアップをとる。キャンセルしたときに
+            // もとに戻す
+            Object.assign( previous_object, action_object );
+
             // キャンセル、アップデートアンカーを生成する
             action_fragment = document.createDocumentFragment();
             cancel_update = make_anchor_element( '#list/cancel-update', 'キャンセル' );
@@ -372,6 +376,9 @@ pal.list = (function () {
             return false;
           },
           cancel_update : function () {
+            // action_objectをバックアップから元に戻す
+            Object.assign( action_object, previous_object );
+
             this.target.changeState( this.target.states.detail_form );
           },
           confirm_update : function () {
@@ -387,6 +394,9 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
+            // action_objectのバックアップを初期化する
+            previous_object = {};
+
             // crud-wrapperの中身を削除する
             pal.util.removeElement( current_node.firstElementChild );
             pal.util.removeElement( current_node.lastElementChild );
@@ -555,18 +565,47 @@ pal.list = (function () {
   // 設定:
   // 戻り値:
   // 例外発行: なし
-  sync_object_and_dom = function ( element, action_list ) {
+  sync_object_and_dom = function ( element ) {
     var
-      i,
+      target_node,
+      item_nodes,
+      i, j,
+      find_flag = false,
+      find_index,
       fragment;
 
-    for ( i = 0; i < action_list.length; i += 1 ) {
-      fragment = action_list[i].makeMicrodataElement();
-      element.prepend( fragment );
-    }
+    target_node = document.getElementById( 'target' );
+    item_nodes = target_node.children;
 
-    // DOMツリーの中にlocal idがあるかどうかで新規か変更かを判定する処理を
-    // 追加する
+    if ( item_nodes.length !== 0 ) {
+      for ( i = 0; i < item_nodes.length; i += 1 ) {
+        for ( j = 0; j < object_array.length; j += 1 ) {
+          // 一致する_local_idが見つかった
+          if ( item_nodes[i].dataset.localId === object_array[j]._local_id ) {
+            find_flag = true;
+            find_index = j;
+          }
+        }
+        // 見つかったので置き換える
+        if ( find_flag ) {
+          item_nodes[i].parentNode.replaceChild(
+            object_array[ find_index ].makeMicrodataElement(),
+            item_nodes[i]
+          );
+        }
+        // 見つからなかったので削除する
+        else {
+          item_nodes[i].parentNode.removeChild( item_nodes[i] );
+        }
+      }
+    }
+    // targetが空のとき
+    else {
+      for ( i = 0; i < object_array.length; i += 1 ) {
+        fragment = object_array[i].makeMicrodataElement();
+        element.prepend( fragment );
+      }
+    }
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了
@@ -705,8 +744,7 @@ pal.list = (function () {
 
     // DOM要素のリストに要素を追加する
     sync_object_and_dom(
-      jqueryMap.$target,
-      this
+      jqueryMap.$target
     );
 
     // 件数を表示する

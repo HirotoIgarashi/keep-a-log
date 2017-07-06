@@ -66,11 +66,17 @@ pal.schema = (function () {
   // 戻り値: オブジェクト
   // 例外発行: なし
   objectCreate = function ( arg ) {
+
     if ( ! arg ) {
       return {};
     }
-    function obj() { return undefined; }
+
+    function obj() {
+      return undefined;
+    }
+
     obj.prototype = arg;
+
     return new obj();
   };
   // ユーティリティメソッド/objectCreate/終了
@@ -93,6 +99,7 @@ pal.schema = (function () {
         orig_obj[ key_name ] = ext_obj[ key_name ];
       }
     }
+
   };
   
   // オブジェクトメソッド
@@ -249,7 +256,7 @@ pal.schema = (function () {
       // プロパティ値がfunctionだったらスキップする
       if ( typeof this[prop_names[i]] !== 'function' ) {
 
-        // 名前のときは改行する
+        // プロパティが名前のときは改行する
         if ( prop_names[i] === 'name' ) {
           prop_element = document.createElement( 'div' );
         }

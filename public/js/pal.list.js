@@ -27,7 +27,7 @@ pal.list = (function () {
     previous_object = {},
     object_array,
     onBlurInput,
-    onChangeObjectArray,
+    onChangeObject,
     onHashchange,
     onClickTarget,
     sync_object_and_dom,
@@ -87,17 +87,11 @@ pal.list = (function () {
             // localStorageからaction objectリストを読み込む
             object_array = pal.array.readObjectArray();
 
-            // change関数を追加する
-            pal.util.addChange( object_array );
 
-            // action_objectが変更されたときのコールバック関数
-            // onChangeObjectArrayをセットする
-            // onChangeObjectArrayから呼ばれるsync_object_and_domの中で
-            // DOMに追加する
-            object_array.change( onChangeObjectArray );
+            // object_array.change( onChangeObject );
 
             // changeイベントを発生させる
-            object_array.change();
+            // object_array.change();
 
             detail_anchor = document.getElementById( 'target' );
 
@@ -147,6 +141,13 @@ pal.list = (function () {
 
             // action objectを生成する
             action_object = pal.schema.makeAction({});
+            // change関数を追加する
+            pal.util.addChange( action_object );
+            // action_objectが変更されたときのコールバック関数
+            // onChangeObjectをセットする
+            // onChangeObjectから呼ばれるsync_object_and_domの中で
+            // DOMに追加する
+            action_object.change( onChangeObject );
 
             // キャンセル、作成の確認アンカーを生成する
             action_wrapper = document.getElementById( 'new-action-wrapper' );
@@ -212,7 +213,7 @@ pal.list = (function () {
             object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            object_array.change();
+            action_object.change();
 
             // pal.socketio.createObject( action_object, onObjectCreate );
 
@@ -389,7 +390,7 @@ pal.list = (function () {
             object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            object_array.change();
+            action_object.change();
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -483,7 +484,7 @@ pal.list = (function () {
             object_array = pal.array.readObjectArray();
 
             // chageイベントを発生させる
-            object_array.change();
+            action_object.change();
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -558,14 +559,19 @@ pal.list = (function () {
 
   // ユーティリティメソッド/sync_object_and_dom/開始
   // 目的: DOM要素を受け取りObjectの値と同期させる
-  //  * element  : 同期させるDOM要素
-  //  * object  : 元になるObject
+  //  * object  : 変更されたObject
+  //              create, update, deleteのタイミングで呼ばれる
   // 必須引数:
   // オプション引数:
   // 設定:
+  //  create  : DOM要素に_local_idがなければprependする
+  //  update  : DOM要素に_local_idがありnameプロパティが存在したら
+  //            書き換える
+  //  delete  : DOM要素に_local_idがありnameプロパティが存在しなければ
+  //            削除する
   // 戻り値:
   // 例外発行: なし
-  sync_object_and_dom = function ( element ) {
+  sync_object_and_dom = function ( action_object ) {
     var
       target_node,
       item_nodes,
@@ -601,10 +607,11 @@ pal.list = (function () {
     }
     // targetが空のとき
     else {
-      for ( i = 0; i < object_array.length; i += 1 ) {
-        fragment = object_array[i].makeMicrodataElement();
-        element.prepend( fragment );
-      }
+      var div = document.createElement( 'div' );
+      div.textContent = 'TEST';
+      fragment = action_object.makeMicrodataElement();
+      target_node.appendChild( div );
+      // target_node.insertBefore( fragment, target_node.firstElementChild );
     }
 
   };
@@ -737,15 +744,10 @@ pal.list = (function () {
   // --------------------- DOMイベントリスナー終了 --------------------
 
   // ------------------ カスタムイベントリスナー開始 ------------------
-  onChangeObjectArray = function () {
-
-    // サーバのMongoDBを更新する
-    // save_object_remote( action_object );
+  onChangeObject = function () {
 
     // DOM要素のリストに要素を追加する
-    sync_object_and_dom(
-      jqueryMap.$target
-    );
+    sync_object_and_dom( this );
 
     // 件数を表示する
     sync_number_of_data(

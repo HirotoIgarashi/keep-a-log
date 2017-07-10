@@ -242,7 +242,7 @@ pal.schema = (function () {
 
     // crudを入れるwrappperを生成する
     crud_wrapper = document.createElement( 'div' ); 
-    crud_wrapper.setAttribute( 'class', 'crud_wrapper' );
+    crud_wrapper.setAttribute( 'class', 'crud-wrapper' );
 
     // schemaを入れるwrapperを生成する
     schema_wrapper = document.createElement( 'div' );

@@ -325,6 +325,11 @@ pal.list = (function () {
             return false;
           },
           cancel_detail : function () {
+            // detail_formをキャンセルしたときの処理
+            current_node.parentNode.replaceChild(
+              action_object.makeMicrodataElement(),
+              current_node
+            );
             this.target.changeState( this.target.states.list_form );
           },
           show_update_form   : function () {
@@ -334,12 +339,7 @@ pal.list = (function () {
             this.target.changeState( this.target.states.delete_form );
           },
           exit        : function () {
-
-            current_node.parentNode.replaceChild(
-              action_object.makeMicrodataElement(),
-              current_node
-            );
-
+            return false;
           }
         },
         update_form   : {
@@ -364,6 +364,12 @@ pal.list = (function () {
             // action_objectのバックアップをとる。キャンセルしたときに
             // もとに戻す
             Object.assign( previous_object, action_object );
+
+            console.log( current_node );
+
+            // crud-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild );
+            pal.util.removeElement( current_node.lastElementChild );
 
             // キャンセル、アップデートアンカーを生成する
             action_fragment = document.createDocumentFragment();
@@ -404,6 +410,7 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
+            // update_formから抜けるときの処理
             // action_objectのバックアップを初期化する
             previous_object = {};
 
@@ -439,14 +446,6 @@ pal.list = (function () {
 
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
-
-            // local_idが一致するオブジェクトを探して
-            // action_objectにセットする
-            // for ( i = 0; i < object_array.length; i += 1 ) {
-            //   if ( object_array[i]._local_id === current_node.dataset.localId ) {
-            //     action_object = object_array[i];
-            //   }
-            // }
 
             cancel_anchor = make_anchor_element( '#list/cancel-delete', 'キャンセル' );
 
@@ -615,7 +614,8 @@ pal.list = (function () {
     // 見つからなかった
     else {
       fragment = action_object.makeMicrodataElement();
-      target_node.appendChild( fragment );
+      // target_node.appendChild( fragment );
+      target_node.insertBefore( fragment, target_node.childNodes[0] );
     }
 
     // if ( item_nodes.length !== 0 ) {

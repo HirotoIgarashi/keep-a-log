@@ -64,14 +64,9 @@ pal.list = (function () {
         },
         list_form   : {
           initialize  : function ( target ) {
-            this.target = target;
-          },
-          enter       : function () {
             var
-              new_anchor,
-              new_target,
+              i,
               $container,
-              detail_anchor,
               // テンプレートからlist-pageを読み込む
               list_page  = pal.util_b.getTplContent( 'list-page' );
 
@@ -83,15 +78,24 @@ pal.list = (function () {
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
 
-            // action object listの生成 ----------------------------
             // localStorageからaction objectリストを読み込む
             object_array = pal.array.readObjectArray();
 
-
-            // object_array.change( onChangeObject );
-
             // changeイベントを発生させる
-            // object_array.change();
+            for ( i = 0; i < object_array.length; i += 1 ) {
+              pal.util.addChange( object_array[i] );
+              object_array[i].change( onChangeObject );
+              object_array[i].change();
+            }
+
+
+            this.target = target;
+          },
+          enter       : function () {
+            var
+              new_anchor,
+              new_target,
+              detail_anchor;
 
             detail_anchor = document.getElementById( 'target' );
 
@@ -101,6 +105,16 @@ pal.list = (function () {
 
             new_target = document.getElementById( "new-anchor" );
             new_target.appendChild( new_anchor );
+
+            // // localStorageからaction objectリストを読み込む
+            // object_array = pal.array.readObjectArray();
+
+            // // changeイベントを発生させる
+            // for ( i = 0; i < object_array.length; i += 1 ) {
+            //   pal.util.addChange( object_array[i] );
+            //   object_array[i].change( onChangeObject );
+            //   object_array[i].change();
+            // }
 
           },
           execute : function () {
@@ -172,19 +186,8 @@ pal.list = (function () {
             return false;
           },
           cancel_create  : function () {
-            // 目的: フォームでキャンセルがクリックされた場合にフォームの
-            //        値をクリアする
-            // 必須引数: なし
-            // オプション引数: なし
-            // 設定:
-            //  * jqueryMap.$form       : フォームを隠す
-            // 戻り値:
-            // 例外発行: なし
-            // formの値をすべてクリアする
-            pal.util.clearFormAll();
-
             // locationを#listに戻す
-            pal.bom.setLocationHash( '#list/list' );
+            // pal.bom.setLocationHash( '#list/list' );
 
             this.target.changeState( this.target.states.list_form );
           },
@@ -229,6 +232,20 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           exit        : function () {
+            // 目的: フォームでキャンセルがクリックされた場合にフォームの
+            //        値をクリアする
+            // 必須引数: なし
+            // オプション引数: なし
+            // 設定:
+            //  * jqueryMap.$form       : フォームを隠す
+            // 戻り値:
+            // 例外発行: なし
+            // formの値をすべてクリアする
+            pal.util.clearFormAll();
+
+            // 削除する
+            pal.util.removeElementById( 'new-action-wrapper' );
+            pal.util.removeElementById( 'new-form-wrapper' );
             return false;
           }
         },
@@ -237,35 +254,25 @@ pal.list = (function () {
             this.target = target;
           },
           enter       : function () {
+            var
+              i,
+              detail_fragment,
+              detail_anchor,
+              message_wrapper,
+              message_element,
+              cancel_anchor,
+              edit_anchor,
+              crud_fragment,
+              delete_anchor;
+
             // fragment
             //  |- cancel_anchor
             //  |- edit_anchor
             //  |- delete_anchor
             //
-            var
-              i,
-              crud_fragment,
-              message_wrapper,
-              message_element,
-              detail_fragment,
-              cancel_anchor,
-              edit_anchor,
-              delete_anchor,
-              detail_anchor;
-
-            // .action-wrapper自体を削除する
-            current_node.removeChild( current_node.lastElementChild );
 
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
-
-            // local_idが一致するオブジェクトを探して
-            // action_objectにセットする
-            for ( i = 0; i < object_array.length; i += 1 ) {
-              if ( object_array[i]._local_id === current_node.dataset.localId ) {
-                action_object = object_array[i];
-              }
-            }
 
             cancel_anchor = make_anchor_element( '#list/cancel-detail', 'キャンセル' );
 
@@ -286,6 +293,17 @@ pal.list = (function () {
             message_element.textContent = '編集するには上の編集、削除するには上の削除をクリックしてください';
 
             message_wrapper.appendChild( message_element );
+
+            // .action-wrapper自体を削除する
+            current_node.removeChild( current_node.lastElementChild );
+
+            // local_idが一致するオブジェクトを探して
+            // action_objectにセットする
+            for ( i = 0; i < object_array.length; i += 1 ) {
+              if ( object_array[i]._local_id === current_node.dataset.localId ) {
+                action_object = object_array[i];
+              }
+            }
 
             // detail_formを生成する
             detail_fragment = action_object.makeDetailElement();
@@ -316,21 +334,12 @@ pal.list = (function () {
             this.target.changeState( this.target.states.delete_form );
           },
           exit        : function () {
-            var
-              message_wrapper,
-              i;
 
-            // .crud-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild );
+            current_node.parentNode.replaceChild(
+              action_object.makeMicrodataElement(),
+              current_node
+            );
 
-            // .message_wrapperの中身を削除する
-            message_wrapper = document.getElementsByClassName( 'message-wrapper' );
-            for ( i = 0; i < message_wrapper.length; i += 1 ) {
-              message_wrapper[i].textContent = '';
-            }
-
-            // .action-wrapper自体を削除する
-            current_node.removeChild( current_node.lastElementChild );
           }
         },
         update_form   : {
@@ -413,7 +422,7 @@ pal.list = (function () {
             //  |- delete_confirm_anchor
             //
             var
-              i,
+              // i,
               crud_fragment,
               message_wrapper,
               message_element,
@@ -423,18 +432,21 @@ pal.list = (function () {
               detail_anchor;
 
             // .action-wrapper自体を削除する
-            current_node.removeChild( current_node.lastElementChild );
+            // current_node.removeChild( current_node.lastElementChild );
+            while ( current_node.firstChild ) {
+              current_node.removeChild( current_node.firstChild );
+            }
 
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
 
             // local_idが一致するオブジェクトを探して
             // action_objectにセットする
-            for ( i = 0; i < object_array.length; i += 1 ) {
-              if ( object_array[i]._local_id === current_node.dataset.localId ) {
-                action_object = object_array[i];
-              }
-            }
+            // for ( i = 0; i < object_array.length; i += 1 ) {
+            //   if ( object_array[i]._local_id === current_node.dataset.localId ) {
+            //     action_object = object_array[i];
+            //   }
+            // }
 
             cancel_anchor = make_anchor_element( '#list/cancel-delete', 'キャンセル' );
 
@@ -575,44 +587,63 @@ pal.list = (function () {
     var
       target_node,
       item_nodes,
-      i, j,
+      // current_item_nodes_length,
+      i,
       find_flag = false,
       find_index,
       fragment;
 
+    console.log( action_object );
+
     target_node = document.getElementById( 'target' );
     item_nodes = target_node.children;
 
-    if ( item_nodes.length !== 0 ) {
-      for ( i = 0; i < item_nodes.length; i += 1 ) {
-        for ( j = 0; j < object_array.length; j += 1 ) {
-          // 一致する_local_idが見つかった
-          if ( item_nodes[i].dataset.localId === object_array[j]._local_id ) {
-            find_flag = true;
-            find_index = j;
-          }
-        }
-        // 見つかったので置き換える
-        if ( find_flag ) {
-          item_nodes[i].parentNode.replaceChild(
-            object_array[ find_index ].makeMicrodataElement(),
-            item_nodes[i]
-          );
-        }
-        // 見つからなかったので削除する
-        else {
-          item_nodes[i].parentNode.removeChild( item_nodes[i] );
-        }
+    for ( i = 0; i < item_nodes.length; i += 1 ) {
+      if ( item_nodes[i].dataset.localId === action_object._local_id ) {
+        find_flag = true;
+        find_index = i;
       }
     }
-    // targetが空のとき
-    else {
-      var div = document.createElement( 'div' );
-      div.textContent = 'TEST';
-      fragment = action_object.makeMicrodataElement();
-      target_node.appendChild( div );
-      // target_node.insertBefore( fragment, target_node.firstElementChild );
+
+    // 見つかった
+    if ( find_flag ) {
+      item_nodes[ find_index ].parentNode.replaceChild(
+        action_object.makeMicrodataElement(),
+        item_nodes[ find_index ]
+      );
     }
+    // 見つからなかった
+    else {
+      fragment = action_object.makeMicrodataElement();
+      target_node.appendChild( fragment );
+    }
+
+    // if ( item_nodes.length !== 0 ) {
+    //   current_item_nodes_length = item_nodes.length;
+
+    //   for ( i = 0; i < current_item_nodes_length; i += 1 ) {
+
+    //     // 見つかったので置き換える
+    //     if ( item_nodes[i].dataset.localId === action_object._local_id ) {
+    //       item_nodes[i].parentNode.replaceChild(
+    //         action_object.makeMicrodataElement(),
+    //         item_nodes[i]
+    //       );
+    //     }
+    //     else {
+    //       fragment = action_object.makeMicrodataElement();
+    //       target_node.appendChild( fragment );
+    //       // 見つからなかったので削除する
+    //       //item_nodes[i].parentNode.removeChild( item_nodes[i] );
+    //     }
+    //   }
+
+    // }
+    // targetが空のとき
+    // else {
+    //   fragment = action_object.makeMicrodataElement();
+    //   target_node.appendChild( fragment );
+    // }
 
   };
   // ユーティリティメソッド/sync_object_and_dom/終了

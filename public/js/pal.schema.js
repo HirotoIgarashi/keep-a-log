@@ -279,6 +279,7 @@ pal.schema = (function () {
           }
 
         }
+        // startTimeやendTime以外の場合の処理
         else {
           prop_element.textContent = this[ prop_names[i] ];
         }

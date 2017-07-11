@@ -104,6 +104,8 @@ pal.array = (function () {
 
     if ( work_list ) {
       for ( i = 0; i < work_list.length; i += 1 ) {
+        // work_objectを初期化する
+        work_object = {};
         // action_list[i]はaction object
         // propertyはプロパティ
         for ( property in work_list[i] ) {

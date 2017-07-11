@@ -68,6 +68,12 @@ pal.list = (function () {
               i,
               $container,
               // テンプレートからlist-pageを読み込む
+              // idの値が以下のものを含む
+              // status,
+              // new-anchor,
+              // new-action-wrapper,
+              // new-form-wrapper,
+              // target
               list_page  = pal.util_b.getTplContent( 'list-page' );
 
             setJqueryMap();
@@ -82,13 +88,12 @@ pal.list = (function () {
             object_array = pal.array.readObjectArray();
 
             // changeイベントを発生させる
+            // targetにaction objectが描画される
             for ( i = 0; i < object_array.length; i += 1 ) {
               pal.util.addChange( object_array[i] );
               object_array[i].change( onChangeObject );
               object_array[i].change();
             }
-
-
             this.target = target;
           },
           enter       : function () {
@@ -99,22 +104,12 @@ pal.list = (function () {
 
             detail_anchor = document.getElementById( 'target' );
 
+            // targetにclickイベントを登録する
             detail_anchor.addEventListener( "click", onClickTarget, false );
-            // <a href="#list/new">new</a>を作成する
+            // <a href="#list/new">new</a>を作成し、new-anchorに追加する
             new_anchor = make_anchor_element( '#list/new', '新規作成' );
-
             new_target = document.getElementById( "new-anchor" );
             new_target.appendChild( new_anchor );
-
-            // // localStorageからaction objectリストを読み込む
-            // object_array = pal.array.readObjectArray();
-
-            // // changeイベントを発生させる
-            // for ( i = 0; i < object_array.length; i += 1 ) {
-            //   pal.util.addChange( object_array[i] );
-            //   object_array[i].change( onChangeObject );
-            //   object_array[i].change();
-            // }
 
           },
           execute : function () {
@@ -127,7 +122,7 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           exit  : function () {
-            // 新規作成のアンカーを削除する
+            // new-anchorの中身の新規作成のアンカーを削除する
             pal.util.removeElementById( 'new-anchor' );
           }
         },
@@ -142,6 +137,8 @@ pal.list = (function () {
             // 設定:
             //  * action_object : Actionオブジェクトの生成
             //  * jqueryMap.$form       : 表示する
+            //  * new-action-wrapper  : create画面の操作
+            //  * new-form-wrapper    : create画面のフォーム
             // 戻り値:
             // 例外発行: なし
             // Actionオブジェクトを生成する
@@ -209,6 +206,8 @@ pal.list = (function () {
 
             // _local_idプロパティにtime stampをセットする
             action_object._local_id = pal.util_b.getTimestamp();
+
+            console.log( action_object );
 
             // object_arrayに追加する
             object_array.createObject( action_object, onObjectCreate );
@@ -591,8 +590,6 @@ pal.list = (function () {
       find_flag = false,
       find_index,
       fragment;
-
-    console.log( action_object );
 
     target_node = document.getElementById( 'target' );
     item_nodes = target_node.children;

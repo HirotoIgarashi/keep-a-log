@@ -207,8 +207,6 @@ pal.list = (function () {
             // _local_idプロパティにtime stampをセットする
             action_object._local_id = pal.util_b.getTimestamp();
 
-            console.log( action_object );
-
             // object_arrayに追加する
             object_array.createObject( action_object, onObjectCreate );
             // object_arrayを更新する
@@ -338,7 +336,12 @@ pal.list = (function () {
             this.target.changeState( this.target.states.delete_form );
           },
           exit        : function () {
-            return false;
+            // crud-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild );
+            // message-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
+            // detail-wrapperの中身を削除する
+            pal.util.removeElement( current_node.lastElementChild );
           }
         },
         update_form   : {
@@ -364,12 +367,6 @@ pal.list = (function () {
             // もとに戻す
             Object.assign( previous_object, action_object );
 
-            console.log( current_node );
-
-            // crud-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild );
-            pal.util.removeElement( current_node.lastElementChild );
-
             // キャンセル、アップデートアンカーを生成する
             action_fragment = document.createDocumentFragment();
             cancel_update = make_anchor_element( '#list/cancel-update', 'キャンセル' );
@@ -380,10 +377,12 @@ pal.list = (function () {
             // crud_wrapperの中身を追加する
             current_node.firstElementChild.appendChild( action_fragment );
 
+            // message_wrapperの中身を追加する
+            current_node.firstElementChild.nextElementSibling.textContent = '編集を中止するにはキャンセル、編集が終了したら更新の確認をクリックしてください。';
+            
             // formを生成する
-            // form要素を取得する。event_listenerにonBlurInputをセットする
+            // form要素を取得する。event_linstenerにonBlurInputをセットする
             form_fragment = action_object.makeFormElement( onBlurInput );
-
             // formを表示する
             current_node.appendChild( form_fragment );
           },
@@ -415,6 +414,9 @@ pal.list = (function () {
 
             // crud-wrapperの中身を削除する
             pal.util.removeElement( current_node.firstElementChild );
+            // message-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
+            // detail-wrapperの中身を削除する
             pal.util.removeElement( current_node.lastElementChild );
           }
         },
@@ -428,20 +430,11 @@ pal.list = (function () {
             //  |- delete_confirm_anchor
             //
             var
-              // i,
               crud_fragment,
-              message_wrapper,
-              message_element,
               detail_fragment,
               cancel_anchor,
               confirm_anchor,
               detail_anchor;
-
-            // .action-wrapper自体を削除する
-            // current_node.removeChild( current_node.lastElementChild );
-            while ( current_node.firstChild ) {
-              current_node.removeChild( current_node.firstChild );
-            }
 
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
@@ -453,16 +446,6 @@ pal.list = (function () {
             crud_fragment.appendChild( cancel_anchor );
             crud_fragment.appendChild( confirm_anchor );
 
-            // message_wrapperを生成する
-            message_wrapper = document.createDocumentFragment();
-
-            message_element = document.createElement( 'div' );
-            message_element.setAttribute( 'class', 'message-wrapper' );
-
-            message_element.textContent = 'データを削除します。削除の確認をクリックしてください';
-
-            message_wrapper.appendChild( message_element );
-
             // detail_formを生成する
             detail_fragment = action_object.makeDetailElement();
 
@@ -470,7 +453,7 @@ pal.list = (function () {
             current_node.firstElementChild.appendChild( crud_fragment );
 
             // message_wrapperの中身を追加する
-            current_node.appendChild( message_wrapper );
+            current_node.firstElementChild.nextElementSibling.textContent = 'データを削除します。削除の確認をクリックしてください';
 
             // Action Objectの中身を追加する
             current_node.appendChild( detail_fragment );
@@ -487,6 +470,9 @@ pal.list = (function () {
           },
           confirm_delete  : function () {
 
+            // nameプロパティを削除する
+            delete action_object.name;
+
             // object_arrayから削除する
             object_array.deleteObject( action_object, onObjectDelete );
 
@@ -499,19 +485,10 @@ pal.list = (function () {
             this.target.changeState( this.target.states.list_form );
           },
           exit            : function () {
-            var
-              message_wrapper,
-              i;
-
             // .crud-wrapperの中身を削除する
             pal.util.removeElement( current_node.firstElementChild );
-
-            // .message_wrapperの中身を削除する
-            message_wrapper = document.getElementsByClassName( 'message-wrapper' );
-            for ( i = 0; i < message_wrapper.length; i += 1 ) {
-              message_wrapper[i].textContent = '';
-            }
-
+            // message-wrapperの中身を削除する
+            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
             // .action-wrapper自体を削除する
             current_node.removeChild( current_node.lastElementChild );
           }
@@ -603,15 +580,23 @@ pal.list = (function () {
 
     // 見つかった
     if ( find_flag ) {
-      item_nodes[ find_index ].parentNode.replaceChild(
-        action_object.makeMicrodataElement(),
-        item_nodes[ find_index ]
-      );
+
+      // 更新の処理
+      if ( action_object.name ) {
+        item_nodes[ find_index ].parentNode.replaceChild(
+          action_object.makeMicrodataElement(),
+          item_nodes[ find_index ]
+        );
+      }
+      // 削除の処理
+      else {
+        item_nodes[ find_index ].parentNode.removeChild( item_nodes[ find_index ] );
+      }
+
     }
-    // 見つからなかった
+    // 見つからなかった 追加の処理
     else {
       fragment = action_object.makeMicrodataElement();
-      // target_node.appendChild( fragment );
       target_node.insertBefore( fragment, target_node.childNodes[0] );
     }
 

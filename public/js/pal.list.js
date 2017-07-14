@@ -104,6 +104,10 @@ pal.list = (function () {
               new_target,
               detail_anchor;
 
+            // 件数を表示する
+            // sync_number_of_data( jqueryMap.$status, object_array);
+            sync_number_of_data( document.getElementById( 'status' ), object_array);
+
             detail_anchor = document.getElementById( 'target' );
 
             // targetにclickイベントを登録する
@@ -217,7 +221,6 @@ pal.list = (function () {
             // chageイベントを発生させる
             action_object.change();
 
-            // pal.socketio.createObject( action_object, onObjectCreate );
 
             setTimeout(
               function () {
@@ -643,7 +646,12 @@ pal.list = (function () {
   // 例外発行: なし
   sync_number_of_data = function ( element, object ) {
 
-    element.text( 'データ件数は' + object.length + '件です。' );
+    if ( element.text ) {
+      element.text( 'データ件数は' + object.length + '件です。' );
+    }
+    else {
+      element.textContent = 'データ件数は' + object.length + '件です。'; 
+    }
 
   };
   // ユーティリティメソッド/sync_number_of_data/終了
@@ -765,10 +773,7 @@ pal.list = (function () {
     sync_object_and_dom( this );
 
     // 件数を表示する
-    sync_number_of_data(
-      jqueryMap.$status,
-      pal.util_b.readObjectLocal( 'action-list' )
-    );
+    sync_number_of_data( document.getElementById( 'status' ), object_array);
 
   };
   // ------------------ カスタムイベントリスナー終了 ------------------
@@ -781,6 +786,7 @@ pal.list = (function () {
   onObjectCreate = function( data ) {
     console.log( 'オブジェクトを作成しました' );
 
+    // pal.socketio.createObject( action_object, onObjectCreate );
     if ( data ) {
       console.log( data, 'を受信しました' );
     }

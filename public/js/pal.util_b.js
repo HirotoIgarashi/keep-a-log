@@ -288,10 +288,27 @@ pal.util_b = (function () {
   // 戻り値:
   // 例外発行: なし
   createObjectLocal = function ( local_storage_key, list, callback ) {
+    var
+      key,
+      i,
+      save_array = [],
+      save_object;
 
+    for ( i = 0; i < list.length; i += 1 ) {
+
+      save_object = {};
+
+      for ( key in list[i] ) {
+        if ( typeof list[i][ key ] === 'string' && list[ i ][ key ] ) {
+          save_object[ key ] = list[ i ][ key ];
+        }
+      }
+
+      save_array.push( save_object );
+    }
     // localStorageにリストを追加/上書きする
     window.localStorage
-      .setItem( local_storage_key, JSON.stringify( list ) );
+      .setItem( local_storage_key, JSON.stringify( save_array ) );
 
     if ( callback ) {
       callback( list );
@@ -327,10 +344,6 @@ pal.util_b = (function () {
 
     // localStorageからaction-listの値を読み込む
     item = window.localStorage.getItem( local_storage_key );
-
-    // if ( item ) {
-    //   console.log( JSON.parse( item ).length );
-    // }
 
     return JSON.parse( item );
 

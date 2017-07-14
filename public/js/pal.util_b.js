@@ -323,8 +323,14 @@ pal.util_b = (function () {
   readObjectLocal = function ( local_storage_key ) {
     var item;
 
+    // console.log( 'readObjectLocalが呼ばれました' );
+
     // localStorageからaction-listの値を読み込む
     item = window.localStorage.getItem( local_storage_key );
+
+    // if ( item ) {
+    //   console.log( JSON.parse( item ).length );
+    // }
 
     return JSON.parse( item );
 

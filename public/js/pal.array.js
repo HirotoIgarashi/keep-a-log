@@ -98,6 +98,11 @@ pal.array = (function () {
       i,
       property;
 
+    // custom_arrayの初期化
+    // createObjectArrayなどのメソッドも削除されるため
+    // custom_array = []; は使わない
+    custom_array.length = 0;
+
     // custom_arrayの生成/開始 ----------------------------
     // localStorageからプロパティ名action-listの値を読み込む
     work_list = pal.util_b.readObjectLocal( 'action-list' );
@@ -122,6 +127,7 @@ pal.array = (function () {
         custom_array.push( action_object );
       }
     }
+
     // custom_arrayの生成/終了 ----------------------------
     return false;
   };
@@ -130,9 +136,5 @@ pal.array = (function () {
     initModule      : initModule,
     readObject      : readObject,
     readObjectArray : readObjectArray
-    // createObject  : createObject,
-    // readObject    : readObject,
-    // updateObject  : updateObject,
-    // deleteObject  : deleteObject
   }; 
 }());

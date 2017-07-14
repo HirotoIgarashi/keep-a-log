@@ -95,7 +95,7 @@ pal.socketio = (function () {
   // メソッド/readObjectList/開始
   readObjectList = function ( callback ) {
 
-    console.log( 'readObjectListが呼ばれました' );
+    // console.log( 'readObjectListが呼ばれました' );
     stateMap.sio.on( 'objectread', callback );
     stateMap.sio.emit( 'readobject', JSON.stringify( { test : 'test' } ) );
 

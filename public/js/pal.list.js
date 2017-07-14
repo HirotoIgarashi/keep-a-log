@@ -94,7 +94,9 @@ pal.list = (function () {
               object_array[i].change( onChangeObject );
               object_array[i].change();
             }
+
             this.target = target;
+
           },
           enter       : function () {
             var
@@ -793,7 +795,7 @@ pal.list = (function () {
   };
 
   onObjectDelete = function( data ) {
-    console.log( 'オブジェクトを削除しました' );
+    // console.log( 'オブジェクトを削除しました' );
 
     if ( data ) {
       console.log( data, 'を受信しました' );

@@ -19,8 +19,6 @@ pal = (function () {
       pal.bom.initModule( $container );
     }
 
-    pal.socketio.initModule( '/list' );
-
   };
 
   return { initModule : initModule };

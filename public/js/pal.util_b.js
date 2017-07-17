@@ -43,7 +43,8 @@ pal.util_b = (function () {
     createObjectLocal,
     updateObjectLocal,
     deleteObjectLocal,
-    readObjectLocal;
+    readObjectLocal,
+    makeStringObject;
 
   configMap.encode_noamp_map = $.extend(
     {}, configMap.encode_noamp_map
@@ -289,23 +290,18 @@ pal.util_b = (function () {
   // 例外発行: なし
   createObjectLocal = function ( local_storage_key, list, callback ) {
     var
-      key,
+      // key,
       i,
       save_array = [],
       save_object;
 
     for ( i = 0; i < list.length; i += 1 ) {
 
-      save_object = {};
-
-      for ( key in list[i] ) {
-        if ( typeof list[i][ key ] === 'string' && list[ i ][ key ] ) {
-          save_object[ key ] = list[ i ][ key ];
-        }
-      }
+      save_object = makeStringObject( list[ i ] );
 
       save_array.push( save_object );
     }
+
     // localStorageにリストを追加/上書きする
     window.localStorage
       .setItem( local_storage_key, JSON.stringify( save_array ) );
@@ -340,8 +336,6 @@ pal.util_b = (function () {
   readObjectLocal = function ( local_storage_key ) {
     var item;
 
-    // console.log( 'readObjectLocalが呼ばれました' );
-
     // localStorageからaction-listの値を読み込む
     item = window.localStorage.getItem( local_storage_key );
 
@@ -349,6 +343,22 @@ pal.util_b = (function () {
 
   };
   // ユーティリティメソッド/readObjectLocal/終了
+
+  // ユーティリティメソッド/makeStringObject/開始
+  makeStringObject = function ( object ) {
+    var
+      key,
+      string_object = {};
+
+    for ( key in object ) {
+      if ( typeof object[ key ] === 'string' && object[ key ] ) {
+        string_object[ key ] = object[ key ];
+      }
+    }
+
+    return string_object;
+  };
+  // ユーティリティメソッド/makeStringObject/終了
   //------------------ ユーティリティメソッド終了 ---------------------
 
   //------------------ パブリックメソッド開始 -------------------------
@@ -364,7 +374,8 @@ pal.util_b = (function () {
     createObjectLocal   : createObjectLocal,
     updateObjectLocal   : updateObjectLocal,
     deleteObjectLocal   : deleteObjectLocal,
-    readObjectLocal     : readObjectLocal
+    readObjectLocal     : readObjectLocal,
+    makeStringObject    : makeStringObject
   };
   //------------------ パブリックメソッド終了 -------------------------
 }());

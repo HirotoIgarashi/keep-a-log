@@ -35,13 +35,12 @@ pal.list = (function () {
     setJqueryMap, configModule, initModule,
     list_ui,
     current_node,
-    onObjectListRead,
     onObjectCreate,
     // onObjectRead,
     onObjectUpdate,
     onObjectDelete,
     object_create,
-    // object_read,
+    object_read,
     object_update,
     object_delete;
 
@@ -103,7 +102,7 @@ pal.list = (function () {
             this.target = target;
 
           },
-          enter       : function () {
+          enter : function () {
             var
               new_anchor,
               new_target,
@@ -137,11 +136,11 @@ pal.list = (function () {
             pal.util.removeElementById( 'new-anchor' );
           }
         },
-        create_form    : {
+        create_form : {
           initialize  : function ( target ) {
             this.target = target;
           },
-          enter       : function () {
+          enter : function () {
             // 目的:
             // 必須引数:
             // オプション引数:
@@ -190,10 +189,10 @@ pal.list = (function () {
             form_fragment = action_object.makeFormElement( onBlurInput );
             form_wrapper.appendChild( form_fragment );
           },
-          execute     : function () {
+          execute : function () {
             return false;
           },
-          cancel_create  : function () {
+          cancel_create : function () {
             // locationを#listに戻す
             // pal.bom.setLocationHash( '#list/list' );
 
@@ -226,7 +225,6 @@ pal.list = (function () {
             // chageイベントを発生させる
             action_object.change();
 
-
             setTimeout(
               function () {
                 if ( action_object.name !== '' ) {
@@ -238,7 +236,7 @@ pal.list = (function () {
 
             this.target.changeState( this.target.states.list_form );
           },
-          exit        : function () {
+          exit  : function () {
             // 目的: フォームでキャンセルがクリックされた場合にフォームの
             //        値をクリアする
             // 必須引数: なし
@@ -260,7 +258,7 @@ pal.list = (function () {
           initialize  : function ( target ) {
             this.target = target;
           },
-          enter       : function () {
+          enter : function () {
             var
               i,
               detail_fragment,
@@ -610,33 +608,6 @@ pal.list = (function () {
       target_node.insertBefore( fragment, target_node.childNodes[0] );
     }
 
-    // if ( item_nodes.length !== 0 ) {
-    //   current_item_nodes_length = item_nodes.length;
-
-    //   for ( i = 0; i < current_item_nodes_length; i += 1 ) {
-
-    //     // 見つかったので置き換える
-    //     if ( item_nodes[i].dataset.localId === action_object._local_id ) {
-    //       item_nodes[i].parentNode.replaceChild(
-    //         action_object.makeMicrodataElement(),
-    //         item_nodes[i]
-    //       );
-    //     }
-    //     else {
-    //       fragment = action_object.makeMicrodataElement();
-    //       target_node.appendChild( fragment );
-    //       // 見つからなかったので削除する
-    //       //item_nodes[i].parentNode.removeChild( item_nodes[i] );
-    //     }
-    //   }
-
-    // }
-    // targetが空のとき
-    // else {
-    //   fragment = action_object.makeMicrodataElement();
-    //   target_node.appendChild( fragment );
-    // }
-
   };
   // ユーティリティメソッド/sync_object_and_dom/終了
 
@@ -785,9 +756,11 @@ pal.list = (function () {
 
   // ------------------ メッセージリスナー開始 ------------------
   object_create = function ( data ) {
-    console.log( 'object_createが呼ばれました' );
+    console.log( JSON.parse( data[0] ), 'を受信しました' );
+  };
 
-    console.log( data, 'を受信しました' );
+  object_read = function( data ) {
+    console.log( JSON.parse( data[0] ), 'を受信しました' );
   };
 
   // object_read = function () {
@@ -795,56 +768,40 @@ pal.list = (function () {
   // };
 
   object_update = function ( data ) {
-    console.log( 'object_updateが呼ばれました' );
-    console.log( data, 'を受信しました' );
+    console.log( JSON.parse( data[0] ), 'を受信しました' );
   };
 
   object_delete = function ( data ) {
-    console.log( 'object_deleteが呼ばれました' );
-    console.log( data, 'を受信しました' );
+    console.log( JSON.parse( data[0] ), 'を受信しました' );
   };
   // ------------------ メッセージリスナー終了 ------------------
 
   // ------------------ コールバック処理開始 --------------------
-  onObjectListRead = function( data ) {
-    console.log( 'onObjectListReadが呼ばれました' );
+  onObjectCreate = function() {
+    var
+      send_data;
 
-    console.log( data, 'を受信しました' );
+    send_data = pal.util_b.makeStringObject( action_object );
+
+    pal.socketio.createObject( JSON.stringify( send_data ), object_create );
   };
 
-  onObjectCreate = function( data ) {
-    console.log( 'オブジェクトを作成しました' );
+  onObjectUpdate = function() {
+    var
+      send_data;
 
-    pal.socketio.createObject( action_object, object_create );
+    send_data = pal.util_b.makeStringObject( action_object );
 
-    if ( data ) {
-      console.log( data, 'を受信しました' );
-    }
+    pal.socketio.updateObject( JSON.stringify( send_data ), object_update );
   };
 
-  // onObjectRead = function( data ) {
-  //   console.log( data, 'を受信しました' );
+  onObjectDelete = function() {
+    var
+      send_data;
 
-  //   pal.socketio.readObject( action_object, object_read );
-  // };
+    send_data = pal.util_b.makeStringObject( action_object );
 
-  onObjectUpdate = function( data ) {
-    console.log( 'オブジェクトを変更しました' );
-
-    pal.socketio.updateObject( action_object, object_update );
-
-    if ( data ) {
-      console.log( data, 'を受信しました' );
-    }
-  };
-
-  onObjectDelete = function( data ) {
-    console.log( 'オブジェクトを削除しました' );
-
-    pal.socketio.deleteObject( action_object, object_delete );
-    if ( data ) {
-      console.log( data, 'を受信しました' );
-    }
+    pal.socketio.deleteObject( JSON.stringify( send_data ), object_delete );
   };
   // ------------------ コールバック処理終了 --------------------
 
@@ -877,21 +834,30 @@ pal.list = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
+    var
+      event_map;
 
     stateMap.$container = $container;
 
     // custom_arrayの初期化 localStorageから読み込む
     pal.array.initModule();
 
-    // State Patternを初期化する
+    // State Patternを初期化して最初の画面を表示する
     list_ui.initialize();
-    // 最初の画面を描画する
     list_ui.load();
 
     // Socket.IOオブジェクトsioを生成する
-    // pal.socketio.initModule( '/list' );
+    event_map = {
+      'objectcreate'  : object_create,
+      'objectread'    : object_read,
+      'objectupdate'  : object_update,
+      'objectdelete'  : object_delete
+    };
 
-    pal.socketio.readObjectList( onObjectListRead );
+    pal.socketio.initModule( '/list', event_map );
+
+    // コールバックはobject_read
+    pal.socketio.readObjectList( object_read );
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

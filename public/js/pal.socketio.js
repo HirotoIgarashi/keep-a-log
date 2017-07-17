@@ -44,42 +44,26 @@ pal.socketio = (function () {
   };
 
   // メソッド/createObject/開始
-  createObject = function ( object, callback ) {
-
-    console.log( object );
-
-    stateMap.sio.on( 'objectcreate', callback );
+  createObject = function ( object ) {
     stateMap.sio.emit( 'createobject', JSON.stringify( object ) );
-
   };
   // メソッド/createObject/終了
 
   // メソッド/readObject/開始
-  readObject = function ( remote_id, callback ) {
-    console.log( remote_id );
-
-    stateMap.sio.on( 'objectread', callback );
-    stateMap.sio.emit( 'readobject', JSON.stringify( remote_id ) );
-
+  readObject = function ( object ) {
+    stateMap.sio.emit( 'readobject', JSON.stringify( object ) );
   };
   // メソッド/readObject/終了
 
   // メソッド/updateObject/開始
-  updateObject = function ( object, callback ) {
-
-    stateMap.sio.on( 'objectupdate', callback );
+  updateObject = function ( object ) {
     stateMap.sio.emit( 'updateobject', JSON.stringify( object ) );
-
   };
   // メソッド/updateObject/終了
 
   // メソッド/deleteObject/開始
-  deleteObject = function ( remote_id, callback ) {
-    console.log( remote_id );
-
-    stateMap.sio.on( 'objectdelete', callback );
-    stateMap.sio.emit( 'deleteobject', JSON.stringify( remote_id ) );
-
+  deleteObject = function ( object ) {
+    stateMap.sio.emit( 'deleteobject', JSON.stringify( object ) );
   };
   // メソッド/deleteObject/終了
 
@@ -94,21 +78,24 @@ pal.socketio = (function () {
   // メソッド/getObjectRemoteId/終了
 
   // メソッド/readObjectList/開始
-  readObjectList = function ( callback ) {
-
-    console.log( 'readObjectListが呼ばれました' );
-
-    stateMap.sio.on( 'objectread', callback );
+  readObjectList = function () {
     stateMap.sio.emit( 'readobject', JSON.stringify( { test : 'test' } ) );
-
   };
   // メソッド/readObjectList/終了
 
-  initModule = function ( namespace ) {
+  initModule = function ( namespace, event_map ) {
+    var
+      key;
 
     getSio( namespace );
 
-    return false;
+    // メッセージを受信したあとのコールバックを登録する
+    for ( key in event_map ) {
+      if ( event_map.hasOwnProperty( key ) ) {
+        stateMap.sio.on( key, event_map[ key ] );
+      }
+    }
+
   };
 
   return {

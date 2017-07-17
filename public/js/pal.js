@@ -11,7 +11,7 @@
 */
 /*global $, pal:true */
 
-pal = (function ( ){
+pal = (function () {
   'use strict';
   var initModule = function ( $container ) {
 
@@ -19,7 +19,7 @@ pal = (function ( ){
       pal.bom.initModule( $container );
     }
 
-    pal.socketio.initModule();
+    pal.socketio.initModule( '/list' );
 
   };
 

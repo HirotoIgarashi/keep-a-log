@@ -37,8 +37,13 @@ pal.list = (function () {
     current_node,
     onObjectListRead,
     onObjectCreate,
+    // onObjectRead,
     onObjectUpdate,
-    onObjectDelete;
+    onObjectDelete,
+    object_create,
+    // object_read,
+    object_update,
+    object_delete;
 
     // UIの状態遷移
     list_ui = {
@@ -779,21 +784,54 @@ pal.list = (function () {
   // ------------------ カスタムイベントリスナー終了 ------------------
 
   // ------------------ メッセージリスナー開始 ------------------
+  object_create = function ( data ) {
+    console.log( 'object_createが呼ばれました' );
+
+    console.log( data, 'を受信しました' );
+  };
+
+  // object_read = function () {
+  //   return false;
+  // };
+
+  object_update = function ( data ) {
+    console.log( 'object_updateが呼ばれました' );
+    console.log( data, 'を受信しました' );
+  };
+
+  object_delete = function ( data ) {
+    console.log( 'object_deleteが呼ばれました' );
+    console.log( data, 'を受信しました' );
+  };
+  // ------------------ メッセージリスナー終了 ------------------
+
+  // ------------------ コールバック処理開始 --------------------
   onObjectListRead = function( data ) {
+    console.log( 'onObjectListReadが呼ばれました' );
+
     console.log( data, 'を受信しました' );
   };
 
   onObjectCreate = function( data ) {
     console.log( 'オブジェクトを作成しました' );
 
-    // pal.socketio.createObject( action_object, onObjectCreate );
+    pal.socketio.createObject( action_object, object_create );
+
     if ( data ) {
       console.log( data, 'を受信しました' );
     }
   };
 
+  // onObjectRead = function( data ) {
+  //   console.log( data, 'を受信しました' );
+
+  //   pal.socketio.readObject( action_object, object_read );
+  // };
+
   onObjectUpdate = function( data ) {
     console.log( 'オブジェクトを変更しました' );
+
+    pal.socketio.updateObject( action_object, object_update );
 
     if ( data ) {
       console.log( data, 'を受信しました' );
@@ -801,14 +839,14 @@ pal.list = (function () {
   };
 
   onObjectDelete = function( data ) {
-    // console.log( 'オブジェクトを削除しました' );
+    console.log( 'オブジェクトを削除しました' );
 
+    pal.socketio.deleteObject( action_object, object_delete );
     if ( data ) {
       console.log( data, 'を受信しました' );
     }
   };
-
-  // ------------------ メッセージリスナー終了 ------------------
+  // ------------------ コールバック処理終了 --------------------
 
   // --------------------- パブリックメソッド開始 --------------------
   // パブリックメソッド/configModule/開始
@@ -851,7 +889,7 @@ pal.list = (function () {
     list_ui.load();
 
     // Socket.IOオブジェクトsioを生成する
-    pal.socketio.initModule( '/list' );
+    // pal.socketio.initModule( '/list' );
 
     pal.socketio.readObjectList( onObjectListRead );
 

@@ -46,6 +46,8 @@ pal.socketio = (function () {
   // メソッド/createObject/開始
   createObject = function ( object, callback ) {
 
+    console.log( object );
+
     stateMap.sio.on( 'objectcreate', callback );
     stateMap.sio.emit( 'createobject', JSON.stringify( object ) );
 
@@ -63,8 +65,7 @@ pal.socketio = (function () {
   // メソッド/readObject/終了
 
   // メソッド/updateObject/開始
-  updateObject = function ( object, remote_id, callback ) {
-    console.log( object, remote_id );
+  updateObject = function ( object, callback ) {
 
     stateMap.sio.on( 'objectupdate', callback );
     stateMap.sio.emit( 'updateobject', JSON.stringify( object ) );
@@ -95,7 +96,8 @@ pal.socketio = (function () {
   // メソッド/readObjectList/開始
   readObjectList = function ( callback ) {
 
-    // console.log( 'readObjectListが呼ばれました' );
+    console.log( 'readObjectListが呼ばれました' );
+
     stateMap.sio.on( 'objectread', callback );
     stateMap.sio.emit( 'readobject', JSON.stringify( { test : 'test' } ) );
 

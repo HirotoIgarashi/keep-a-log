@@ -113,7 +113,6 @@ pal.dom = (function () {
       case '':
         // サーバにSessionがあるかチェックしてメニューをコントロールする
         readSession();
-        // console.log( 'hashが空白になりました。' );
         pal.top.initModule( jqueryMap.$section );
         break;
       case '#login':

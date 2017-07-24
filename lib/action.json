@@ -1,0 +1,31 @@
+{ "type"  : "object",
+  "additionalProperties"  : false,
+  "properties"  : {
+    "_local_id"  : {
+      "required"  : true,
+      "minLength" : 13,
+      "maxLength" : 13
+    },
+    "name"  : {
+      "required"  : true,
+      "type"      : "string",
+      "minLength" : 1,
+      "maxLength" : 2048
+    },
+    "_id" : {
+      "required"  : false
+    },
+    "alternate_name" : {
+      "required"  : false
+    },
+    "description" : {
+      "required"  : false
+    },
+    "url" : {
+      "required"  : false
+    },
+    "image" : {
+      "required"  : false
+    }
+  }
+}

@@ -39,6 +39,9 @@ pal.array = (function () {
   };
 
   custom_array.updateObject = function ( object, callback ) {
+    // 目的: objectを受け取りcustom_arrayで_local_idで一致するものを探す
+    //       一致したら置換する
+    //       一致しなかったら追加する
     var
       i,
       find_flag = false,
@@ -55,11 +58,16 @@ pal.array = (function () {
     if ( find_flag ) {
       custom_array.splice( index, 1, object );
     }
+    else {
+      custom_array.push( object );
+    }
 
     // オブジェクトをlocalStorageに保存する。
     pal.util_b.createObjectLocal( 'action-list', custom_array );
 
-    callback();
+    if ( callback ) {
+      callback();
+    }
   };
 
   custom_array.deleteObject = function ( object, callback ) {
@@ -83,7 +91,9 @@ pal.array = (function () {
     // オブジェクトをlocalStorageに保存する。
     pal.util_b.createObjectLocal( 'action-list', custom_array );
 
-    callback();
+    if ( callback ) {
+      callback();
+    }
   };
 
   readObjectArray = function () {

@@ -756,7 +756,29 @@ pal.list = (function () {
 
   // ------------------ メッセージリスナー開始 ------------------
   object_create = function ( data ) {
-    console.log( JSON.parse( data[0] ), 'を受信しました' );
+    var
+      create_data;
+
+    create_data = data[0];
+
+    // action objectを生成する
+    action_object = pal.schema.makeAction( create_data );
+    // change関数を追加する
+    pal.util.addChange( action_object );
+    // action_objectが変更されたときのコールバック関数
+    // onChangeObjectをセットする
+    // onChangeObjectから呼ばれるsync_object_and_domの中で
+    // DOMに追加する
+    action_object.change( onChangeObject );
+
+    // object_arrayに追加する
+    object_array.updateObject( action_object );
+    // object_arrayを更新する
+    object_array = pal.array.readObjectArray();
+
+    action_object.change();
+
+    console.log( action_object, 'を受信しました' );
   };
 
   object_read = function( data ) {
@@ -768,11 +790,57 @@ pal.list = (function () {
   // };
 
   object_update = function ( data ) {
-    console.log( JSON.parse( data[0] ), 'を受信しました' );
+    var
+      update_data;
+
+    update_data = data[0];
+
+    // action objectを生成する
+    action_object = pal.schema.makeAction( update_data );
+    // change関数を追加する
+    pal.util.addChange( action_object );
+    // action_objectが変更されたときのコールバック関数
+    // onChangeObjectをセットする
+    // onChangeObjectから呼ばれるsync_object_and_domの中で
+    // DOMに追加する
+    action_object.change( onChangeObject );
+
+    object_array.updateObject( action_object );
+
+    // object_arrayを更新する
+    object_array = pal.array.readObjectArray();
+
+    // chageイベントを発生させる
+    action_object.change();
+    console.log( data[0], 'を受信しました' );
   };
 
   object_delete = function ( data ) {
-    console.log( JSON.parse( data[0] ), 'を受信しました' );
+    var
+      delete_data;
+
+    delete_data = data[0];
+
+    // action objectを生成する
+    action_object = pal.schema.makeAction( delete_data );
+    // change関数を追加する
+    pal.util.addChange( action_object );
+    // action_objectが変更されたときのコールバック関数
+    // onChangeObjectをセットする
+    // onChangeObjectから呼ばれるsync_object_and_domの中で
+    // DOMに追加する
+    action_object.change( onChangeObject );
+
+    // object_arrayから削除する
+    object_array.deleteObject( data[0] );
+
+    // object_arrayを更新する
+    object_array = pal.array.readObjectArray();
+
+    // chageイベントを発生させる
+    action_object.change();
+
+    console.log( data[0], 'を受信しました' );
   };
   // ------------------ メッセージリスナー終了 ------------------
 
@@ -783,7 +851,7 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.createObject( JSON.stringify( send_data ), object_create );
+    pal.socketio.createObject( send_data, object_create );
   };
 
   onObjectUpdate = function() {
@@ -792,7 +860,7 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.updateObject( JSON.stringify( send_data ), object_update );
+    pal.socketio.updateObject( send_data, object_update );
   };
 
   onObjectDelete = function() {
@@ -801,7 +869,7 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.deleteObject( JSON.stringify( send_data ), object_delete );
+    pal.socketio.deleteObject( send_data, object_delete );
   };
   // ------------------ コールバック処理終了 --------------------
 

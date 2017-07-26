@@ -745,6 +745,8 @@ pal.list = (function () {
   // ------------------ カスタムイベントリスナー開始 ------------------
   onChangeObject = function () {
 
+    console.log( this );
+
     // DOM要素のリストに要素を追加する
     sync_object_and_dom( this );
 
@@ -759,26 +761,31 @@ pal.list = (function () {
     var
       create_data;
 
-    create_data = data[0];
+    if ( data[0].result.n === 1 ) {
 
-    // action objectを生成する
-    action_object = pal.schema.makeAction( create_data );
-    // change関数を追加する
-    pal.util.addChange( action_object );
-    // action_objectが変更されたときのコールバック関数
-    // onChangeObjectをセットする
-    // onChangeObjectから呼ばれるsync_object_and_domの中で
-    // DOMに追加する
-    action_object.change( onChangeObject );
+      create_data = data[0].ops
+      // action objectを生成する
+      action_object = pal.schema.makeAction( create_data );
+      // change関数を追加する
+      pal.util.addChange( action_object );
+      // action_objectが変更されたときのコールバック関数
+      // onChangeObjectをセットする
+      // onChangeObjectから呼ばれるsync_object_and_domの中で
+      // DOMに追加する
+      action_object.change( onChangeObject );
 
-    // object_arrayに追加する
-    object_array.updateObject( action_object );
-    // object_arrayを更新する
-    object_array = pal.array.readObjectArray();
+      console.log( action_object );
 
-    action_object.change();
+      // object_arrayに追加する
+      object_array.updateObject( action_object );
+      // object_arrayを更新する
+      object_array = pal.array.readObjectArray();
 
-    console.log( action_object, 'を受信しました' );
+      action_object.change();
+    }
+    else {
+      console.log( 'createに失敗しました' );
+    }
   };
 
   object_read = function( data ) {
@@ -790,57 +797,61 @@ pal.list = (function () {
   // };
 
   object_update = function ( data ) {
-    var
-      update_data;
 
-    update_data = data[0];
+    console.log( data[0] );
 
-    // action objectを生成する
-    action_object = pal.schema.makeAction( update_data );
-    // change関数を追加する
-    pal.util.addChange( action_object );
-    // action_objectが変更されたときのコールバック関数
-    // onChangeObjectをセットする
-    // onChangeObjectから呼ばれるsync_object_and_domの中で
-    // DOMに追加する
-    action_object.change( onChangeObject );
+    if ( data[0].lastErrorObject.n === 1 ) {
+      // action objectを生成する
+      action_object = pal.schema.makeAction( data[0].value );
+      // change関数を追加する
+      pal.util.addChange( action_object );
+      // action_objectが変更されたときのコールバック関数
+      // onChangeObjectをセットする
+      // onChangeObjectから呼ばれるsync_object_and_domの中で
+      // DOMに追加する
+      action_object.change( onChangeObject );
 
-    object_array.updateObject( action_object );
+      object_array.updateObject( action_object );
 
-    // object_arrayを更新する
-    object_array = pal.array.readObjectArray();
+      // object_arrayを更新する
+      object_array = pal.array.readObjectArray();
 
-    // chageイベントを発生させる
-    action_object.change();
-    console.log( data[0], 'を受信しました' );
+      // chageイベントを発生させる
+      action_object.change();
+    }
+    else {
+      console.log( 'updateに失敗しました' );
+    }
   };
 
   object_delete = function ( data ) {
-    var
-      delete_data;
 
-    delete_data = data[0];
+    console.log( data[0] );
 
-    // action objectを生成する
-    action_object = pal.schema.makeAction( delete_data );
-    // change関数を追加する
-    pal.util.addChange( action_object );
-    // action_objectが変更されたときのコールバック関数
-    // onChangeObjectをセットする
-    // onChangeObjectから呼ばれるsync_object_and_domの中で
-    // DOMに追加する
-    action_object.change( onChangeObject );
+    if ( data[0].result.n === 1 ) {
+      // action objectを生成する
+      action_object = pal.schema.makeAction( data[0].ops );
+      // change関数を追加する
+      pal.util.addChange( action_object );
+      // action_objectが変更されたときのコールバック関数
+      // onChangeObjectをセットする
+      // onChangeObjectから呼ばれるsync_object_and_domの中で
+      // DOMに追加する
+      action_object.change( onChangeObject );
 
-    // object_arrayから削除する
-    object_array.deleteObject( data[0] );
+      // object_arrayから削除する
+      object_array.deleteObject( action_object );
 
-    // object_arrayを更新する
-    object_array = pal.array.readObjectArray();
+      // object_arrayを更新する
+      object_array = pal.array.readObjectArray();
 
-    // chageイベントを発生させる
-    action_object.change();
+      // chageイベントを発生させる
+      action_object.change();
+    }
+    else {
+      console.log( 'deleteに失敗しました' );
+    }
 
-    console.log( data[0], 'を受信しました' );
   };
   // ------------------ メッセージリスナー終了 ------------------
 

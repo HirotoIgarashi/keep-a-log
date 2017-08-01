@@ -577,35 +577,38 @@ pal.list = (function () {
       fragment;
 
     target_node = document.getElementById( 'target' );
-    item_nodes = target_node.children;
 
-    for ( i = 0; i < item_nodes.length; i += 1 ) {
-      if ( item_nodes[i].dataset.localId === action_object._local_id ) {
-        find_flag = true;
-        find_index = i;
+    if ( target_node ) {
+      item_nodes = target_node.children;
+
+      for ( i = 0; i < item_nodes.length; i += 1 ) {
+        if ( item_nodes[i].dataset.localId === action_object._local_id ) {
+          find_flag = true;
+          find_index = i;
+        }
       }
-    }
 
-    // 見つかった
-    if ( find_flag ) {
+      // 見つかった
+      if ( find_flag ) {
 
-      // 更新の処理
-      if ( action_object.name ) {
-        item_nodes[ find_index ].parentNode.replaceChild(
-          action_object.makeMicrodataElement(),
-          item_nodes[ find_index ]
-        );
+        // 更新の処理
+        if ( action_object.name ) {
+          item_nodes[ find_index ].parentNode.replaceChild(
+            action_object.makeMicrodataElement(),
+            item_nodes[ find_index ]
+          );
+        }
+        // 削除の処理
+        else {
+          item_nodes[ find_index ].parentNode.removeChild( item_nodes[ find_index ] );
+        }
+
       }
-      // 削除の処理
+      // 見つからなかった 追加の処理
       else {
-        item_nodes[ find_index ].parentNode.removeChild( item_nodes[ find_index ] );
+        fragment = action_object.makeMicrodataElement();
+        target_node.insertBefore( fragment, target_node.childNodes[0] );
       }
-
-    }
-    // 見つからなかった 追加の処理
-    else {
-      fragment = action_object.makeMicrodataElement();
-      target_node.insertBefore( fragment, target_node.childNodes[0] );
     }
 
   };
@@ -745,8 +748,6 @@ pal.list = (function () {
   // ------------------ カスタムイベントリスナー開始 ------------------
   onChangeObject = function () {
 
-    console.log( this );
-
     // DOM要素のリストに要素を追加する
     sync_object_and_dom( this );
 
@@ -773,8 +774,6 @@ pal.list = (function () {
       // onChangeObjectから呼ばれるsync_object_and_domの中で
       // DOMに追加する
       action_object.change( onChangeObject );
-
-      console.log( action_object );
 
       // object_arrayに追加する
       object_array.updateObject( action_object );
@@ -825,8 +824,6 @@ pal.list = (function () {
   };
 
   object_delete = function ( data ) {
-
-    console.log( data[0] );
 
     if ( data[0].result.n === 1 ) {
       // action objectを生成する

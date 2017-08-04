@@ -56,9 +56,11 @@ pal.array = (function () {
     }
 
     if ( find_flag ) {
+      // 更新する処理
       custom_array.splice( index, 1, object );
     }
     else {
+      // 追加する処理
       custom_array.push( object );
     }
 

@@ -99,6 +99,9 @@ pal.list = (function () {
               object_array[i].change();
             }
 
+            // コールバックはobject_read
+            pal.socketio.readObjectList( object_read );
+
             this.target = target;
 
           },
@@ -764,7 +767,7 @@ pal.list = (function () {
 
     if ( data[0].result.n === 1 ) {
 
-      create_data = data[0].ops
+      create_data = data[0].ops;
       // action objectを生成する
       action_object = pal.schema.makeAction( create_data );
       // change関数を追加する
@@ -788,7 +791,25 @@ pal.list = (function () {
   };
 
   object_read = function( data ) {
-    console.log( JSON.parse( data[0] ), 'を受信しました' );
+    var
+      i,
+      action_object;
+
+    for ( i = 0; i < data[0].length; i += 1 ) {
+      // action objectを生成する
+      action_object = pal.schema.makeAction( data[0][i] );
+      // change関数を追加する
+      pal.util.addChange( action_object );
+      // action_objectが変更されたときのコールバック関数
+      // onChangeObjectをセットする
+      // onChangeObjectから呼ばれるsync_object_and_domの中で
+      // DOMに追加する
+      action_object.change( onChangeObject );
+
+      object_array.updateObject( action_object );
+
+      action_object.change();
+    }
   };
 
   // object_read = function () {
@@ -918,10 +939,6 @@ pal.list = (function () {
     // custom_arrayの初期化 localStorageから読み込む
     pal.array.initModule();
 
-    // State Patternを初期化して最初の画面を表示する
-    list_ui.initialize();
-    list_ui.load();
-
     // Socket.IOオブジェクトsioを生成する
     event_map = {
       'objectcreate'  : object_create,
@@ -932,8 +949,9 @@ pal.list = (function () {
 
     pal.socketio.initModule( '/list', event_map );
 
-    // コールバックはobject_read
-    pal.socketio.readObjectList( object_read );
+    // State Patternを初期化して最初の画面を表示する
+    list_ui.initialize();
+    list_ui.load();
 
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。

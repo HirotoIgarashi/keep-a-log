@@ -79,7 +79,7 @@ pal.socketio = (function () {
 
   // メソッド/readObjectList/開始
   readObjectList = function () {
-    stateMap.sio.emit( 'readobject', JSON.stringify( { test : 'test' } ) );
+    stateMap.sio.emit( 'readobject', JSON.stringify( {} ) );
   };
   // メソッド/readObjectList/終了
 

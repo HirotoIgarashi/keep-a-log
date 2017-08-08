@@ -16,7 +16,7 @@
   .pal-dom-header-menu {
     height          : 32px;
     color           : #fff;
-    text-align  : center;
+    text-align      : center;
     padding-top     : 5px;
     padding-right   : 2px;
     padding-bottom  : 4px;
@@ -74,33 +74,9 @@
 .pal-dom-section {
   height      : 90%;
 }
-  .pal-dom-section-article {
-    height  : 80px;
-  }
 
 .pal-dom-footer {
   background  : #9999cc;
   color       : #fff;
   text-align  : center;
 }
-
-.pal-dom-menu-list {
-  position    : fixed;
-  top         : 25px;
-  right       : 0px;
-  left        : 87.5%;
-  background  : #333399;
-  color       : #fff;
-  text-align  : center;
-}
-  .pal-dom-menu-list li {
-    list-style-position : inside;
-    cursor              : pointer;
-    line-height: 1.8;
-  }
-    .pal-dom-menu-item-one {
-    }
-    .pal-dom-menu-item-two {
-    }
-    .pal-dom-menu-item-three {
-    }

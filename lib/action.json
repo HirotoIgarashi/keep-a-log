@@ -26,6 +26,12 @@
     },
     "image" : {
       "required"  : false
+    },
+    "startTime" : {
+      "required"  : false
+    },
+    "endTime" : {
+      "required"  : false
     }
   }
 }

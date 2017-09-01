@@ -792,8 +792,7 @@ pal.list = (function () {
 
   object_read = function( data ) {
     var
-      i,
-      action_object;
+      i;
 
     for ( i = 0; i < data[0].length; i += 1 ) {
       // action objectを生成する
@@ -812,13 +811,9 @@ pal.list = (function () {
     }
   };
 
-  // object_read = function () {
-  //   return false;
-  // };
-
   object_update = function ( data ) {
 
-    console.log( data[0] );
+    // console.log( data[0] );
 
     if ( data[0].lastErrorObject.n === 1 ) {
       // action objectを生成する
@@ -889,7 +884,13 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.updateObject( send_data, object_update );
+    if ( send_data._id ) {
+      pal.socketio.updateObject( send_data, object_update );
+    }
+    else {
+      pal.socketio.createObject( send_data, object_create );
+    }
+
   };
 
   onObjectDelete = function() {

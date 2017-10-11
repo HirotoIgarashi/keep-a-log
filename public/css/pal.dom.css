@@ -3,7 +3,12 @@
  * DOMのスタイル
 */
 
-.pal-dom-header {
+#pal-footer {
+  background  : #9999cc;
+  color       : #fff;
+}
+
+#pal-header {
   display         : flex;
   justify-content : space-between;
   background      : #9999cc;
@@ -14,7 +19,6 @@
   .pal-dom-header-login,
   .pal-dom-header-signup,
   .pal-dom-header-menu {
-    height          : 32px;
     color           : #fff;
     text-align      : center;
     padding-top     : 5px;
@@ -71,6 +75,7 @@
       background  : #333399;
     }
 
+/*
 .pal-dom-section {
   height      : 90%;
 }
@@ -80,3 +85,4 @@
   color       : #fff;
   text-align  : center;
 }
+*/

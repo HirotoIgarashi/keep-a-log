@@ -89,7 +89,7 @@ pal.dom = (function () {
       $login      : $container.find( '.pal-dom-header-login' ),
       $signup     : $container.find( '.pal-dom-header-signup' ),
       $menu       : $container.find( '.pal-dom-header-menu' ),
-      $section    : $container.find( '.pal-dom-section' ),
+      $main       : $container.find( '#pal-main' ),
       $menu_list  : $container.find( '.pal-dom-menu-list' )
     };
   };
@@ -113,23 +113,23 @@ pal.dom = (function () {
       case '':
         // サーバにSessionがあるかチェックしてメニューをコントロールする
         readSession();
-        pal.top.initModule( jqueryMap.$section );
+        pal.top.initModule( jqueryMap.$main );
         break;
       case '#login':
-        pal.login.initModule( jqueryMap.$section );
+        pal.login.initModule( jqueryMap.$main );
         break;
       case '#logout':
-        pal.logout.initModule( jqueryMap.$section );
+        pal.logout.initModule( jqueryMap.$main );
         break;
       case '#signup':
         console.log( '#signupがクリックされました' );
         //pal.signup.initModule();
         break;
       case '#menu':
-        pal.menu.initModule( jqueryMap.$section );
+        pal.menu.initModule( jqueryMap.$main );
         break;
       case '#list':
-        pal.list.initModule( jqueryMap.$section );
+        pal.list.initModule( jqueryMap.$main );
         break;
       default:
         break;
@@ -217,7 +217,7 @@ pal.dom = (function () {
     setJqueryMap();
 
     // 機能モジュールを設定して初期化する/開始
-    pal.top.initModule( jqueryMap.$section );
+    pal.top.initModule( jqueryMap.$main );
     // 機能モジュールを設定して初期化する/終了
 
     // クリックハンドラをバインドする

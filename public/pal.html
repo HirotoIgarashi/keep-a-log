@@ -32,31 +32,28 @@
 
         <!-- メインページのテンプレート -->
         <template id="main-page">
-          <header class="pal-dom-header">
+          <header id="pal-header">
             <div class="pal-dom-header-title">
               keeP-A-Log
             </div>
-            <div class="pal-dom-header-blank">
-              <span id="pal-dom-user-info"></span>
-              <span id="pal-dom-date-info"></span>
-            </div>
             <nav class="pal-dom-header-logout" hidden>
-              ログアウト
+              <img src="image/pal_logout.png">
             </nav>
             <nav class="pal-dom-header-login">
-              ログインする
+              <img src="image/pal_login.png">
             </nav>
             <nav class="pal-dom-header-signup">
-              初めて利用する
+              <img src="image/pal_signup.png">
             </nav>
             <div class="pal-dom-header-menu">
-              メニュー
+              <img src="image/pal_menu.png">
             </div>
           </header>
-          <section class="pal-dom-section">
-          </section>
-          <footer class="pal-dom-footer">
-            Footer
+          <main id="pal-main">
+          </main>
+          <footer id="pal-footer">
+            <span id="pal-dom-user-info"></span>
+            <span id="pal-dom-date-info"></span>
           </footer>
         </template>
 

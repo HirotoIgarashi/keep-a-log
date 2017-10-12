@@ -3,6 +3,11 @@
  * DOMのスタイル
 */
 
+#pal {
+  display   : grid;
+  grid-template-rows : 42px auto 42px;
+}
+
 #pal-footer {
   background  : #9999cc;
   color       : #fff;
@@ -21,9 +26,9 @@
   .pal-dom-header-menu {
     color           : #fff;
     text-align      : center;
-    padding-top     : 5px;
+    padding-top     : 6px;
     padding-right   : 2px;
-    padding-bottom  : 4px;
+    padding-bottom  : 6px;
     padding-left    : 2px;
   }
   .pal-dom-header-title,
@@ -76,10 +81,6 @@
     }
 
 /*
-.pal-dom-section {
-  height      : 90%;
-}
-
 .pal-dom-footer {
   background  : #9999cc;
   color       : #fff;

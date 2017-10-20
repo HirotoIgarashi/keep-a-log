@@ -4,32 +4,78 @@
 */
 
 #pal {
-  display   : grid;
-  grid-template-rows : 42px auto 42px;
+  display             : grid;
+  grid-template-rows  : 46px auto 38px;
+}
+
+#pal-header {
+  grid-row              : 1;
+  justify-content       : space-between;
+  background            : #9999cc;
+  display               : grid;
+  grid-template-columns : 120px 4fr;
+}
+
+.pal-dom-header-title {
+  grid-column : 1;
+  grid-row    : 1;
+}
+
+.pal-dom-header-blank {
+  grid-column : 2;
+  grid-row    : 1;
+}
+
+.pal-dom-header-signup {
+  grid-column : 3;
+  grid-row    : 1;
+}
+
+.pal-dom-header-login {
+  grid-column : 4;
+  grid-row    : 1;
+}
+
+.pal-dom-header-logout {
+  grid-column : 4;
+  grid-row    : 1;
+}
+
+.pal-dom-header-menu {
+  grid-column : 5;
+  grid-row    : 1;
+}
+
+#pal-main {
+  grid-row    : 2;
 }
 
 #pal-footer {
+  grid-row          : 3;
   background  : #9999cc;
   color       : #fff;
 }
 
-#pal-header {
-  display         : flex;
-  justify-content : space-between;
-  background      : #9999cc;
-}
+  .pal-dom-header-logout,
+  .pal-dom-header-login,
+  .pal-dom-header-signup,
+  .pal-dom-header-menu {
+    margin-left   : 4px;
+    margin-right  : 4px;
+  }
   .pal-dom-header-title,
   .pal-dom-header-blank,
   .pal-dom-header-logout,
   .pal-dom-header-login,
   .pal-dom-header-signup,
   .pal-dom-header-menu {
+    background      : #9999cc;
     color           : #fff;
     text-align      : center;
     padding-top     : 6px;
-    padding-right   : 2px;
+    padding-right   : 6px;
     padding-bottom  : 6px;
-    padding-left    : 2px;
+    padding-left    : 6px;
   }
   .pal-dom-header-title,
   .pal-dom-header-logout,
@@ -38,6 +84,27 @@
   .pal-dom-header-menu {
     cursor      : pointer;
   }
+    .pal-dom-header-title:hover {
+      background  : #333399;
+    }
+
+    .pal-dom-header-signup:hover {
+      background  : #333399;
+    }
+
+    .pal-dom-header-login:hover {
+      background  : #333399;
+    }
+
+    .pal-dom-header-menu:hover {
+      background  : #333399;
+    }
+/*
+#pal-header {
+  display         : flex;
+  justify-content : space-between;
+  background      : #9999cc;
+}
   .pal-dom-header-title {
     flex-grow   : 0;
     flex-shrink : 0;
@@ -79,6 +146,7 @@
     .pal-dom-header-menu:hover {
       background  : #333399;
     }
+*/
 
 /*
 .pal-dom-footer {

@@ -169,22 +169,6 @@ pal.browserInformation = (function () {
     frag = document.createDocumentFragment();
 
     head_one = document.createElement( "h1" );
-    head_one_text = document.createTextNode( "navigatorオブジェクト:" );
-    head_one.appendChild( head_one_text );
-
-    frag.appendChild( head_one );
-
-    // navi_arrayの中身を表示
-    for ( i = 0; i < navi_array.length; i += 1 ) {
-      content_row = document.createElement( "p" );
-      content_row_text = document.createTextNode(
-        navi_array[i].text + ": " + navi_array[i].func
-      );
-      content_row.appendChild( content_row_text );
-      frag.appendChild( content_row );
-    }
-
-    head_one = document.createElement( "h1" );
     head_one_text = document.createTextNode( "screenオブジェクト" );
     head_one.appendChild( head_one_text );
 
@@ -195,6 +179,22 @@ pal.browserInformation = (function () {
       content_row = document.createElement( "p" );
       content_row_text = document.createTextNode(
         screen_array[i].text + ": " + screen_array[i].func
+      );
+      content_row.appendChild( content_row_text );
+      frag.appendChild( content_row );
+    }
+
+    head_one = document.createElement( "h1" );
+    head_one_text = document.createTextNode( "navigatorオブジェクト:" );
+    head_one.appendChild( head_one_text );
+
+    frag.appendChild( head_one );
+
+    // navi_arrayの中身を表示
+    for ( i = 0; i < navi_array.length; i += 1 ) {
+      content_row = document.createElement( "p" );
+      content_row_text = document.createTextNode(
+        navi_array[i].text + ": " + navi_array[i].func
       );
       content_row.appendChild( content_row_text );
       frag.appendChild( content_row );

@@ -129,7 +129,9 @@ pal.util_b = (function () {
         content;
 
     tpl = document.getElementById( template_id );
-    content = tpl.content.cloneNode( true );
+    if ( tpl ) {
+      content = tpl.content.cloneNode( true );
+    }
 
     return content;
   };

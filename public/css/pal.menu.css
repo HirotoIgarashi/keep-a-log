@@ -4,18 +4,34 @@
 */
 
 #pal-menu-container {
-  display         : flex;
+  display : grid;
+  grid-template-columns : 3fr;
+  /* display         : flex; */
   /* justify-content : center; */
-  justify-content : flex-start;
+  /* justify-content : flex-start; */
   /* flex-direction  : column; */
 }
+
 .pal-menu-nav {
   cursor      : pointer;
   background  : #CCCCFF;
-  height      : 36px;
+  height      : 120px;
+  width       : 120px;
   margin      : 12px;
   padding     : 4px;
 }
+
+#simple-list {
+  grid-column : 1;
+}
+
+#hierarchy-list {
+  grid-column : 2;
+}
+#browser-info {
+  grid-column : 3;
+}
+/*
 #simple-list {
   flex-grow   : 1;
   flex-shrink : 2;
@@ -26,3 +42,4 @@
   flex-shrink : 2;
   flex-basis  : 150px;
 }
+*/

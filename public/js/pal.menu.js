@@ -22,8 +22,8 @@ pal.menu = (function () {
     },
     stateMap = { $container : null },
     jqueryMap = {},
-
     onClickSimpleList,
+    onClickBrowserInformation,
     setJqueryMap, configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -56,6 +56,10 @@ pal.menu = (function () {
   // 例: onClickButton = function ( event ) {};
   onClickSimpleList = function ( /* event */  ) {
     pal.bom.setLocationHash( 'list' );
+  };
+
+  onClickBrowserInformation = function ( /* event */  ) {
+    pal.bom.setLocationHash( 'browser_information' );
   };
   // --------------------- イベントハンドラ終了 ----------------------
 
@@ -98,8 +102,13 @@ pal.menu = (function () {
 
     jqueryMap.$hierarchy_list = $container.find( '#hierarchy-list' );
 
+    jqueryMap.$browser_information = $container.find( '#browser-information' );
+
     jqueryMap.$simple_list
       .click( onClickSimpleList );
+
+    jqueryMap.$browser_information
+      .click( onClickBrowserInformation );
 
     return true;
   };

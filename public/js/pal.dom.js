@@ -128,6 +128,9 @@ pal.dom = (function () {
       case '#menu':
         pal.menu.initModule( jqueryMap.$main );
         break;
+      case '#browser_information':
+        pal.browserInformation.initModule( jqueryMap.$main );
+        break;
       case '#list':
         pal.list.initModule( jqueryMap.$main );
         break;

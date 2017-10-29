@@ -195,7 +195,7 @@ textarea {
 @media screen and (max-width: 412px) {
     /* Style adjustments for viewports that meet the condition */
   @viewport {
-    width: 412px;
+    width: 40px;
   }
 }
 @media screen and (min-width: 413px) {

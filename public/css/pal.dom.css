@@ -2,6 +2,12 @@
  * pal.dom.css
  * DOMのスタイル
 */
+@viewport {
+  width: 24px;
+  /*
+   * width: device-width;
+  */
+}
 
 #pal {
   display             : grid;

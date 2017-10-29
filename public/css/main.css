@@ -192,13 +192,13 @@ textarea {
    ========================================================================== */
 
 /*@media only screen and (min-width: 35em) {*/
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 412px) {
     /* Style adjustments for viewports that meet the condition */
   @viewport {
-    width: 480px;
+    width: 412px;
   }
 }
-@media screen and (min-width: 481px) {
+@media screen and (min-width: 413px) {
   @viewport {
     width: device-width;
   }

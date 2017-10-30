@@ -191,17 +191,8 @@ textarea {
    Modify as content requires.
    ========================================================================== */
 
-/*@media only screen and (min-width: 35em) {*/
-@media screen and (max-width: 412px) {
+@media only screen and (min-width: 35em) {
     /* Style adjustments for viewports that meet the condition */
-  @viewport {
-    width: 40px;
-  }
-}
-@media screen and (min-width: 413px) {
-  @viewport {
-    width: device-width;
-  }
 }
 
 @media print,

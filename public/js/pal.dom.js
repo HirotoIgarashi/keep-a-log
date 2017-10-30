@@ -134,6 +134,9 @@ pal.dom = (function () {
       case '#list':
         pal.list.initModule( jqueryMap.$main );
         break;
+      case '#lab':
+        pal.lab.initModule( jqueryMap.$main );
+        break;
       default:
         break;
     }

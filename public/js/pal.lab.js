@@ -1,6 +1,6 @@
 /*
- * pal.top.js
- * TOPページを表示する機能
+ * pal.lab.js
+ * 実験用のモジュール
 */
 
 /*jslint          browser : true, continue  : true,
@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.menu = (function () {
+pal.lab = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -22,9 +22,7 @@ pal.menu = (function () {
     },
     stateMap = { $container : null },
     jqueryMap = {},
-    onClickSimpleList,
-    onClickBrowserInformation,
-    onClickLab,
+
     setJqueryMap, configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -32,9 +30,15 @@ pal.menu = (function () {
   // ユーティリティメソッド/example_method/開始
   // 目的:
   // 必須引数:
+  //  * do_extend(プール値) trueはスライダーを拡大し、falseは格納する。
   // オプション引数:
+  //  * callback(関数) アニメーションの完了後に実行される。
   // 設定:
-  // 戻り値:
+  //  * chat_extend_time, chat_retract_time
+  //  * chat_extend_height
+  // 戻り値: boolean
+  //  * true: スライダーアニメーションが動作した。
+  //  * false: スライダーアニメーションが動作していない。
   // 例外発行: なし
   // example_method = function () {
   //   var example;
@@ -55,17 +59,6 @@ pal.menu = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickSimpleList = function ( /* event */  ) {
-    pal.bom.setLocationHash( 'list' );
-  };
-
-  onClickBrowserInformation = function ( /* event */  ) {
-    pal.bom.setLocationHash( 'browser_information' );
-  };
-
-  onClickLab = function ( /* event */  ) {
-    pal.bom.setLocationHash( 'lab' );
-  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -96,28 +89,14 @@ pal.menu = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var menu_page  = pal.util_b.getTplContent( 'pal-menu' );
+    var helloWorld  = pal.util_b.getTplContent( 'lab' );
 
+    console.log( $container );
     stateMap.$container = $container;
     setJqueryMap();
 
-    jqueryMap.$container.html( menu_page );
-
-    jqueryMap.$simple_list = $container.find( '#simple-list' );
-
-    jqueryMap.$hierarchy_list = $container.find( '#hierarchy-list' );
-
-    jqueryMap.$browser_information = $container.find( '#browser-information' );
-    jqueryMap.$lab = $container.find( '#lab' );
-
-    jqueryMap.$simple_list
-      .click( onClickSimpleList );
-
-    jqueryMap.$browser_information
-      .click( onClickBrowserInformation );
-
-    jqueryMap.$lab
-      .click( onClickLab );
+    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
+    jqueryMap.$container.html( helloWorld );
 
     return true;
   };

@@ -98,6 +98,7 @@ pal.browserInformation = (function () {
       head_one_text,
       content_row,
       content_row_text,
+      content_dpr,
       frag,
       navi_array = [
         {
@@ -200,9 +201,15 @@ pal.browserInformation = (function () {
       frag.appendChild( content_row );
     }
 
+    content_row = document.createElement( "p" );
+    content_row_text = document.createTextNode( "DPR値:" + window.devicePixelRatio );
+    content_row.appendChild( content_row_text );
+    frag.appendChild( content_row );
+
     console.log( window.location.href );
     console.log( window.location.pathname );
 
+    // 表示領域をmain_section_childrenにセットする
     main_section_children = main_section.children;
 
     // #mainの子要素をすべて削除する

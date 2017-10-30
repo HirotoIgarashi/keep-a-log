@@ -6,9 +6,6 @@
         <title>keeP A Log</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
-        <!--
-        <meta name="viewport" content="width=device-width">
-        -->
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
 
@@ -64,12 +61,26 @@
           <h1 class="pal-top-hello">Hello World!</h1>
         </template>
 
+        <!-- テスト用 -->
+        <template id="test">
+          <h1 class="pal-top-hello">Test!</h1>
+        </template>
+
+        <!-- ラボラトリ用 -->
+        <template id="lab">
+          <h1>Lab!</h1>
+          <iframe src="../mq-hello.html" width="190" id="a"></iframe>
+          <iframe src="../mq-hello.html" width="200" id="b"></iframe>
+          <iframe src="../mq-hello.html" width="210" id="c"></iframe>
+        </template>
+
         <!-- メニュー用 -->
         <template id="pal-menu">
           <div id="pal-menu-container">
             <div class="pal-menu-nav" id="simple-list">シンプルなリスト</div>
             <div class="pal-menu-nav" id="hierarchy-list">階層のあるリスト</div>
             <div class="pal-menu-nav" id="browser-information">ブラウザ情報</div>
+            <div class="pal-menu-nav" id="lab">ラボラトリ</div>
           </div>
         </template>
 
@@ -150,6 +161,7 @@
         <script src="js/pal.socketio.js"></script>
         <script src="js/pal.array.js"></script>
         <script src="js/pal.browserInformation.js"></script>
+        <script src="js/pal.lab.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

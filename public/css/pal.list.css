@@ -53,12 +53,11 @@
   margin  : 3px;
 }
 .g {
-  /* margin-top    : 0px; */
-  /* margin-bottom : 26px; */
   padding-top     : 0px;
   padding-bottom  : 26px;
   font-size       : small;
   cursor          : pointer;
+  border: 1px solid #DCDCDC;
 }
 #status {
   margin-top    : 0px;

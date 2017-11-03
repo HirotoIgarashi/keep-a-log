@@ -136,15 +136,15 @@ dfn {
 
 @media screen and (max-width: 480px) {
   h1 {
-    font-size: 2em;
-    margin: 0.67em 0;
+    font-size: 1.4em;
+    margin: 0.47em 0.17em;
   }
 }
 
 @media screen and (min-width: 481px) {
   h1 {
-    font-size: 3.6em;
-    margin: 0.67em 0;
+    font-size: 1.8em;
+    margin: 0.63em 0.22em;
   }
 }
 

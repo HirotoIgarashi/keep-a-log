@@ -134,9 +134,18 @@ dfn {
  * contexts in Firefox 4+, Safari, and Chrome.
  */
 
-h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  h1 {
+    font-size: 3.6em;
+    margin: 0.67em 0;
+  }
 }
 
 /**

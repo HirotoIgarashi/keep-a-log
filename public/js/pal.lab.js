@@ -91,7 +91,6 @@ pal.lab = (function () {
   initModule = function ( $container ) {
     var helloWorld  = pal.util_b.getTplContent( 'lab' );
 
-    console.log( $container );
     stateMap.$container = $container;
     setJqueryMap();
 

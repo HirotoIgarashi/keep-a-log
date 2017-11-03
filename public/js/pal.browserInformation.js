@@ -201,13 +201,14 @@ pal.browserInformation = (function () {
       frag.appendChild( content_row );
     }
 
+    // DRP値の表示
     content_row = document.createElement( "p" );
     content_row_text = document.createTextNode( "DPR値:" + window.devicePixelRatio );
     content_row.appendChild( content_row_text );
     frag.appendChild( content_row );
 
-    console.log( window.location.href );
-    console.log( window.location.pathname );
+    // console.log( window.location.href );
+    // console.log( window.location.pathname );
 
     // 表示領域をmain_section_childrenにセットする
     main_section_children = main_section.children;

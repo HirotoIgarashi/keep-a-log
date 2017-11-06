@@ -41,8 +41,7 @@ pal.list = (function () {
     onObjectDelete,
     object_create,
     object_read,
-    object_update,
-    object_delete;
+    object_update;
 
     // UIの状態遷移
     list_ui = {
@@ -203,7 +202,7 @@ pal.list = (function () {
           },
           confirm_create  : function () {
             // 目的: createボタンがクリックされたときにリストに
-            //       Actionオブジェクトの内容を追加する。0.9秒待つ。
+            //       Actionオブジェクトの内容を追加する。0.8秒待つ。
             // 必須引数: なし
             // オプション引数: なし
             // 設定:
@@ -380,8 +379,12 @@ pal.list = (function () {
 
             // キャンセル、アップデートアンカーを生成する
             action_fragment = document.createDocumentFragment();
-            cancel_update = make_anchor_element( '#list/cancel-update', 'キャンセル' );
-            confirm_update = make_anchor_element( '#list/confirm-update', '更新の確認' );
+            cancel_update = make_anchor_element(
+              '#list/cancel-update', 'キャンセル'
+            );
+            confirm_update = make_anchor_element(
+              '#list/confirm-update', '更新の確認'
+            );
             action_fragment.appendChild( cancel_update );
             action_fragment.appendChild( confirm_update );
 
@@ -450,21 +453,26 @@ pal.list = (function () {
             // crud_wrapperの中身を生成する
             crud_fragment = document.createDocumentFragment();
 
-            cancel_anchor = make_anchor_element( '#list/cancel-delete', 'キャンセル' );
-
-            confirm_anchor = make_anchor_element( '#list/confirm-delete', '削除の確認' );
-
+            cancel_anchor = make_anchor_element(
+              '#list/cancel-delete', 'キャンセル'
+            );
+            confirm_anchor = make_anchor_element(
+              '#list/confirm-delete', '削除の確認'
+            );
             crud_fragment.appendChild( cancel_anchor );
             crud_fragment.appendChild( confirm_anchor );
 
             // detail_formを生成する
             detail_fragment = action_object.makeDetailElement();
 
-            // crud_wrapperの中身を追加する
+            // カレントノードにcrud_wrapperの中身を追加する
             current_node.firstElementChild.appendChild( crud_fragment );
 
             // message_wrapperの中身を追加する
-            current_node.firstElementChild.nextElementSibling.textContent = 'データを削除します。削除の確認をクリックしてください';
+            current_node
+              .firstElementChild
+              .nextElementSibling
+              .textContent = 'データを削除します。削除の確認をクリックしてください';
 
             // Action Objectの中身を追加する
             current_node.appendChild( detail_fragment );
@@ -478,13 +486,14 @@ pal.list = (function () {
           },
           cancel_delete   : function () {
             this.target.changeState( this.target.states.detail_form );
+
           },
           confirm_delete  : function () {
 
             // nameプロパティを削除する
             delete action_object.name;
 
-            // object_arrayから削除する
+            // object_arrayから削除する。onObjectDeleteはコールバック
             object_array.deleteObject( action_object, onObjectDelete );
 
             // object_arrayを更新する
@@ -502,6 +511,7 @@ pal.list = (function () {
             pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
             // .action-wrapper自体を削除する
             current_node.removeChild( current_node.lastElementChild );
+            return false;
           }
         }
       },
@@ -573,7 +583,6 @@ pal.list = (function () {
     var
       target_node,
       item_nodes,
-      // current_item_nodes_length,
       i,
       find_flag = false,
       find_index,
@@ -839,33 +848,6 @@ pal.list = (function () {
     }
   };
 
-  object_delete = function ( data ) {
-
-    if ( data[0].result.n === 1 ) {
-      // action objectを生成する
-      action_object = pal.schema.makeAction( data[0].ops );
-      // change関数を追加する
-      pal.util.addChange( action_object );
-      // action_objectが変更されたときのコールバック関数
-      // onChangeObjectをセットする
-      // onChangeObjectから呼ばれるsync_object_and_domの中で
-      // DOMに追加する
-      action_object.change( onChangeObject );
-
-      // object_arrayから削除する
-      object_array.deleteObject( action_object );
-
-      // object_arrayを更新する
-      object_array = pal.array.readObjectArray();
-
-      // chageイベントを発生させる
-      action_object.change();
-    }
-    else {
-      console.log( 'deleteに失敗しました' );
-    }
-
-  };
   // ------------------ メッセージリスナー終了 ------------------
 
   // ------------------ コールバック処理開始 --------------------
@@ -899,7 +881,7 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.deleteObject( send_data, object_delete );
+    pal.socketio.deleteObject( send_data );
   };
   // ------------------ コールバック処理終了 --------------------
 
@@ -944,8 +926,7 @@ pal.list = (function () {
     event_map = {
       'objectcreate'  : object_create,
       'objectread'    : object_read,
-      'objectupdate'  : object_update,
-      'objectdelete'  : object_delete
+      'objectupdate'  : object_update
     };
 
     pal.socketio.initModule( '/list', event_map );

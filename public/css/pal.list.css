@@ -58,6 +58,7 @@
   font-size       : small;
   cursor          : pointer;
   border: 1px solid #DCDCDC;
+  margin-bottom: 1px;
 }
 #status {
   margin-top    : 0px;

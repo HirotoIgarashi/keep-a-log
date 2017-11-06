@@ -98,7 +98,6 @@ pal.browserInformation = (function () {
       head_one_text,
       content_row,
       content_row_text,
-      content_dpr,
       frag,
       navi_array = [
         {
@@ -204,6 +203,12 @@ pal.browserInformation = (function () {
     // DRP値の表示
     content_row = document.createElement( "p" );
     content_row_text = document.createTextNode( "DPR値:" + window.devicePixelRatio );
+    content_row.appendChild( content_row_text );
+    frag.appendChild( content_row );
+
+    // Viewportの値の表示
+    content_row = document.createElement( "p" );
+    content_row_text = document.createTextNode( "Viewportの幅:" + window.innerWidth + " Viewportの高さ:" + window.innerHeight );
     content_row.appendChild( content_row_text );
     frag.appendChild( content_row );
 

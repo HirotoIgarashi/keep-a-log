@@ -850,28 +850,52 @@ pal.list = (function () {
   };
 
   object_delete = function ( data ) {
-
-    console.log( "object_delete called!" );
+    var
+      target_node,
+      item_nodes,
+      i,
+      find_flag = false,
+      local_id = data[0].ops._local_id;
 
     if ( data[0].result.n === 1 ) {
-      // action objectを生成する
-      action_object = pal.schema.makeAction( data[0].ops );
-      // change関数を追加する
-      pal.util.addChange( action_object );
-      // action_objectが変更されたときのコールバック関数onChangeObjectを
-      // セットする
-      // onChangeObjectから呼ばれるsync_object_and_domの中で
-      // DOMに追加する
-      action_object.change( onChangeObject );
+      // サーバ側で削除が成功したときの処理
+      // local_idがDOM上に存在するときは処理を行うが
+      // DOM上に存在しないときは処理を行わない。
+      //
 
-      // object_arrayから削除する
-      object_array.deleteObject( action_object );
+      target_node = document.getElementById( 'target' );
 
-      // object_arrayを更新する
-      object_array = pal.array.readObjectArray();
+      if ( target_node ) {
+        item_nodes = target_node.children;
 
-      // chageイベントを発生させる
-      action_object.change();
+        for ( i = 0; i < item_nodes.length; i += 1 ) {
+          if ( item_nodes[i].dataset.localId === local_id ) {
+            find_flag = true;
+          }
+        }
+
+        // 見つかった
+        if ( find_flag ) {
+          // action objectを生成する
+          action_object = pal.schema.makeAction( data[0].ops );
+          // change関数を追加する
+          pal.util.addChange( action_object );
+          // action_objectが変更されたときのコールバック関数onChangeObjectを
+          // セットする
+          // onChangeObjectから呼ばれるsync_object_and_domの中で
+          // DOMに追加する
+          action_object.change( onChangeObject );
+
+          // object_arrayから削除する
+          object_array.deleteObject( action_object );
+
+          // object_arrayを更新する
+          object_array = pal.array.readObjectArray();
+
+          // chageイベントを発生させる
+          action_object.change();
+        }
+      }
     }
     else {
       console.log( 'deleteに失敗しました' );

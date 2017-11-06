@@ -41,7 +41,8 @@ pal.list = (function () {
     onObjectDelete,
     object_create,
     object_read,
-    object_update;
+    object_update,
+    object_delete;
 
     // UIの状態遷移
     list_ui = {
@@ -77,7 +78,7 @@ pal.list = (function () {
               // new-action-wrapper,
               // new-form-wrapper,
               // target
-              list_page = pal.util_b.getTplContent( 'list-page' );
+              list_page  = pal.util_b.getTplContent( 'list-page' );
 
             setJqueryMap();
             $container = jqueryMap.$container;
@@ -94,13 +95,6 @@ pal.list = (function () {
             // targetにaction objectが描画される
             for ( i = 0; i < object_array.length; i += 1 ) {
               pal.util.addChange( object_array[i] );
-
-              if ( object_array[i]._id === undefined ) {
-                alert( 'not exist!' );
-              }
-              else {
-                alert( 'exist!' );
-              }
               object_array[i].change( onChangeObject );
               object_array[i].change();
             }
@@ -855,6 +849,35 @@ pal.list = (function () {
     }
   };
 
+  object_delete = function ( data ) {
+
+    console.log( "object_delete called!" );
+
+    if ( data[0].result.n === 1 ) {
+      // action objectを生成する
+      action_object = pal.schema.makeAction( data[0].ops );
+      // change関数を追加する
+      pal.util.addChange( action_object );
+      // action_objectが変更されたときのコールバック関数onChangeObjectを
+      // セットする
+      // onChangeObjectから呼ばれるsync_object_and_domの中で
+      // DOMに追加する
+      action_object.change( onChangeObject );
+
+      // object_arrayから削除する
+      object_array.deleteObject( action_object );
+
+      // object_arrayを更新する
+      object_array = pal.array.readObjectArray();
+
+      // chageイベントを発生させる
+      action_object.change();
+    }
+    else {
+      console.log( 'deleteに失敗しました' );
+    }
+
+  };
   // ------------------ メッセージリスナー終了 ------------------
 
   // ------------------ コールバック処理開始 --------------------
@@ -888,7 +911,7 @@ pal.list = (function () {
 
     send_data = pal.util_b.makeStringObject( action_object );
 
-    pal.socketio.deleteObject( send_data );
+    pal.socketio.deleteObject( send_data, object_delete );
   };
   // ------------------ コールバック処理終了 --------------------
 
@@ -933,7 +956,8 @@ pal.list = (function () {
     event_map = {
       'objectcreate'  : object_create,
       'objectread'    : object_read,
-      'objectupdate'  : object_update
+      'objectupdate'  : object_update,
+      'objectdelete'  : object_delete
     };
 
     pal.socketio.initModule( '/list', event_map );

@@ -77,7 +77,7 @@ pal.list = (function () {
               // new-action-wrapper,
               // new-form-wrapper,
               // target
-              list_page  = pal.util_b.getTplContent( 'list-page' );
+              list_page = pal.util_b.getTplContent( 'list-page' );
 
             setJqueryMap();
             $container = jqueryMap.$container;
@@ -94,6 +94,13 @@ pal.list = (function () {
             // targetにaction objectが描画される
             for ( i = 0; i < object_array.length; i += 1 ) {
               pal.util.addChange( object_array[i] );
+
+              if ( object_array[i]._id === undefined ) {
+                alert( 'not exist!' );
+              }
+              else {
+                alert( 'exist!' );
+              }
               object_array[i].change( onChangeObject );
               object_array[i].change();
             }

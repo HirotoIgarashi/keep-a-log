@@ -855,7 +855,7 @@ pal.list = (function () {
       item_nodes,
       i,
       find_flag = false,
-      local_id = data[0].ops._local_id;
+      _id = data[0].ops._id;
 
     if ( data[0].result.n === 1 ) {
       // サーバ側で削除が成功したときの処理
@@ -869,7 +869,7 @@ pal.list = (function () {
         item_nodes = target_node.children;
 
         for ( i = 0; i < item_nodes.length; i += 1 ) {
-          if ( item_nodes[i].dataset.localId === local_id ) {
+          if ( item_nodes[i].dataset.id === _id ) {
             find_flag = true;
           }
         }

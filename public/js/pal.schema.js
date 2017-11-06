@@ -239,6 +239,7 @@ pal.schema = (function () {
     list_wrapper = document.createElement( 'div' );
     list_wrapper.setAttribute( 'class', 'g' );
     list_wrapper.setAttribute( 'data-local-id', this._local_id );
+    list_wrapper.setAttribute( 'data-id', this._id );
 
     // crudを入れるwrappperを生成する
     crud_wrapper = document.createElement( 'div' ); 

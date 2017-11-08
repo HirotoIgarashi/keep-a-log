@@ -94,6 +94,11 @@ pal.list = (function () {
             // changeイベントを発生させる
             // targetにaction objectが描画される
             for ( i = 0; i < object_array.length; i += 1 ) {
+
+              if ( object_array[i]._id === undefined ) {
+                alert( 'not exist!' );
+              }
+
               pal.util.addChange( object_array[i] );
               object_array[i].change( onChangeObject );
               object_array[i].change();

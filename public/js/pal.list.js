@@ -97,6 +97,8 @@ pal.list = (function () {
 
               if ( object_array[i]._id === undefined ) {
                 alert( 'not exist!' );
+                action_object = object_array[i];
+                onObjectCreate();
               }
 
               pal.util.addChange( object_array[i] );

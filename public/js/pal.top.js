@@ -83,7 +83,8 @@ pal.top = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var top_page  = pal.util_b.getTplContent( 'top-page' );
+    var
+      top_page = pal.util_b.getTplContent( 'top-page' );
 
     stateMap.$container = $container;
     setJqueryMap();

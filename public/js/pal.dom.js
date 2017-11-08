@@ -33,6 +33,7 @@ pal.dom = (function () {
     onClickTop,
     onClickLogin, onClickLogout, onClickSignup, onClickMenu,
     onReceiveSession,
+    onResize,
     setSection,
     request,  // XMLHttpRequest
     initModule;
@@ -187,6 +188,30 @@ pal.dom = (function () {
 
     }
   };
+  onResize = function () {
+    var
+      header,
+      header_height,
+      main,
+      main_height,
+      footer,
+      footer_height;
+
+    console.log( 'viewportの高さ: ' + window.innerHeight );
+
+    header  = document.getElementById( 'pal-header' );
+    main    = document.getElementById( 'pal-main' );
+    footer  = document.getElementById( 'pal-footer' );
+
+    header_height = header.clientHeight;
+    main_height   = main.clientHeight;
+    footer_height = footer.clientHeight;
+
+    console.log( window.innerHeight - header_height - footer_height );
+    main.style.height = window.innerHeight - header_height - footer_height + 'px';
+
+    console.log( '全体の高さ: ' + ( header_height + main_height + footer_height ) );
+  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- コールバック開始 --------------------
@@ -219,6 +244,12 @@ pal.dom = (function () {
     else {
       console.log( 'templateは利用できません。' );
     }
+
+    // ウィンドウのサイズが変更されたときのイベント
+    window.addEventListener( 'resize', onResize );
+
+    // pal-mainの高さを設定する
+    onResize();
 
     setJqueryMap();
 

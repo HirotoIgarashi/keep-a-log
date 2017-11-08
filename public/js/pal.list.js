@@ -96,7 +96,6 @@ pal.list = (function () {
             for ( i = 0; i < object_array.length; i += 1 ) {
 
               if ( object_array[i]._id === undefined ) {
-                alert( 'not exist!' );
                 action_object = object_array[i];
                 onObjectCreate();
               }

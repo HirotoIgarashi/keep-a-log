@@ -2,12 +2,6 @@
  * pal.dom.css
  * DOMのスタイル
 */
-@viewport {
-  width: 24px;
-  /*
-   * width: device-width;
-  */
-}
 
 #pal {
   display             : grid;
@@ -54,21 +48,18 @@
 
 #pal-main {
   grid-row    : 2;
+  background  : #eee;
+}
+p {
+  color:  #222;
 }
 
 #pal-footer {
   grid-row          : 3;
   background  : #9999cc;
-  color       : #fff;
+  color       : #eee;
 }
 
-  .pal-dom-header-logout,
-  .pal-dom-header-login,
-  .pal-dom-header-signup,
-  .pal-dom-header-menu {
-    margin-left   : 4px;
-    margin-right  : 4px;
-  }
   .pal-dom-header-title,
   .pal-dom-header-blank,
   .pal-dom-header-logout,
@@ -76,7 +67,7 @@
   .pal-dom-header-signup,
   .pal-dom-header-menu {
     background      : #9999cc;
-    color           : #fff;
+    color           : #eee;
     text-align      : center;
     padding-top     : 6px;
     padding-right   : 6px;
@@ -104,6 +95,11 @@
 
     .pal-dom-header-menu:hover {
       background  : #333399;
+    }
+    div img,
+    nav img {
+      height  : calc( 1.3em + 0.25vw );
+      width   : calc( 1.3em + 0.25vw );
     }
 /*
 #pal-header {

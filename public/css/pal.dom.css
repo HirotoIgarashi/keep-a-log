@@ -64,8 +64,7 @@ p {
   .pal-dom-header-blank,
   .pal-dom-header-logout,
   .pal-dom-header-login,
-  .pal-dom-header-signup,
-  .pal-dom-header-menu {
+  .pal-dom-header-signup {
     background      : #9999cc;
     color           : #eee;
     text-align      : center;
@@ -77,8 +76,7 @@ p {
   .pal-dom-header-title,
   .pal-dom-header-logout,
   .pal-dom-header-login,
-  .pal-dom-header-signup,
-  .pal-dom-header-menu {
+  .pal-dom-header-signup {
     cursor      : pointer;
   }
     .pal-dom-header-title:hover {
@@ -93,14 +91,15 @@ p {
       background  : #333399;
     }
 
-    .pal-dom-header-menu:hover {
-      background  : #333399;
-    }
     div img,
     nav img {
       height  : calc( 1.3em + 0.25vw );
       width   : calc( 1.3em + 0.25vw );
     }
+button svg {
+  width   : 1em;
+  height  : 1em;
+}
 /*
 #pal-header {
   display         : flex;

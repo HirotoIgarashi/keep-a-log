@@ -23,8 +23,6 @@
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
         <!-- サードパーティ javascript -->
-        <!-- <script src="js/jq/jquery-3.1.1.js"></script> -->
-        <!-- <script src="js/jq/jquery.event.gevent.js"></script> -->
         <script src="/socket.io/socket.io.js"></script>
 
         <!-- メインページのテンプレート -->
@@ -44,9 +42,9 @@
             <nav class="pal-dom-header-signup">
               <img src="image/pal_signup.png">
             </nav>
-            <div class="pal-dom-header-menu">
-              <img src="image/pal_menu.png">
-            </div>
+            <button aria-label="メニュー" class="pal-dom-header-menu">
+              <svg><use href="#navicon"></use></svg>
+            </button>
           </header>
           <main id="pal-main">
           </main>
@@ -176,6 +174,12 @@
         <script>
           $( function () { pal.initModule( $('#pal' ) ); });
         </script>
+
+        <svg style="display: none;">
+          <symbol id="navicon" viewBox="0 0 20 20">
+          <path d="m0-0v4h20v-4h-20zm0 8v4h20v-4h-20zm0 8v4h20v-4h-20z" fill="currentColor" />
+          </symbol>
+        </svg>
 
         <div id="pal"></div>
     </body>

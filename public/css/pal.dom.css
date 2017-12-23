@@ -64,6 +64,7 @@ p {
   .pal-dom-header-blank,
   .pal-dom-header-logout,
   .pal-dom-header-login,
+  .pal-dom-header-menu,
   .pal-dom-header-signup {
     background      : #9999cc;
     color           : #eee;
@@ -72,12 +73,6 @@ p {
     padding-right   : 6px;
     padding-bottom  : 6px;
     padding-left    : 6px;
-  }
-  .pal-dom-header-title,
-  .pal-dom-header-logout,
-  .pal-dom-header-login,
-  .pal-dom-header-signup {
-    cursor      : pointer;
   }
     .pal-dom-header-title:hover {
       background  : #333399;
@@ -99,6 +94,15 @@ p {
 button svg {
   width   : 1em;
   height  : 1em;
+}
+
+.icon {
+  display       : inline-block;
+  width         : 1em;
+  height        : 1em;
+  stroke-width  : 0;
+  stroke        : currentColor;
+  fill          : currentColor;
 }
 /*
 #pal-header {

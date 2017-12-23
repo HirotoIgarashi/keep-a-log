@@ -33,6 +33,7 @@
             </div>
             <div class="pal-dom-header-blank">
             </div>
+            <!--
             <nav class="pal-dom-header-logout" hidden>
               <img src="image/pal_logout.png">
             </nav>
@@ -42,8 +43,18 @@
             <nav class="pal-dom-header-signup">
               <img src="image/pal_signup.png">
             </nav>
+            -->
+            <button aria-label="エグジット" class="pal-dom-header-logout">
+              <svg><use href="#icon-exit"></use></svg>
+            </button>
+            <button aria-label="エンター" class="pal-dom-header-login">
+              <svg><use href="#icon-enter"></use></svg>
+            </button>
+            <button aria-label="サインアップ" class="pal-dom-header-signup">
+              <svg><use href="#icon-user-plus"></use></svg>
+            </button>
             <button aria-label="メニュー" class="pal-dom-header-menu">
-              <svg><use href="#navicon"></use></svg>
+              <svg><use href="#icon-menu"></use></svg>
             </button>
           </header>
           <main id="pal-main">
@@ -56,7 +67,9 @@
 
         <template id="top-page">
           <h1 class="pal-top-hello">KeeP-A-Logとは</h1>
-          <p>私は記録を取ることが好きな方だと思います。なんらかの媒体に記録しておくと頭で覚えておく必要がないからです。明日の予定だったり、昨日は何をしたかを記憶することに頭を使いたくないのです。頭には楽しいことだけを考えさせたいと思っています。</p>
+          <p>記録を取ることで普段思考していることに変化がある気がしたので記録を取る習慣をつけるようになりました。なんらかの媒体に記録しておくと頭で覚えておく必要がなくなります。明日の予定だったり、昨日は何をしたかを常に思考している必要がなくなるのです。頭には楽しい未来の予定だけを考えさせれはいいのです。寝る前に、明日はあれやこれをしなくちゃいけないなんて考えると寝付きはよくないものです。</p>
+          <p>記録をとるにしても原則みたいなものがあります。例えば記録をとる媒体は1つに決める。どこに何を記録したかを思い出さなくてはいけない状況は記録をとることが無駄になってしまいます。また直近の予定は目立つ場所に書かれている例えば先頭に書かれていれば見逃すことはないでしょう。予定の時間が近づいてくると教えてくれればもっと良いです。
+          </p>
         </template>
 
         <!-- テスト用 -->
@@ -177,7 +190,24 @@
 
         <svg style="display: none;">
           <symbol id="navicon" viewBox="0 0 20 20">
-          <path d="m0-0v4h20v-4h-20zm0 8v4h20v-4h-20zm0 8v4h20v-4h-20z" fill="currentColor" />
+            <path d="m0-0v4h20v-4h-20zm0 8v4h20v-4h-20zm0 8v4h20v-4h-20z" fill="currentColor" />
+          </symbol>
+          <symbol id="icon-menu" viewBox="0 0 32 32">
+            <title>menu</title>
+            <path d="M2 6h28v6h-28zM2 14h28v6h-28zM2 22h28v6h-28z" fill="currentColor" />
+          </symbol>
+          <symbol id="icon-user-plus" viewBox="0 0 32 32">
+            <title>user-plus</title>
+            <path d="M12 23c0-4.726 2.996-8.765 7.189-10.319 0.509-1.142 0.811-2.411 0.811-3.681 0-4.971 0-9-6-9s-6 4.029-6 9c0 3.096 1.797 6.191 4 7.432v1.649c-6.784 0.555-12 3.888-12 7.918h12.416c-0.271-0.954-0.416-1.96-0.416-3z"></path>
+            <path d="M23 14c-4.971 0-9 4.029-9 9s4.029 9 9 9c4.971 0 9-4.029 9-9s-4.029-9-9-9zM28 24h-4v4h-2v-4h-4v-2h4v-4h2v4h4v2z"></path>
+          </symbol>
+          <symbol id="icon-enter" viewBox="0 0 32 32">
+            <title>enter</title>
+            <path d="M12 16h-10v-4h10v-4l6 6-6 6zM32 0v26l-12 6v-6h-12v-8h2v6h10v-18l8-4h-18v8h-2v-10z"></path>
+          </symbol>
+          <symbol id="icon-exit" viewBox="0 0 32 32">
+            <title>exit</title>
+            <path d="M24 20v-4h-10v-4h10v-4l6 6zM22 18v8h-10v6l-12-6v-26h22v10h-2v-8h-16l8 4v18h8v-6z"></path>
           </symbol>
         </svg>
 

@@ -28,9 +28,9 @@
         <!-- メインページのテンプレート -->
         <template id="main-page">
           <header id="pal-header">
-            <div class="pal-dom-header-title">
+            <button class="pal-dom-header-title">
               keeP-A-Log
-            </div>
+            </button>
             <div class="pal-dom-header-blank">
             </div>
             <button aria-label="エグジット" class="pal-dom-header-logout">
@@ -48,12 +48,25 @@
                 <use href="#icon-user-plus"></use>
               </svg>
             </button>
-            <button aria-label="メニュー" class="pal-dom-header-menu">
+            <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
               <svg class="icon icon-menu">
-                <use href="#icon-menu"></use>
+                <switch>
+                  <use href="#icon-menu"></use>
+                  <foreignObject>
+                  <img src="image/pal_menu.png" alt="" />
+                  </foreignObject>
+                </switch>
               </svg>
+              <span class="visually-hidden">メニュー</span>
             </button>
           </header>
+          <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
+            <ul id="pal-nav-menu">
+              <li><a href="#list">アクションのリスト</a></li>
+              <li><a href="#browser_information">ブラウザ情報</a></li>
+              <li><a href="#lab">ラボラトリ</a></li>
+            </ul>
+          </nav>
           <main id="pal-main">
           </main>
           <footer id="pal-footer">
@@ -181,9 +194,11 @@
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
 
+        <!--
         <script>
           $( function () { pal.initModule( $('#pal' ) ); });
         </script>
+        -->
 
         <svg style="display: none;">
           <symbol id="navicon" viewBox="0 0 20 20">
@@ -209,5 +224,10 @@
         </svg>
 
         <div id="pal"></div>
+
+        <script>
+          $( function () { pal.initModule( $('#pal' ) ); });
+        </script>
+
     </body>
 </html>

@@ -70,7 +70,8 @@
 }
 a {
   font-size         : small;
-  background-color  : #FFCC00;
+  /* background-color  : #FFCC00; */
+  color             : black;
   padding           : 5px;
   margin-bottom     : 26px;
   margin-left       : 6px;

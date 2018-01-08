@@ -31,9 +31,9 @@ pal.dom = (function () {
     setJqueryMap,
     readSession,
     onClickTop,
-    onClickLogin, onClickLogout, onClickSignup, onClickMenu,
+    onClickLogin, onClickLogout, onClickSignup,
     onReceiveSession,
-    onResize,
+    // onResize,
     setSection,
     request,  // XMLHttpRequest
     initModule;
@@ -162,9 +162,9 @@ pal.dom = (function () {
     pal.bom.setLocationHash( 'signup' );
   };
   
-  onClickMenu = function ( /* event */ ) {
-    pal.bom.setLocationHash( 'menu' );
-  };
+  // onClickMenu = function ( /* event */ ) {
+  //   pal.bom.setLocationHash( 'menu' );
+  // };
 
   onReceiveSession = function () {
     var
@@ -188,30 +188,45 @@ pal.dom = (function () {
 
     }
   };
-  onResize = function () {
-    var
-      header,
-      header_height,
-      main,
-      main_height,
-      footer,
-      footer_height;
+  // onResize = function () {
+  //   var
+  //     header,
+  //     // header_height,
+  //     nav,
+  //     // nav_height,
+  //     main,
+  //     main_height,
+  //     footer;
+  //     // footer_height;
 
-    console.log( 'viewportの高さ: ' + window.innerHeight );
+  //   // console.log( 'viewportの高さ: ' + window.innerHeight );
 
-    header  = document.getElementById( 'pal-header' );
-    main    = document.getElementById( 'pal-main' );
-    footer  = document.getElementById( 'pal-footer' );
+  //   header  = document.getElementById( 'pal-header' );
+  //   nav     = document.getElementById( 'pal-nav' );
+  //   main    = document.getElementById( 'pal-main' );
+  //   footer  = document.getElementById( 'pal-footer' );
 
-    header_height = header.clientHeight;
-    main_height   = main.clientHeight;
-    footer_height = footer.clientHeight;
+  //   // header_height = header.clientHeight;
+  //   // console.log( "header_height: " + header_height );
 
-    console.log( window.innerHeight - header_height - footer_height );
-    main.style.height = window.innerHeight - header_height - footer_height + 'px';
+  //   // console.log( nav.hidden );
 
-    console.log( '全体の高さ: ' + ( header_height + main_height + footer_height ) );
-  };
+  //   // nav_height   = nav.clientHeight;
+  //   // console.log( "nav_height: " + nav_height );
+
+  //   main_height   = main.clientHeight;
+  //   console.log( "main_height: " + main_height );
+
+  //   // footer_height = footer.clientHeight;
+  //   // console.log( "footer_height: " + footer_height );
+
+  //   // console.log( window.innerHeight - header_height - footer_height );
+  //   // main.style.height = window.innerHeight - header_height - footer_height - nav_height + 'px';
+
+  //   // console.log("main.style.height: " + main.style.height);
+
+  //   // console.log( '全体の高さ: ' + ( header_height + nav_height + main_height + footer_height ) );
+  // };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- コールバック開始 --------------------
@@ -231,8 +246,11 @@ pal.dom = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var mainPage = document.querySelector( '#main-page' ).content;
-        // menu_html = makeList( menuMap );
+    var
+      site_button,
+      site_menu,
+      // pal_main,
+      mainPage = document.querySelector( '#main-page' ).content;
 
     // HTMLをロードし、jQueryコレクションをマッピングする
     stateMap.$container = $container;
@@ -246,10 +264,7 @@ pal.dom = (function () {
     }
 
     // ウィンドウのサイズが変更されたときのイベント
-    window.addEventListener( 'resize', onResize );
-
-    // pal-mainの高さを設定する
-    onResize();
+    // window.addEventListener( 'resize', onResize );
 
     setJqueryMap();
 
@@ -278,16 +293,50 @@ pal.dom = (function () {
       .click( onClickSignup );
 
     // ヘッダーのメニュー要素
-    jqueryMap.$menu
-      .attr( 'title', configMap.menu_retracted_title )
-      .click( onClickMenu );
+    // jqueryMap.$menu
+    //   .attr( 'title', configMap.menu_retracted_title )
+    //   .click( onClickMenu );
 
+    // ボタンとメニューのノードを取得
+    site_button = document.querySelector( '.pal-dom-header-menu' );
+    site_menu = document.querySelector( '[aria-label="サイト"]' );
+
+    // 初期の(メニューが閉じているときの)状態と設定
+    site_button.setAttribute( 'aria-expanded', 'false' );
+    site_button.hidden = false;
+    site_menu.hidden = true;
+
+    site_button.addEventListener( 'click', function () {
+      // メニューの表示非表示を切り替える
+      var expanded = this.getAttribute( 'aria-expanded' ) === 'true';
+
+      this.setAttribute( 'aria-expanded', String(!expanded) );
+      site_menu.hidden = expanded;
+
+      // pal-mainの高さを設定する
+      // onResize();
+    });
+
+    // フッターに日時を表示する(初回)
+    jqueryMap.$date_info.html( pal.util_b.getNowDateJp() );
+
+    // フッターに日時を表示する(次回以降)
     setInterval(
       function () {
         jqueryMap.$date_info.html( pal.util_b.getNowDateJp() );
       },
       1000
     );
+
+    // mainがスクロールされたときの処理を登録する
+    // window.onscroll = function () {
+    //   onResize();
+    //   console.log( 'スクロールされています' );
+    // }
+
+    // pal-mainの高さを設定する
+    // onResize();
+
   };
   // パブリックメソッド/initModule/終了
 

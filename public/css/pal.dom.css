@@ -5,7 +5,8 @@
 
 #pal {
   display             : grid;
-  grid-template-rows  : 46px auto 38px;
+  /* grid-template-rows  : 46px auto 38px; */
+  grid-template-rows  : auto auto auto auto;
 }
 
 #pal-header {
@@ -46,8 +47,12 @@
   grid-row    : 1;
 }
 
-#pal-main {
+#pal-nav {
   grid-row    : 2;
+  background  : #eee;
+}
+#pal-main {
+  grid-row    : 3;
   background  : #eee;
 }
 p {
@@ -55,7 +60,7 @@ p {
 }
 
 #pal-footer {
-  grid-row          : 3;
+  grid-row          : 4;
   background  : #9999cc;
   color       : #eee;
 }
@@ -151,12 +156,4 @@ button svg {
     .pal-dom-header-menu:hover {
       background  : #333399;
     }
-*/
-
-/*
-.pal-dom-footer {
-  background  : #9999cc;
-  color       : #fff;
-  text-align  : center;
-}
 */

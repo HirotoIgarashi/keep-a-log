@@ -219,8 +219,8 @@ pal.browserInformation = (function () {
     main_section_children = main_section.children;
 
     // #mainの子要素をすべて削除する
-    for ( i = 0; i < main_section_children.length; i += 1 ) {
-      main_section.removeChild( main_section_children[ i ] );
+    while ( main_section.firstChild ) {
+      main_section.removeChild( main_section.firstChild );
     }
 
     // document fragmentを追加する

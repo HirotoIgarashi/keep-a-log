@@ -21,9 +21,8 @@ pal.lab = (function () {
       color_name    : 'blue'
     },
     stateMap = { $container : null },
-    jqueryMap = {},
 
-    setJqueryMap, configModule, initModule;
+    configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -48,13 +47,6 @@ pal.lab = (function () {
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
-  // DOMメソッド/setJqueryMap/開始
-  setJqueryMap = function () {
-    var $container = stateMap.$container;
-
-    jqueryMap = { $container  : $container };
-  };
-  // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- イベントハンドラ開始 ----------------------
@@ -89,13 +81,20 @@ pal.lab = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var helloWorld  = pal.util_b.getTplContent( 'lab' );
+    var
+      main_section,
+      helloWorld  = pal.util_b.getTplContent( 'lab' );
 
     stateMap.$container = $container;
-    setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
-    jqueryMap.$container.html( helloWorld );
+    // mainセクションを取得する
+    main_section = document.getElementById( 'pal-main' );
+
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
+
+    // document fragmentを追加する
+    main_section.appendChild( helloWorld );
 
     return true;
   };

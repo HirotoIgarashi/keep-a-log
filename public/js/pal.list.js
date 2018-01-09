@@ -70,6 +70,7 @@ pal.list = (function () {
           initialize  : function ( target ) {
             var
               i,
+              main_section,
               $container,
               // テンプレートからlist-pageを読み込む
               // idの値が以下のものを含む
@@ -83,7 +84,14 @@ pal.list = (function () {
             setJqueryMap();
             $container = jqueryMap.$container;
 
-            jqueryMap.$container.html( list_page );
+            // mainセクションを取得する
+            main_section = document.getElementById( 'pal-main' );
+
+            // mainセクションの子要素をすべて削除する
+            pal.util.emptyElement( main_section );
+
+            // document fragmentを追加する
+            main_section.appendChild( list_page );
 
             jqueryMap.$status       = $container.find( '#status' );
             jqueryMap.$target       = $container.find( '#target' );
@@ -142,7 +150,7 @@ pal.list = (function () {
           },
           exit  : function () {
             // new-anchorの中身の新規作成のアンカーを削除する
-            pal.util.removeElementById( 'new-anchor' );
+            pal.util.emptyElementById( 'new-anchor' );
           }
         },
         create_form : {
@@ -258,8 +266,8 @@ pal.list = (function () {
             pal.util.clearFormAll();
 
             // 削除する
-            pal.util.removeElementById( 'new-action-wrapper' );
-            pal.util.removeElementById( 'new-form-wrapper' );
+            pal.util.emptyElementById( 'new-action-wrapper' );
+            pal.util.emptyElementById( 'new-form-wrapper' );
             return false;
           }
         },
@@ -354,11 +362,11 @@ pal.list = (function () {
           },
           exit        : function () {
             // crud-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild );
+            pal.util.emptyElement( current_node.firstElementChild );
             // message-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
+            pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
             // detail-wrapperの中身を削除する
-            pal.util.removeElement( current_node.lastElementChild );
+            pal.util.emptyElement( current_node.lastElementChild );
           }
         },
         update_form   : {
@@ -434,11 +442,11 @@ pal.list = (function () {
             previous_object = {};
 
             // crud-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild );
+            pal.util.emptyElement( current_node.firstElementChild );
             // message-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
+            pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
             // detail-wrapperの中身を削除する
-            pal.util.removeElement( current_node.lastElementChild );
+            pal.util.emptyElement( current_node.lastElementChild );
           }
         },
         delete_form   : {
@@ -513,9 +521,9 @@ pal.list = (function () {
           },
           exit            : function () {
             // .crud-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild );
+            pal.util.emptyElement( current_node.firstElementChild );
             // message-wrapperの中身を削除する
-            pal.util.removeElement( current_node.firstElementChild.nextElementSibling );
+            pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
             // .action-wrapper自体を削除する
             current_node.removeChild( current_node.lastElementChild );
             return false;

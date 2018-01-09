@@ -79,15 +79,12 @@ p {
     padding-bottom  : 6px;
     padding-left    : 6px;
   }
-    .pal-dom-header-title:hover {
-      background  : #333399;
-    }
-
-    .pal-dom-header-signup:hover {
-      background  : #333399;
-    }
-
-    .pal-dom-header-login:hover {
+    /* マウスオーバーされたときに色を変化させる */
+    .pal-dom-header-title:hover,
+    .pal-dom-header-signup:hover,
+    .pal-dom-header-login:hover,
+    .pal-dom-header-logout:hover,
+    .pal-dom-header-menu:hover {
       background  : #333399;
     }
 

@@ -93,7 +93,6 @@ pal.browserInformation = (function () {
     var
       i,
       main_section,
-      main_section_children,
       head_one,
       head_one_text,
       content_row,
@@ -164,8 +163,6 @@ pal.browserInformation = (function () {
         }
       ];
 
-    main_section = document.getElementById( "pal-main" );
-
     frag = document.createDocumentFragment();
 
     head_one = document.createElement( "h1" );
@@ -212,16 +209,11 @@ pal.browserInformation = (function () {
     content_row.appendChild( content_row_text );
     frag.appendChild( content_row );
 
-    // console.log( window.location.href );
-    // console.log( window.location.pathname );
+    // mainセクションを取得する
+    main_section = document.getElementById( 'pal-main' );
 
-    // 表示領域をmain_section_childrenにセットする
-    main_section_children = main_section.children;
-
-    // #mainの子要素をすべて削除する
-    while ( main_section.firstChild ) {
-      main_section.removeChild( main_section.firstChild );
-    }
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
 
     // document fragmentを追加する
     main_section.appendChild( frag );

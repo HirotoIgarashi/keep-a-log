@@ -26,8 +26,9 @@ pal.util = (function () {
     clearFormAll,
     clearForm,
     clearElement,
-    removeElementById,
-    removeElement;
+    emptyElementById,
+    emptyElement,
+    emptyElement;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -159,14 +160,14 @@ pal.util = (function () {
     }
   };
 
-  // パブリックメソッド/removeElementById/開始
+  // パブリックメソッド/emptyElementById/開始
   // 目的: 引数のid値を持つHTML要素の下位の要素をすべて削除する
   // 引数:
   //  * element_id  : idの値
   // 戻り値: なし
   // 例外発行: なし
   //
-  removeElementById = function ( element_id ) {
+  emptyElementById = function ( element_id ) {
     var
       element;
 
@@ -177,28 +178,28 @@ pal.util = (function () {
       element.removeChild( element.firstChild );
     }
   };
-  // パブリックメソッド/removeElementById/終了
+  // パブリックメソッド/emptyElementById/終了
 
-  // パブリックメソッド/removeElementByElement/開始
-  // 目的: 引数のHTML要素の下位の要素をすべて削除する
+  // パブリックメソッド/emptyElement/開始
+  // 目的: 引数のHTML要素の子要素をすべて削除する
   // 引数:
-  //  * element  : HTML要素。この下の要素をすべて削除する
+  //  * element  : HTML要素。この子要素をすべて削除する
   // 戻り値: なし
   // 例外発行: なし
   //
-  removeElement = function ( element ) {
+  emptyElement = function ( element ) {
     while ( element.firstChild ) {
       element.removeChild( element.firstChild );
     }
   };
-  // パブリックメソッド/removeElementById/終了
+  // パブリックメソッド/emptyElement/終了
 
   return {
     makeError         : makeError,
     addChange         : addChange,
     setConfigMap      : setConfigMap,
     clearFormAll      : clearFormAll,
-    removeElementById : removeElementById,
-    removeElement     : removeElement
+    emptyElementById  : emptyElementById,
+    emptyElement      : emptyElement
   };
 }());

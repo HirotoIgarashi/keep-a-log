@@ -6,7 +6,8 @@
 #pal {
   display             : grid;
   /* grid-template-rows  : 46px auto 38px; */
-  grid-template-rows  : auto auto auto auto;
+  /* grid-template-rows  : auto auto auto auto; */
+  grid-template-rows  : auto auto auto;
 }
 
 #pal-header {
@@ -48,11 +49,17 @@
 }
 
 #pal-nav {
-  grid-row    : 2;
-  background  : #eee;
+  position: absolute;
+  right: 0;
+  background: #333399;
 }
+
+#pal-nav ul li a {
+  color: #eee;
+}
+
 #pal-main {
-  grid-row    : 3;
+  grid-row    : 2;
   background  : #eee;
 }
 p {
@@ -60,7 +67,7 @@ p {
 }
 
 #pal-footer {
-  grid-row          : 4;
+  grid-row    : 3;
   background  : #9999cc;
   color       : #eee;
 }

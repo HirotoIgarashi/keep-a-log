@@ -248,6 +248,7 @@ pal.dom = (function () {
   initModule = function ( $container ) {
     var
       site_button,
+      site_button_rect,
       site_menu,
       // pal_main,
       mainPage = document.querySelector( '#main-page' ).content;
@@ -292,11 +293,6 @@ pal.dom = (function () {
       .attr( 'title', configMap.signup_title )
       .click( onClickSignup );
 
-    // ヘッダーのメニュー要素
-    // jqueryMap.$menu
-    //   .attr( 'title', configMap.menu_retracted_title )
-    //   .click( onClickMenu );
-
     // ボタンとメニューのノードを取得
     site_button = document.querySelector( '.pal-dom-header-menu' );
     site_menu = document.querySelector( '[aria-label="サイト"]' );
@@ -306,6 +302,11 @@ pal.dom = (function () {
     site_button.hidden = false;
     site_menu.hidden = true;
 
+    // サイトボタンの位置座標を取得してメニューの表示位置を指定する
+    // サイトボタンのbottomをサイトメニューのtopに指定する
+    site_button_rect = site_button.getBoundingClientRect();
+    site_menu.style.top = site_button_rect.bottom + 'px';
+
     site_button.addEventListener( 'click', function () {
       // メニューの表示非表示を切り替える
       var expanded = this.getAttribute( 'aria-expanded' ) === 'true';
@@ -313,8 +314,6 @@ pal.dom = (function () {
       this.setAttribute( 'aria-expanded', String(!expanded) );
       site_menu.hidden = expanded;
 
-      // pal-mainの高さを設定する
-      // onResize();
     });
 
     // フッターに日時を表示する(初回)
@@ -327,15 +326,6 @@ pal.dom = (function () {
       },
       1000
     );
-
-    // mainがスクロールされたときの処理を登録する
-    // window.onscroll = function () {
-    //   onResize();
-    //   console.log( 'スクロールされています' );
-    // }
-
-    // pal-mainの高さを設定する
-    // onResize();
 
   };
   // パブリックメソッド/initModule/終了

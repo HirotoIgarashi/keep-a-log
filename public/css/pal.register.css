@@ -39,7 +39,7 @@ input[type=password]::-ms-reveal {
 }
 
 .pal-register-ul li label {
-  width : 7em;
+  width : 8em;
 }
 
 .pal-register-ul li input[type="text"],
@@ -50,7 +50,6 @@ input[type=password]::-ms-reveal {
 .pal-register-ul li input[type="checkbox"] {
   flex        : none;
   width       : auto;
-  margin-left : 7em;
 }
 
 .pal-register-ul li input[type="checkbox"] ~ label {

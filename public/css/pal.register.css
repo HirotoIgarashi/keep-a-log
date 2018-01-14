@@ -26,21 +26,34 @@ input[type=password]::-ms-reveal {
   display : none;
 }
 
-ul li {
-  display     : -webkit-flex;
-  display     : flex;
-  flex-wrap   : wrap;
-  align-items : center;
+.pal-register-ul {
+  -webkit-padding-start : 0.5em;
 }
 
-li label {
-  flex-basis: 160px;
+.pal-register-ul li {
+  display         : flex;
+  flex-wrap       : wrap;
+  align-items     : center;
+  padding-right   : 0.5em;
+  padding-bottom  : 0.5em;
 }
 
-li input[type="text"],
-li input[type="password"] {
-  width       : 100%;
-  box-sizing  : border-box;
-  flex-basis  : 210px;
-  flex-grow   : 1;
+.pal-register-ul li label {
+  width : 7em;
+}
+
+.pal-register-ul li input[type="text"],
+.pal-register-ul li input[type="password"] {
+  flex  : 1 1 auto;
+}
+
+.pal-register-ul li input[type="checkbox"] {
+  flex        : none;
+  width       : auto;
+  margin-left : 7em;
+}
+
+.pal-register-ul li input[type="checkbox"] ~ label {
+  width         : auto;
+  padding-left  : 0.4em;
 }

@@ -18,7 +18,7 @@ pal.dom = (function () {
     configMap = {
       logout_title          : 'ログアウトします。',
       login_title           : 'IDとパスワードでログインします。',
-      signup_title          : 'IDとパスワードを登録します。',
+      register_title          : 'IDとパスワードを登録します。',
       menu_retracted_title  : 'クリックしてメニューを開きます',
       menu_extended_title   : 'クリックしてメニューを閉じます'
     },
@@ -31,7 +31,7 @@ pal.dom = (function () {
     setJqueryMap,
     readSession,
     onClickTop,
-    onClickLogin, onClickLogout, onClickSignup,
+    onClickLogin, onClickLogout, onClickRegister,
     onReceiveSession,
     // onResize,
     setSection,
@@ -88,7 +88,7 @@ pal.dom = (function () {
       $date_info  : $container.find( '#pal-dom-date-info' ),
       $logout     : $container.find( '.pal-dom-header-logout' ),
       $login      : $container.find( '.pal-dom-header-login' ),
-      $signup     : $container.find( '.pal-dom-header-signup' ),
+      $register   : $container.find( '.pal-dom-header-register' ),
       $menu       : $container.find( '.pal-dom-header-menu' ),
       $main       : $container.find( '#pal-main' ),
       $menu_list  : $container.find( '.pal-dom-menu-list' )
@@ -122,9 +122,9 @@ pal.dom = (function () {
       case '#logout':
         pal.logout.initModule( jqueryMap.$main );
         break;
-      case '#signup':
-        console.log( '#signupがクリックされました' );
-        //pal.signup.initModule();
+      case '#register':
+        // console.log( '#registerがクリックされました' );
+        pal.register.initModule();
         break;
       case '#menu':
         pal.menu.initModule( jqueryMap.$main );
@@ -158,13 +158,10 @@ pal.dom = (function () {
     pal.bom.setLocationHash( 'login' );
   };
 
-  onClickSignup = function ( /* event */ ) {
-    pal.bom.setLocationHash( 'signup' );
+  onClickRegister = function ( /* event */ ) {
+    pal.bom.setLocationHash( 'register' );
   };
   
-  // onClickMenu = function ( /* event */ ) {
-  //   pal.bom.setLocationHash( 'menu' );
-  // };
 
   onReceiveSession = function () {
     var
@@ -176,13 +173,13 @@ pal.dom = (function () {
       if (request.status === 200 ) {
         jqueryMap.$logout.show();
         jqueryMap.$login.hide();
-        jqueryMap.$signup.hide();
+        jqueryMap.$register.hide();
         jqueryMap.$user_info.text( response_map.email );
       }
       else {
         jqueryMap.$logout.hide();
         jqueryMap.$login.show();
-        jqueryMap.$signup.show();
+        jqueryMap.$register.show();
         jqueryMap.$user_info.text( response_map.email );
       }
 
@@ -289,9 +286,9 @@ pal.dom = (function () {
       .click( onClickLogin );
 
     // ヘッダーのサインアップ要素
-    jqueryMap.$signup
-      .attr( 'title', configMap.signup_title )
-      .click( onClickSignup );
+    jqueryMap.$register
+      .attr( 'title', configMap.register_title )
+      .click( onClickRegister );
 
     // ボタンとメニューのノードを取得
     site_button = document.querySelector( '.pal-dom-header-menu' );

@@ -28,7 +28,7 @@
   grid-row    : 1;
 }
 
-.pal-dom-header-signup {
+.pal-dom-header-register {
   grid-column : 3;
   grid-row    : 1;
 }
@@ -77,7 +77,7 @@ p {
   .pal-dom-header-logout,
   .pal-dom-header-login,
   .pal-dom-header-menu,
-  .pal-dom-header-signup {
+  .pal-dom-header-register {
     background      : #9999cc;
     color           : #eee;
     text-align      : center;
@@ -88,7 +88,7 @@ p {
   }
     /* マウスオーバーされたときに色を変化させる */
     .pal-dom-header-title:hover,
-    .pal-dom-header-signup:hover,
+    .pal-dom-header-register:hover,
     .pal-dom-header-login:hover,
     .pal-dom-header-logout:hover,
     .pal-dom-header-menu:hover {
@@ -100,10 +100,12 @@ p {
       height  : calc( 1.3em + 0.25vw );
       width   : calc( 1.3em + 0.25vw );
     }
+/*
 button svg {
-  width   : 1em;
-  height  : 1em;
+  width   : 2em;
+  height  : 2em;
 }
+*/
 
 .icon {
   display       : inline-block;
@@ -144,12 +146,12 @@ button svg {
     .pal-dom-header-login:hover {
       background  : #333399;
     }
-  .pal-dom-header-signup {
+  .pal-dom-header-register {
     flex-grow   : 0;
     flex-shrink : 0;
     flex-basis  : 116px;
   }
-    .pal-dom-header-signup:hover {
+    .pal-dom-header-register:hover {
       background  : #333399;
     }
   .pal-dom-header-menu {

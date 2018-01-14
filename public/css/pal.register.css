@@ -1,0 +1,46 @@
+/*
+ * pal.register.css
+ * 登録ページのスタイル
+*/
+
+::placeholder {
+  color       : #000;
+  font-style  : italic;
+}
+
+::-webkit-input-placeholder {
+  color       : #000;
+  font-style  : italic;
+}
+
+::-moz-placeholder {
+  color       : #000;
+  font-style  : italic;
+}
+
+.red {
+  color : red;
+}
+
+input[type=password]::-ms-reveal {
+  display : none;
+}
+
+ul li {
+  display     : -webkit-flex;
+  display     : flex;
+  flex-wrap   : wrap;
+  align-items : center;
+}
+
+li label {
+  flex-basis: 160px;
+}
+
+li input[type="text"],
+li input[type="password"] {
+  width       : 100%;
+  box-sizing  : border-box;
+  flex-basis  : 210px;
+  flex-grow   : 1;
+}

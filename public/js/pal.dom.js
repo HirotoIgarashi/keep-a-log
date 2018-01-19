@@ -33,6 +33,7 @@ pal.dom = (function () {
     onClickTop,
     onClickLogin, onClickLogout, onClickRegister,
     onReceiveSession,
+    toggle_menu,
     // onResize,
     setSection,
     request,  // XMLHttpRequest
@@ -73,6 +74,25 @@ pal.dom = (function () {
     );
   };
   // ユーティリティメソッド/readSession/終了
+
+  // ユーティリティメソッド/toggle_menu/開始
+  toggle_menu = function () {
+    // メニューの表示非表示を切り替える
+    var
+      site_button,
+      site_menu,
+      expanded;
+
+    // ボタンとメニューのノードを取得
+    site_button = document.querySelector( '.pal-dom-header-menu' );
+    site_menu = document.querySelector( '[aria-label="サイト"]' );
+
+    expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+
+    site_button.setAttribute( 'aria-expanded', String(!expanded) );
+    site_menu.hidden = expanded;
+  };
+  // ユーティリティメソッド/toggle_menu/終了
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -244,9 +264,11 @@ pal.dom = (function () {
   //
   initModule = function ( $container ) {
     var
+      i,
       site_button,
       site_button_rect,
       site_menu,
+      menu_ahchor,
       // pal_main,
       mainPage = document.querySelector( '#main-page' ).content;
 
@@ -304,14 +326,25 @@ pal.dom = (function () {
     site_button_rect = site_button.getBoundingClientRect();
     site_menu.style.top = site_button_rect.bottom + 'px';
 
-    site_button.addEventListener( 'click', function () {
-      // メニューの表示非表示を切り替える
-      var expanded = this.getAttribute( 'aria-expanded' ) === 'true';
+    // site_button.addEventListener( 'click', function () {
+    //   // メニューの表示非表示を切り替える
+    //   var expanded = this.getAttribute( 'aria-expanded' ) === 'true';
 
-      this.setAttribute( 'aria-expanded', String(!expanded) );
-      site_menu.hidden = expanded;
+    //   this.setAttribute( 'aria-expanded', String(!expanded) );
+    //   site_menu.hidden = expanded;
 
-    });
+    // });
+
+    site_button.addEventListener( 'click', toggle_menu, false );
+
+    // メニューのaタグを取得
+    menu_ahchor = document.querySelectorAll( '#pal-nav-menu a' );
+    console.log( menu_ahchor );
+
+    for ( i = 0; i < menu_ahchor.length; i = i + 1 ) {
+      console.log( menu_ahchor[ i ] );
+      menu_ahchor[ i ].addEventListener( 'click', toggle_menu, false );
+    }
 
     // フッターに日時を表示する(初回)
     jqueryMap.$date_info.html( pal.util_b.getNowDateJp() );

@@ -1,0 +1,94 @@
+/*
+ * pal.weeklySchedule.css
+ * 週間時間割のスタイル
+*/
+
+/*
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.one {
+  grid-column : 1 / 3;
+  grid-row    : 1;
+}
+
+.two {
+  grid-column : 2 / 4;
+  grid-row    : 1 / 3;
+}
+
+.three {
+  grid-column : 1;
+  grid-row    : 2 / 5;
+}
+
+.four {
+  grid-column : 3;
+  grid-row    : 3;
+}
+
+.five {
+  grid-column : 2;
+  grid-row    : 4;
+}
+
+.six {
+  grid-column : 3;
+  grid-row    : 4;
+}
+*/
+
+#time-table {
+  display               : grid;
+  grid-template-columns : auto;
+  grid-template-rows    : repeat( 7, 1fr );
+}
+
+.time-table-time {
+  display: grid;
+  grid-template-columns : 1fr;
+  grid-template-rows    : 1fr;
+}
+.time-table-column {
+  display               : grid;
+  grid-template-columns : 1fr 36fr auto;
+  grid-template-rows    : auto;
+}
+
+.time-list {
+  display: grid;
+  grid-template-columns : 1fr repeat(6, 0.7fr) repeat( 17, 1fr );
+  grid-template-rows    : 1fr;
+}
+
+.time-list li {
+  font-size: 70%;
+  text-align: left;
+  border: solid 1px black;
+  cursor: pointer;
+}
+
+#time-table,
+#time-table ul {
+  list-style-type : none;
+  padding-left:0.1em;
+}
+
+.time-table-row {
+  background: #f88;
+  text-align: center;
+}
+
+.time-table-time {
+  background: #8f8;
+  text-align: center;
+}
+
+.schedule-of-the-day {
+  background: #88f;
+  text-align: center;
+}

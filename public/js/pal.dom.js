@@ -126,9 +126,17 @@ pal.dom = (function () {
   // 例外発行: なし
   // 
   setSection = function () {
-    var current_location_hash;
+    var
+      main_section,
+      current_location_hash;
 
     current_location_hash = pal.bom.getLocationHash();
+
+    // mainセクションを取得する
+    main_section = document.getElementById( 'pal-main' );
+
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
 
     switch ( current_location_hash ) {
       case '':
@@ -143,7 +151,6 @@ pal.dom = (function () {
         pal.logout.initModule( jqueryMap.$main );
         break;
       case '#register':
-        // console.log( '#registerがクリックされました' );
         pal.register.initModule();
         break;
       case '#menu':
@@ -157,6 +164,9 @@ pal.dom = (function () {
         break;
       case '#lab':
         pal.lab.initModule( jqueryMap.$main );
+        break;
+      case '#weekly_schedule':
+        pal.weeklySchedule.initModule( main_section );
         break;
       default:
         break;
@@ -339,10 +349,8 @@ pal.dom = (function () {
 
     // メニューのaタグを取得
     menu_ahchor = document.querySelectorAll( '#pal-nav-menu a' );
-    console.log( menu_ahchor );
 
     for ( i = 0; i < menu_ahchor.length; i = i + 1 ) {
-      console.log( menu_ahchor[ i ] );
       menu_ahchor[ i ].addEventListener( 'click', toggle_menu, false );
     }
 

@@ -59,15 +59,14 @@ pal.bom = (function () {
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。
     // そうしないと、トリガーイベントを処理できる状態になっていない。
-    // トリガーイベントはアンカーがロード状態と見なせることを保証するために使う
-    //
-    // window.addEventListener( "hashchange", onHashchange, false );
-    // if ( window.hasOwnProperty("onhashchange") ) {
-    //   alert("このブラウザはhashchangeイベントをサポートしています");
-    // }
-    $(window)
-      .bind( 'hashchange', onHashchange )
-      .trigger( 'hashchange' );
+    // トリガーイベントはアンカーがロード状態と見なせることを保証するために
+    // 使う
+    if ( window.hasOwnProperty("onhashchange") ) {
+      window.addEventListener( "hashchange", onHashchange, false );
+    }
+
+    // 初回ロード時にhashを確認する。
+    onHashchange();
 
   };
   // パブリックメソッド/initModule/終了

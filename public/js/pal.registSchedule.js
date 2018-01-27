@@ -1,5 +1,5 @@
 /*
- * pal.weeklySchedule.js
+ * pal.registSchedule.js
  * 週間時間割用のモジュール
 */
 
@@ -12,7 +12,7 @@
 
 /*global $, pal */
 
-pal.weeklySchedule = (function () {
+pal.registSchedule = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
@@ -20,7 +20,7 @@ pal.weeklySchedule = (function () {
       settable_map  : { color_name: true },
       color_name    : 'blue'
     },
-
+    onHashchange,
     configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -50,6 +50,41 @@ pal.weeklySchedule = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
+  onHashchange = function ( main_section ) {
+    var
+      current_hash = pal.bom.getLocationHash(),
+      schedule_main,
+      menu              = pal.util_b.getTplContent( 'schedule-registration' ),
+      dayly             = pal.util_b.getTplContent( 'schedule-registration-dayly' ),
+      weekly            = pal.util_b.getTplContent( 'schedule-registration-weekly' ),
+      monthly_by_date   = pal.util_b.getTplContent( 'schedule-registration-monthly-by-date' ),
+      monthly_by_order  = pal.util_b.getTplContent( 'schedule-registration-monthly-by-order' ),
+      yearly            = pal.util_b.getTplContent( 'schedule-registration-yearly' );
+
+    main_section.appendChild( menu );
+
+    schedule_main = document.querySelector( '#schedule-main' );
+
+    if ( current_hash === '#regist_schedule' || current_hash === '#regist_schedule/dayly' ) {
+      schedule_main.appendChild( dayly );
+    }
+    else if ( current_hash === '#regist_schedule/weekly' ) {
+      schedule_main.appendChild( weekly );
+    }
+    else if ( current_hash === '#regist_schedule/monthly/bydate' ) {
+      schedule_main.appendChild( monthly_by_date );
+    }
+    else if ( current_hash === '#regist_schedule/monthly/byorder' ) {
+      schedule_main.appendChild( monthly_by_order );
+    }
+    else if ( current_hash === '#regist_schedule/yearly' ) {
+      schedule_main.appendChild( yearly );
+    }
+
+    console.log( current_hash );
+
+    return true;
+  };
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -80,10 +115,9 @@ pal.weeklySchedule = (function () {
   // 例外発行: なし
   //
   initModule = function ( main_section ) {
-    var
-      time_table  = pal.util_b.getTplContent( 'time-table' );
 
-    main_section.appendChild( time_table );
+    // hashの状態により表示を切り替える
+    onHashchange( main_section );
 
     return true;
   };
@@ -92,7 +126,8 @@ pal.weeklySchedule = (function () {
   // パブリックメソッドを返す
   return {
     configModule  : configModule,
-    initModule    : initModule
+    initModule    : initModule,
+    onHashchange  : onHashchange
   };
   // --------------------- パブリックメソッド終了 --------------------
 }());

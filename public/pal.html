@@ -163,21 +163,17 @@
                 <label for="username">ユーザ名<strong class="red" aria-hidden="true">*</strong></label>
                 <input type="text" id="username" name="username" placeholder="例:HotStuff666">
               </li>
-
               <li>
                 <label for="password">パスワード<strong class="red" aria-hidden="true">*</strong></label>
                 <input type="password" id="password" name="password">
               </li>
-
               <li>
                 <input type="checkbox" id="showPassword">
                 <label>パスワードを表示</label>
               </li>
-
               <li>
                 <button type="submit">登録する</button>
               </li>
-
             </ul>
           </form>
         </template>
@@ -208,288 +204,263 @@
           </main>
         </template>
         <!-- 予定の登録用 -->
+        <!-- 毎日の予定の登録用 -->
         <template id="schedule-registration-dayly">
-          <p>毎日の予定</p>
+          <nav>
+            <ul id="regist-dayly">
+              <li>0:00<a>+</a></li>
+              <li>1:00</li>
+              <li>2:00</li>
+              <li>3:00</li>
+              <li>4:00</li>
+              <li>5:00</li>
+              <li>6:00</li>
+              <li>7:00</li>
+              <li>8:00</li>
+              <li>9:00</li>
+              <li>10:00</li>
+              <li>11:00</li>
+              <li>12:00</li>
+              <li>13:00</li>
+              <li>14:00</li>
+              <li>15:00</li>
+              <li>16:00</li>
+              <li>17:00</li>
+              <li>18:00</li>
+              <li>19:00</li>
+              <li>20:00</li>
+              <li>21:00</li>
+              <li>22:00</li>
+              <li>23:00</li>
+            </ul>
+          </nav>
         </template>
+
+        <!-- 毎週の予定の登録用 -->
         <template id="schedule-registration-weekly">
+
           <ul id="weekly-schedule">
-            <li id="grid-1">
-              <ul class="weekly-schedule-column">
-                <li id="grid-1-1" class="weekly-schedule-row">曜日</li>
-                <li id="grid-1-2" class="weekly-schedule-time">タイムテーブル</li>
-                <li id="grid-1-3" class="schedule-of-the-day">メモ</li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>月</li>
               </ul>
-            </li>
-            <li id="grid-2">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">月</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li><div>0:00</div></li>
-                    <li><div>1:00</div></li>
-                    <li><div>2:00</div></li>
-                    <li><div>3:00</div></li>
-                    <li><div>4:00</div></li>
-                    <li><div>5:00</div></li>
-                    <li><div>6:00</div></li>
-                    <li><div>7:00</div></li>
-                    <li><div>8:00</div></li>
-                    <li><div>9:00</div></li>
-                    <li><div>10:00</div></li>
-                    <li><div>11:00</div></li>
-                    <li><div>12:00</div></li>
-                    <li><div>13:00</div></li>
-                    <li><div>14:00</div></li>
-                    <li><div>15:00</div></li>
-                    <li><div>16:00</div></li>
-                    <li><div>17:00</div></li>
-                    <li><div>18:00</div></li>
-                    <li><div>19:00</div></li>
-                    <li><div>20:00</div></li>
-                    <li><div>21:00</div></li>
-                    <li><div>22:00</div></li>
-                    <li><div>23:00</div></li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li>organico定休日</li>
-                  </ul>
-                </li>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-3">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">火</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li></li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>火</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-4">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">水</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li>ビン・カンの日</li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>水</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-5">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">木</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li>add or change定休日</li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>木</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-6">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">金</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li></li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>金</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-7">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">土</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li></li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>土</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 
-            <li id="grid-8">
-              <ul class="weekly-schedule-column">
-                <li class="weekly-schedule-row">日</li>
-                <li class="weekly-schedule-time">
-                  <ul class="time-list">
-                    <li>0:00</li>
-                    <li>1:00</li>
-                    <li>2:00</li>
-                    <li>3:00</li>
-                    <li>4:00</li>
-                    <li>5:00</li>
-                    <li>6:00</li>
-                    <li>7:00</li>
-                    <li>8:00</li>
-                    <li>9:00</li>
-                    <li>10:00</li>
-                    <li>11:00</li>
-                    <li>12:00</li>
-                    <li>13:00</li>
-                    <li>14:00</li>
-                    <li>15:00</li>
-                    <li>16:00</li>
-                    <li>17:00</li>
-                    <li>18:00</li>
-                    <li>19:00</li>
-                    <li>20:00</li>
-                    <li>21:00</li>
-                    <li>22:00</li>
-                    <li>23:00</li>
-                  </ul>
-                </li>
-                <li class="schedule-of-the-day">
-                  <ul>
-                    <li></li>
-                  </ul>
-                </li>
+            <li class="weekly-row">
+              <ul class="date-column">
+                <li>日</li>
+              </ul>
+              <ul class="time-column">
+                <li><div>0:00</div></li>
+                <li><div>1:00</div></li>
+                <li><div>2:00</div></li>
+                <li><div>3:00</div></li>
+                <li><div>4:00</div></li>
+                <li><div>5:00</div></li>
+                <li><div>6:00</div></li>
+                <li><div>7:00</div></li>
+                <li><div>8:00</div></li>
+                <li><div>9:00</div></li>
+                <li><div>10:00</div></li>
+                <li><div>11:00</div></li>
+                <li><div>12:00</div></li>
+                <li><div>13:00</div></li>
+                <li><div>14:00</div></li>
+                <li><div>15:00</div></li>
+                <li><div>16:00</div></li>
+                <li><div>17:00</div></li>
+                <li><div>18:00</div></li>
+                <li><div>19:00</div></li>
+                <li><div>20:00</div></li>
+                <li><div>21:00</div></li>
+                <li><div>22:00</div></li>
+                <li><div>23:00</div></li>
               </ul>
             </li>
 

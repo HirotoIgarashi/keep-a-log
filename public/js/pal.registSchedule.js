@@ -59,10 +59,40 @@ pal.registSchedule = (function () {
       weekly            = pal.util_b.getTplContent( 'schedule-registration-weekly' ),
       monthly_by_date   = pal.util_b.getTplContent( 'schedule-registration-monthly-by-date' ),
       monthly_by_order  = pal.util_b.getTplContent( 'schedule-registration-monthly-by-order' ),
-      yearly            = pal.util_b.getTplContent( 'schedule-registration-yearly' );
+      yearly            = pal.util_b.getTplContent( 'schedule-registration-yearly' ),
+      current_page,
+      anchor_list,
+      i;
 
+    // メニューを表示する
     main_section.appendChild( menu );
 
+    // class="current-page"を初期化する
+    // 現在のページを取得する
+    current_page = document.querySelector( '#schedule-registration-menu li a.current-page' );
+
+    current_page.setAttribute( 'class', '' );
+
+    // current_hashからcurrent-pageを設定する
+    // anchor_listを取得する
+    anchor_list = document.querySelectorAll( '#schedule-registration-menu li a' );
+
+    console.log( current_hash );
+
+    // 初期ロードのときのcurrent_hashは'#regist_schedule'になっているので
+    if ( current_hash === '#regist_schedule') {
+      anchor_list[ 0 ].setAttribute( 'class', 'current-page' );
+    }
+    // anchor_listからcurrent_hashに一致するものにcurrent-pageをセットする
+    else {
+      for ( i = 0; i < anchor_list.length; i = i + 1 ) {
+        if ( anchor_list[ i ].getAttribute( 'href' ) === current_hash ) {
+          anchor_list[ i ].setAttribute( 'class', 'current-page' );
+        }
+      }
+    }
+
+    // LocationHashの値により登録フォームを表示する
     schedule_main = document.querySelector( '#schedule-main' );
 
     if ( current_hash === '#regist_schedule' || current_hash === '#regist_schedule/dayly' ) {
@@ -81,7 +111,6 @@ pal.registSchedule = (function () {
       schedule_main.appendChild( yearly );
     }
 
-    console.log( current_hash );
 
     return true;
   };

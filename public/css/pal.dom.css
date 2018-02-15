@@ -5,8 +5,6 @@
 
 #pal {
   display             : grid;
-  /* grid-template-rows  : 46px auto 38px; */
-  /* grid-template-rows  : auto auto auto auto; */
   grid-template-rows  : auto auto auto;
 }
 
@@ -48,10 +46,17 @@
   grid-row    : 1;
 }
 
+/* ナビゲーションのスタイル */
 #pal-nav {
   position: absolute;
   right: 0;
-  background: #333399;
+  background: #9999CC;
+}
+
+#pal-nav ul {
+  list-style-type : none;
+  margin          : 0rem;
+  padding         : 0px;
 }
 
 #pal-nav ul li a {
@@ -100,12 +105,6 @@ p {
       height  : calc( 1.3em + 0.25vw );
       width   : calc( 1.3em + 0.25vw );
     }
-/*
-button svg {
-  width   : 2em;
-  height  : 2em;
-}
-*/
 
 .icon {
   display       : inline-block;
@@ -115,51 +114,9 @@ button svg {
   stroke        : currentColor;
   fill          : currentColor;
 }
-/*
-#pal-header {
-  display         : flex;
-  justify-content : space-between;
-  background      : #9999cc;
+
+#pal-header button {
+  border-radius: 0.25em;
+  box-shadow: 0 4px 0 #9999cc;
 }
-  .pal-dom-header-title {
-    flex-grow   : 0;
-    flex-shrink : 0;
-    flex-basis  : 94px;
-  }
-    .pal-dom-header-title:hover {
-      background  : #333399;
-    }
-  .pal-dom-header-blank {
-    flex-grow   : 20;
-    flex-shrink : 1;
-  }
-  .pal-dom-header-logout {
-    flex-grow   : 0;
-    flex-shrink : 0;
-    flex-basis  : 100px;
-  }
-  .pal-dom-header-login {
-    flex-grow   : 0;
-    flex-shrink : 0;
-    flex-basis  : 100px;
-  }
-    .pal-dom-header-login:hover {
-      background  : #333399;
-    }
-  .pal-dom-header-register {
-    flex-grow   : 0;
-    flex-shrink : 0;
-    flex-basis  : 116px;
-  }
-    .pal-dom-header-register:hover {
-      background  : #333399;
-    }
-  .pal-dom-header-menu {
-    flex-grow   : 0;
-    flex-shrink : 1;
-    flex-basis  : 68px;
-  }
-    .pal-dom-header-menu:hover {
-      background  : #333399;
-    }
-*/
+

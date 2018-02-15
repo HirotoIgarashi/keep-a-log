@@ -1,0 +1,5 @@
+form button:not([type]):after {
+  background: red;
+  color: white;
+  content: '警告 : このボタンにはtype属性がありません。submitですか、resetですか、単純なボタンですか？';
+}

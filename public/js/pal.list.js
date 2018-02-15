@@ -21,7 +21,6 @@ pal.list = (function () {
       color_name    : 'blue'
     },
     stateMap = { $container : null },
-    jqueryMap = {},
     make_anchor_element,
     action_object,
     previous_object = {},
@@ -32,7 +31,7 @@ pal.list = (function () {
     onClickTarget,
     sync_object_and_dom,
     sync_number_of_data,
-    setJqueryMap, configModule, initModule,
+    configModule, initModule,
     list_ui,
     current_node,
     onObjectCreate,
@@ -71,7 +70,6 @@ pal.list = (function () {
             var
               i,
               main_section,
-              $container,
               // テンプレートからlist-pageを読み込む
               // idの値が以下のものを含む
               // status,
@@ -81,8 +79,7 @@ pal.list = (function () {
               // target
               list_page  = pal.util_b.getTplContent( 'list-page' );
 
-            setJqueryMap();
-            $container = jqueryMap.$container;
+            this.target = target;
 
             // mainセクションを取得する
             main_section = document.getElementById( 'pal-main' );
@@ -92,9 +89,6 @@ pal.list = (function () {
 
             // document fragmentを追加する
             main_section.appendChild( list_page );
-
-            jqueryMap.$status       = $container.find( '#status' );
-            jqueryMap.$target       = $container.find( '#target' );
 
             // localStorageからaction objectリストを読み込む
             object_array = pal.array.readObjectArray();
@@ -116,8 +110,6 @@ pal.list = (function () {
             // コールバックはobject_read
             pal.socketio.readObjectList( object_read );
 
-            this.target = target;
-
           },
           enter : function () {
             var
@@ -126,7 +118,6 @@ pal.list = (function () {
               detail_anchor;
 
             // 件数を表示する
-            // sync_number_of_data( jqueryMap.$status, object_array);
             sync_number_of_data( document.getElementById( 'status' ), object_array);
 
             detail_anchor = document.getElementById( 'target' );
@@ -163,7 +154,6 @@ pal.list = (function () {
             // オプション引数:
             // 設定:
             //  * action_object : Actionオブジェクトの生成
-            //  * jqueryMap.$form       : 表示する
             //  * new-action-wrapper  : create画面の操作
             //  * new-form-wrapper    : create画面のフォーム
             // 戻り値:
@@ -221,13 +211,10 @@ pal.list = (function () {
             // 必須引数: なし
             // オプション引数: なし
             // 設定:
-            //  * jqueryMap.$form       : フォームを隠し、内容をクリアする
-            //  * jqueryMap.$targe      : Actionオブジェクトを表示するul要素に
-            //                            追加する
-            //  * jqueryMap.$status     : 件数を表示するdiv要素
-            //  * object_array    : Actionオブジェクトを格納しているリストに
-            //                            要素を追加する
-            //  * _local_id             : _local_idプロパティにtimestampをセットする
+            //  * object_array    : Actionオブジェクトを格納している
+            //                      リストに要素を追加する
+            //  * _local_id       : _local_idプロパティにtimestampを
+            //                      セットする
             // 戻り値: なし
             // 例外発行: なし
 
@@ -540,7 +527,7 @@ pal.list = (function () {
         // 初期状態をセットする
         this.state = this.states.start_state;
       },
-      load            : function () { this.state.load(); },
+      load              : function () { this.state.load(); },
       show_create_form  : function () { this.state.show_create_form(); },
       cancel_create     : function () { this.state.cancel_create(); },
       confirm_create    : function () { this.state.confirm_create(); },
@@ -665,22 +652,19 @@ pal.list = (function () {
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
-  // DOMメソッド/setJqueryMap/開始
-  setJqueryMap = function () {
-    var $container = stateMap.$container;
-
-    jqueryMap = { $container  : $container };
-  };
-  // DOMメソッド/setJqueryMap/終了
-
   // DOMメソッド/make_anchor_element/開始
   make_anchor_element = function ( href, text ) {
     var
+      // button,
       element;
 
+    // button = document.createElement( 'button' );
+    // button.setAttribute( 'type', 'button' );
     element = document.createElement( 'a' );
     element.setAttribute( 'href', href );
     element.textContent = text; 
+
+    // element.appendChild( button );
 
     return element;
   };
@@ -708,8 +692,11 @@ pal.list = (function () {
   // DOMイベントリスナー/onBlurInput/終了 -----------------------------
 
   // DOMイベントリスナー/onHashchange/開始 -----------------------------
-  onHashchange = function ( /* event */ ) {
+  onHashchange = function ( main_section ) {
     switch ( location.hash ) {
+      case '#list':
+        initModule( main_section );
+        break;
       case '#list/new':
         list_ui.show_create_form();
         break;
@@ -1004,19 +991,6 @@ pal.list = (function () {
     list_ui.initialize();
     list_ui.load();
 
-    // URIのハッシュ変更イベントを処理する。
-    // これはすべての機能モジュールを設定して初期化した後に行う。
-    // そうしないと、トリガーイベントを処理できる状態になっていない。
-    // トリガーイベントはアンカーがロード状態と見なせることを
-    // 保証するために使う
-    //
-    if ( window.hasOwnProperty("onhashchange") ) {
-      window.addEventListener( "hashchange", onHashchange, false );
-    }
-    else {
-      alert("このブラウザはhashchangeイベントをサポートしていません");
-    }
-
     return true;
   };
   // パブリックメソッド/initModule/終了
@@ -1024,7 +998,8 @@ pal.list = (function () {
   // パブリックメソッドを返す
   return {
     configModule  : configModule,
-    initModule    : initModule
+    initModule    : initModule,
+    onHashchange  : onHashchange
   };
   // --------------------- パブリックメソッド終了 --------------------
 }());

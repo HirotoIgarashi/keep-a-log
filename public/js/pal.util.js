@@ -174,7 +174,7 @@ pal.util = (function () {
     // 新規作成のアンカーを削除する
     element = document.getElementById( element_id );
 
-    while ( element.firstChild ) {
+    while ( element && element.firstChild ) {
       element.removeChild( element.firstChild );
     }
   };

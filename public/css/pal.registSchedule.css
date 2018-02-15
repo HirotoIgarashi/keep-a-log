@@ -3,46 +3,50 @@
  * 週間時間割のスタイル
 */
 
-#schedule-registration-menu {
+#schedule-registration-menu ul {
   display         : flex;
   list-style-type : none;
-  padding-left    : 0rem;
-  -webkit-padding-start: 0rem;
+  margin          : 0em;
+  padding         : 0px;
 }
 
 /* 小さい画面では縦に表示する */
 @media screen and ( max-width: 40rem ) {
-  #schedule-registration-menu {
+  #schedule-registration-menu ul {
     flex-direction  : column;
   }
 }
 
-#schedule-registration-menu li {
+#schedule-registration-menu ul li {
+  /*
   padding-left    : 0.5rem;
   padding-bottom  : 0rem;
+  */
   height          : 2rem;
 }
 
-#schedule-registration-menu li a {
-  margin-left: 0rem;
+#schedule-registration-menu ul li a {
+  margin-left : 0rem;
+  background  : #9999CC;
+  margin      : 0rem;
 }
-#schedule-registration-menu li a.current-page {
+#schedule-registration-menu ul li a.current-page {
   display         : inline-block;
   padding         : 0.2rem;
   text-decoration : underline;
-  background      : #999;
+  background      : #666699;
   transform       : scale(1.1);
 }
 
-#schedule-registration-menu li a.current-page::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.25rem;
-  height: 0.25rem;
+#schedule-registration-menu ul li a.current-page::after {
+  content         : '';
+  position        : absolute;
+  left            : 0;
+  right           : 0;
+  bottom          : -0.25rem;
+  height          : 0.25rem;
   /* background: url('images/pointer.svg') center no-repeat; */
-  background-size: auto 100%;
+  background-size : auto 100%;
 }
 
 /* 毎日の予定の登録用-開始 */
@@ -50,9 +54,13 @@
   display               : grid;
   grid-template-columns : 1fr;
   grid-template-rows    : 1fr;
+  padding-left          : 1em;
+  padding-right         : 1em;
+  list-style-type       : none;
 }
 #regist-dayly li {
-  list-style-type : none;
+  background      : #CCCCCC;
+  margin          : 1px;
 }
 /* 毎日の予定の登録用-終了 */
 
@@ -61,12 +69,12 @@
   display               : grid;
   grid-template-columns : 1fr;
   grid-template-rows    : 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left          : 1em;
+  padding-right         : 1em;
 }
 
 .weekly-row {
-  display: grid;
+  display               : grid;
   grid-template-columns : 4rem 1fr;
   grid-template-rows    : 1fr;
 }
@@ -75,57 +83,45 @@
   display: grid;
   grid-template-columns : 1fr;
   grid-template-rows    : 1fr;
-  list-style-type : none;
-  padding-left:0.1em;
-  background: #f88;
+  list-style-type       : none;
+  padding-left          : 0.1em;
 }
 .time-column {
-  display: grid;
+  display               : grid;
   grid-template-columns : 1fr;
   grid-template-rows    : repeat(24, 1fr);
-  list-style-type : none;
-  padding-left:0.1em;
-  background: #8f8;
+  list-style-type       : none;
+  padding-left          : 0.1em;
 }
 
 .date-column li,
 .time-column li {
-  border: solid 1px black;
+  background  : #CCCCCC;
+  margin      : 1px;
 }
-/*
-.weekly-schedule-column {
-  display               : grid;
-  grid-template-columns : 1fr 36fr auto;
-  grid-template-rows    : auto;
-}
-
-.time-list {
-  display: grid;
-  grid-template-columns : 1fr repeat(6, 0.7fr) repeat( 17, 1fr );
-  grid-template-rows    : 1fr;
-}
-
-.time-list li {
-  font-size: 70%;
-  text-align: left;
-  cursor: pointer;
-}
-
-#weekly-schedule,
-#weekly-schedule ul {
-}
-
-.weekly-schedule-row {
-  text-align: center;
-}
-
-.weekly-schedule-time {
-  text-align: center;
-}
-
-.schedule-of-the-day {
-  background: #88f;
-  text-align: center;
-}
-*/
 /* 毎週の予定の登録用-終了 */
+
+/* 毎月の予定(日別)の登録用-開始 */
+#dayly-schedule ul,
+#dayly-schedule-by-order ul,
+#yearly-schedule ul {
+  list-style-type : none;
+  margin          : 0em;
+  padding         : 0px;
+}
+#dayly-schedule ul,
+#dayly-schedule-by-order ul,
+#yearly-schedule ul {
+  display               : grid;
+  grid-template-columns : 1fr;
+  padding-left          : 1em;
+  padding-right         : 1em;
+}
+
+#dayly-schedule ul li,
+#dayly-schedule-by-order ul li,
+#yearly-schedule ul li {
+  background      : #CCCCCC;
+  margin          : 1px;
+}
+/* 毎週の予定の登録用-開始 */

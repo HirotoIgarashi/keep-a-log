@@ -136,7 +136,8 @@ pal.dom = (function () {
     main_section = document.getElementById( 'pal-main' );
 
     // mainセクションの子要素をすべて削除する
-    pal.util.emptyElement( main_section );
+    // mainセクションの子要素の削除は下位のモジュールにまかせる
+    // pal.util.emptyElement( main_section );
 
     if ( current_location_hash.match( /#login/ ) ) {
       pal.login.initModule( jqueryMap.$main );
@@ -154,7 +155,8 @@ pal.dom = (function () {
       pal.browserInformation.initModule( jqueryMap.$main );
     }
     else if ( current_location_hash.match( /#list/ ) ) {
-      pal.list.initModule( jqueryMap.$main );
+      // pal.list.initModule( jqueryMap.$main );
+      pal.list.onHashchange( main_section );
     }
     else if ( current_location_hash.match( /#lab/ ) ) {
       pal.lab.initModule( jqueryMap.$main );

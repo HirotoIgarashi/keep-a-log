@@ -1,0 +1,10 @@
+/*
+ * pal.lab.css
+ * ラボラトリスタイル
+*/
+
+#ul-test ul {
+  list-style-type : none;
+  margin          : 0em;
+  padding         : 0px;
+}

@@ -21,6 +21,8 @@
         <link rel="stylesheet" href="css/pal.list.css">
         <link rel="stylesheet" href="css/pal.register.css">
         <link rel="stylesheet" href="css/pal.registSchedule.css">
+        <link rel="stylesheet" href="css/pal.lab.css">
+        <link rel="stylesheet" href="css/test.css">
 
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
@@ -61,21 +63,21 @@
               </svg>
               <span class="visually-hidden">メニュー</span>
             </button>
+            <!-- メニューの内容 -->
+            <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
+              <ul id="pal-nav-menu">
+                <li><a href="#">ホーム</a></li>
+                <li><a href="#regist_schedule">予定の登録</a></li>
+                <li><a href="#list">アクションのリスト</a></li>
+                <li><a href="#browser_information">ブラウザ情報</a></li>
+                <li><a href="#lab">ラボラトリ</a></li>
+              </ul>
+            </nav>
           </header>
-
-          <!-- メニューの内容 -->
-          <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
-            <ul id="pal-nav-menu">
-              <li><a href="#">ホーム</a></li>
-              <li><a href="#regist_schedule">予定の登録</a></li>
-              <li><a href="#list">アクションのリスト</a></li>
-              <li><a href="#browser_information">ブラウザ情報</a></li>
-              <li><a href="#lab">ラボラトリ</a></li>
-            </ul>
-          </nav>
 
           <main id="pal-main">
           </main>
+
           <footer id="pal-footer">
             <span id="pal-dom-user-info"></span>
             <span id="pal-dom-date-info"></span>
@@ -99,6 +101,13 @@
           <iframe src="../mq-hello.html" width="190" id="a"></iframe>
           <iframe src="../mq-hello.html" width="200" id="b"></iframe>
           <iframe src="../mq-hello.html" width="210" id="c"></iframe>
+          <na id="ul-test"v>
+            <ul>
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
+          </nav>
         </template>
 
         <!-- メニュー用 使っていないので確認して削除する -->
@@ -135,6 +144,9 @@
               </li>
               <li>
                 <button class="pal-login-button" type="submit">login</button>
+                <!--
+                <button class="pal-login-button">login</button>
+                -->
               </li>
             </ul>
           </form>
@@ -191,8 +203,8 @@
         <!-- 予定の登録用 -->
         <template id="schedule-registration">
           <h1>予定の登録</h1>
-          <nav>
-            <ul id="schedule-registration-menu">
+          <nav id="schedule-registration-menu">
+            <ul>
               <li><a href="#regist_schedule/dayly" class="current-page">毎日の予定</a></li>
               <li><a href="#regist_schedule/weekly">毎週の予定</a></li>
               <li><a href="#regist_schedule/monthly/bydate">毎月の予定(日別)</a></li>
@@ -238,37 +250,37 @@
 
         <!-- 毎週の予定の登録用 -->
         <template id="schedule-registration-weekly">
-
           <ul id="weekly-schedule">
+
             <li class="weekly-row">
               <ul class="date-column">
                 <li>月</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -277,30 +289,30 @@
                 <li>火</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -309,30 +321,30 @@
                 <li>水</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -341,30 +353,30 @@
                 <li>木</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -373,30 +385,30 @@
                 <li>金</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -405,30 +417,30 @@
                 <li>土</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
@@ -437,43 +449,133 @@
                 <li>日</li>
               </ul>
               <ul class="time-column">
-                <li><div>0:00</div></li>
-                <li><div>1:00</div></li>
-                <li><div>2:00</div></li>
-                <li><div>3:00</div></li>
-                <li><div>4:00</div></li>
-                <li><div>5:00</div></li>
-                <li><div>6:00</div></li>
-                <li><div>7:00</div></li>
-                <li><div>8:00</div></li>
-                <li><div>9:00</div></li>
-                <li><div>10:00</div></li>
-                <li><div>11:00</div></li>
-                <li><div>12:00</div></li>
-                <li><div>13:00</div></li>
-                <li><div>14:00</div></li>
-                <li><div>15:00</div></li>
-                <li><div>16:00</div></li>
-                <li><div>17:00</div></li>
-                <li><div>18:00</div></li>
-                <li><div>19:00</div></li>
-                <li><div>20:00</div></li>
-                <li><div>21:00</div></li>
-                <li><div>22:00</div></li>
-                <li><div>23:00</div></li>
+                <li>0:00</li>
+                <li>1:00</li>
+                <li>2:00</li>
+                <li>3:00</li>
+                <li>4:00</li>
+                <li>5:00</li>
+                <li>6:00</li>
+                <li>7:00</li>
+                <li>8:00</li>
+                <li>9:00</li>
+                <li>10:00</li>
+                <li>11:00</li>
+                <li>12:00</li>
+                <li>13:00</li>
+                <li>14:00</li>
+                <li>15:00</li>
+                <li>16:00</li>
+                <li>17:00</li>
+                <li>18:00</li>
+                <li>19:00</li>
+                <li>20:00</li>
+                <li>21:00</li>
+                <li>22:00</li>
+                <li>23:00</li>
               </ul>
             </li>
 
           </ul>
         </template>
         <template id="schedule-registration-monthly-by-date">
-          <p>毎月の予定(日別)</p>
+          <nav id="dayly-schedule">
+            <ul>
+              <li>1日</li>
+              <li>2日</li>
+              <li>3日</li>
+              <li>4日</li>
+              <li>5日</li>
+              <li>6日</li>
+              <li>7日</li>
+              <li>8日</li>
+              <li>9日</li>
+              <li>10日</li>
+              <li>11日</li>
+              <li>12日</li>
+              <li>13日</li>
+              <li>14日</li>
+              <li>15日</li>
+              <li>16日</li>
+              <li>17日</li>
+              <li>18日</li>
+              <li>19日</li>
+              <li>20日</li>
+              <li>21日</li>
+              <li>22日</li>
+              <li>23日</li>
+              <li>24日</li>
+              <li>25日</li>
+              <li>26日</li>
+              <li>27日</li>
+              <li>28日</li>
+              <li>29日</li>
+              <li>30日</li>
+              <li>31日</li>
+            </ul>
+          </nav>
         </template>
         <template id="schedule-registration-monthly-by-order">
-          <p>毎月の予定(第何何曜日)</p>
+          <nav id="dayly-schedule-by-order">
+            <ul>
+              <li>第1月曜日</li>
+              <li>第1火曜日</li>
+              <li>第1水曜日</li>
+              <li>第1木曜日</li>
+              <li>第1金曜日</li>
+              <li>第1土曜日</li>
+              <li>第1日曜日</li>
+              <li>第2月曜日</li>
+              <li>第2火曜日</li>
+              <li>第2水曜日</li>
+              <li>第2木曜日</li>
+              <li>第2金曜日</li>
+              <li>第2土曜日</li>
+              <li>第2日曜日</li>
+              <li>第3月曜日</li>
+              <li>第3火曜日</li>
+              <li>第3水曜日</li>
+              <li>第3木曜日</li>
+              <li>第3金曜日</li>
+              <li>第3土曜日</li>
+              <li>第3日曜日</li>
+              <li>第4月曜日</li>
+              <li>第4火曜日</li>
+              <li>第4水曜日</li>
+              <li>第4木曜日</li>
+              <li>第4金曜日</li>
+              <li>第4土曜日</li>
+              <li>第4日曜日</li>
+              <li>第5月曜日</li>
+              <li>第5火曜日</li>
+              <li>第5水曜日</li>
+              <li>第5木曜日</li>
+              <li>第5金曜日</li>
+              <li>第5土曜日</li>
+              <li>第5日曜日</li>
+            </ul>
+          </nav>
         </template>
         <template id="schedule-registration-yearly">
-          <p>毎年の予定</p>
+          <nav id="yearly-schedule">
+            <ul>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+              <li>1月1日</li>
+            </ul>
+          </nav>
         </template>
 
     </head>

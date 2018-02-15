@@ -64,6 +64,10 @@ pal.registSchedule = (function () {
       anchor_list,
       i;
 
+    // mainセクションの子要素をすべて削除する
+    // mainセクションの子要素の削除は下位のモジュールにまかせる
+    pal.util.emptyElement( main_section );
+
     // メニューを表示する
     main_section.appendChild( menu );
 
@@ -77,10 +81,9 @@ pal.registSchedule = (function () {
     // anchor_listを取得する
     anchor_list = document.querySelectorAll( '#schedule-registration-menu li a' );
 
-    console.log( current_hash );
-
     // 初期ロードのときのcurrent_hashは'#regist_schedule'になっているので
     if ( current_hash === '#regist_schedule') {
+
       anchor_list[ 0 ].setAttribute( 'class', 'current-page' );
     }
     // anchor_listからcurrent_hashに一致するものにcurrent-pageをセットする
@@ -144,6 +147,12 @@ pal.registSchedule = (function () {
   // 例外発行: なし
   //
   initModule = function ( main_section ) {
+
+    // mainセクションの子要素をすべて削除する
+    // mainセクションの子要素の削除は下位のモジュールにまかせる
+    console.log( main_section );
+
+    pal.util.emptyElement( main_section );
 
     // hashの状態により表示を切り替える
     onHashchange( main_section );

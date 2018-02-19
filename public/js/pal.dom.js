@@ -164,6 +164,9 @@ pal.dom = (function () {
     else if ( current_location_hash.match( /#regist_schedule/ ) ) {
       pal.registSchedule.onHashchange( main_section );
     }
+    else if ( current_location_hash.match( /#calendar/ ) ) {
+      pal.calendar.onHashchange( main_section );
+    }
     else {
       readSession();
       pal.top.initModule( jqueryMap.$main );

@@ -48,9 +48,9 @@
 
 /* ナビゲーションのスタイル */
 #pal-nav {
-  position: absolute;
-  right: 0;
-  background: #9999CC;
+  position    : absolute;
+  right       : 0;
+  background  : #9999CC;
 }
 
 #pal-nav ul {

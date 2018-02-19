@@ -1,0 +1,41 @@
+/*
+ * pal.calendar.css
+ * カレンダーのスタイル
+*/
+
+#calendar-menu ul {
+  list-style-type: none;
+  margin: 0rem;
+  padding: 0px;
+  display: flex;
+}
+
+#calendar-menu ul li {
+  margin: 0.5rem;
+}
+#calendar-frame ul {
+  list-style-type: none;
+  margin                : 0rem;
+  padding               : 0px;
+  display               : grid;
+  grid-template-columns : repeat(7, auto);
+}
+
+#calendar-frame li {
+  height    : 3rem;
+  color     : grey;
+  font-size : small;
+}
+
+#calendar-frame li.current-month {
+  color     : black;
+  font-size : large;
+}
+
+#calendar-frame li.column-title {
+  background  : #9999CC;
+  color       : #eee;
+  text-align  : center;
+  height      : 1.8rem;
+  font-size   : medium;
+}

@@ -8,6 +8,7 @@
   list-style-type : none;
   margin          : 0em;
   padding         : 0px;
+  padding-left    : 1em;
 }
 
 /* 小さい画面では縦に表示する */
@@ -18,17 +19,15 @@
 }
 
 #schedule-registration-menu ul li {
-  /*
-  padding-left    : 0.5rem;
-  padding-bottom  : 0rem;
-  */
-  height          : 2rem;
+  height  : 2rem;
+  margin  : 0.2em;
 }
 
 #schedule-registration-menu ul li a {
-  margin-left : 0rem;
-  background  : #9999CC;
-  margin      : 0rem;
+  margin-left     : 0rem;
+  background      : #9999CC;
+  margin          : 0rem;
+  text-decoration : none;
 }
 #schedule-registration-menu ul li a.current-page {
   display         : inline-block;

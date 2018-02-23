@@ -172,40 +172,6 @@ pal.dom = (function () {
       pal.top.initModule( jqueryMap.$main );
     }
 
-    // switch ( current_location_hash ) {
-    //   case '':
-    //     // サーバにSessionがあるかチェックしてメニューをコントロールする
-    //     readSession();
-    //     pal.top.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#login':
-    //     pal.login.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#logout':
-    //     pal.logout.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#register':
-    //     pal.register.initModule();
-    //     break;
-    //   case '#menu':
-    //     pal.menu.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#browser_information':
-    //     pal.browserInformation.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#list':
-    //     pal.list.initModule( jqueryMap.$main );
-    //     break;
-    //   case '#lab':
-    //     pal.lab.initModule( jqueryMap.$main );
-    //     break;
-    //     // case '#weekly_schedule':
-    //   case /^#weekly_schedule/.test( current_location_hash ):
-    //     pal.weeklySchedule.initModule( main_section );
-    //     break;
-    //   default:
-    //     break;
-    // }
   };
   // DOMメソッド/setSection/終了
   //--------------------- DOMメソッド終了 ----------------------------
@@ -370,15 +336,6 @@ pal.dom = (function () {
     // サイトボタンのbottomをサイトメニューのtopに指定する
     site_button_rect = site_button.getBoundingClientRect();
     site_menu.style.top = site_button_rect.bottom + 'px';
-
-    // site_button.addEventListener( 'click', function () {
-    //   // メニューの表示非表示を切り替える
-    //   var expanded = this.getAttribute( 'aria-expanded' ) === 'true';
-
-    //   this.setAttribute( 'aria-expanded', String(!expanded) );
-    //   site_menu.hidden = expanded;
-
-    // });
 
     site_button.addEventListener( 'click', toggle_menu, false );
 

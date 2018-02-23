@@ -56,7 +56,7 @@
 #pal-nav ul {
   list-style-type : none;
   margin          : 0rem;
-  padding         : 0px;
+  padding         : 8px;
 }
 
 #pal-nav ul li a {

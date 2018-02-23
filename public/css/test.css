@@ -1,5 +1,33 @@
 form button:not([type]):after {
-  background: red;
-  color: white;
-  content: '警告 : このボタンにはtype属性がありません。submitですか、resetですか、単純なボタンですか？';
+  background  : red;
+  color       : white;
+  content     : '警告 : このボタンにはtype属性がありません。submitですか、resetですか、単純なボタンですか？';
+}
+
+.button:not(button):after {
+  background  : red;
+  color       : white;
+  content     : '警告 : ここでは要素をボタンのような外観にしようとしています。この要素は本当にボタンですか？';
+}
+
+button:disabled:not([disabled]):after,
+a.disabled[href]:after {
+  background  : red;
+  color       : white;
+  content     : '警告 : 要素が無効であるかのようなスタイルを設定しようとしています。この要素がきちんと無効化されていることを確認してください。';
+}
+
+a:empty:not([aria-label]):not([aria-labelledby]):after,
+button:empty:not([aria-label]):not([aria-labelledby]):after,
+button:not([aria-label]):not([aria-labelledby]) img:only-child:not([alt]):after,
+a.not([aria-label]):not([aria-labelledby]) img:only-child:not([alt]):after {
+  background  : red;
+  color       : white;
+  content     : '警告 : このボタンに対する情報が十分ではありません。ボタンの中にテキストを含めてください。';
+}
+
+section > section:first-child:after {
+  background  : red;
+  color       : white;
+  content     : '警告 : sectionがdivのように使われているようです。各setionに見出しを追加しましょう。';
 }

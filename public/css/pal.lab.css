@@ -8,3 +8,24 @@
   margin          : 0em;
   padding         : 0px;
 }
+
+#pal-lab-button-appear {
+  background-color  : DarkSlateBlue;
+  border-radius     : 0.25em;
+  box-shadow        : 0 4px 0 #222;
+  color             : white;
+  outline           : 2px solid transparent;
+  outline-offset    : 100px;
+  transition        : 0.5s all ease;
+}
+
+#pal-lab-button-appear:focus {
+  outline         : 2px solid #000;
+  outline-offset  : 0;
+}
+
+#pal-lab-button-appear:active {
+  position    : relative;
+  top         : 3px;        /* 3px凹む */
+  box-shadow  : 0 0 0 #222; /* 3px減(0に) */
+}

@@ -100,6 +100,22 @@
         <!-- ラボラトリ用 -->
         <template id="lab">
           <h1>Lab!</h1>
+          <button id="pal-lab-button">何かを実行</button>
+          <button id="pal-lab-button-appear">ボタンらしいボタン</button>
+          <label>
+            <input type="checkbox" value="yes" />同意しますか？
+          </label>
+          <!-- aria-labelのサンプル -->
+          <button aria-label="元に戻す">&#xE000;</button>
+          </br>
+          <li>
+            <a href="#submenu" aria-haspopup="true" aria-controls="submenu">メインリンク</a>
+            <ul id="submenu">
+              <li><a href="/somewhere/">サブメニューリンク</a></li>
+              <li><a href="/somewhere/else/">もうひとつのリンク</a></li>
+            </ul>
+          </li>
+          <hr>
           <iframe src="../mq-hello.html" width="190" id="a"></iframe>
           <iframe src="../mq-hello.html" width="200" id="b"></iframe>
           <iframe src="../mq-hello.html" width="210" id="c"></iframe>
@@ -146,9 +162,6 @@
               </li>
               <li>
                 <button class="pal-login-button" type="submit">login</button>
-                <!--
-                <button class="pal-login-button">login</button>
-                -->
               </li>
             </ul>
           </form>
@@ -206,6 +219,15 @@
         <template id="schedule-registration">
           <h1>予定の登録</h1>
           <nav id="schedule-registration-menu">
+            <button>
+              予定の登録メニュー
+              <svg id="expand-button">
+                <use href="#icon-circle-down"></use>
+              </svg>
+              <svg id="contract-button" display="none">
+                <use href="#icon-circle-up"></use>
+              </svg>
+            </button>
             <ul>
               <li><a href="#regist_schedule/dayly" class="current-page">毎日の予定</a></li>
               <li><a href="#regist_schedule/weekly">毎週の予定</a></li>
@@ -220,6 +242,7 @@
         <!-- 予定の登録用 -->
         <!-- 毎日の予定の登録用 -->
         <template id="schedule-registration-dayly">
+          <h1>毎日の予定</h1>
           <nav>
             <ul id="regist-dayly">
               <li>0:00<a>+</a></li>
@@ -252,6 +275,7 @@
 
         <!-- 毎週の予定の登録用 -->
         <template id="schedule-registration-weekly">
+          <h1>毎週の予定</h1>
           <ul id="weekly-schedule">
 
             <li class="weekly-row">
@@ -480,7 +504,9 @@
 
           </ul>
         </template>
+
         <template id="schedule-registration-monthly-by-date">
+          <h1>毎月の予定(日別)</h1>
           <nav id="dayly-schedule">
             <ul>
               <li>1日</li>
@@ -517,7 +543,9 @@
             </ul>
           </nav>
         </template>
+
         <template id="schedule-registration-monthly-by-order">
+          <h1>毎月の予定(第何何曜日)</h1>
           <nav id="dayly-schedule-by-order">
             <ul>
               <li>第1月曜日</li>
@@ -558,7 +586,9 @@
             </ul>
           </nav>
         </template>
+
         <template id="schedule-registration-yearly">
+          <h1>毎年の予定</h1>
           <nav id="yearly-schedule">
             <ul>
               <li>1月1日</li>
@@ -1068,6 +1098,22 @@
           <symbol id="icon-exit" viewBox="0 0 48 48">
             <title>exit</title>
             <path d="M36 30v-6h-15v-6h15v-6l9 9zM33 27v12h-15v9l-18-9v-39h33v15h-3v-12h-24l12 6v27h12v-9z"></path>
+          </symbol>
+        </svg>
+
+        <svg style="display: none;">
+          <symbol id="icon-circle-down" viewBox="0 0 48 48">
+            <title>circle-down</title>
+            <path d="M48 24c0-13.255-10.745-24-24-24s-24 10.745-24 24 10.745 24 24 24 24-10.745 24-24zM4.5 24c0-10.77 8.73-19.5 19.5-19.5s19.5 8.73 19.5 19.5-8.73 19.5-19.5 19.5-19.5-8.73-19.5-19.5z"></path>
+          <path d="M14.871 16.629l-4.243 4.243 13.371 13.371 13.371-13.371-4.243-4.243-9.129 9.129z"></path>
+          </symbol>
+        </svg>
+
+        <svg style="display: none;">
+          <symbol id="icon-circle-up" viewBox="0 0 48 48">
+          <title>circle-up</title>
+          <path d="M0 24c0 13.255 10.745 24 24 24s24-10.745 24-24-10.745-24-24-24-24 10.745-24 24zM43.5 24c0 10.77-8.73 19.5-19.5 19.5s-19.5-8.73-19.5-19.5 8.73-19.5 19.5-19.5 19.5 8.73 19.5 19.5z"></path>
+          <path d="M33.129 31.371l4.243-4.243-13.371-13.371-13.371 13.371 4.243 4.243 9.129-9.129z"></path>
           </symbol>
         </svg>
 

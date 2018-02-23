@@ -3,8 +3,15 @@
  * 週間時間割のスタイル
 */
 
+#schedule-registration-menu button svg {
+  width   : 1em;
+  height  : 1em;
+}
+
 #schedule-registration-menu ul {
+  /*
   display         : flex;
+  */
   list-style-type : none;
   margin          : 0em;
   padding         : 0px;
@@ -12,6 +19,7 @@
 }
 
 /* 小さい画面では縦に表示する */
+/*
 @media screen and ( max-width: 40rem ) {
   #schedule-registration-menu ul {
     flex-direction  : column;
@@ -29,6 +37,7 @@
   margin          : 0rem;
   text-decoration : none;
 }
+*/
 #schedule-registration-menu ul li a.current-page {
   display         : inline-block;
   padding         : 0.2rem;

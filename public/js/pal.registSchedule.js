@@ -62,7 +62,9 @@ pal.registSchedule = (function () {
       yearly            = pal.util_b.getTplContent( 'schedule-registration-yearly' ),
       current_page,
       anchor_list,
-      i;
+      i,
+      select_button,
+      select_menu;
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
@@ -71,8 +73,48 @@ pal.registSchedule = (function () {
     // メニューを表示する
     main_section.appendChild( menu );
 
-    // class="current-page"を初期化する
-    // 現在のページを取得する
+    // ボタンとメニューのノードを取得
+    select_button = document.querySelector( '#schedule-registration-menu button' );
+    select_menu = select_button.nextElementSibling;
+
+    // 初期の(メニューが閉じているときの)状態と設定
+    select_button.setAttribute( 'aria-expanded', 'false' );
+    select_button.hidden = false;
+    select_menu.hidden = true;
+
+    select_button.addEventListener( 'click', function () {
+
+      // メニューの表示/非表示を切り替える
+      var
+        expanded = this.getAttribute( 'aria-expanded' ) === 'true',
+        // button,
+        expand_svg,
+        contract_svg;
+
+      this.setAttribute( 'aria-expanded', String(!expanded) );
+      select_menu.hidden = expanded;
+
+      // button = document.querySelector( '#schedule-registration-menu button' );
+      expand_svg = document.querySelector( '#expand-button' );
+      console.log( expand_svg );
+      contract_svg = document.querySelector( '#contract-button' );
+      console.log( contract_svg );
+
+      console.log( expanded );
+
+      if ( expanded ) {
+        expand_svg.setAttribute( 'display', 'inline' );
+        contract_svg.setAttribute( 'display', 'none' );
+      }
+      else {
+        expand_svg.setAttribute( 'display', 'none' );
+        contract_svg.setAttribute( 'display', 'inline' );
+      }
+
+    }, false );
+
+
+    // // 現在のページを取得する
     current_page = document.querySelector( '#schedule-registration-menu li a.current-page' );
 
     current_page.setAttribute( 'class', '' );
@@ -88,11 +130,13 @@ pal.registSchedule = (function () {
     }
     // anchor_listからcurrent_hashに一致するものにcurrent-pageをセットする
     else {
+
       for ( i = 0; i < anchor_list.length; i = i + 1 ) {
         if ( anchor_list[ i ].getAttribute( 'href' ) === current_hash ) {
           anchor_list[ i ].setAttribute( 'class', 'current-page' );
         }
       }
+
     }
 
     // LocationHashの値により登録フォームを表示する

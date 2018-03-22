@@ -32,7 +32,6 @@ pal.list = (function () {
     sync_object_and_dom,
     sync_number_of_data,
     configModule, initModule,
-    // list_ui,
     current_node,
     onObjectCreate,
     // onObjectRead,
@@ -115,6 +114,7 @@ pal.list = (function () {
             var
               new_button,
               cancel_button,
+              upload_button,
               detail_anchor;
 
             // 件数を表示する
@@ -124,8 +124,6 @@ pal.list = (function () {
 
             // targetにclickイベントを登録する
             detail_anchor.addEventListener( 'click', onClickTarget, false );
-            // <a href="#list/new">new</a>を作成し、new-anchorに追加する
-            // new_anchor = make_anchor_element( '#list/new', '新規作成' );
             // 新規作成ボタンの初期状態: 表示
             new_button = document.getElementById( 'pal-list-new' );
             new_button.setAttribute( 'class', '' );
@@ -134,23 +132,30 @@ pal.list = (function () {
             cancel_button = document.getElementById( 'pal-list-new-cancel' );
             cancel_button.setAttribute( 'class', 'hidden' );
 
+            // アップロードボタン
+            upload_button = document.getElementById( 'pal-list-new-upload' );
+
             // 新規作成ボタンが押されたら、
             // ・ 新規作成ボタンを非表示にする
             // ・ キャンセルボタンを表示する
+            // ・ アップロードボタンを表示する
             // ・ ロケーションハッシュを'#list/new'にする
             new_button.addEventListener( 'click', function () {
               this.setAttribute( 'class', 'hidden' );
               cancel_button.setAttribute( 'class', '' );
+              upload_button.setAttribute( 'class', '' );
               pal.bom.setLocationHash( '#list/new');
             });
 
             // キャンセルボタンが押されたら、
             // ・ キャンセル作成ボタンを非表示にする
             // ・ 新規作成ボタンを表示する
+            // ・ アップロードボタンを非表示にする
             // ・ ロケーションハッシュを'#list'にする
             cancel_button.addEventListener( 'click', function () {
               this.setAttribute( 'class', 'hidden' );
               new_button.setAttribute( 'class', '' );
+              upload_button.setAttribute( 'class', 'hidden' );
               pal.bom.setLocationHash( '#list');
             });
 
@@ -179,7 +184,7 @@ pal.list = (function () {
             this.target = target;
           },
           enter : function () {
-            // 目的:
+            // 目的: 生成フォームを表示する
             // 必須引数:
             // オプション引数:
             // 設定:
@@ -191,10 +196,11 @@ pal.list = (function () {
             // Actionオブジェクトを生成する
             var
               form_fragment,
-              action_wrapper,
-              action_fragment,
+              // action_wrapper,
+              // action_fragment,
               form_wrapper,
-              new_create;
+              // new_create,
+              upload_button;
 
             // action objectを生成する
             action_object = pal.schema.makeAction({});
@@ -204,31 +210,32 @@ pal.list = (function () {
             // DOMに追加する
             action_object.change( onChangeObject );
 
-            // 保存の確認アンカーを生成する
-            action_wrapper = document.getElementById( 'new-action-wrapper' );
-            action_fragment = document.createDocumentFragment();
-
-            new_create = make_anchor_element( '#list/create', '保存する' );
-
-            action_fragment.appendChild( new_create );
-
-            action_wrapper.appendChild( action_fragment );
-
             // formを生成する
             form_wrapper = document.getElementById( 'new-form-wrapper' );
 
             // form要素を取得する。event_listenerにonBlurInputをセットする
             form_fragment = action_object.makeFormElement( onBlurInput );
             form_wrapper.appendChild( form_fragment );
+
+            // アップロードボタン
+            upload_button = document.getElementById( 'pal-list-new-upload' );
+            // アップロードボタンが押されたら、
+            // ・ 新規作成ボタンを表示する
+            // ・ キャンセルボタンを非表示にする
+            // ・ アップロードボタンを非表示にする
+            // ・ アップロード処理を実行する
+            // ・ ロケーションハッシュを'#list'にする
+            upload_button.addEventListener( 'click', function () {
+              this.setAttribute( 'class', 'hidden' );
+              // cancel_button.setAttribute( 'class', '' );
+              // upload_button.setAttribute( 'class', '' );
+              list_ui.confirm_create();
+              pal.bom.setLocationHash( '#list');
+            });
+
           },
           execute : function () {
             return false;
-          },
-          cancel_create : function () {
-            // locationを#listに戻す
-            // pal.bom.setLocationHash( '#list/list' );
-
-            this.target.changeState( this.target.states.list_form );
           },
           confirm_create  : function () {
             // 目的: createボタンがクリックされたときにリストに
@@ -554,7 +561,6 @@ pal.list = (function () {
       },
       load              : function () { this.state.load(); },
       show_create_form  : function () { this.state.show_create_form(); },
-      cancel_create     : function () { this.state.cancel_create(); },
       confirm_create    : function () { this.state.confirm_create(); },
       show_detail_form  : function () { this.state.show_detail_form(); },
       cancel_detail     : function () { this.state.cancel_detail(); },
@@ -719,9 +725,6 @@ pal.list = (function () {
         break;
       case '#list/new':
         list_ui.show_create_form();
-        break;
-      case '#list/cancel':
-        list_ui.cancel_create();
         break;
       case '#list/create':
         list_ui.confirm_create();

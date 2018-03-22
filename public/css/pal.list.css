@@ -74,11 +74,22 @@
   border-bottom     : 26px;
 }
 
-.pal-list-div {
-  display: flex;
+#pal-list-new,
+#pal-list-new-cancel,
+#pal-list-new-upload {
+  margin : 0.2em;
 }
 
-.pal-list-div label {
+.pal-list-form {
+  display               : grid;
+  grid-template-columns : 8em 12em;
+  grid-row-gap          : 0.2em;
+  margin                : 0.5em;
+}
+
+/*
+.pal-list-form label {
   width : 6em;
 }
+*/
 

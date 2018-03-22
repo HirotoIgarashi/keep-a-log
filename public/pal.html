@@ -88,8 +88,9 @@
 
         <template id="top-page">
           <h1 class="pal-top-hello">KeeP-A-Logとは</h1>
-          <p>KeeP-A-Logとは記録を残すためのWebアプリケーションの名前です。</p>
-          <p>http://schema.org/にあるスキーマに対応しようとしています。</p>
+          <p>KeeP-A-Logとは記録を残すための作成中のWebアプリケーションの名前です。</p>
+          <p>いつ完成するのかはわかりません。</p>
+          <p>保存することができるデータはhttp://schema.org/にあるスキーマに対応できればいいと思っています。</p>
         </template>
 
         <!-- テスト用 -->
@@ -135,6 +136,7 @@
         </template>
 
         <!-- メニュー用 使っていないので確認して削除する -->
+        <!--
         <template id="pal-menu">
           <div id="pal-menu-container">
             <div class="pal-menu-nav" id="simple-list">アクション(Action)のリスト</div>
@@ -143,6 +145,7 @@
             <div class="pal-menu-nav" id="lab">ラボラトリ</div>
           </div>
         </template>
+        -->
 
         <!-- ログインページのテンプレート -->
         <template id="login">
@@ -223,14 +226,23 @@
             新規作成
           </button>
           <button id="pal-list-new-cancel" class="hidden">
-            <svg class="icon icon-minus">
-              <use href="#icon-minus">
+            <svg class="icon icon-cross">
+              <use href="#icon-cross">
               </use>
             </svg>
             作成をキャンセル
           </button>
-          <div id="new-action-wrapper"></div>
           <div id="new-form-wrapper"></div>
+          <!--
+          <div id="new-action-wrapper"></div>
+          -->
+          <button id="pal-list-new-upload" class="hidden">
+            <svg class="icon icon-upload">
+              <use href="#icon-upload">
+              </use>
+            </svg>
+            送信
+          </button>
           <div id="target"></div>
         </template>
 
@@ -1149,6 +1161,21 @@
           <path d="M0 19.5v9c0 0.828 0.672 1.5 1.5 1.5h45c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5h-45c-0.828 0-1.5 0.672-1.5 1.5z"></path>
           </symbol>
         </svg>
+
+        <svg style="display: none;">
+          <symbol id="icon-cross" viewBox="0 0 48 48">
+          <title>cross</title>
+          <path d="M47.562 38.562c-0-0-0-0-0.001-0l-14.561-14.562 14.561-14.562c0-0 0-0 0.001-0 0.157-0.157 0.27-0.34 0.343-0.535 0.199-0.533 0.086-1.157-0.343-1.586l-6.879-6.879c-0.429-0.429-1.052-0.542-1.586-0.343-0.195 0.073-0.378 0.186-0.535 0.343 0 0-0 0-0 0l-14.562 14.562-14.562-14.562c-0-0-0-0-0-0-0.157-0.157-0.34-0.27-0.535-0.343-0.533-0.199-1.157-0.086-1.586 0.343l-6.879 6.879c-0.429 0.429-0.542 1.052-0.343 1.586 0.073 0.195 0.186 0.378 0.343 0.535 0 0 0 0 0 0l14.562 14.562-14.562 14.562c-0 0-0 0-0 0-0.157 0.157-0.27 0.34-0.343 0.535-0.199 0.533-0.086 1.157 0.343 1.586l6.879 6.879c0.429 0.429 1.052 0.542 1.586 0.343 0.195-0.073 0.378-0.186 0.535-0.343 0-0 0-0 0-0l14.562-14.562 14.562 14.562c0 0 0 0 0.001 0 0.157 0.157 0.34 0.27 0.535 0.343 0.533 0.199 1.157 0.086 1.586-0.343l6.879-6.879c0.429-0.429 0.542-1.053 0.343-1.586-0.073-0.195-0.186-0.378-0.343-0.535z"></path>
+          </symbol>
+        </svg>
+
+        <svg style="display: none;">
+          <symbol id="icon-upload" viewBox="0 0 32 32">
+          <title>upload</title>
+          <path d="M14 18h4v-8h6l-8-8-8 8h6zM20 13.5v3.085l9.158 3.415-13.158 4.907-13.158-4.907 9.158-3.415v-3.085l-12 4.5v8l16 6 16-6v-8z"></path>
+          </symbol>
+        </svg>
+
         <div id="pal"></div>
 
         <script>

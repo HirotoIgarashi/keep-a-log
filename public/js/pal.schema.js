@@ -134,7 +134,7 @@ pal.schema = (function () {
       prop_names,
       form_fragment,
       form_element,
-      div_element,
+      // div_element,
       label_element,
       input_element,
       i;
@@ -155,9 +155,9 @@ pal.schema = (function () {
       // プロパティ値がfunctionだったら何もしない
       if ( typeof this[prop_names[i]] !== 'function' ) {
 
-        // labelとinputの入れ物を生成する
-        div_element = document.createElement( 'div' );
-        div_element.setAttribute( 'class', 'pal-list-div' );
+        // // labelとinputの入れ物を生成する
+        // div_element = document.createElement( 'div' );
+        // div_element.setAttribute( 'class', 'pal-list-div' );
 
         // label要素を生成する
         label_element = document.createElement( 'label' );
@@ -172,7 +172,9 @@ pal.schema = (function () {
         label_element.setAttribute( 'class', 'pal-list-label' );
 
         // 入れ物にlabel要素を追加する
-        div_element.appendChild( label_element );
+        // div_element.appendChild( label_element );
+
+        form_element.appendChild( label_element );
 
         // input要素を生成する
         input_element = document.createElement( 'input' );
@@ -195,10 +197,12 @@ pal.schema = (function () {
         input_element.addEventListener( 'blur', event_listener, false );
 
         // 入れ物にinput要素を追加する
-        div_element.appendChild( input_element );
+        // div_element.appendChild( input_element );
 
-        // form要素に入れ物のdiv要素を追加する
-        form_element.appendChild( div_element );
+        form_element.appendChild( input_element );
+
+        // // form要素に入れ物のdiv要素を追加する
+        // form_element.appendChild( div_element );
       }
 
     }

@@ -100,6 +100,12 @@
         <!-- ラボラトリ用 -->
         <template id="lab">
           <h1>Lab!</h1>
+
+          <form>
+            <input type="text">
+            <button>送信</button>
+          </form>
+
           <button id="pal-lab-button">何かを実行</button>
           <button id="pal-lab-button-appear">ボタンらしいボタン</button>
           <label>
@@ -209,7 +215,20 @@
         <template id="list-page">
           <h1>アクション(Action)のリスト</h1>
           <div id="status"></div>
-          <div id="new-anchor" class="pal-list-content"></div>
+          <button id="pal-list-new">
+            <svg class="icon icon-plus">
+              <use href="#icon-plus">
+              </use>
+            </svg>
+            新規作成
+          </button>
+          <button id="pal-list-new-cancel" class="hidden">
+            <svg class="icon icon-minus">
+              <use href="#icon-minus">
+              </use>
+            </svg>
+            作成をキャンセル
+          </button>
           <div id="new-action-wrapper"></div>
           <div id="new-form-wrapper"></div>
           <div id="target"></div>
@@ -1117,6 +1136,19 @@
           </symbol>
         </svg>
 
+        <svg style="display: none;">
+          <symbol id="icon-plus" viewBox="0 0 48 48">
+          <title>plus</title>
+          <path d="M46.5 18h-16.5v-16.5c0-0.828-0.672-1.5-1.5-1.5h-9c-0.828 0-1.5 0.672-1.5 1.5v16.5h-16.5c-0.828 0-1.5 0.672-1.5 1.5v9c0 0.828 0.672 1.5 1.5 1.5h16.5v16.5c0 0.828 0.672 1.5 1.5 1.5h9c0.828 0 1.5-0.672 1.5-1.5v-16.5h16.5c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5z"></path>
+          </symbol>
+        </svg>
+
+        <svg style="display: none;">
+          <symbol id="icon-minus" viewBox="0 0 48 48">
+          <title>minus</title>
+          <path d="M0 19.5v9c0 0.828 0.672 1.5 1.5 1.5h45c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5h-45c-0.828 0-1.5 0.672-1.5 1.5z"></path>
+          </symbol>
+        </svg>
         <div id="pal"></div>
 
         <script>

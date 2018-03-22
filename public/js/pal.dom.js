@@ -155,7 +155,6 @@ pal.dom = (function () {
       pal.browserInformation.initModule( jqueryMap.$main );
     }
     else if ( current_location_hash.match( /#list/ ) ) {
-      // pal.list.initModule( jqueryMap.$main );
       pal.list.onHashchange( main_section );
     }
     else if ( current_location_hash.match( /#lab/ ) ) {

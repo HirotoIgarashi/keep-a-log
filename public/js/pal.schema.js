@@ -183,7 +183,6 @@ pal.schema = (function () {
         input_element.value = this[prop_names[i]];
 
         // プロバティの値のタイプがDateだったら'datetime-local'をセットする
-        // if ( this[prop_names[i]] instanceof Date ) {
         if ( date_type_list.indexOf( prop_names[i] ) >= 0 ) {
           input_element.setAttribute( 'type', 'datetime-local' );
 
@@ -325,7 +324,7 @@ pal.schema = (function () {
           prop_element.textContent = ja_trans[ prop_names[ i ] ] + ': ' + this[ prop_names[i] ];
         }
         else {
-          prop_element.textContent = prop_names[ i ] + ': ' + this[ prop_names[i] ];
+          prop_element.textContent  = prop_names[ i ] + ': ' + this[ prop_names[i] ];
         }
 
         div_element.appendChild( prop_element );
@@ -370,7 +369,7 @@ pal.schema = (function () {
     extendObject( action, arg_map );
   
     // actionオブジェクトにchange関数を追加する
-    // addChange( action );
+    pal.util.addChange( action );
 
     return action;
   

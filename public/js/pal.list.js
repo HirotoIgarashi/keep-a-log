@@ -32,7 +32,7 @@ pal.list = (function () {
     sync_object_and_dom,
     sync_number_of_data,
     configModule, initModule,
-    list_ui,
+    // list_ui,
     current_node,
     onObjectCreate,
     // onObjectRead,
@@ -41,7 +41,7 @@ pal.list = (function () {
     object_create,
     object_read,
     object_update,
-    object_delete;
+    object_delete,
 
     // UIの状態遷移
     list_ui = {
@@ -113,8 +113,8 @@ pal.list = (function () {
           },
           enter : function () {
             var
-              new_anchor,
-              new_target,
+              new_button,
+              cancel_button,
               detail_anchor;
 
             // 件数を表示する
@@ -123,11 +123,36 @@ pal.list = (function () {
             detail_anchor = document.getElementById( 'target' );
 
             // targetにclickイベントを登録する
-            detail_anchor.addEventListener( "click", onClickTarget, false );
+            detail_anchor.addEventListener( 'click', onClickTarget, false );
             // <a href="#list/new">new</a>を作成し、new-anchorに追加する
-            new_anchor = make_anchor_element( '#list/new', '新規作成' );
-            new_target = document.getElementById( "new-anchor" );
-            new_target.appendChild( new_anchor );
+            // new_anchor = make_anchor_element( '#list/new', '新規作成' );
+            // 新規作成ボタンの初期状態: 表示
+            new_button = document.getElementById( 'pal-list-new' );
+            new_button.setAttribute( 'class', '' );
+
+            // キャンセルボタンの初期状態: 非表示
+            cancel_button = document.getElementById( 'pal-list-new-cancel' );
+            cancel_button.setAttribute( 'class', 'hidden' );
+
+            // 新規作成ボタンが押されたら、
+            // ・ 新規作成ボタンを非表示にする
+            // ・ キャンセルボタンを表示する
+            // ・ ロケーションハッシュを'#list/new'にする
+            new_button.addEventListener( 'click', function () {
+              this.setAttribute( 'class', 'hidden' );
+              cancel_button.setAttribute( 'class', '' );
+              pal.bom.setLocationHash( '#list/new');
+            });
+
+            // キャンセルボタンが押されたら、
+            // ・ キャンセル作成ボタンを非表示にする
+            // ・ 新規作成ボタンを表示する
+            // ・ ロケーションハッシュを'#list'にする
+            cancel_button.addEventListener( 'click', function () {
+              this.setAttribute( 'class', 'hidden' );
+              new_button.setAttribute( 'class', '' );
+              pal.bom.setLocationHash( '#list');
+            });
 
           },
           execute : function () {
@@ -140,8 +165,13 @@ pal.list = (function () {
             this.target.changeState( this.target.states.detail_form );
           },
           exit  : function () {
-            // new-anchorの中身の新規作成のアンカーを削除する
-            pal.util.emptyElementById( 'new-anchor' );
+            var
+              new_button;
+
+            // 新規作成ボタン: 非表示
+            new_button = document.getElementById( 'pal-list-new' );
+            new_button.setAttribute( 'class', 'hidden' );
+            return false;
           }
         },
         create_form : {
@@ -164,27 +194,22 @@ pal.list = (function () {
               action_wrapper,
               action_fragment,
               form_wrapper,
-              new_cancel,
               new_create;
 
             // action objectを生成する
             action_object = pal.schema.makeAction({});
-            // change関数を追加する
-            pal.util.addChange( action_object );
             // action_objectが変更されたときのコールバック関数
             // onChangeObjectをセットする
             // onChangeObjectから呼ばれるsync_object_and_domの中で
             // DOMに追加する
             action_object.change( onChangeObject );
 
-            // キャンセル、作成の確認アンカーを生成する
+            // 保存の確認アンカーを生成する
             action_wrapper = document.getElementById( 'new-action-wrapper' );
             action_fragment = document.createDocumentFragment();
 
-            new_cancel = make_anchor_element( '#list/cancel', 'キャンセル' );
-            new_create = make_anchor_element( '#list/create', '作成の確認' );
+            new_create = make_anchor_element( '#list/create', '保存する' );
 
-            action_fragment.appendChild( new_cancel );
             action_fragment.appendChild( new_create );
 
             action_wrapper.appendChild( action_fragment );
@@ -242,7 +267,7 @@ pal.list = (function () {
           },
           exit  : function () {
             // 目的: フォームでキャンセルがクリックされた場合にフォームの
-            //        値をクリアする
+            //       値をクリアする
             // 必須引数: なし
             // オプション引数: なし
             // 設定:
@@ -658,13 +683,9 @@ pal.list = (function () {
       // button,
       element;
 
-    // button = document.createElement( 'button' );
-    // button.setAttribute( 'type', 'button' );
     element = document.createElement( 'a' );
     element.setAttribute( 'href', href );
     element.textContent = text; 
-
-    // element.appendChild( button );
 
     return element;
   };
@@ -686,7 +707,6 @@ pal.list = (function () {
   onBlurInput = function () {
 
     action_object[ this.name ] = this.value;
-    // action_object.name = this.value;
 
   };
   // DOMイベントリスナー/onBlurInput/終了 -----------------------------
@@ -781,8 +801,6 @@ pal.list = (function () {
       create_data = data[0].ops;
       // action objectを生成する
       action_object = pal.schema.makeAction( create_data );
-      // change関数を追加する
-      pal.util.addChange( action_object );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -808,8 +826,6 @@ pal.list = (function () {
     for ( i = 0; i < data[0].length; i += 1 ) {
       // action objectを生成する
       action_object = pal.schema.makeAction( data[0][i] );
-      // change関数を追加する
-      pal.util.addChange( action_object );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -824,13 +840,9 @@ pal.list = (function () {
 
   object_update = function ( data ) {
 
-    // console.log( data[0] );
-
     if ( data[0].lastErrorObject.n === 1 ) {
       // action objectを生成する
       action_object = pal.schema.makeAction( data[0].value );
-      // change関数を追加する
-      pal.util.addChange( action_object );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -879,8 +891,6 @@ pal.list = (function () {
         if ( find_flag ) {
           // action objectを生成する
           action_object = pal.schema.makeAction( data[0].ops );
-          // change関数を追加する
-          pal.util.addChange( action_object );
           // action_objectが変更されたときのコールバック関数onChangeObjectを
           // セットする
           // onChangeObjectから呼ばれるsync_object_and_domの中で

@@ -73,3 +73,12 @@
   margin-left       : 6px;
   border-bottom     : 26px;
 }
+
+.pal-list-div {
+  display: flex;
+}
+
+.pal-list-div label {
+  width : 6em;
+}
+

@@ -1,0 +1,146 @@
+/*
+ * pal.cycleSystem.css
+ * サイクルシステムのスタイル
+*/
+body {
+  line-height : 1.5;
+}
+
+* {
+  color   : inherit;
+  margin  : 0;
+}
+[role="tablist"] {
+  padding: 0;
+}
+
+[role="tablist"] li,
+[role="tablist"] a {
+  display: inline-block;
+}
+
+[role="tablist"] a {
+  text-decoration : none;
+  padding         : 0.5rem 1em;
+}
+
+[role="tablist"] [aria-selected] {
+  border        : 2px solid;
+  background    : #fff;
+  border-bottom : 0;
+  position      : relative;
+  top           : 2px;
+}
+
+[role="tabpanel"] {
+  border  : 2px solid;
+  padding : 0.5rem;
+}
+
+[role="tabpanel"] * + * {
+  margin-top: 0.75em;
+}
+
+*:focus {
+  outline     : none;
+  box-shadow  : inset 0 0 0 4px lightBlue;
+}
+
+@media (max-width: 550px) {
+  [role="tablist"] li,
+  [role="tablist"] a {
+    display   : block;
+    position  : static;
+  }
+
+  [role="tablist"] a {
+    border: 2px solid #222 !important;
+  }
+
+  [role="tablist"] li + li a {
+    border-top: 0 !important;
+  }
+
+  [role="tablist"] [aria-selected] {
+    position: static;
+  }
+
+  [role="tablist"] [aria-selected]::after {
+    content: '\0020⬅';
+  }
+
+  [role="tabpanel"] {
+    border-top: 0;
+  }
+}
+[hidden] {
+  display: none !important;
+}
+
+#section1 {
+  display               : grid;
+  grid-template-columns : auto auto;
+  grid-template-rows    : auto 2rem auto;
+}
+
+#pal-cyclesystem-current-date {
+  grid-area: 1 / 1;
+}
+#pal-cyclesystem-tasklist-title {
+  grid-area: 2 / 1;
+}
+#pal-cyclesystem-tasklist {
+  grid-area: 3 / 1;
+}
+#pal-cyclesystem-schedule {
+  grid-area: 1 / 2;
+}
+#pal-cyclesystem-schedule-table {
+  grid-row: 2 / span 2;
+  grid-column: 2 / 2;
+}
+
+/*
+section:not(:target) {
+  display: none;
+}
+*/
+
+/*
+#calendar-menu ul {
+  list-style-type: none;
+  margin: 0rem;
+  padding: 0px;
+  display: flex;
+}
+
+#calendar-menu ul li {
+  margin: 0.5rem;
+}
+#calendar-frame ul {
+  list-style-type: none;
+  margin                : 0rem;
+  padding               : 0px;
+  display               : grid;
+  grid-template-columns : repeat(7, auto);
+}
+
+#calendar-frame li {
+  height    : 3rem;
+  color     : grey;
+  font-size : small;
+}
+
+#calendar-frame li.current-month {
+  color     : black;
+  font-size : large;
+}
+
+#calendar-frame li.column-title {
+  background  : #9999CC;
+  color       : #eee;
+  text-align  : center;
+  height      : 1.8rem;
+  font-size   : medium;
+}
+*/

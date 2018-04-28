@@ -25,7 +25,10 @@ var
   client        = redis.createClient(         ),
   routes        = require( './lib/routes'     ),
   app           = express(                    ),
-  server        = http.createServer( app      );
+  server        = http.createServer( app      ),
+  // expire_time   = 1000 * 60 * 60;               // 1時間
+  expire_time   = 1000 * 60 * 60 * 24 * 30;               // 30日
+  // expire_time   = 1000 * 60 * 5;                // 5分 
   // io            = require( 'socket.io'        )( server ),
   // send_date,
   // countIdx = 0;
@@ -48,7 +51,8 @@ app.use( session({
   cookie  : {
     secure    : false,
     httpOnly  : false,
-    expires   : new Date(Date.now() + 4 * 404800000) 
+    // expires   : new Date(Date.now() + 4 * 404800000) 
+    expires   : new Date(Date.now() + expire_time) 
   },
   store         : new RedisStore({
     host       : 'localhost',

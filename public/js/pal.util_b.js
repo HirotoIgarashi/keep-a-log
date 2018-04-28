@@ -144,7 +144,7 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値: 引数のIDの値のコンテンツ
   // 例外発行: なし
-  getNowDateJp = function () {
+  getNowDateJp = function ( option ) {
     var
       day_jp = {
         0 : '日曜日',
@@ -158,14 +158,24 @@ pal.util_b = (function () {
       now = new Date(),
       now_jp = '';
 
-    // 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
-    now_jp = (
-      now.getFullYear() + '年' +
-      ( now.getMonth() + 1 ) + '月' +
-      now.getDate() + '日 ' +
-      day_jp[now.getDay()] + ' ' +
-      now.toLocaleTimeString()
-    );
+    if ( option === undefined ) {
+      // 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
+      now_jp = (
+        now.getFullYear() + '年' +
+        ( now.getMonth() + 1 ) + '月' +
+        now.getDate() + '日 ' +
+        day_jp[now.getDay()] + ' ' +
+        now.toLocaleTimeString()
+      );
+    }
+    else if (option === 'date and day'){
+      now_jp = (
+        now.getFullYear() + '年' +
+        ( now.getMonth() + 1 ) + '月' +
+        now.getDate() + '日 ' +
+        day_jp[now.getDay()]
+      );
+    }
 
     return now_jp;
   };

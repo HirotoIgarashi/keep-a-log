@@ -166,6 +166,10 @@ pal.dom = (function () {
     else if ( current_location_hash.match( /#calendar/ ) ) {
       pal.calendar.onHashchange( main_section );
     }
+    else if ( current_location_hash.match( /#cycle_system/ ) ) {
+      // pal.cycleSystem.onHashchange( main_section );
+      pal.cycleSystem.initModule( main_section );
+    }
     else {
       readSession();
       pal.top.initModule( jqueryMap.$main );

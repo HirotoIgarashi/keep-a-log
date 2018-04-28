@@ -9,8 +9,8 @@
 html {
   font-family       : Arial, Helvetica, "Times New Roman", Times, "Courier New", Courier;
   /* font-family: sans-serif;*/ /* 1 */
-  -ms-text-size-adjust: 100%; /* 2 */
-  -webkit-text-size-adjust: 100%; /* 2 */
+  -ms-text-size-adjust      : 100%; /* 2 */
+  -webkit-text-size-adjust  : 100%; /* 2 */
 }
 
 /**
@@ -56,8 +56,8 @@ audio,
 canvas,
 progress,
 video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
+  display         : inline-block; /* 1 */
+  vertical-align  : baseline;     /* 2 */
 }
 
 /**
@@ -139,11 +139,27 @@ dfn {
     font-size: 1.4em;
     margin: 0.47em 0.17em;
   }
+  h2 {
+    font-size: 1.3em;
+    margin: 0.47em 0.17em;
+  }
+  h3 {
+    font-size: 1.2em;
+    margin: 0.47em 0.17em;
+  }
 }
 
 @media screen and (min-width: 481px) {
   h1 {
     font-size: 1.1em;
+    margin: 0.63em 0.22em;
+  }
+  h2 {
+    font-size: 1.0em;
+    margin: 0.63em 0.22em;
+  }
+  h3 {
+    font-size: 0.9em;
     margin: 0.63em 0.22em;
   }
 }
@@ -264,9 +280,9 @@ input,
 optgroup,
 select,
 textarea {
-  color: inherit; /* 1 */
-  font: inherit; /* 2 */
-  margin: 0; /* 3 */
+  color   : inherit;  /* 1 */
+  font    : inherit;  /* 2 */
+  margin  : 0;        /* 3 */
 }
 
 /**
@@ -301,8 +317,8 @@ button,
 html input[type="button"], /* 1 */
 input[type="reset"],
 input[type="submit"] {
-  -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
+  -webkit-appearance  : button;   /* 2 */
+  cursor              : pointer;  /* 3 */
 }
 
 /**
@@ -384,9 +400,9 @@ input[type="search"]::-webkit-search-decoration {
  */
 
 fieldset {
-  border: 1px solid #c0c0c0;
-  margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
+  border  : 1px solid #c0c0c0;
+  margin  : 0 2px;
+  padding : 0.35em 0.625em 0.75em;
 }
 
 /**

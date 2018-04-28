@@ -279,12 +279,6 @@ pal.calendar = (function () {
 
     }
 
-    // ここから関数のテスト
-    console.log( format_calendar_date( now ) );
-    console.log( format_iso_ext( now ) );
-
-    // ここまで関数のテスト
-
     return true;
   };
   // --------------------- イベントハンドラ終了 ----------------------

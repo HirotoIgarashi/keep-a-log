@@ -286,7 +286,13 @@ pal.cycleSystem = (function () {
       tabs,
       panels,
       switchTab,
-      current_date;
+      current_date,
+      daily_add_button,
+      daily_cancel_button,
+      daily_add_form,
+      daily_submit_button,
+      daily_start_time,
+      daily_required_time;
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
@@ -406,7 +412,95 @@ pal.cycleSystem = (function () {
     current_date = document.getElementById( 'pal-cyclesystem-current-date' );
     current_date.textContent = pal.util_b.getNowDateJp( 'date and day' );
 
-    // カレンダータブパネル
+    // カレンダータブパネル初期設定
+    daily_add_button = document.getElementById( 'pal-task-add' );
+    daily_cancel_button = document.getElementById( 'pal-task-add-cancel' );
+    daily_add_form = document.getElementById( 'pal-task-add-form' );
+    daily_submit_button = document.getElementById( 'task-add-button' );
+    daily_start_time = document.getElementById( 'start_time' );
+    daily_required_time = document.getElementById( 'required_time' );
+    console.log( daily_required_time );
+
+    // 初期の設定。
+    // キャンセルボタンとフォームを隠す
+    daily_add_button.setAttribute( 'aria-pressed', 'false' );
+    daily_cancel_button.hidden = true;
+    daily_cancel_button.setAttribute( 'aria-pressed', 'true' );
+    daily_add_form.hidden = true;
+    daily_submit_button.setAttribute( 'aria-pressed', 'false' );
+
+    // 新規作成ボタンが押されたときの処理
+    // ・ 新規作成ボタンを隠す
+    // ・ キャンセルボタンを表示する
+    // ・ フォームを表示する
+    // ・ INPUT要素の初期値を設定する
+    daily_add_button.addEventListener( 'click', function () {
+      this.hidden     = true;
+      this.setAttribute( 'aria-pressed', 'true' );
+      daily_cancel_button.hidden  = false;
+      daily_cancel_button.setAttribute( 'aria-pressed', 'false' );
+      daily_add_form.hidden       = false;
+      // INPUT要素の初期値を設定する
+      daily_start_time.value = '09:00';
+      daily_required_time.value = '1:00';
+    });
+
+    // キャンセルボタンが押されたときの処理
+    // ・ 新規作成ボタンを表示する
+    // ・ キャンセルボタンを隠す
+    // ・ formの値をすべてクリアする
+    // ・ フォームを隠す
+    daily_cancel_button.addEventListener( 'click', function () {
+      console.log( this );
+      daily_add_button.hidden = false;
+      daily_add_button.setAttribute( 'aria-pressed', 'false' );
+      this.hidden = true;
+      this.setAttribute( 'aria-pressed', 'true' );
+
+      // formの値をすべてクリアする
+      pal.util.clearFormAll();
+
+      daily_add_form.hidden = true;
+      //
+    });
+
+    // 登録ボタンが押されたときの処理
+    // ・ 必須項目のチェック
+    // ・ 入力値の妥当性チェック
+    // ・ 入力値でObjectの作成
+    // ・ LocalStorageからObjectのリストを読み込む
+    // ・ Objectのリストに生成されたObjectを追加する
+    // ・ ObjectのリストをLocalStorageに書き込む
+    // ・ 新規作成ボタンを表示する
+    // ・ キャンセルボタンを隠す
+    // ・ formの値をすべてクリアする
+    // ・ フォームを隠す
+    daily_submit_button.addEventListener( 'click', function () {
+      // 必須項目のチェック
+
+      // 入力値の妥当性チェック
+
+      // 入力値でObjectの作成
+      // LocalStorageからObjectのリストを読み込む
+      // Objectのリストに生成されたObjectを追加する
+      // ObjectのリストをLocalStorageに書き込む
+
+      // 新規作成ボタンを表示する
+      daily_add_button.hidden = false;
+      daily_add_button.setAttribute( 'aria-pressed', 'false' );
+
+      // キャンセルボタンを隠す
+      daily_cancel_button.hidden = true;
+      daily_cancel_button.setAttribute( 'aria-pressed', 'true' );
+
+      // formの値をすべてクリアする
+      pal.util.clearFormAll();
+
+      this.setAttribute( 'aria-pressed', 'true' );
+      // フォームを隠す
+      daily_add_form.hidden = true;
+    });
+
 
     // 目標のリストタブパネル
 

@@ -28,7 +28,9 @@ pal.util = (function () {
     clearElement,
     emptyElementById,
     emptyElement,
-    emptyElement;
+    showElement,
+    hideElement,
+    toggleElement;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -194,12 +196,123 @@ pal.util = (function () {
   };
   // パブリックメソッド/emptyElement/終了
 
+  // パブリックメソッド/showElement/開始
+  // 目的: HTML要素id値を引数を受け取りhidden="true"の状態を見えるように
+  //      する。
+  // 引数:
+  //  * element_id  : 見えるようにするHTML要素のid値
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  showElement = function ( element_id, show_callback ) {
+    var
+      element;
+    // 要素の取得
+    element  = document.getElementById( element_id );
+
+    // 要素を表示する
+    element.hidden = false;
+
+    // 要素を表示する WAI
+    element.setAttribute( 'aria-pressed', 'false' );
+
+    if ( show_callback ) {
+      console.log( 'show_callback' );
+      show_callback();
+    }
+
+    return;
+  };
+  // パブリックメソッド/showElement/終了
+
+  // パブリックメソッド/hideElement/開始
+  // 目的: HTML要素id値を引数を受け取りhidden="true"の状態にする
+  //      する。
+  // 引数:
+  //  * element_id  : 隠すHTML要素のid値
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  hideElement = function ( element_id, hide_callback ) {
+    var
+      element;
+    // 要素の取得
+    element  = document.getElementById( element_id );
+
+    // 要素を表示する
+    element.hidden = true;
+
+    // 要素を表示する WAI
+    element.setAttribute( 'aria-pressed', 'true' );
+
+    if ( hide_callback ) {
+      console.log( 'hide_callback' );
+      hide_callback();
+    }
+
+    return;
+  };
+  // パブリックメソッド/hideElement/終了
+
+  // パブリックメソッド/toggleElement/開始
+  // 目的: 引数のHTML要素の子要素をすべて削除する
+  // 引数:
+  //  * element  : HTML要素。この子要素をすべて削除する
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  toggleElement = function ( before_id, after_id, show_callback, hide_callback ) {
+    var
+      before_element,
+      after_element;
+
+    // 要素の取得
+    before_element  = document.getElementById( before_id );
+    after_element = document.getElementById( after_id );
+
+    // 最初の要素の初期状態: 表示 この処理では何もしない
+    // 2番目の要素の初期状態: 非表示
+    hideElement( after_id );
+
+    // 最初の要素が押されたら、
+    // ・ 最初の要素を非表示にする
+    // ・ 2番目の要素を表示する
+    before_element.addEventListener( 'click', function () {
+      hideElement( before_id );
+
+      if ( show_callback ) {
+        showElement( after_id, show_callback );
+      }
+      else {
+        showElement( after_id );
+      }
+    });
+
+    // 2番目の要素が押されたら、
+    // ・ 2番目の要素を非表示にする
+    // ・ 最初の要素を表示する
+    after_element.addEventListener( 'click', function () {
+      if ( hide_callback ) {
+        hideElement( after_id, hide_callback );
+      }
+      else {
+        hideElement( after_id );
+      }
+
+      showElement( before_id );
+    });
+  };
+  // パブリックメソッド/toggleElement/終了
+
   return {
     makeError         : makeError,
     addChange         : addChange,
     setConfigMap      : setConfigMap,
     clearFormAll      : clearFormAll,
     emptyElementById  : emptyElementById,
-    emptyElement      : emptyElement
+    emptyElement      : emptyElement,
+    showElement       : showElement,
+    hideElement       : hideElement,
+    toggleElement     : toggleElement
   };
 }());

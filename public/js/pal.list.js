@@ -196,10 +196,7 @@ pal.list = (function () {
             // Actionオブジェクトを生成する
             var
               form_fragment,
-              // action_wrapper,
-              // action_fragment,
               form_wrapper,
-              // new_create,
               upload_button;
 
             // action objectを生成する
@@ -227,8 +224,6 @@ pal.list = (function () {
             // ・ ロケーションハッシュを'#list'にする
             upload_button.addEventListener( 'click', function () {
               this.setAttribute( 'class', 'hidden' );
-              // cancel_button.setAttribute( 'class', '' );
-              // upload_button.setAttribute( 'class', '' );
               list_ui.confirm_create();
               pal.bom.setLocationHash( '#list');
             });

@@ -96,6 +96,13 @@ pal.lab = (function () {
     // document fragmentを追加する
     main_section.appendChild( helloWorld );
 
+    pal.util.toggleElement(
+      'pal-lab-play',
+      'pal-lab-pause',
+      pal.util.showElement.bind( this, 'pal-lab-form' ),
+      pal.util.hideElement.bind( this, 'pal-lab-form' )
+    );
+
     return true;
   };
   // パブリックメソッド/initModule/終了

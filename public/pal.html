@@ -104,6 +104,24 @@
         <template id="lab">
           <h1>Lab!</h1>
 
+          <!-- Paused state -->
+          <button id="pal-lab-play" type="button" aria-pressed="false" aria-label="play">
+            &#x25b6;
+          </button>
+
+          <!-- Playing state -->
+          <button id="pal-lab-pause" type="button" aria-pressed="true" aria-label="play">
+            &#x23f8;
+          </button>
+
+          <form id="pal-lab-form" hidden>
+            <label>id:</label>
+            <input type="text">
+            <button type="button">保存</button>
+          </form>
+
+          <hr>
+
           <form>
             <input type="text">
             <button>送信</button>
@@ -135,6 +153,7 @@
               <li>3</li>
             </ul>
           </nav>
+
         </template>
 
         <!-- ログインページのテンプレート -->
@@ -1070,73 +1089,166 @@
             </ul>
 
             <section id="section1">
+              <h1>日毎の予定</h1>
 
-              <h3 id="pal-cyclesystem-current-date"></h3>
+              <section id="pal-cyclesystem-current-date-title">
+                <h2 id="pal-cyclesystem-current-date"></h2>
+              </section>
 
-              <h3 id="pal-cyclesystem-tasklist-title">作業リスト</h3>
-              <table id="pal-cyclesystem-tasklist">
-                <tr>
-                  <th>済</th>
-                  <th>優先順位</th>
-                  <th>時間</th>
-                  <th>項目</th>
-                </tr>
-                <tr>
-                  <td><input type="checkbox"></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </table>
+              <section id="pal-cyclesystem-tasklist">
+                <h2 id="pal-cyclesystem-tasklist-title">作業リスト</h2>
 
-              <h3 id="pal-cyclesystem-schedule">スケジュール</h3>
-              <table id="pal-cyclesystem-schedule-table">
-                <tr>
-                  <td>6</td>
-                </tr>
-                <tr>
-                  <td>7</td>
-                </tr>
-                <tr>
-                  <td>8</td>
-                </tr>
-                <tr>
-                  <td>9</td>
-                </tr>
-                <tr>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>11</td>
-                </tr>
-                <tr>
-                  <td>12</td>
-                </tr>
-                <tr>
-                  <td>13</td>
-                </tr>
-                <tr>
-                  <td>14</td>
-                </tr>
-                <tr>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>16</td>
-                </tr>
-                <tr>
-                  <td>17</td>
-                </tr>
-                <tr>
-                  <td>18</td>
-                </tr>
-                <tr>
-                  <td>19</td>
-                </tr>
-                <tr>
-                  <td>20</td>
-                </tr>
-              </table>
+                <button id="pal-task-add">
+                  <svg class="icon icon-plus">
+                    <use href="#icon-plus">
+                    </use>
+                  </svg>
+                  新規作成
+                </button>
+                <button id="pal-task-add-cancel">
+                  <svg class="icon icon-cross">
+                    <use href="#icon-cross">
+                    </use>
+                  </svg>
+                  作成をキャンセル
+                </button>
+
+                <form id="pal-task-add-form">
+                  <label for="title">
+                    項目<strong class="red" aria-hidden="true">*</strong> :
+                  </label>
+                  <input type="text"
+                         id="title"
+                         name="title"
+                         aria-describedby="title-tip"
+                         aria-required="true"
+                         autofocus>
+                  <div role="tooltip" id="title-tip">作業の内容をわかりやすく記入します。</div>
+
+                  <label for="start_time">開始時間 :</label>
+                  <input type="text"
+                         id="start_time"
+                         name="start_time"
+                         aria-describedby="start_time-tip">
+                  <div role="tooltip" id="start_time-tip">
+                    開始する時刻をhh:mm形式で記入します。
+                  </div>
+                  <div id="start_time-control">
+                    <button type="button">-</button>
+                    <button type="button">+</button>
+                    <button type="button">-</button>
+                    <button type="button">+</button>
+                  </div>
+
+                  <label for="required_time">所要時間 :</label>
+                  <input type="text"
+                         id="required_time"
+                         name="required_time"
+                         aria-describedby="required_time-tip">
+                  <div role="tooltip" id="required_time-tip">
+                    予想される作業時間を記入します。
+                  </div>
+                  <div id="required_time-control">
+                    <button type="button">-</button>
+                    <button type="button">+</button>
+                    <button type="button">-</button>
+                    <button type="button">+</button>
+                  </div>
+
+
+                  <label for="priority">優先順位 :</label>
+                  <input type="text"
+                         id="priority"
+                         name="priority"
+                         aria-describedby="priority-tip">
+                  <div role="tooltip" id="priority-tip">
+                    省略するとBを割り当てます。
+                  </div>
+
+                  <label for="complete_status">済 :</label>
+                  <input type="checkbox"
+                         id="complete_status"
+                         name="complete_status"
+                         aria-describedby="complete_status-tip">
+                  <div role="tooltip" id="complete_status-tip">
+                    既に完了しているときはチェックします。
+                  </div>
+
+                  <div id="error" aria-live="assertive" role="alert"></div>
+                  <button type="button" id="task-add-button">登録</button>
+                </form>
+
+                <table id="pal-cyclesystem-tasklist">
+                  <tbody>
+                    <tr>
+                      <th>済</th>
+                      <th>優先順位</th>
+                      <th>時間</th>
+                      <th>項目</th>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox"></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+
+              <section id="pal-cyclesystem-schedule">
+                <h2 id="pal-cyclesystem-schedule-title">スケジュール</h2>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>6</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                    </tr>
+                    <tr>
+                      <td>9</td>
+                    </tr>
+                    <tr>
+                      <td>10</td>
+                    </tr>
+                    <tr>
+                      <td>11</td>
+                    </tr>
+                    <tr>
+                      <td>12</td>
+                    </tr>
+                    <tr>
+                      <td>13</td>
+                    </tr>
+                    <tr>
+                      <td>14</td>
+                    </tr>
+                    <tr>
+                      <td>15</td>
+                    </tr>
+                    <tr>
+                      <td>16</td>
+                    </tr>
+                    <tr>
+                      <td>17</td>
+                    </tr>
+                    <tr>
+                      <td>18</td>
+                    </tr>
+                    <tr>
+                      <td>19</td>
+                    </tr>
+                    <tr>
+                      <td>20</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+
             </section>
 
             <section id="section2">

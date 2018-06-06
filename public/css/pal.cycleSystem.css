@@ -81,7 +81,8 @@ body {
   #section1 {
     display               : grid;
     grid-template-rows    : auto 2rem auto;
-    grid-template-columns : 24rem auto;
+    /* grid-template-columns : 24rem auto; */
+    grid-template-columns : 1fr 1fr;
   }
   
   #section1 > h1 {
@@ -103,16 +104,16 @@ body {
 }
 
 [role="tooltip"] {
-  display     : none;
+  display     : block;
   padding     : 0.25em;
   margin      : 0;
   color       : #fff;
   background  : #EF8100;
+  font-size   : small;
 }
 
-input:focus + [role="tooltip"] {
-  display   : block;
-  top       : 100%;
+[role="alert"] {
+  font-size   : small;
 }
 
 #pal-task-add {
@@ -120,115 +121,139 @@ input:focus + [role="tooltip"] {
 }
 
 /* formのgridの設定 */
-#pal-task-add-form {
-  display: grid;
-  grid-template-rows    : repeat(10, 1.6rem) 2rem;
-  grid-template-columns : 6rem 16rem;
-}
+@media (min-width: 801px) {
+  #pal-task-add-form {
+    display               : grid;
+    grid-template-rows    : repeat(10, 1.7rem) 2rem;
+    grid-template-columns : 4.5rem 12rem 12rem;
+    margin  : 0.5rem;
+  }
+  
+  #pal-task-add-form label,
+  #pal-task-add-form input,
+  #pal-task-add-form button {
+    margin  : 0;
+  }
+  
+  #pal-task-add-form div {
+    margin-top    : 2px;
+    margin-bottom : 2px;
+  }
+  
+  #pal-task-add-form div button {
+    margin  : 0;
+    padding : 0px 10px 0px 10px;
+  }
+  
+  #pal-task-add-form label {
+    justify-self  : right;
+    padding-right : 0.5rem;
+  }
+  
+  [for="title"] {
+    grid-row      : 1/3;
+    grid-column   : 1/2;
+  }
+  
+  #title {
+    grid-row      : 1/2;
+    grid-column   : 2/3;
+  }
+  
+  #title-tip {
+    grid-row    : 2/3;
+    grid-column : 2/3;
+  }
+  
+  #title_error {
+    grid-row    : 1/2;
+    grid-column : 3/4;
+  }
+  [for="start-time"] {
+    grid-row    : 3/6;
+    grid-column : 1/2;
+  }
+  
+  #start-time {
+    grid-row    : 3/4;
+    grid-column : 2/3;
+  }
+  
+  #start-time-tip {
+    grid-row    : 4/5;
+    grid-column : 2/3;
+    font-size   : small;
+  }
+  
+  #start-hour-alert {
+    grid-row    : 3/5;
+    grid-column : 3/4;
+  }
 
-#pal-task-add-form {
-  margin  : 0.5rem;
-}
-#pal-task-add-form label,
-#pal-task-add-form input,
-#pal-task-add-form div,
-#pal-task-add-form button {
-  margin  : 0;
-}
+  #start-minute-alert {
+    grid-row    : 3/5;
+    grid-column : 3/4;
+  }
 
-#pal-task-add-form label {
-  justify-self  : right;
-  padding-right : 0.5rem;
-}
+  [for="required-time"] {
+    grid-row    : 5/7;
+    grid-column : 1/2;
+  }
+  
+  #required-time {
+    grid-row    : 5/6;
+    grid-column : 2/3;
+  }
+  
+  #required-time-tip {
+    grid-row    : 6/7;
+    grid-column : 2/3;
+  }
+  
+  #required-hour-alert {
+    grid-row    : 5/7;
+    grid-column : 3/4;
+  }
 
-[for="title"] {
-  grid-row      : 1/3;
-  grid-column   : 1/2;
-}
+  #required-minute-alert {
+    grid-row    : 5/7;
+    grid-column : 3/4;
+  }
 
-#title {
-  grid-row      : 1/2;
-  grid-column   : 2/3;
-}
-
-#title-tip {
-  grid-row    : 2/3;
-  grid-column : 2/3;
-}
-
-[for="start_time"] {
-  grid-row    : 3/6;
-  grid-column : 1/2;
-}
-
-#start_time {
-  grid-row    : 3/4;
-  grid-column : 2/3;
-}
-
-#start_time-control {
-  grid-row    : 4/5;
-  grid-column : 2/3;
-}
-
-#start_time-tip {
-  grid-row    : 5/6;
-  grid-column : 2/3;
-}
-
-[for="required_time"] {
-  grid-row    : 6/9;
-  grid-column : 1/2;
-}
-
-#required_time {
-  grid-row    : 6/7;
-  grid-column : 2/3;
-}
-
-#required_time-control {
-  grid-row    : 7/8;
-  grid-column : 2/3;
-}
-
-#required_time-tip {
-  grid-row    : 8/9;
-  grid-column : 2/3;
-}
-
-[for="priority"] {
-  grid-row    : 9/12;
-  grid-column : 1/2;
-}
-
-#priority {
-  grid-row    : 9/10;
-  grid-column : 2/3;
-}
-
-#priority-tip {
-  grid-row    : 10/11;
-  grid-column : 2/3;
-}
-
-[for="complete_status"] {
-  grid-row    : 11/13;
-  grid-column : 1/2;
-}
-
-#complete_status{
-  grid-row    : 11/12;
-  grid-column : 2/3;
-}
-
-#complete_status-tip {
-  grid-row    : 12/13;
-  grid-column : 2/3;
-}
-
-#task-add-button {
-  grid-row    : 13/14;
-  grid-column : 1/2;
+  [for="priority"] {
+    grid-row    : 7/8;
+    grid-column : 1/2;
+  }
+  
+  #priority {
+    grid-row    : 7/8;
+    grid-column : 2/3;
+  }
+  
+  #priority-tip {
+    grid-row    : 8/9;
+    grid-column : 2/3;
+  }
+  
+  [for="complete-status"] {
+    grid-row    : 9/10;
+    grid-column : 1/2;
+  }
+  
+  #complete-status{
+    grid-row    : 9/10;
+    grid-column : 2/3;
+  }
+  
+  #complete-status-tip {
+    grid-row    : 10/11;
+    grid-column : 2/3;
+  }
+  
+  #task-add-button {
+    grid-row    : 11/12;
+    grid-column : 2/3;
+  }
 }
 /* formのgridの設定 ここまで */
 

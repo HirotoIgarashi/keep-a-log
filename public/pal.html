@@ -1115,7 +1115,7 @@
 
                 <form id="pal-task-add-form">
                   <label for="title">
-                    項目<strong class="red" aria-hidden="true">*</strong> :
+                    項目 <strong class="red" aria-hidden="true">*</strong>
                   </label>
                   <input type="text"
                          id="title"
@@ -1123,40 +1123,78 @@
                          aria-describedby="title-tip"
                          aria-required="true"
                          autofocus>
-                  <div role="tooltip" id="title-tip">作業の内容をわかりやすく記入します。</div>
+                  <div role="tooltip"
+                       id="title-tip">
+                  作業の内容をわかりやすく記入します。
+                  </div>
+                  <div id="title-alert" aria-live="assertive" role="alert">
+                  必須項目です。
+                  </div>
 
-                  <label for="start_time">開始時間 :</label>
-                  <input type="text"
-                         id="start_time"
-                         name="start_time"
-                         aria-describedby="start_time-tip">
-                  <div role="tooltip" id="start_time-tip">
+                  <label for="start-time">開始時間</label>
+                  <div id="start-time">
+                    <input type="number"
+                           min="0"
+                           max="23"
+                           id="start-time-hour"
+                           name="start-time-hour"
+                           aria-describedby="start-time-tip">
+                    <span>時</span>
+                    <input type="number"
+                           min="0"
+                           max="59"
+                           id="start-time-minute"
+                           name="start-time-minute"
+                           aria-describedby="start-time-tip">
+                    <span>分</span>
+                  </div>
+                  <div role="tooltip"
+                       id="start-time-tip">
                     開始する時刻をhh:mm形式で記入します。
                   </div>
-                  <div id="start_time-control">
-                    <button type="button">-</button>
-                    <button type="button">+</button>
-                    <button type="button">-</button>
-                    <button type="button">+</button>
+                  <div id="start-hour-alert"
+                       aria-live="assertive"
+                       role="alert">
+                  時は0から23までの値を入力します。
+                  </div>
+                  <div id="start-minute-alert"
+                       aria-live="assertive"
+                       role="alert">
+                  分は0から59までの値を入力します。
                   </div>
 
-                  <label for="required_time">所要時間 :</label>
-                  <input type="text"
-                         id="required_time"
-                         name="required_time"
-                         aria-describedby="required_time-tip">
-                  <div role="tooltip" id="required_time-tip">
+                  <label for="required-time">所要時間</label>
+                  <div id="required-time">
+                    <input type="number"
+                           min="0"
+                           max="8"
+                           id="required-time-hour"
+                           name="required-time-hour"
+                           aria-describedby="required-time-tip">
+                    <span>時間</span>
+                    <input type="number"
+                           min="0"
+                           max="59"
+                           id="required-time-minute"
+                           name="required-time-minute"
+                           aria-describedby="required-time-tip">
+                    <span>分</span>
+                  </div>
+                  <div role="tooltip" id="required-time-tip">
                     予想される作業時間を記入します。
                   </div>
-                  <div id="required_time-control">
-                    <button type="button">-</button>
-                    <button type="button">+</button>
-                    <button type="button">-</button>
-                    <button type="button">+</button>
+                  <div id="required-hour-alert"
+                       aria-live="assertive"
+                       role="alert">
+                  時間の値は任意ですが最大8時間を目処に作業を分割します。
+                  </div>
+                  <div id="required-minute-alert"
+                       aria-live="assertive"
+                       role="alert">
+                  分は0から59までの値を入力します。
                   </div>
 
-
-                  <label for="priority">優先順位 :</label>
+                  <label for="priority">優先順位</label>
                   <input type="text"
                          id="priority"
                          name="priority"
@@ -1165,16 +1203,15 @@
                     省略するとBを割り当てます。
                   </div>
 
-                  <label for="complete_status">済 :</label>
+                  <label for="complete-status">済</label>
                   <input type="checkbox"
-                         id="complete_status"
-                         name="complete_status"
-                         aria-describedby="complete_status-tip">
-                  <div role="tooltip" id="complete_status-tip">
-                    既に完了しているときはチェックします。
+                         id="complete-status"
+                         name="complete-status"
+                         aria-describedby="complete-status-tip">
+                  <div role="tooltip" id="complete-status-tip">
+                    既に完了しているときは済(チェック)します。
                   </div>
 
-                  <div id="error" aria-live="assertive" role="alert"></div>
                   <button type="button" id="task-add-button">登録</button>
                 </form>
 

@@ -292,10 +292,26 @@ pal.cycleSystem = (function () {
       daily_add_form,
       daily_submit_button,
       daily_start_time,
-      daily_required_time;
+      daily_required_time,
+      title,
+      title_alert,
+      start_hour_alert,
+      start_minute_alert,
+      required_hour_alert,
+      required_minute_alert,
+      start_hour,
+      start_minute,
+      required_hour,
+      required_minute,
+      priority,
+      complete_status,
+      title_tip,
+      start_time_tip,
+      require_time_tip,
+      priority_tip,
+      complete_status_tip;
 
     // mainセクションの子要素をすべて削除する
-    // mainセクションの子要素の削除は下位のモジュールにまかせる
     pal.util.emptyElement( main_section );
 
     // メニューを表示する
@@ -412,14 +428,31 @@ pal.cycleSystem = (function () {
     current_date = document.getElementById( 'pal-cyclesystem-current-date' );
     current_date.textContent = pal.util_b.getNowDateJp( 'date and day' );
 
-    // カレンダータブパネル初期設定
+    // デイリータブパネル初期設定
+    // 関連する要素とコレクションを取得する
     daily_add_button = document.getElementById( 'pal-task-add' );
     daily_cancel_button = document.getElementById( 'pal-task-add-cancel' );
     daily_add_form = document.getElementById( 'pal-task-add-form' );
     daily_submit_button = document.getElementById( 'task-add-button' );
-    daily_start_time = document.getElementById( 'start_time' );
-    daily_required_time = document.getElementById( 'required_time' );
-    console.log( daily_required_time );
+    daily_start_time = document.getElementById( 'start-time' );
+    daily_required_time = document.getElementById( 'required-time' );
+    title_alert = document.getElementById( 'title-alert' );
+    start_hour_alert = document.getElementById( 'start-hour-alert' );
+    start_minute_alert = document.getElementById( 'start-minute-alert' );
+    required_hour_alert = document.getElementById( 'required-hour-alert' );
+    required_minute_alert = document.getElementById( 'required-minute-alert' );
+    title               = document.getElementById( 'title' );
+    start_hour          = document.getElementById( 'start-time-hour' );
+    start_minute        = document.getElementById( 'start-time-minute' );
+    required_hour       = document.getElementById( 'required-time-hour' );
+    required_minute     = document.getElementById( 'required-time-minute' );
+    title_tip           = document.getElementById( 'title-tip' );
+    start_time_tip      = document.getElementById( 'start-time-tip' );
+    require_time_tip    = document.getElementById( 'required-time-tip' );
+    priority            = document.getElementById( 'priority' );
+    priority_tip        = document.getElementById( 'priority-tip' );
+    complete_status     = document.getElementById( 'complete-status' );
+    complete_status_tip = document.getElementById( 'complete-status-tip' );
 
     // 初期の設定。
     // キャンセルボタンとフォームを隠す
@@ -428,6 +461,36 @@ pal.cycleSystem = (function () {
     daily_cancel_button.setAttribute( 'aria-pressed', 'true' );
     daily_add_form.hidden = true;
     daily_submit_button.setAttribute( 'aria-pressed', 'false' );
+
+    // tipの表示/非表示を切り替える
+    pal.util.toggleTip( title, title_tip );
+    pal.util.toggleTip( start_hour, start_time_tip );
+    pal.util.toggleTip( start_minute, start_time_tip );
+    pal.util.toggleTip( required_hour, require_time_tip );
+    pal.util.toggleTip( required_minute, require_time_tip );
+    pal.util.toggleTip( priority, priority_tip );
+    pal.util.toggleTip( complete_status, complete_status_tip );
+
+    // input要素に入力値の妥当性チェック処理を追加する
+    pal.util.inputChangeCallback( title, function () {
+      console.log( 'input要素の内容が変更されました' );
+    });
+
+    pal.util.inputChangeCallback( start_hour, function () {
+      console.log( 'start_hourの内容が変更されました' );
+    });
+
+    pal.util.inputChangeCallback( start_minute, function () {
+      console.log( 'start_minuteの内容が変更されました' );
+    });
+
+    pal.util.inputChangeCallback( required_hour, function () {
+      console.log( 'required_hourの内容が変更されました' );
+    });
+
+    pal.util.inputChangeCallback( required_minute, function () {
+      console.log( 'required_minuteの内容が変更されました' );
+    });
 
     // 新規作成ボタンが押されたときの処理
     // ・ 新規作成ボタンを隠す
@@ -440,9 +503,15 @@ pal.cycleSystem = (function () {
       daily_cancel_button.hidden  = false;
       daily_cancel_button.setAttribute( 'aria-pressed', 'false' );
       daily_add_form.hidden       = false;
+      // role="alert"を非表示にする
+      title_alert.hidden = true;
+      start_hour_alert.hidden = true;
+      start_minute_alert.hidden = true;
+      required_hour_alert.hidden = true;
+      required_minute_alert.hidden = true;
       // INPUT要素の初期値を設定する
-      daily_start_time.value = '09:00';
-      daily_required_time.value = '1:00';
+      // daily-start-time.value = '09:00';
+      // daily-required-time.value = '1:00';
     });
 
     // キャンセルボタンが押されたときの処理
@@ -500,7 +569,6 @@ pal.cycleSystem = (function () {
       // フォームを隠す
       daily_add_form.hidden = true;
     });
-
 
     // 目標のリストタブパネル
 

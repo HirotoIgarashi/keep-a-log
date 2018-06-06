@@ -30,7 +30,9 @@ pal.util = (function () {
     emptyElement,
     showElement,
     hideElement,
-    toggleElement;
+    toggleElement,
+    toggleTip,
+    inputChangeCallback;
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -304,15 +306,59 @@ pal.util = (function () {
   };
   // パブリックメソッド/toggleElement/終了
 
+  // パブリックメソッド/toggleTip/開始
+  // 目的: 第1引数のinput要素のフォーカス状態によって第2引数のtipの
+  //        表示/非表示を切り替える
+  // 引数:
+  //  * input_element  : input要素
+  //  * tip  : 表示/非表示を切り替えるtip
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  toggleTip = function ( input_element, tip ) {
+    // 初期の状態ではtipを非表示にする
+    tip.hidden = true;
+    // input要素がフォーカスされたらtipを表示する
+    input_element.addEventListener( 'focus', function () {
+      tip.hidden = false;
+    });
+
+    // input要素のフォーカスが外れたらtipを非表示にする
+    input_element.addEventListener( 'blur', function () {
+      tip.hidden = true;
+    });
+
+  };
+  // パブリックメソッド/toggleTip/終了
+
+  // パブリックメソッド/inputChangeCallback/開始
+  // 目的: 第1引数のinput要素の入力内容が変更されたら第2引数の
+  //        コールバック関数を実行する
+  // 引数:
+  //  * input_element  : input要素
+  //  * callback  : コールバック関数
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  inputChangeCallback = function ( input_element, callback ) {
+    input_element.addEventListener( 'change', function() {
+      callback();
+    });
+  };
+
+  // パブリックメソッド/inputChangeCallback/開始
+
   return {
-    makeError         : makeError,
-    addChange         : addChange,
-    setConfigMap      : setConfigMap,
-    clearFormAll      : clearFormAll,
-    emptyElementById  : emptyElementById,
-    emptyElement      : emptyElement,
-    showElement       : showElement,
-    hideElement       : hideElement,
-    toggleElement     : toggleElement
+    makeError           : makeError,
+    addChange           : addChange,
+    setConfigMap        : setConfigMap,
+    clearFormAll        : clearFormAll,
+    emptyElementById    : emptyElementById,
+    emptyElement        : emptyElement,
+    showElement         : showElement,
+    hideElement         : hideElement,
+    toggleElement       : toggleElement,
+    toggleTip           : toggleTip,
+    inputChangeCallback : inputChangeCallback
   };
 }());

@@ -1139,29 +1139,36 @@
                            id="start-time-hour"
                            name="start-time-hour"
                            aria-describedby="start-time-tip">
-                    <span>時</span>
+                    <label for="start-time-hour">時</label>
                     <input type="number"
                            min="0"
                            max="59"
                            id="start-time-minute"
                            name="start-time-minute"
                            aria-describedby="start-time-tip">
-                    <span>分</span>
+                    <label for="start-time-minute">分</label>
                   </div>
                   <div role="tooltip"
-                       id="start-time-tip">
-                    開始する時刻をhh:mm形式で記入します。
+                       id="start-time-hour-tip">
+                    開始時間の時を0から23の範囲で入力します。
                   </div>
-                  <div id="start-hour-alert"
-                       aria-live="assertive"
-                       role="alert">
-                  時は0から23までの値を入力します。
+                  <div role="tooltip"
+                       id="start-time-minute-tip">
+                    開始時間の分を0から59の範囲で入力します。
                   </div>
-                  <div id="start-minute-alert"
-                       aria-live="assertive"
-                       role="alert">
-                  分は0から59までの値を入力します。
-                  </div>
+
+                  <ul id="start-time-alert">
+                    <li id="start-hour-alert"
+                         aria-live="assertive"
+                         role="alert">
+                      時は0から23までの値を入力します。
+                    </li>
+                    <li id="start-minute-alert"
+                         aria-live="assertive"
+                         role="alert">
+                      分は0から59までの値を入力します。
+                    </li>
+                  </ul>
 
                   <label for="required-time">所要時間</label>
                   <div id="required-time">
@@ -1180,19 +1187,25 @@
                            aria-describedby="required-time-tip">
                     <span>分</span>
                   </div>
-                  <div role="tooltip" id="required-time-tip">
-                    予想される作業時間を記入します。
+                  <div role="tooltip" id="required-time-hour-tip">
+                    時は0から23までの値を入力します。
                   </div>
-                  <div id="required-hour-alert"
-                       aria-live="assertive"
-                       role="alert">
-                  時間の値は任意ですが最大8時間を目処に作業を分割します。
+                  <div role="tooltip" id="required-time-minute-tip">
+                    分は0から59までの値を入力します。
                   </div>
-                  <div id="required-minute-alert"
-                       aria-live="assertive"
-                       role="alert">
-                  分は0から59までの値を入力します。
-                  </div>
+
+                  <ul id="required-time-alert">
+                    <li id="required-hour-alert"
+                         aria-live="assertive"
+                         role="alert">
+                    時間の値は任意ですが最大8時間を目処に作業を分割します。
+                    </li>
+                    <li id="required-minute-alert"
+                         aria-live="assertive"
+                         role="alert">
+                    分は0から59までの値を入力します。
+                    </li>
+                  </ul>
 
                   <label for="priority">優先順位</label>
                   <input type="text"

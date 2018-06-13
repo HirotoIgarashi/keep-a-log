@@ -306,10 +306,17 @@ pal.cycleSystem = (function () {
       priority,
       complete_status,
       title_tip,
-      start_time_tip,
-      require_time_tip,
+      start_time_hour_tip,
+      start_time_minute_tip,
+      require_time_hour_tip,
+      require_time_minute_tip,
       priority_tip,
-      complete_status_tip;
+      complete_status_tip,
+      checkTitle,
+      checkStartTimeHour,
+      checkStartTimeMinute,
+      checkRequiredTimeHour,
+      checkRequiredTimeMinute;
 
     // mainセクションの子要素をすべて削除する
     pal.util.emptyElement( main_section );
@@ -447,8 +454,10 @@ pal.cycleSystem = (function () {
     required_hour       = document.getElementById( 'required-time-hour' );
     required_minute     = document.getElementById( 'required-time-minute' );
     title_tip           = document.getElementById( 'title-tip' );
-    start_time_tip      = document.getElementById( 'start-time-tip' );
-    require_time_tip    = document.getElementById( 'required-time-tip' );
+    start_time_hour_tip     = document.getElementById( 'start-time-hour-tip' );
+    start_time_minute_tip   = document.getElementById( 'start-time-minute-tip' );
+    require_time_hour_tip   = document.getElementById( 'required-time-hour-tip' );
+    require_time_minute_tip = document.getElementById( 'required-time-minute-tip' );
     priority            = document.getElementById( 'priority' );
     priority_tip        = document.getElementById( 'priority-tip' );
     complete_status     = document.getElementById( 'complete-status' );
@@ -464,33 +473,117 @@ pal.cycleSystem = (function () {
 
     // tipの表示/非表示を切り替える
     pal.util.toggleTip( title, title_tip );
-    pal.util.toggleTip( start_hour, start_time_tip );
-    pal.util.toggleTip( start_minute, start_time_tip );
-    pal.util.toggleTip( required_hour, require_time_tip );
-    pal.util.toggleTip( required_minute, require_time_tip );
+    pal.util.toggleTip( start_hour, start_time_hour_tip );
+    pal.util.toggleTip( start_minute, start_time_minute_tip );
+    pal.util.toggleTip( required_hour, require_time_hour_tip );
+    pal.util.toggleTip( required_minute, require_time_minute_tip );
     pal.util.toggleTip( priority, priority_tip );
     pal.util.toggleTip( complete_status, complete_status_tip );
 
+    // titleが空かチェックする
+    checkTitle = function ( event ) {
+      if ( ! pal.util.checkInputField( event, pal.util.isNonEmpty ) ) {
+        title_alert.hidden = false;
+      }
+      else {
+        title_alert.hidden = true;
+      }
+    };
+
     // input要素に入力値の妥当性チェック処理を追加する
-    pal.util.inputChangeCallback( title, function () {
-      console.log( 'input要素の内容が変更されました' );
-    });
+    pal.util.addEventListener( title, 'blur', checkTitle );
 
-    pal.util.inputChangeCallback( start_hour, function () {
-      console.log( 'start_hourの内容が変更されました' );
-    });
+    // 開始時間の時が整数かつ0から23までかをチェックする
+    checkStartTimeHour = function( event ) {
+      var
+        min = 0,
+        max = 23,
+        inputValue = pal.util.getTargetValue( event );
 
-    pal.util.inputChangeCallback( start_minute, function () {
-      console.log( 'start_minuteの内容が変更されました' );
-    });
+      if ( pal.util.isInteger( inputValue ) &&
+          pal.util.isRange( inputValue, min, max )) {
+        // 整数でかつ0から23の間の数値だったらアラートを表示しない
+        start_hour_alert.hidden = true;
+      }
+      else {
+        start_hour_alert.hidden = false;
+        return false;
+      }
+    };
 
-    pal.util.inputChangeCallback( required_hour, function () {
-      console.log( 'required_hourの内容が変更されました' );
-    });
+    // 開始時間の時の値をチェックするイベントハンドラーを追加する。
+    pal.util.addEventListener( start_hour, 'input', checkStartTimeHour );
 
-    pal.util.inputChangeCallback( required_minute, function () {
-      console.log( 'required_minuteの内容が変更されました' );
-    });
+    // 開始時間の分が整数かつ0から59までかをチェックする
+    checkStartTimeMinute = function( event ) {
+      var
+        min = 0,
+        max = 59,
+        inputValue = pal.util.getTargetValue( event );
+
+      if ( pal.util.isInteger( inputValue ) &&
+          pal.util.isRange( inputValue, min, max )) {
+        // 整数でかつ0から23の間の数値だったらアラートを表示しない
+        start_minute_alert.hidden = true;
+      }
+      else {
+        start_minute_alert.hidden = false;
+        return false;
+      }
+    };
+
+    // 開始時間の分の値をチェックするイベントハンドラーを追加する。
+    pal.util.addEventListener( start_minute, 'input', checkStartTimeMinute );
+
+    // 所要時間の時が整数かをチェックする
+    checkRequiredTimeHour = function( event ) {
+      var
+        min = 0,
+        max = 59,
+        inputValue = pal.util.getTargetValue( event );
+
+      if ( pal.util.isInteger( inputValue ) &&
+          pal.util.isRange( inputValue, min, max )) {
+        // 整数でかつ0から23の間の数値だったらアラートを表示しない
+        required_hour_alert.hidden = true;
+      }
+      else {
+        required_hour_alert.hidden = false;
+        return false;
+      }
+    };
+
+    // 所要時間の時の値をチェックするイベントハンドラーを追加する。
+    pal.util.addEventListener( required_hour, 'input', checkRequiredTimeHour );
+
+    // 所要時間の分が整数かつ0から59までかをチェックする
+    checkRequiredTimeMinute = function( event ) {
+      var
+        min = 0,
+        max = 59,
+        inputValue = pal.util.getTargetValue( event );
+
+      if ( pal.util.isInteger( inputValue ) &&
+          pal.util.isRange( inputValue, min, max )) {
+        // 整数でかつ0から23の間の数値だったらアラートを表示しない
+        required_minute_alert.hidden = true;
+      }
+      else {
+        required_minute_alert.hidden = false;
+        return false;
+      }
+    };
+
+    // 所要時間の分の値をチェックするイベントハンドラーを追加する。
+    pal.util.addEventListener( required_minute, 'input', checkRequiredTimeMinute );
+
+    // pal.util.inputChangeCallback( required_hour, function () {
+    //   console.log( 'required_hourの内容が変更されました' );
+    // });
+
+    // pal.util.inputChangeCallback( required_minute, function () {
+    //   console.log( 'required_minuteの内容が変更されました' );
+    // });
 
     // 新規作成ボタンが押されたときの処理
     // ・ 新規作成ボタンを隠す
@@ -504,6 +597,7 @@ pal.cycleSystem = (function () {
       daily_cancel_button.setAttribute( 'aria-pressed', 'false' );
       daily_add_form.hidden       = false;
       // role="alert"を非表示にする
+      title.focus();
       title_alert.hidden = true;
       start_hour_alert.hidden = true;
       start_minute_alert.hidden = true;
@@ -520,7 +614,6 @@ pal.cycleSystem = (function () {
     // ・ formの値をすべてクリアする
     // ・ フォームを隠す
     daily_cancel_button.addEventListener( 'click', function () {
-      console.log( this );
       daily_add_button.hidden = false;
       daily_add_button.setAttribute( 'aria-pressed', 'false' );
       this.hidden = true;

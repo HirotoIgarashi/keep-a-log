@@ -32,7 +32,25 @@ pal.util = (function () {
     hideElement,
     toggleElement,
     toggleTip,
-    inputChangeCallback;
+    inputChangeCallback,
+    getTargetValue,
+    addEventListener,
+    checkInputField,
+    isNonEmpty,
+    isInteger,
+    isRange;
+
+  // 実装予定の関数
+  // getTargetValue       : eventを受け取り値を返す
+  // removeEventListener  : フォームの送信をキャンセルする関数
+  // isNumber             : 値が数字かチェックする
+  // isAlphaNum           : 値が英数字かチェックする
+
+  // 実装済の関数
+  // checkInputField      : フォームのフィールドをチェックする
+  // addEventListener     : イベントが発生したときの処理を追加する
+  // isNonEmpty           : 空の値でないかチェックする
+  //
 
   // パブリックコンストラクタ/makeError/開始
   // 目的: エラーオブジェクトを作成する便利なラッパー
@@ -345,8 +363,129 @@ pal.util = (function () {
       callback();
     });
   };
+  // パブリックメソッド/inputChangeCallback/終了
 
-  // パブリックメソッド/inputChangeCallback/開始
+  // パブリックメソッド/getTargetValue/開始
+  // 目的: イベントを引数として受け取りイベントが発生した要素の
+  //        値を返す
+  // 引数:
+  //  * event  : イベント
+  // 戻り値: input要素の値
+  // 例外発行: なし
+  //
+  getTargetValue = function ( event ) {
+    var
+      theEvent  = event || window.event,
+      target    = theEvent.target || theEvent.srcElement;
+
+    return target.value;
+  };
+  // パブリックメソッド/getTargetValue/終了
+
+  // パブリックメソッド/addEventListener/開始
+  // 用例: pal.util.addEventLister( element, 'click', elementHandler );
+  // 目的: DOMレベル2のイベントモデルとIEのイベントモデルに対応する
+  // 引数:
+  //  * eventObj      : イベントに対応したオブジェクト
+  //  * event         : イベント
+  //  * eventHandler  : 呼び出される関数 
+  // 戻り値: なし
+  // 例外発行: なし
+  // 動作: DOMレベル2のイベントモデル(DOM Model)では、addEventListenerを
+  //        使ってイベントハンドラを設定します。
+  //        IEのイベントモデル(IE Model)ではattachEventを設定します。
+  //
+  addEventListener = function ( eventObj, event, eventHandler ) {
+    if ( document.addEventListener ) {
+      eventObj.addEventListener( event, eventHandler, false );
+    }
+    else if ( document.attachEvent ) {
+      event = 'on' + event;
+      eventObj.attachEvent( event, eventHandler );
+    }
+  };
+  // パブリックメソッド/addEventListener/終了
+
+  // パブリックメソッド/checkInputField/開始
+  // 用例: pal.util.checkInputField( event, pal.util.isNonEmpty );
+  // 目的: input要素の値をチェックする
+  // 引数:
+  //  * event     : イベント
+  //  * checkFunc : チェックに利用する関数
+  // 戻り値: 妥当であれば   : true
+  //         妥当でなければ : false
+  // 例外発行: なし
+  //
+  checkInputField = function ( event, checkFunc ) {
+    var
+      //theEvent  = event || window.event,
+      //target    = theEvent.target || theEvent.srcElement,
+      txtInput  = getTargetValue( event );
+
+    return checkFunc( txtInput ); 
+  };
+  // パブリックメソッド/checkInputField/終了
+
+  // パブリックメソッド/isRange/開始
+  // 目的: 第1引数の値が第2引数と第3引数の間にあるかをチェックする
+  // 引数:
+  //  * value : チェック対象の値
+  //  * min   : 下限値
+  //  * max   : 上限値
+  // 戻り値: 妥当であれば   : true
+  //         妥当でなければ : false
+  // 例外発行: なし
+  //
+  isRange = function ( value, min, max ) {
+    var
+      valueNumber;
+
+    if ( typeof value === 'string' ) {
+      valueNumber = Number( value );
+    }
+    else {
+      valueNumber = value;
+    }
+
+    if ( min > valueNumber || valueNumber > max ) {
+      return false;
+    }
+    return true;
+
+  };
+  // パブリックメソッド/isRange/終了
+
+  // パブリックメソッド/isNonEmpty/開始
+  // 目的: 空の値でないか検査
+  isNonEmpty = function ( value ) {
+    return value !== "";
+  };
+  // パブリックメソッド/isNonEmpty/終了
+
+  // パブリックメソッド/isInteger/開始
+  // 目的: 整数かどうかを検査する
+  isInteger = function ( value ) {
+    var
+      valueNumber;
+
+    // ポリフィル
+    Number.isInteger = Number.isInteger || function( value ) {
+      return typeof value === 'number' &&
+        isFinite( value ) &&
+        Math.floor( value ) === value;
+    };
+
+    if ( typeof value === 'string' ) {
+      valueNumber = Number( value );
+    }
+    else {
+      valueNumber = value;
+    }
+
+    return Number.isInteger( valueNumber );
+
+  };
+  // パブリックメソッド/isNonEmpty/終了
 
   return {
     makeError           : makeError,
@@ -359,6 +498,12 @@ pal.util = (function () {
     hideElement         : hideElement,
     toggleElement       : toggleElement,
     toggleTip           : toggleTip,
-    inputChangeCallback : inputChangeCallback
+    inputChangeCallback : inputChangeCallback,
+    getTargetValue      : getTargetValue,
+    addEventListener    : addEventListener,
+    checkInputField     : checkInputField,
+    isRange             : isRange,
+    isNonEmpty          : isNonEmpty,
+    isInteger           : isInteger
   };
 }());

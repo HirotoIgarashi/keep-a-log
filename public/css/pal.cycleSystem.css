@@ -120,12 +120,19 @@ body {
   margin: 0;
 }
 
+#start-time-alert,
+#required-time-alert {
+  list-style-type : none;
+  margin          : 0em;
+  padding         : 0px;
+}
+
 /* formのgridの設定 */
 @media (min-width: 801px) {
   #pal-task-add-form {
     display               : grid;
     grid-template-rows    : repeat(10, 1.7rem) 2rem;
-    grid-template-columns : 4.5rem 12rem 12rem;
+    grid-template-columns : 4.5rem 14rem 12rem;
     margin  : 0.5rem;
   }
   
@@ -179,18 +186,13 @@ body {
     grid-column : 2/3;
   }
   
-  #start-time-tip {
+  #start-time-hour-tip,
+  #start-time-minute-tip {
     grid-row    : 4/5;
     grid-column : 2/3;
     font-size   : small;
   }
-  
-  #start-hour-alert {
-    grid-row    : 3/5;
-    grid-column : 3/4;
-  }
-
-  #start-minute-alert {
+  #start-time-alert {
     grid-row    : 3/5;
     grid-column : 3/4;
   }
@@ -205,17 +207,13 @@ body {
     grid-column : 2/3;
   }
   
-  #required-time-tip {
+  #required-time-hour-tip,
+  #required-time-minute-tip {
     grid-row    : 6/7;
     grid-column : 2/3;
   }
   
-  #required-hour-alert {
-    grid-row    : 5/7;
-    grid-column : 3/4;
-  }
-
-  #required-minute-alert {
+  #required-time-alert {
     grid-row    : 5/7;
     grid-column : 3/4;
   }

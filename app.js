@@ -26,9 +26,7 @@ var
   routes        = require( './lib/routes'     ),
   app           = express(                    ),
   server        = http.createServer( app      ),
-  // expire_time   = 1000 * 60 * 60;               // 1時間
   expire_time   = 1000 * 60 * 60 * 24 * 30;               // 30日
-  // expire_time   = 1000 * 60 * 5;                // 5分 
   // io            = require( 'socket.io'        )( server ),
   // send_date,
   // countIdx = 0;

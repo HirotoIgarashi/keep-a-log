@@ -77,6 +77,9 @@ body {
   display: none !important;
 }
 
+[aria-invalid="true"] {
+  border-color: red;
+}
 @media (min-width: 801px) {
   #section1 {
     display               : grid;

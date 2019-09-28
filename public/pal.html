@@ -1208,12 +1208,30 @@
                   </ul>
 
                   <label for="priority">優先順位</label>
-                  <input type="text"
-                         id="priority"
-                         name="priority"
-                         aria-describedby="priority-tip">
-                  <div role="tooltip" id="priority-tip">
-                    省略するとBを割り当てます。
+                  <div id="priority">
+                    <input type="radio"
+                           id="priorityChoice1"
+                           name="priority"
+                           value="A"
+                           aria-describedby="priority-tip">
+                    <label for="priorityChoice1">A</label>
+                    <input type="radio"
+                           id="priorityChoice2"
+                           name="priority"
+                           value="B"
+                           aria-describedby="priority-tip">
+                    <label for="priorityChoice1">B</label>
+                    <input type="radio"
+                           id="priorityChoice3"
+                           name="priority"
+                           value="C"
+                           aria-describedby="priority-tip">
+                    <label for="priorityChoice1">C</label>
+                    <!--
+                    <div role="tooltip" id="priority-tip">
+                      省略するとBを割り当てます。
+                    </div>
+                    -->
                   </div>
 
                   <label for="complete-status">済</label>
@@ -1222,7 +1240,7 @@
                          name="complete-status"
                          aria-describedby="complete-status-tip">
                   <div role="tooltip" id="complete-status-tip">
-                    既に完了しているときは済(チェック)します。
+                    既に完了しているときはチェックをいれます。
                   </div>
 
                   <button type="button" id="task-add-button">登録</button>

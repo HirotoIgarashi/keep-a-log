@@ -36,7 +36,7 @@ var
 // ---------------- ユーティリティメソッド終了 -------------------
 
 // ---------------- サーバ構成開始 -------------------------------
-app.set('port', process.env.PORT || 3000 );
+app.set('port', process.env.PORT || 8000 );
 
 // uncomment after placing your favicon in /public
 app.use( favicon(path.join(__dirname, 'public', 'favicon.ico')));

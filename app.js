@@ -52,7 +52,7 @@ app.use( session({
     // expires   : new Date(Date.now() + 4 * 404800000) 
     expires   : new Date(Date.now() + expire_time) 
   },
-  store         : new RedisStore({
+  store   : new RedisStore({
     host       : 'localhost',
     port       : 6379, 
     client     : client,

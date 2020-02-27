@@ -50,10 +50,10 @@ pal.bom = (function () {
   // --------------------- コールバック終了 --------------------
 
   // --------------------- パブリックメソッド開始 --------------------
-  initModule = function ( $container ) {
+  initModule = function (content) {
 
-    if ( pal.dom && $container ) {
-      pal.dom.initModule( $container );
+    if ( pal.dom && content ) {
+      pal.dom.initModule( content );
     }
 
     // URIのハッシュ変更イベントを処理する。

@@ -50,7 +50,7 @@ pal.login = (function () {
 
     jqueryMap = {
       $container  : $container,
-      $login      : $container.find( '.pal-dom-header-login' )
+      $login      : $container.getElementsByClassName('pal-dom-header-login')
     };
   };
   // DOMメソッド/setJqueryMap/終了
@@ -148,17 +148,20 @@ pal.login = (function () {
   //
   initModule = function ( $container ) {
     var
+      main_section = document.getElementById( 'pal-main' ),
       loginPage = pal.util_b.getTplContent( 'login' );
 
     stateMap.$container = $container;
 
     setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
-    jqueryMap.$container.html( loginPage );
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
 
-    jqueryMap.$login = $container.find( '.pal-login-button' );
-    jqueryMap.$login.click( onClickLogin );
+    jqueryMap.$container.appendChild(loginPage);
+
+    jqueryMap.$login = $container.getElementsByClassName('pal-login-button');
+    jqueryMap.$login[0].addEventListener('click', onClickLogin );
 
     return true;
 

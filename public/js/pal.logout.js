@@ -78,7 +78,7 @@ pal.logout = (function () {
   onReceiveLogout = function () {
     if ( request && request.readyState === 4 ) {
       if ( request.status === 200 ) {
-        jqueryMap.$message_area.text('ログアウトしました。ステータス: ' + request.status);
+        jqueryMap.$message_area.textContent = 'ログアウトしました。ステータス: ' + request.status;
 
         setTimeout( function () {
           pal.bom.setLocationHash( '' );
@@ -87,16 +87,16 @@ pal.logout = (function () {
       else {
         switch ( request.status ) {
           case '404':
-            jqueryMap.$message_area.text('URLが存在しません。ステータス: ' + request.status);
+            jqueryMap.$message_area.textContent = 'URLが存在しません。ステータス: ' + request.status;
             break;
           case '401':
-            jqueryMap.$message_area.text('エラーが発生しました。ステータス: ' + request.status);
+            jqueryMap.$message_area.textContent = 'エラーが発生しました。ステータス: ' + request.status;
             break;
           case '500':
-            jqueryMap.$message_area.text('サーバエラーが発生しました。ステータス: ' + request.status);
+            jqueryMap.$message_area.textContent = 'サーバエラーが発生しました。ステータス: ' + request.status;
             break;
           default:
-            jqueryMap.$message_area.text('エラーが発生しました。ステータス: ' + request.status);
+            jqueryMap.$message_area.textContent = 'エラーが発生しました。ステータス: ' + request.status;
         }
       }
     }
@@ -136,23 +136,28 @@ pal.logout = (function () {
   // 戻り値: true
   // 例外発行: なし
   //
-  initModule = function ( $container ) {
+  initModule = function ( content ) {
     var
+      main_section = document.getElementById( 'pal-main' ),
       loginPage = pal.util_b.getTplContent( 'logout' );
 
-    stateMap.$container = $container;
+    stateMap.$container = content;
 
     setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
-    jqueryMap.$container.html( loginPage );
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
 
-    jqueryMap.$agree        = $container.find( '#agree' );
-    jqueryMap.$cancel       = $container.find( '#cancel' );
-    jqueryMap.$message_area = $container.find( '#message-area' );
+    // jqueryMap.$container.html( loginPage );
+    jqueryMap.$container.appendChild( loginPage );
 
-    jqueryMap.$agree.click( onClickAgree );
-    jqueryMap.$cancel.click( onClickCancel );
+    jqueryMap.$agree        = document.getElementById('agree');
+    jqueryMap.$cancel       = document.getElementById('cancel');
+    jqueryMap.$message_area = document.getElementById('message-area');
+
+    // jqueryMap.$agree.click( onClickAgree );
+    jqueryMap.$agree.addEventListener('click', onClickAgree );
+    jqueryMap.$cancel.addEventListener('click', onClickCancel );
 
     return true;
 

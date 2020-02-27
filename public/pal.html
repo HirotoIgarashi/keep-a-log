@@ -1515,7 +1515,9 @@
         <div id="pal"></div>
 
         <script>
-          $( function () { pal.initModule( $('#pal' ) ); });
+          document.addEventListener('DOMContentLoaded', function(event) {
+            pal.initModule('pal');
+          });
         </script>
 
     </body>

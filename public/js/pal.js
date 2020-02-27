@@ -13,10 +13,13 @@
 
 pal = (function () {
   'use strict';
-  var initModule = function ( $container ) {
 
-    if ( pal.bom && $container ) {
-      pal.bom.initModule( $container );
+  var initModule = function (id) {
+    var content;
+    content = document.getElementById(id);
+
+    if ( pal.bom && content) {
+      pal.bom.initModule( content );
     }
 
   };

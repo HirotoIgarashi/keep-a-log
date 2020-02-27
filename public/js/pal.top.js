@@ -82,14 +82,16 @@ pal.top = (function () {
   // 戻り値: true
   // 例外発行: なし
   //
-  initModule = function ( $container ) {
+  initModule = function (content) {
     var
+      main_section = document.getElementById( 'pal-main' ),
       top_page = pal.util_b.getTplContent( 'top-page' );
 
-    stateMap.$container = $container;
-    setJqueryMap();
+    // mainセクションの子要素をすべて削除する
+    pal.util.emptyElement( main_section );
 
-    jqueryMap.$container.html( top_page );
+
+    content.appendChild(top_page);
 
     return true;
   };

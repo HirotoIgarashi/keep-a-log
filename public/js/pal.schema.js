@@ -10,7 +10,7 @@
   white   : true
 */
 
-/*global $, pal */
+/*global pal */
 
 pal.schema = (function () {
   'use strict';
@@ -19,15 +19,12 @@ pal.schema = (function () {
     configModule, initModule,
     objectCreate,
     extendObject,
-    sayHello,sayText,
     makeFormElement,
     makeMicrodataElement,
     makeDetailElement,
     makeThing,
     actionPrototype,
     makeAction,
-    makeMammal,
-    catPrototype, makeCat,
     date_type_list = [ 'startTime', 'endTime' ],
     ja_trans = {
       name            : 'タイトル',
@@ -42,19 +39,6 @@ pal.schema = (function () {
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
-  // ユーティリティメソッド/example_method/開始
-  // 目的:
-  // 必須引数:
-  // オプション引数:
-  // 設定:
-  // 戻り値:
-  // 例外発行: なし
-  // example_method = function () {
-  //   var example;
-  //   return example;
-  // };
-  // ユーティリティメソッド/example_method/終了
-
   // ユーティリティメソッド/objectCreate/開始
   // 目的:  継承を設定するユーティリティ関数
   //        Object.create()を継承するためのブラウザに依存しないメソッド
@@ -95,7 +79,7 @@ pal.schema = (function () {
     var key_name;
   
     for ( key_name in ext_obj ) {
-      if ( ext_obj.hasOwnProperty( key_name ) ) {
+      if ( Object.prototype.hasOwnProperty.call(ext_obj, key_name) ) {
         orig_obj[ key_name ] = ext_obj[ key_name ];
       }
     }
@@ -103,23 +87,14 @@ pal.schema = (function () {
   };
   
   // オブジェクトメソッド
-  sayHello = function () {
-    console.log( this.hello_text + ' says ' + this.name );
-  };
-  
-  sayText = function ( text ) {
-    console.warn( this.name + ' says ' + text );
-  };
-  
   // makeFormElement/開始
   // 目的: カスタムオブジェクトからform要素を生成する
   //       thisはアクションオブジェクト
   //
   //       form_fragment
   //        |- form_element
-  //          |- div_element
-  //            |- label_element
-  //            |- input_element
+  //          |- label_element
+  //          |- input_element
   //
   // 必須引数:
   //  * event_listener  : input要素のイベントリスナー
@@ -134,7 +109,6 @@ pal.schema = (function () {
       prop_names,
       form_fragment,
       form_element,
-      // div_element,
       label_element,
       input_element,
       i;
@@ -154,11 +128,6 @@ pal.schema = (function () {
 
       // プロパティ値がfunctionだったら何もしない
       if ( typeof this[prop_names[i]] !== 'function' ) {
-
-        // // labelとinputの入れ物を生成する
-        // div_element = document.createElement( 'div' );
-        // div_element.setAttribute( 'class', 'pal-list-div' );
-
         // label要素を生成する
         label_element = document.createElement( 'label' );
 
@@ -171,9 +140,7 @@ pal.schema = (function () {
 
         label_element.setAttribute( 'class', 'pal-list-label' );
 
-        // 入れ物にlabel要素を追加する
-        // div_element.appendChild( label_element );
-
+        // フォームにlabel要素を追加する
         form_element.appendChild( label_element );
 
         // input要素を生成する
@@ -196,15 +163,9 @@ pal.schema = (function () {
         // nameフィールドにイベントリスナーを追加する
         input_element.addEventListener( 'blur', event_listener, false );
 
-        // 入れ物にinput要素を追加する
-        // div_element.appendChild( input_element );
-
+        // フォームにinput要素を追加する
         form_element.appendChild( input_element );
-
-        // // form要素に入れ物のdiv要素を追加する
-        // form_element.appendChild( div_element );
       }
-
     }
 
     // フラグメントのルートに追加する
@@ -378,39 +339,6 @@ pal.schema = (function () {
     return action;
   
   };
-  // makeMammalコンストラクタ
-  makeMammal = function( arg_map ) {
-    var mammal = {
-      is_warn_blooded : true,
-      has_fur         : true,
-      leg_count       : 4,
-      has_live_birth  : true,
-      hello_text      : 'grunt',
-      name            : 'anonymous',
-      say_hello       : sayHello,
-      say_text        : sayText
-    };
-    extendObject( mammal, arg_map );
-  
-    return mammal;
-  
-  };
-  
-  // makeMammalコンストラクタを使ってcatプロトタイプを作成する
-  catPrototype = makeMammal({
-    has_whiskers  : true,
-    hello_text    : 'meow'
-  });
-  
-  // catコンストラクタ
-  makeCat = function ( arg_map ) {
-    var cat = Object.create( catPrototype );
-    extendObject( cat, arg_map );
-  
-    return cat;
-  
-  };
-  
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -454,7 +382,6 @@ pal.schema = (function () {
   return {
     configModule  : configModule,
     initModule    : initModule,
-    makeCat       : makeCat,
     makeAction    : makeAction
   };
   // --------------------- パブリックメソッド終了 --------------------

@@ -10,21 +10,21 @@
   white   : true
 */
 
-/*global $, pal */
+/*global pal*/
 
 pal.cycleSystem = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
-    format_calendar_date, // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
-    format_iso_ext,       // Dateオブジェクトを与えてISO9601形式の文字列を求める
-    get_today_date,       // 今日のDateオブジェクトを求める
-    get_this_month,       // Dateオブジェクトを与えて、その月のDateオブジェクトを求める
-    get_next_month,       // ある月のDateオブジェクトを与えて翌月のDateオブジェクトを求める
-    get_previous_month,   // ある月のDateオブジェクトを与えて先月のDateオブジェクトを求める
-    get_day_of_the_week,  // ある日付を与えてその日の曜日を求める
-    get_begining_of_the_week, // ある日付を与えての週の始まり(月曜日)を返す
-    make_date_object,            // yyyy/mmを与えてDateオブジェクトを返す
+    // format_calendar_date, // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
+    // format_iso_ext,       // Dateオブジェクトを与えてISO9601形式の文字列を求める
+    // get_today_date,       // 今日のDateオブジェクトを求める
+    // get_this_month,       // Dateオブジェクトを与えて、その月のDateオブジェクトを求める
+    // get_next_month,       // ある月のDateオブジェクトを与えて翌月のDateオブジェクトを求める
+    // get_previous_month,   // ある月のDateオブジェクトを与えて先月のDateオブジェクトを求める
+    // get_day_of_the_week,  // ある日付を与えてその日の曜日を求める
+    //get_begining_of_the_week, // ある日付を与えての週の始まり(月曜日)を返す
+    // make_date_object,            // yyyy/mmを与えてDateオブジェクトを返す
     // onHashchange,
     initTab,
     initDailyTab,
@@ -53,96 +53,96 @@ pal.cycleSystem = (function () {
 
   // ユーティリティメソッド/format_calendar_date/開始
   // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
-  format_calendar_date = function ( date ) {
-    return date.toLocaleDateString();
-  };
+  // format_calendar_date = function ( date ) {
+  //   return date.toLocaleDateString();
+  // };
   // ユーティリティメソッド/format_calendar_date/終了
 
   // ユーティリティメソッド/format_iso_ext/開始
   // Dateオブジェクトを与えてISO9601形式の文字列を求める
-  format_iso_ext = function ( date ) {
-    return date.toISOString();
-  };
+  // format_iso_ext = function ( date ) {
+  //   return date.toISOString();
+  // };
   // ユーティリティメソッド/format_iso_ext/終了
 
   // ユーティリティメソッド/get_today_date/開始
   // 今日のDateオブジェクトを求める
-  get_today_date = function () {
-    return new Date();
-  };
+  // get_today_date = function () {
+  //   return new Date();
+  // };
   // ユーティリティメソッド/get_today_date/終了
 
   // ユーティリティメソッド/get_this_month/開始
   // Dateオブジェクトを与えて、その月のDateオブジェクトを求める
-  get_this_month = function ( date ) {
-    return date;
-  };
+  // get_this_month = function ( date ) {
+  //   return date;
+  // };
   // ユーティリティメソッド/get_this_month/終了
 
   // ユーティリティメソッド/get_next_month/開始
   // ある月のDateオブジェクトを与えて翌月のDateオブジェクトを求める
-  get_next_month = function ( date ) {
-    var
-      next_month;
+  // get_next_month = function ( date ) {
+  //   var
+  //     next_month;
 
-    next_month = new Date( date.getFullYear(), date.getMonth() + 1 );
+  //   next_month = new Date( date.getFullYear(), date.getMonth() + 1 );
 
-    return next_month;
-  };
+  //   return next_month;
+  // };
   // ユーティリティメソッド/get_next_month/終了
 
   // ユーティリティメソッド/get_previous_month/開始
   // ある月のDateオブジェクトを与えて先月のDateオブジェクトを求める
-  get_previous_month = function ( date ) {
-    var
-      previous_month;
+  // get_previous_month = function ( date ) {
+  //   var
+  //     previous_month;
 
-    previous_month = new Date( date.getFullYear(), date.getMonth() - 1 );
+  //   previous_month = new Date( date.getFullYear(), date.getMonth() - 1 );
 
-    return previous_month;
-  };
+  //   return previous_month;
+  // };
   // ユーティリティメソッド/get_previous_month/終了
 
   // ユーティリティメソッド/get_day_of_the_week/開始
   // ある日付を与えてその日の曜日を求める
-  get_day_of_the_week = function ( date ) {
-    return date.getDay();
-  };
+  // get_day_of_the_week = function ( date ) {
+  //   return date.getDay();
+  // };
   // ユーティリティメソッド/get_day_of_the_week/終了
 
   // ユーティリティメソッド/make_date_object/開始
-  make_date_object = function ( yyyymm ) {
-    var
-      date_list;
+  // make_date_object = function ( yyyymm ) {
+  //   var
+  //     date_list;
 
-    date_list = yyyymm.split( '/' );
+  //   date_list = yyyymm.split( '/' );
 
-    return new Date( date_list[ 0 ], parseInt( date_list[ 1 ], 10 ) - 1 );
-  };
+  //   return new Date( date_list[ 0 ], parseInt( date_list[ 1 ], 10 ) - 1 );
+  // };
   // ユーティリティメソッド/make_date_object/終了
 
   // ユーティリティメソッド/get_begining_of_the_week/開始
   // ある日付を与えての週の始まり(月曜日)を返す
-  get_begining_of_the_week = function ( date ) {
-    var
-      day_of_week,
-      begining_date;
+  // get_begining_of_the_week = function ( date ) {
+  //   var
+  //     day_of_week,
+  //     begining_date;
 
-    // 引数をbegining_dateにコピーする
-    begining_date = new Date( date.getTime() );
-    // 曜日を求める
-    day_of_week = get_day_of_the_week( begining_date );
+  //   // 引数をbegining_dateにコピーする
+  //   begining_date = new Date( date.getTime() );
+  //   // 曜日を求める
+  //   day_of_week = get_day_of_the_week( begining_date );
 
-    // 月曜日を求める
-    if ( day_of_week === 0 ) {
-      begining_date.setDate( begining_date.getDate() - 6 );
-    }
-    else {
-      begining_date.setDate( begining_date.getDate() - day_of_week + 1 );
-    }
+  //   // 月曜日を求める
+  //   if ( day_of_week === 0 ) {
+  //     begining_date.setDate( begining_date.getDate() - 6 );
+  //   }
+  //   else {
+  //     begining_date.setDate( begining_date.getDate() - day_of_week + 1 );
+  //   }
 
-    return begining_date;
-  };
+  //   return begining_date;
+  // };
   // ユーティリティメソッド/get_begining_of_the_week/終了
   //--------------------- ユーティリティメソッド終了 -----------------
 

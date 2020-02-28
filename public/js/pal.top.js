@@ -10,7 +10,7 @@
   white   : true
 */
 
-/*global $, pal */
+/*global pal */
 
 pal.top = (function () {
   'use strict';
@@ -20,10 +20,11 @@ pal.top = (function () {
       settable_map  : { color_name: true },
       color_name    : 'blue'
     },
-    stateMap = { $container : null },
-    jqueryMap = {},
+    // stateMap = { $container : null },
+    //jqueryMap = {},
 
-    setJqueryMap, configModule, initModule;
+    // setJqueryMap,
+    configModule, initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -43,11 +44,11 @@ pal.top = (function () {
 
   //--------------------- DOMメソッド開始 ----------------------------
   // DOMメソッド/setJqueryMap/開始
-  setJqueryMap = function () {
-    var $container = stateMap.$container;
+  // setJqueryMap = function () {
+  //   // var $container = stateMap.$container;
 
-    jqueryMap = { $container  : $container };
-  };
+  //   // jqueryMap = { $container  : $container };
+  // };
   // DOMメソッド/setJqueryMap/終了
   //--------------------- DOMメソッド終了 ----------------------------
 

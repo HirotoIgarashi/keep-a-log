@@ -16,12 +16,15 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "jade": "~1.11.0",
-    "mongodb": "^2.2.30",
-    "morgan": "^1.9.0",
-    "npm": "^6.13.4",
+    "mongodb": "^3.5.4",
+    "morgan": "^1.9.1",
+    "npm": "^6.14.1",
     "pg": "^6.4.1",
     "request": "^2.79.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0"
   }
 }

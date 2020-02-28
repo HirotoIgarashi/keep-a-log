@@ -16,7 +16,7 @@
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-/*global $, pal */
+/*global pal */
 
 pal.util = (function () {
   var
@@ -106,27 +106,27 @@ pal.util = (function () {
   // 戻り値: true
   // 例外発行: 入力キーが許可されていない場合は例外を発行する
   //
-  setConfigMap = function ( arg_map ) {
-    var
-      input_map = arg_map.input_map,
-      settable_map = arg_map.settable_map,
-      config_map = arg_map.configMap,
-      key_name, error;
+  // setConfigMap = function ( arg_map ) {
+  //   var
+  //     input_map = arg_map.input_map,
+  //     settable_map = arg_map.settable_map,
+  //     config_map = arg_map.configMap,
+  //     key_name, error;
 
-    for ( key_name in input_map ) {
-      if ( input_map.hasOwnProperty( key_name ) ) {
-        if ( settable_map.hasOwnProperty( key_name ) ) {
-          config_map[key_name] = input_map[key_name];
-        }
-        else {
-          error = makeError( 'Bad Input', 
-            'Setting config key |' + key_name + '| is not supported'
-          );
-          throw error;
-        }
-      }
-    }
-  };
+  //   for ( key_name in input_map ) {
+  //     if ( input_map.hasOwnProperty( key_name ) ) {
+  //       if ( settable_map.hasOwnProperty( key_name ) ) {
+  //         config_map[key_name] = input_map[key_name];
+  //       }
+  //       else {
+  //         error = makeError( 'Bad Input', 
+  //           'Setting config key |' + key_name + '| is not supported'
+  //         );
+  //         throw error;
+  //       }
+  //     }
+  //   }
+  // };
   // パブリックメソッド/setConfigMap/終了
 
   // パブリックメソッド/clearFormAll/開始

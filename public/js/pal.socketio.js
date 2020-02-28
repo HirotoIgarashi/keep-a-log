@@ -9,7 +9,7 @@
   regexp  : true, sloppy  : true, vars      : true,
   white   : true
 */
-/*global $, io, pal */
+/*global io, pal */
 
 pal.socketio = (function () {
   'use strict';
@@ -91,7 +91,7 @@ pal.socketio = (function () {
 
     // メッセージを受信したあとのコールバックを登録する
     for ( key in event_map ) {
-      if ( event_map.hasOwnProperty( key ) ) {
+      if ( Object.prototype.hasOwnProperty.call(event_map, key) ) {
         stateMap.sio.on( key, event_map[ key ] );
       }
     }

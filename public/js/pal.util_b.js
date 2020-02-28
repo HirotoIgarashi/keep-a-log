@@ -13,7 +13,7 @@
   regexp  : true, sloppy  : true, vars      : true,
   white   : true
 */
-/*global $, pal, getComputedStyle, ActiveXObject */
+/*global $, pal, ActiveXObject */
 
 pal.util_b = (function () {
   'use strict';

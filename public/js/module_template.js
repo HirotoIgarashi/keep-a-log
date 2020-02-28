@@ -10,7 +10,7 @@
   white   : true
 */
 
-/*global $, pal */
+/*global pal*/
 
 pal.module = (function () {
   'use strict';

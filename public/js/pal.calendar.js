@@ -10,13 +10,13 @@
   white   : true
 */
 
-/*global $, pal */
+/*global pal*/
 
 pal.calendar = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
-    format_calendar_date, // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
+    // format_calendar_date, // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
     format_iso_ext,       // Dateオブジェクトを与えてISO9601形式の文字列を求める
     get_today_date,       // 今日のDateオブジェクトを求める
     get_this_month,       // Dateオブジェクトを与えて、その月のDateオブジェクトを求める
@@ -51,9 +51,9 @@ pal.calendar = (function () {
 
   // ユーティリティメソッド/format_calendar_date/開始
   // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
-  format_calendar_date = function ( date ) {
-    return date.toLocaleDateString();
-  };
+  // format_calendar_date = function ( date ) {
+  //   return date.toLocaleDateString();
+  // };
   // ユーティリティメソッド/format_calendar_date/終了
 
   // ユーティリティメソッド/format_iso_ext/開始
@@ -156,7 +156,8 @@ pal.calendar = (function () {
       current_location_hash,
       current_date,
       menu  = pal.util_b.getTplContent( 'calendar-tmpl' ),
-      pattern = /^#calendar\/([\/0-9]+)/,
+      // pattern = /^#calendar\/([\/0-9]+)/,
+      pattern = /^#calendar\/([0-9]+)/,
       date_yyyymm,
       date_yyyymm_list,
       date_yyyy,

@@ -9,7 +9,7 @@
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-/*global $, pal */
+/*global pal*/
 
 pal.dom = (function () {
   'use strict';

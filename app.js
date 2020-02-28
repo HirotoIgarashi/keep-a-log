@@ -27,6 +27,8 @@ var
   app           = express(                    ),
   server        = http.createServer( app      ),
   expire_time   = 1000 * 60 * 60 * 24 * 30;               // 30日
+
+const morgan = require('morgan');
   // io            = require( 'socket.io'        )( server ),
   // send_date,
   // countIdx = 0;
@@ -62,6 +64,9 @@ app.use( session({
   resave            : false
 }) );
 app.use( express.static( path.join(__dirname, '/public' )));
+
+// morganの「combined」フォーマットでログを出すように指示します。
+app.use(morgan('combined'));
 
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

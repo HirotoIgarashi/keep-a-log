@@ -9,7 +9,7 @@
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-/*global $, pal */
+/*global pal*/
 
 pal.bom = (function () {
   'use strict';
@@ -61,7 +61,7 @@ pal.bom = (function () {
     // そうしないと、トリガーイベントを処理できる状態になっていない。
     // トリガーイベントはアンカーがロード状態と見なせることを保証するために
     // 使う
-    if ( window.hasOwnProperty("onhashchange") ) {
+    if ( Object.prototype.hasOwnProperty.call(window, "onhashchange") ) {
       window.addEventListener( "hashchange", onHashchange, false );
     }
 

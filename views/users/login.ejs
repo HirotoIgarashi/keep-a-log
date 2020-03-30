@@ -1,0 +1,26 @@
+<%# ユーザがログインするためのフォーム %>
+
+<div class="flashes">
+  <% if (flashMessages) { %>
+    <% if (flashMessages.success) { %>
+      <div class="flash success">
+        <%= flashMessages.success; %>
+      </div>
+    <% } else if (flashMessages.error) { %>
+      <div class="flash error">
+        <%= flashMessages.error; %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<form action="/users/login" method="POST">
+  <h2>ログイン:</h2>
+  <label for="inputEmail">Emailアドレス</label>
+  <input type="email" name="email" id="inputEmail"
+    placefolder="Emailアドレス" required>
+  <label for="inputPassword">パスワード</label>
+  <input type="password" name="password" id="inputPassword"
+    placefolder="パスワード" required>
+  <button type="submit">ログイン</button>
+</form>

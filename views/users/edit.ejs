@@ -1,0 +1,45 @@
+<div class="flashes">
+  <% if (flashMessages) { %>
+    <% if (flashMessages.success) { %>
+      <div class="flash success">
+        <%= flashMessages.success; %>
+      </div>
+    <% } else if (flashMessages.error) { %>
+      <div class="flash error">
+        <%= flashMessages.error; %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<div class="data-form">
+  <%# ユーザアカウント作成用のフォームを構築 %>
+  <form method="POST" action="<%=`/users/${user._id}/update?_method=PUT` %>">
+  <h2>ユーザのデータを編集する:</h2>
+    <%# ユーザのプロパティをフォームの入力として追加する %>
+
+    <label for="inputFirstName">姓</label>
+    <%# 既存のユーザ属性値を編集フォームに適用する %>
+    <input type="text" name="first" id="inputFirstName"
+      value="<%= user.name.first %>" placeholder="姓" autofocus>
+
+    <label for="inputLastName">名</label>
+    <input type="text" name="last" id="inputLastName"
+      value="<%= user.name.last %>" placeholder="名">
+
+    <%# パスワードとメールアドレスのフィールドを保護するHTML属性を適用 %>
+    <label for="inputPassword">パスワード</label>
+    <input type="password" name="password" id="inputPassword"
+      value="<%= user.password %>" placeholder="パスワード" required>
+
+    <label for="inputEmail">Email address</label>
+    <input type="email" name="email" id="inputEmail"
+      value="<%= user.email %>" placeholder="Email address" required>
+
+    <label for="inputZipCode">郵便番号</label>
+    <input type="text" name="zipCode" id="inputZipCode"
+      pattern="*" value="<%= user.zipCode %>"  placeholder="Zip Code" required>
+
+    <button type="submit">更新</button>
+  </form>
+</div>

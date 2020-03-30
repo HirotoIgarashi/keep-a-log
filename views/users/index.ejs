@@ -1,0 +1,51 @@
+<h2>ユーザテーブル</h2>
+<div class="flashes">
+  <% if (flashMessages) { %>
+    <% if (flashMessages.success) { %>
+      <div class="flash success">
+        <%= flashMessages.success; %>
+      </div>
+    <% } else if (flashMessages.error) { %>
+      <div class="flash error">
+        <%= flashMessages.error; %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th>名前</th>
+      <th>Email</th>
+      <th>郵便番号</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- ビューの中で、ユーザの配列をループする -->
+    <% users.forEach(user => { %>
+      <tr>
+        <td>
+          <%# ユーザの名前とIDを、HTMLに埋め込む %>
+          <a href="<%= `/users/${user._id}` %>">
+            <%= user.fullName %>
+          </a>
+        </td>
+        <td><%= user.email %></td>
+        <td><%= user.zipCode %></td>
+        <td>
+          <%# 編集用のタグにユーザのIDを埋め込む %>
+          <a href="<%=`/users/${user._id}/edit` %>">
+            編集
+          </a>
+        </td>
+        <td>
+          <%# インデックスページにdeleteアクションへのリンクを追加 %>
+          <a href="<%=`/users/${user._id}/delete?_method=DELETE` %>"
+            onclick="return confirm('本当にこのレコードを削除しますか？')">
+            削除
+          </a>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

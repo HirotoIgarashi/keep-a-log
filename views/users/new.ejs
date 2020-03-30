@@ -1,0 +1,38 @@
+<div class="flashes">
+  <% if (flashMessages) { %>
+    <% if (flashMessages.success) { %>
+      <div class="flash success">
+        <%= flashMessages.success; %>
+      </div>
+    <% } else if (flashMessages.error) { %>
+      <div class="flash error">
+        <%= flashMessages.error; %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<div class="data-form">
+  <%# ユーザアカウント作成用のフォームを構築 %>
+  <form action="/users/create" method="POST">
+    <h2>新しいユーザを作成する:</h2>
+    <%# ユーザのプロパティをフォームの入力として追加する %>
+    <label for="inputFirstName">姓</label>
+    <input type="text" name="first" id="inputFirstName"
+      placeholder="姓" autofocus>
+    <label for="inputLastName">名</label>
+    <input type="text" name="last" id="inputLastName" placeholder="名">
+    <%# パスワードとメールアドレスのフィールドを保護するHTML属性を適用 %>
+    <label for="inputPassword">パスワード</label>
+    <input type="password" name="password" id="inputPassword"
+      placeholder="パスワード" required>
+    <label for="inputEmail">Email address</label>
+    <input type="email" name="email" id="inputEmail"
+      placeholder="Email address" required>
+    <label for="inputZipCode">郵便番号</label>
+    <input type="text" name="zipCode" id="inputZipCode"
+      <%# pattern="*" placeholder="Zip Code" required> %>
+      pattern="*" placeholder="Zip Code">
+    <button type="submit">サインイン</button>
+  </form>
+</div>

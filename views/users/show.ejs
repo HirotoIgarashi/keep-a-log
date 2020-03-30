@@ -1,0 +1,53 @@
+<h1><%= user.fullName %></h1>
+
+<div class="flashes">
+  <% if (flashMessages) { %>
+    <% if (flashMessages.success) { %>
+      <div class="flash success">
+        <%= flashMessages.success; %>
+      </div>
+    <% } else if (flashMessages.error) { %>
+      <div class="flash error">
+        <%= flashMessages.error; %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<%# ユーザデータ表示用のテーブルを追加 %>
+<table class="table">
+  <tr>
+    <th>名前</th>
+    <td><%= user.fullName %></td>
+  </tr>
+  <tr>
+    <th>Email</th>
+    <td><%= user.email %></td>
+  </tr>
+  <tr>
+    <th>郵便番号</th>
+    <td><%= user.zipCode %></td>
+  </tr>
+  <tr>
+    <th>パスワード</th>
+    <td><%= user.password %></td>
+  </tr>
+</table>
+
+<div>
+  <a href="/users">すべてのユーザを表示する</a>
+</div>
+
+<div>
+  <a href="<%=`/users/${user._id}/edit`%>">ユーザの情報を編集する</a>
+</div>
+
+<div>
+  <%# ユーザアカウントの編集と削除のリンクを、プロファイルページに追加 %>
+    <a href="<%=`/users/${user._id}/delete?_method=DELETE` %>"
+      onclick="return confirm('本当にこのレコードを削除しますか？')">
+      削除
+    </a>
+</div>
+
+

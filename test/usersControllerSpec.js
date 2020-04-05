@@ -18,6 +18,14 @@ const testUserParam = {
   first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
 };
 
+const noFirstUserParam = {
+  last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
+};
+
+const noLastUserParam = {
+  first: '五十嵐', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
+};
+
 const noEmailUserParam = {
   first: '五十嵐',
   last: '浩人',
@@ -33,7 +41,29 @@ const noZipCodeUserParam = {
 };
 
 const noPasswordUserParam = {
-  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', zipCode: '1350004'
+  first: '五十嵐',
+  last: '浩人',
+  email: 'hiroto@gmail.com', zipCode: '1350004'
+};
+
+const shortPasswordUserParam = {
+  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hi', zipCode: '1350004'
+};
+
+const zipCodeSix = {
+  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768', zipCode: '135000'
+};
+
+const zipCodeEight = {
+  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768', zipCode: '13500008'
+};
+
+const zipCodeInvalid = {
+  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: 'abcdefg'
+};
+
+const invalidEmail = {
+  first: '五十嵐', last: '浩人', email: 'hirotogmail.com', password: 'hiroto3768', zipCode: '1350004'
 };
 
 describe('usersControllerのテスト', () => {
@@ -54,7 +84,6 @@ describe('usersControllerのテスト', () => {
             chai.request('http://localhost:8001')
               .get('/users/' + result[1] + '/delete?_method=DELETE')
               .end((err, res) => {
-                // console.log(err);
               });
           }
         })
@@ -75,7 +104,29 @@ describe('usersControllerのテスト', () => {
         })
     });
 
-    it('eメールアドレスの重複でユーザの登録が失敗するはず', (done) => {
+    it('姓がなくてもユーザ情報の登録が成功するはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(noFirstUserParam)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users');
+          done();
+        })
+    });
+
+    it('名がなくてもユーザ情報の登録が成功するはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(noLastUserParam)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users');
+          done();
+        })
+    });
+
+    it('eメールアドレスが重複しているので/users/newが表示されるはず', (done) => {
       chai.request('http://localhost:8001')
         .post('/users/create')
         .send(testUserParam)
@@ -91,7 +142,7 @@ describe('usersControllerのテスト', () => {
         });
     });
 
-    it('emailがないためユーザの登録が失敗するはず', (done) => {
+    it('emailがないため/users/newが表示されるはず', (done) => {
       chai.request('http://localhost:8001')
         .post('/users/create')
         .send(noEmailUserParam)
@@ -102,7 +153,7 @@ describe('usersControllerのテスト', () => {
         });
     });
 
-    it('zipCodeがないためユーザの登録が失敗するはず', (done) => {
+    it('zipCodeがないため/users/newが表示されるはず', (done) => {
       chai.request('http://localhost:8001')
         .post('/users/create')
         .send(noZipCodeUserParam)
@@ -113,7 +164,7 @@ describe('usersControllerのテスト', () => {
         });
     });
 
-    it('passwordがないためユーザの登録が失敗するはず', (done) => {
+    it('passwordがないため/users/newが表示されるはず', (done) => {
       chai.request('http://localhost:8001')
         .post('/users/create')
         .send(noPasswordUserParam)
@@ -124,6 +175,60 @@ describe('usersControllerのテスト', () => {
         });
     });
 
+    it('passwordが5桁ないため/users/newが表示されるはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(shortPasswordUserParam)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users/new');
+          done();
+        });
+    });
+
+    it('zipCodeが6桁なので/users/newが表示されるはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(zipCodeSix)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users/new');
+          done();
+        });
+    });
+
+    it('zipCodeが8桁なので/users/newが表示されるはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(zipCodeEight)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users/new');
+          done();
+        });
+    });
+
+    it('zipCodeが数字じゃないので/users/newが表示されるはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(zipCodeInvalid)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users/new');
+          done();
+        });
+    });
+
+    it('Eメールが正しくないので/users/newが表示されるはず', (done) => {
+      chai.request('http://localhost:8001')
+        .post('/users/create')
+        .send(invalidEmail)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirectTo('http://localhost:8001/users/new');
+          done();
+        });
+    });
   });
 
   describe('ユーザモデルのreadのテスト', () => {
@@ -152,11 +257,11 @@ describe('usersControllerのテスト', () => {
       chai.request('http://localhost:8001')
         .get('/users')
         // expectを実行するコールバックでリクエストを終える
-        .end(function(errors, res) {
+        .end(function(err, res) {
           // アプリケーションのレスポンスデータが200になることを期待
           expect(res).to.have.status(200);
           // エラーがないことを期待
-          expect(errors).to.be.equal(null);
+          expect(err).to.be.equal(null);
         });
       // テストにおけるサーバとのインタラクションを終了する
       done();

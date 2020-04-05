@@ -14,5 +14,6 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+      "consistent-return": ["error"]
     }
 };

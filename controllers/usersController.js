@@ -1,6 +1,6 @@
 // ユーザモデルをロードする
 const User = require('../models/user');
-const {body, check, validationResult} = require('express-validator');
+const {body, validationResult} = require('express-validator');
 
 const getUserParams = body => {
   return {
@@ -45,31 +45,39 @@ module.exports = {
   create: (req, res, next) => {
     let userParams = new User(getUserParams(req.body));
 
-    // フォームのパラメータでユーザを作る
-    User.create(userParams)
-      .then(user => {
-        // 成功のフラッシュメッセージで応答する
-        req.flash(
-          'success',
-          `${user.fullName}のアカウントの生成が成功しました。`
-        );
-        res.locals.redirect = '/users';
-        res.locals.user = user;
-        next();
-      })
-      .catch(error => {
-        console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
-        res.locals.redirect = '/users/new';
-        // 失敗のフラッシュメッセージで応答する
-        req.flash(
-          'error',
-          `ユーザアカウントの作成に失敗しました。理由: ${error.message}.`
-        );
-        next();
-      });
+    // バリデーションエラーが発生したので、ユーザデータを処理せず、
+    // redirectViewアクションまでスキップする
+    if (req.skip) {
+      next();
+    }
+    else {
+      // フォームのパラメータでユーザを作る
+      User.create(userParams)
+        .then(user => {
+          // 成功のフラッシュメッセージで応答する
+          req.flash(
+            'success',
+            `${user.fullName}のアカウントの生成が成功しました。`
+          );
+          res.locals.redirect = '/users';
+          res.locals.user = user;
+          next();
+        })
+        .catch(error => {
+          console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
+          // 失敗のフラッシュメッセージで応答する
+          req.flash(
+            'error',
+            `ユーザアカウントの作成に失敗しました。理由: ${error.message}.`
+          );
+          res.locals.redirect = '/users/new';
+          next();
+        });
+      }
   },
   redirectView: (req, res, next) => {
     let redirectPath = res.locals.redirect;
+
     if (redirectPath) {
       res.redirect(redirectPath);
     }
@@ -227,37 +235,39 @@ module.exports = {
         next(error);
       });
   },
+  // validateする項目
+  validateItem: () => {
+    // バリデーションルール
+    return [
+      // textフィールドの前後の空白を取り除きHTMLエスケープします
+      body('text').trim().escape(),
+      // 正しいEメールである必要があります
+      body('email')
+        .isEmail().withMessage('正しいEメールである必要があります')
+        .normalizeEmail(),
+      // パスワードは少なくとも5桁必要です。
+      body('password').isLength({min: 5}).withMessage('パスワードは少なくとも5桁必要です。'),
+      // 郵便番号は7桁必要です。
+      body('zipCode')
+        .isLength({min: 7, max: 7}).withMessage('郵便番号は7桁必要です。')
+        .isInt().withMessage('郵便番号には数字を入力して下さい。')
+    ];
+  },
   // validate関数を追加
   validate: (req, res, next) => {
+      // 検証
+      const errors = validationResult(req);
 
-    body('email')
-      .isEmail()
-      .normalizeEmail(),
-    body('text')
-      .not().isEmpty()
-      .trim(),
-    body('password')
-      .notEmpty();
+      if (!errors.isEmpty()) {
+        let messages = errors.array().map(e => e.msg);
 
-    check('zipCode')
-      .isLength({min: 8}).withMessage('must be 7 chars long');
+        // 次の処理(create)をスキップして、directViewを実行する
+        req.skip = true;
+        req.flash('error', messages.join(' また '));
 
-    check('password')
-      .isLength({min: 5}).withMessage('must be at least 5 char long')
-      .matches(/\d/).withMessage('must contain number');
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      let messages = errors.array().map(e => e.msg);
-      req.skip = true;
-      req.flash('error', messages.join(' and '));
-
-      res.locals.redirect = '/users.new';
+        res.locals.redirect = '/users/new';
+      }
       next();
-    }
-    else {
-      next();
-    }
   }
 };
+

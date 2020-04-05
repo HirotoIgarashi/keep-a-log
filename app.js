@@ -191,7 +191,7 @@ router.post('/session/create', (request, response) => {
     // 開発用に全てのリクエストに200を返す
     console.log(request);
     request.session.user = { email: email };
-    response.status( 200 );
+    response.status(200);
     response.end();
   }
 );
@@ -200,13 +200,13 @@ router.get('/session/read', (request, response) => {
     console.log(request.session);
     console.log(request.query);
     if ( request.session.user ) {
-      response.status( 200 );
+      response.status(200);
       response.send( JSON.stringify( request.session.user ) );
       response.end();
     }
     else {
       // Non-Authoritative Informationのコード 203を返す
-      response.status( 203 );
+      response.status(203);
       response.send( { email: 'anonymous' } );
       response.end();
     }
@@ -216,7 +216,7 @@ router.get('/session/read', (request, response) => {
 app.get('/session/delete', (request, response) => {
     if ( request.session.user ) {
       request.session.destroy( (err) => {
-        if ( err ) {
+        if (err) {
           response.status( 500 );
           response.end();
         }
@@ -245,6 +245,7 @@ router.get('/users/new', usersController.new);
 // Createのフォームからデータを送出するリクエストを処理し、ビューを表示する
 router.post(
   '/users/create',
+  usersController.validateItem(),
   usersController.validate,
   usersController.create,
   usersController.redirectView

@@ -1,3 +1,5 @@
+/*eslint-env mocha, expect */
+
 // test環境を設定する
 process.env.NODE_ENV = 'test';
 

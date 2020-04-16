@@ -10,7 +10,8 @@
 */
 /*global */
 
-// ---------------- モジュールスコープ変数開始 -------------------
+// この行は80桁です ------------------------------------------------------------
+// ---------------- モジュールスコープ変数開始 ---------------------------------
 'use strict';
 // 待ち受けるポートの8000を定義する
 const port = 8000;
@@ -29,6 +30,9 @@ const favicon = require('serve-favicon');
 const expressSession = require('express-session');
 
 const connectFlash = require('connect-flash');
+
+// passportモジュールをロード
+const passport = require('passport');
 
 const redis = require('redis');
 const RedisStore = require('connect-redis')(expressSession);
@@ -87,15 +91,19 @@ db.once('open', () => {
   console.log('Server Message: Mongooseを使ってMongoDBに接続しました！');
 });
 
+// Userモデルをロードする
+const User = require('./models/user');
+
 // セッションのタイムを30日に設定する
 const expire_time = 1000 * 60 * 60 * 24 * 30;
 
-// ---------------- モジュールスコープ変数終了 -------------------
+const {validationResult} = require('express-validator');
+// ---------------- モジュールスコープ変数終了 ---------------------------------
 
-// ---------------- ユーティリティメソッド開始 -------------------
-// ---------------- ユーティリティメソッド終了 -------------------
+// ---------------- ユーティリティメソッド開始 ---------------------------------
+// ---------------- ユーティリティメソッド終了 ---------------------------------
 
-// ---------------- サーバ構成開始 -------------------------------
+// ---------------- サーバ構成開始 ---------------------------------------------
 // テストなら、ポート8001を使う
 if (process.env.NODE_ENV === 'test') {
   app.set('port', 8001 );
@@ -158,6 +166,21 @@ router.use((req, res, next) => {
   next();
 });
 
+// ------------------ passportの設定開始 ---------------------------------------
+// passportを初期化
+router.use(passport.initialize());
+
+// Express.jsのセッションを使うようにpassportを設定する
+router.use(passport.session());
+
+// Userのログインストラテジーを設定
+passport.use(User.createStrategy());
+
+// ユーザデータのシリアライズ／デシリアライズを行うように、passportを設定する
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+// ------------------ passportの設定終了 ---------------------------------------
+
 // morganの「combined」フォーマットでログを出すように指示します。
 app.use(morgan('combined'));
 
@@ -166,17 +189,19 @@ app.use('/', router);
 
 // ホームページの経路を作る
 router.get('/', (req, res) => {
-  var
-    options = {
-      root      : path.join( __dirname, '/public' ),
-      dotfiles  : 'deny',
-      headers   : { 'x-timestamp': Date.now(), 'x-sent': true }
-    };
+  const options = {
+    root      : path.join( __dirname, '/public' ),
+    dotfiles  : 'deny',
+    headers   : { 'x-timestamp': Date.now(), 'x-sent': true }
+  };
+
+  console.log(options.root);
 
   res.sendFile('pal.html', options, (error) => {
       if (error) {
         console.log(error);
-        res.status(error.status).end();
+        // res.status(error.status).end();
+        res.end();
       }
       else {
         console.log( 'Server Message: Send:', 'pal.html' );
@@ -189,7 +214,6 @@ router.post('/session/create', (request, response) => {
     let email = request.body.email;
 
     // 開発用に全てのリクエストに200を返す
-    console.log(request);
     request.session.user = { email: email };
     response.status(200);
     response.end();
@@ -197,8 +221,6 @@ router.post('/session/create', (request, response) => {
 );
 
 router.get('/session/read', (request, response) => {
-    console.log(request.session);
-    console.log(request.query);
     if ( request.session.user ) {
       response.status(200);
       response.send( JSON.stringify( request.session.user ) );
@@ -213,9 +235,9 @@ router.get('/session/read', (request, response) => {
   }
 );
 
-app.get('/session/delete', (request, response) => {
+router.get('/session/delete', (request, response) => {
     if ( request.session.user ) {
-      request.session.destroy( (err) => {
+      request.session.destroy((err) => {
         if (err) {
           response.status( 500 );
           response.end();
@@ -229,6 +251,65 @@ app.get('/session/delete', (request, response) => {
   }
 );
 
+// ------ /user/createのpostの処理 -----------------------------------
+// Ajaxリクエストのフォームデータを処理する
+router.post(
+  '/user/create',
+  usersController.validateItem(),
+  // usersController.validateAjax
+  (req, res) => {
+    const getUserParams = body => {
+      return {
+        name: {
+          first: body.first,
+          last: body.last
+        },
+        email: body.email,
+        password: body.password,
+        zipCode: body.zipCode
+      };
+    };
+
+    // 検証
+    const result = validationResult(req);
+
+    if (!result.isEmpty()) {
+      let messages = result.array().map(e => {
+        return {value: e.value, msg: e.msg, param: e.param};
+      });
+
+      res.status(422).jsonp(messages);
+      res.end();
+    }
+    else {
+      // Ajaxのパラメータでユーザを作る
+      let newUser = new User(getUserParams(req.body));
+
+      // フォームのパラメータでユーザを作る
+      User.register(newUser, req.body.password, (error, user) => {
+        if (user) {
+          res.status(200);
+          res.end();
+        }
+        else {
+          if (error.name === 'UserExistsError') {
+            console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
+            res.status(422).jsonp([{value: 'req.body.email', msg: error.message, param: 'email'}]);
+            res.end();
+          }
+          else {
+            console.log(`不明のエラー: ${error.name}`);
+            console.log(`不明のエラー: ${error.message}`);
+            res.status(422).jsonp(error.message);
+            res.end();
+          }
+        }
+      });
+    }
+    return;
+  }
+);
+
 // インデックス経路を作成
 router.get('/users', usersController.index, usersController.indexView);
 
@@ -236,8 +317,9 @@ router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/login', usersController.login);
 
 // 同じパスに向かうPOSTリクエストを処理する経路
-router.post('/users/login', usersController.authenticate,
-            usersController.redirectView);
+// router.post('/users/login', usersController.authenticate,
+//             usersController.redirectView);
+router.post('/users/login', usersController.authenticate);
 
 // Createリクエストの処理でフォームを供給する
 router.get('/users/new', usersController.new);
@@ -258,7 +340,13 @@ router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/:id/edit', usersController.edit);
 
 // Editフォームからのデータを処理して、ユーザShowページを表示
-router.put('/users/:id/update', usersController.update, usersController.redirectView);
+router.put(
+  '/users/:id/update',
+  usersController.validateItem(),
+  usersController.validate,
+  usersController.update,
+  usersController.redirectView
+);
 
 // ユーザdelete処理を追加
 router.delete('/users/:id/delete', usersController.delete, usersController.redirectView);
@@ -267,9 +355,9 @@ router.delete('/users/:id/delete', usersController.delete, usersController.redir
 app.use(errorController.respondNoResouceFound);
 app.use(errorController.respondInternalError);
 
-// ---------------- サーバ構成終了 -------------------------------
+// ---------------- サーバ構成終了 ---------------------------------------------
 
-// ---------------- サーバ起動開始 -------------------------------
+// ---------------- サーバ起動開始 ---------------------------------------------
 let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
@@ -281,5 +369,9 @@ else {
   console.log( 'Server Message: The Express.js server has started and is listening on port number:' + `${app.get('port')}`);
   });
 }
+
+// サーバのインスタンスをsocket.ioに渡す
+const io = require('socket.io')(server);
+
 module.exports = server;
-// ---------------- サーバ起動終了 -------------------------------
+// ---------------- サーバ起動終了 ---------------------------------------------

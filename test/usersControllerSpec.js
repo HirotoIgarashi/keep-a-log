@@ -1,5 +1,7 @@
 'use strict';
 
+/*eslint-env mocha, expect */
+
 // test環境を設定する
 process.env.NODE_ENV = 'test';
 
@@ -84,6 +86,9 @@ describe('usersControllerのテスト', () => {
             chai.request('http://localhost:8001')
               .get('/users/' + result[1] + '/delete?_method=DELETE')
               .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res).to.redirectTo('http://localhost:8001/users');
+                done();
               });
           }
         })
@@ -130,7 +135,8 @@ describe('usersControllerのテスト', () => {
       chai.request('http://localhost:8001')
         .post('/users/create')
         .send(testUserParam)
-        .end((err, res) => {
+        // .end((err, res) => {
+        .end(() => {
           chai.request('http://localhost:8001')
             .post('/users/create')
             .send(testUserParam)

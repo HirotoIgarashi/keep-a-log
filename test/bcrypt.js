@@ -1,11 +1,12 @@
+/*eslint-env mocha, expect */
+
 const expect  = require( "chai" ).expect;
 
 describe( "bcrypt test", function () {
   describe( "hash and compare", function () {
     const bcrypt = require('bcrypt');
     const saltRounds = 10;
-    const myPlaintextPassword = 's0/\/\Pr$$worD';
-    const someOtherPlaintextPassword = 'not_bacon';
+    const myPlaintextPassword = 's0//Pr$$worD';
     let hashed;
 
     it('hash and compare', function (done) {

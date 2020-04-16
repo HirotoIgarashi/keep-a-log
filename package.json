@@ -32,6 +32,8 @@
     "morgan": "^1.10.0",
     "node-pre-gyp": "^0.14.0",
     "npm": "^6.14.4",
+    "passport": "^0.4.1",
+    "passport-local-mongoose": "^6.0.1",
     "pg": "^6.4.1",
     "request": "^2.88.2",
     "serve-favicon": "^2.5.0",

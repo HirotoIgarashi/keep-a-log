@@ -56,3 +56,22 @@ input[type=password]::-ms-reveal {
   width         : auto;
   padding-left  : 0.4em;
 }
+
+.data-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.data-form label {
+  display: block;
+}
+
+.data-form input {
+  display: block;
+  margin-bottom: 15px;
+}
+
+button#registerUser {
+  margin-top: 30px;
+  margin-bottom: 10px
+}

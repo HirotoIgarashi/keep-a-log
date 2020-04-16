@@ -23,13 +23,13 @@ pal.bom = (function () {
 
   //--------------------- ユーティリティメソッド開始 -----------------
   // ユーティリティメソッド/setLocationHash/開始
-  setLocationHash = function ( hash ) {
+  setLocationHash = (hash) => {
     window.location.hash = hash;
   };
   // ユーティリティメソッド/setLocationHash/終了
 
   // ユーティリティメソッド/getLocationHash/開始
-  getLocationHash = function () {
+  getLocationHash = () => {
     return window.location.hash;
   };
   // ユーティリティメソッド/getLocationHash/終了
@@ -40,7 +40,7 @@ pal.bom = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // イベントハンドラ/onHashchange/開始
-  onHashchange = function ( /* event */ ) {
+  onHashchange = ( /* event */ ) => {
     pal.dom.setSection();
   };
   // イベントハンドラ/onHashchange/終了
@@ -50,7 +50,7 @@ pal.bom = (function () {
   // --------------------- コールバック終了 --------------------
 
   // --------------------- パブリックメソッド開始 --------------------
-  initModule = function (content) {
+  initModule = (content) => {
 
     if ( pal.dom && content ) {
       pal.dom.initModule( content );
@@ -61,7 +61,7 @@ pal.bom = (function () {
     // そうしないと、トリガーイベントを処理できる状態になっていない。
     // トリガーイベントはアンカーがロード状態と見なせることを保証するために
     // 使う
-    if ( Object.prototype.hasOwnProperty.call(window, "onhashchange") ) {
+    if (Object.prototype.hasOwnProperty.call(window, "onhashchange")) {
       window.addEventListener( "hashchange", onHashchange, false );
     }
 

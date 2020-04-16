@@ -1,6 +1,9 @@
+// passportをロードする
+const passport = require('passport');
+
 // ユーザモデルをロードする
 const User = require('../models/user');
-const {body, validationResult} = require('express-validator');
+const {check, validationResult} = require('express-validator');
 
 const getUserParams = body => {
   return {
@@ -41,39 +44,121 @@ module.exports = {
   new: (req, res) => {
     res.render('users/new');
   },
+  // Ajaxのパラメータでユーザを作る
+  createByAjax: (req, res) => {
+    const getUserParams = body => {
+      return {
+        name: {
+          first: body.first,
+          last: body.last
+        },
+        email: body.email,
+        password: body.password,
+        zipCode: body.zipCode
+      };
+    };
+
+    // 検証
+    const errors = validationResult(req);
+
+    console.log(errors);
+
+    if (!errors.isEmpty()) {
+      let messages = errors.array().map(e => e.msg);
+
+      console.log(messages);
+
+      res.status(422).jsonp(messages);
+      res.end();
+    }
+    else {
+      // Ajaxのパラメータでユーザを作る
+      let newUser = new User(getUserParams(req.body));
+
+      // フォームのパラメータでユーザを作る
+      User.register(newUser, req.body.password, (error, user) => {
+        if (user) {
+          res.status(200);
+          res.end();
+        }
+        else {
+          console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
+          res.status(422);
+          res.end();
+        }
+      });
+    }
+    return;
+  },
+    // console.log('req.session:');
+    // console.log(req.session);
+
+    // let newUser = new User(getUserParams(req.body));
+
+    // // バリデーションエラーが発生したので、ユーザデータを処理せず、
+    // // redirectViewアクションまでスキップする
+    // if (req.skip) {
+    //   next();
+    //   return;
+    // }
+
+    // // フォームのパラメータでユーザを作る
+    // User.register(newUser, req.body.password, (error, user) => {
+    //   if (user) {
+    //     // 成功のフラッシュメッセージで応答する
+    //     req.flash(
+    //       'success',
+    //       `${user.fullName}のアカウントの生成が成功しました。`
+    //     );
+    //     res.status(200);
+    //     res.end();
+    //   }
+    //   else {
+    //     console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
+    //     // 失敗のフラッシュメッセージで応答する
+    //     req.flash(
+    //       'error',
+    //       `次の理由でユーザアカウントの作成に失敗しました。: ${error.message}.`
+    //     );
+    //     res.status(200);
+    //     res.end();
+    //   }
+    // });
+    // return;
+    // },
   // フォームのパラメータでユーザを作る
   create: (req, res, next) => {
-    let userParams = new User(getUserParams(req.body));
+    let newUser = new User(getUserParams(req.body));
 
     // バリデーションエラーが発生したので、ユーザデータを処理せず、
     // redirectViewアクションまでスキップする
     if (req.skip) {
       next();
+      return;
     }
-    else {
-      // フォームのパラメータでユーザを作る
-      User.create(userParams)
-        .then(user => {
-          // 成功のフラッシュメッセージで応答する
-          req.flash(
-            'success',
-            `${user.fullName}のアカウントの生成が成功しました。`
-          );
-          res.locals.redirect = '/users';
-          res.locals.user = user;
-          next();
-        })
-        .catch(error => {
-          console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
-          // 失敗のフラッシュメッセージで応答する
-          req.flash(
-            'error',
-            `ユーザアカウントの作成に失敗しました。理由: ${error.message}.`
-          );
-          res.locals.redirect = '/users/new';
-          next();
-        });
+
+    // フォームのパラメータでユーザを作る
+    User.register(newUser, req.body.password, (error, user) => {
+      if (user) {
+        // 成功のフラッシュメッセージで応答する
+        req.flash(
+          'success',
+          `${user.fullName}のアカウントの生成が成功しました。`
+        );
+        res.locals.redirect = '/users';
+        next();
       }
+      else {
+        console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
+        // 失敗のフラッシュメッセージで応答する
+        req.flash(
+          'error',
+          `次の理由でユーザアカウントの作成に失敗しました。: ${error.message}.`
+        );
+        res.locals.redirect = '/users/new';
+        next();
+      }
+    });
   },
   redirectView: (req, res, next) => {
     let redirectPath = res.locals.redirect;
@@ -97,12 +182,18 @@ module.exports = {
         next();
       })
       .catch(error => {
+        // 次の処理(showView)をスキップする
+        req.skip = true;
         // エラーはロギングして次の関数に渡す
         console.log(`Error fetchin user by ID; ${error.message}`);
-        next(error);
+        next();
       });
   },
-  showView: (req, res) => {
+  showView: (req, res, next) => {
+    if (req.skip) {
+      next();
+      return;
+    }
     // showのビューをレンダリングする
     res.render('users/show');
   },
@@ -136,37 +227,44 @@ module.exports = {
       zipCode: req.body.zipCode
     };
 
+    // バリデーションエラーが発生したので、ユーザデータを処理せず、
+    // redirectViewアクションまでスキップする
+    if (req.skip) {
+      res.locals.redirect = `/users/${userId}/edit`;
+      next();
+    }
+    else {
     // findByIdAndUpdateを使って、ユーザをIDで見つけた後
     // そのドキュメントレコードの更新を行う
-    User.findByIdAndUpdate(userId, {
-      $set: userParams
-    })
-      .then(user => {
-        // 成功のフラッシュメッセージで応答する
-        req.flash(
-          'success',
-          `${user.fullName}のアカウント情報の更新が成功しました。`
-        );
-        // ユーザをローカル変数としてレスポンスに追加し
-        res.locals.redirect = `/users/${userId}`;
-        res.locals.user = user;
-
-        // 次のミドルウェア関数を呼び出す
-        next();
+      User.findByIdAndUpdate(userId, {
+        $set: userParams
       })
-      .catch(error => {
-        // 失敗のフラッシュメッセージで応答する
-        req.flash(
-          'error',
-          `ユーザアカウント情報の更新に失敗しました。理由: ${error.message}.`
-        );
-        console.log(`IDによるユーザ情報の更新が失敗しました。: ${error.message}`);
+        .then(user => {
+          // 成功のフラッシュメッセージで応答する
+          req.flash(
+            'success',
+            `${user.fullName}のアカウント情報の更新が成功しました。`
+          );
+          // ユーザをローカル変数としてレスポンスに追加し
+          res.locals.redirect = `/users/${userId}`;
+          res.locals.user = user;
 
-        res.locals.redirect = `/users/${userId}/edit`;
+          // 次のミドルウェア関数を呼び出す
+          next();
+        })
+        .catch(error => {
+          // 失敗のフラッシュメッセージで応答する
+          req.flash(
+            'error',
+            `ユーザアカウント情報の更新に失敗しました。理由: ${error.message}.`
+          );
+          console.log(`IDによるユーザ情報の更新が失敗しました。: ${error.message}`);
 
-        // next(error);
-        next();
-      });
+          res.locals.redirect = `/users/${userId}/edit`;
+
+          next();
+        });
+    }
   },
   delete: (req, res, next) => {
     let userId = req.params.id;
@@ -186,72 +284,62 @@ module.exports = {
   login: (req, res) => {
     res.render('users/login');
   },
-  authenticate: (req, res, next) => {
-    // メールアドレスでユーザ1人を問い合わせる
-    User.findOne({email: req.body.email})
-      // フォームとデータベースの間でパスワードを比較
-      .then(user => {
-        // ユーザが見つかったら、
-        if (user) {
-          // Userモデルでパスワード比較メソッドを呼び出す
-          user.passwordComparison(req.body.password)
-            .then(passwordsMatch => {
-              // パスワードが一致したら、
-              console.log('passwordsMatch: ' + passwordsMatch);
-
-              if (passwordsMatch) {
-                res.locals.redirect = `/users/${user._id}`;
-                req.flash('success', `${user.fullName}のログインが成功しました`);
-                res.locals.user = user;
-              }
-              else {
-                req.flash(
-                  'error',
-                  'ログインに失敗しました: パスワードが正しくありません.'
-                );
-                res.locals.redirect = '/users/login';
-              }
-              // リダイレクトパスとフラッシュメッセージが
-              // 設定された状態で次のミドルウェア関数を呼び出す
-              next();
-            })
-            .catch(error => {
-              console.log('passwordComparison error: ' + error.message);
-              next(error);
-            });
-        }
-        else {
-          req.flash(
-            'error',
-            'Failed to log in user account: User account not found.'
-          );
-          res.locals.redirect = '/users/login';
-          next();
-        }
-      })
-      // エラーならコンソールにロギングしてリダイレクト
-      .catch(error => {
-        console.log(`ログインに失敗しました: ${error.message}`);
-        next(error);
-      });
-  },
+  // passportのローカルストレージでユーザを認証---------------------------------
+  authenticate: passport.authenticate('local', {
+    // 認証状態が成功か失敗で異なるフラッシュメッセージとリダイレクトのパスを
+    // 準備
+    failureRedirect: '/users/login',
+    failureFlash: 'Failed to login',
+    successRedirect: '/',
+    successFlash: 'Logged in!'
+  }),
   // validateする項目
   validateItem: () => {
     // バリデーションルール
     return [
       // textフィールドの前後の空白を取り除きHTMLエスケープします
-      body('text').trim().escape(),
+      check('text').trim().escape(),
+
       // 正しいEメールである必要があります
-      body('email')
-        .isEmail().withMessage('正しいEメールである必要があります')
+      check('email')
+        // .isEmail().withMessage('正しいEメールアドレスである必要があります')
+        .isEmail().withMessage(
+          // {param: 'email', text: '正しいEメールアドレスである必要があります'}
+          '正しいEメールアドレスである必要があります'
+        )
         .normalizeEmail(),
+
       // パスワードは少なくとも5桁必要です。
-      body('password').isLength({min: 5}).withMessage('パスワードは少なくとも5桁必要です。'),
+      check('password').isLength({min: 5}).withMessage(
+        // {param: 'password', text: 'パスワードは少なくとも5桁必要です。'}
+        'パスワードは少なくとも5桁必要です。'
+      ),
+
       // 郵便番号は7桁必要です。
-      body('zipCode')
-        .isLength({min: 7, max: 7}).withMessage('郵便番号は7桁必要です。')
-        .isInt().withMessage('郵便番号には数字を入力して下さい。')
+      check('zipCode')
+        .isLength({min: 7, max: 7}).withMessage(
+          // {param: 'zipCode', text: '郵便番号は7桁必要です。'}
+          '郵便番号は7桁必要です。'
+        )
+        .isInt().withMessage(
+          // {param: 'zipCode', text: '郵便番号には数字を入力して下さい。'}
+          '郵便番号には数字を入力して下さい。'
+        )
     ];
+    // return [
+    //   // textフィールドの前後の空白を取り除きHTMLエスケープします
+    //   body('text').trim().escape(),
+    //   // 正しいEメールである必要があります
+    //   body('email')
+    //     .isEmail().withMessage('正しいEメールアドレスである必要があります')
+    //     .normalizeEmail(),
+    //   // パスワードは少なくとも5桁必要です。
+    //   body('password').isLength({min: 5}).withMessage('パスワードは少なくとも5桁必要です。'),
+    //   // 郵便番号は7桁必要です。
+    //   body('zipCode')
+    //     .isLength({min: 7, max: 7}).withMessage('郵便番号は7桁必要です。')
+    //     .isInt().withMessage('郵便番号には数字を入力して下さい。')
+    // ];
   },
   // validate関数を追加
   validate: (req, res, next) => {
@@ -268,6 +356,24 @@ module.exports = {
         res.locals.redirect = '/users/new';
       }
       next();
+  },
+  // validate関数を追加
+  validateAjax: (req, res) => {
+      // 検証
+      const errors = validationResult(req);
+
+      console.log(errors);
+
+      if (!errors.isEmpty()) {
+        let messages = errors.array().map(e => e.msg);
+
+        // 次の処理(create)をスキップして、directViewを実行する
+        req.skip = true;
+        req.flash('error', messages.join(' また '));
+
+        res.status(422).jsonp(messages);
+        res.end();
+      }
   }
 };
 

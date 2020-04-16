@@ -18,7 +18,7 @@
 */
 /*global pal */
 
-pal.util = (function () {
+pal.util = (() => {
   var
     makeError,
     setConfigMap,
@@ -61,23 +61,23 @@ pal.util = (function () {
   // 戻り値: 新たに作成されたエラーオブジェクト
   // 例外発行: なし
   //
-  makeError = function ( name_text, msg_text, data ) {
+  makeError = (name_text, msg_text, data) => {
     var error = new Error();
 
     error.name = name_text;
     error.message = msg_text;
 
-    if ( data ) { error.data = data; }
+    if (data) { error.data = data; }
 
     return error;
   };
   // パブリックコンストラクタ/makeError/終了
 
   // ユーティリティメソッド/addChange/開始
-  addChange = function ( ob ) {
+  addChange = (ob) => {
     var i;
 
-    ob.change = function ( callback ) {
+    ob.change = (callback) => {
       if ( callback ) {
         if ( !this._change ) {
           this._change = [];
@@ -145,7 +145,7 @@ pal.util = (function () {
 
   };
   // パブリックメソッド/clearFormAll/終了
-  clearForm = function( form ) {
+  clearForm = (form) => {
     var
       i;
 
@@ -154,7 +154,7 @@ pal.util = (function () {
     }
   };
 
-  clearElement = function( element ) {
+  clearElement = (element) => {
     switch( element.type ) {
       case 'hidden':
       case 'submit':
@@ -189,15 +189,12 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  emptyElementById = function ( element_id ) {
-    var
-      element;
-
+  emptyElementById = (element_id) => {
     // 新規作成のアンカーを削除する
-    element = document.getElementById( element_id );
+    let element = document.getElementById(element_id);
 
-    while ( element && element.firstChild ) {
-      element.removeChild( element.firstChild );
+    while (element && element.firstChild) {
+      element.removeChild(element.firstChild);
     }
   };
   // パブリックメソッド/emptyElementById/終了
@@ -209,9 +206,10 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  emptyElement = function ( element ) {
-    while ( element.firstChild ) {
-      element.removeChild( element.firstChild );
+  emptyElement = (element) => {
+
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
     }
   };
   // パブリックメソッド/emptyElement/終了
@@ -224,7 +222,7 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  showElement = function ( element_id, show_callback ) {
+  showElement = (element_id, show_callback) => {
     var
       element;
     // 要素の取得
@@ -253,7 +251,7 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  hideElement = function ( element_id, hide_callback ) {
+  hideElement = (element_id, hide_callback) => {
     var
       element;
     // 要素の取得
@@ -281,7 +279,7 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  toggleElement = function ( before_id, after_id, show_callback, hide_callback ) {
+  toggleElement = (before_id, after_id, show_callback, hide_callback) => {
     var
       before_element,
       after_element;
@@ -311,7 +309,7 @@ pal.util = (function () {
     // 2番目の要素が押されたら、
     // ・ 2番目の要素を非表示にする
     // ・ 最初の要素を表示する
-    after_element.addEventListener( 'click', function () {
+    after_element.addEventListener('click', () => {
       if ( hide_callback ) {
         hideElement( after_id, hide_callback );
       }
@@ -333,16 +331,16 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  toggleTip = function ( input_element, tip ) {
+  toggleTip = (input_element, tip) => {
     // 初期の状態ではtipを非表示にする
     tip.hidden = true;
     // input要素がフォーカスされたらtipを表示する
-    input_element.addEventListener( 'focus', function () {
+    input_element.addEventListener('focus', () => {
       tip.hidden = false;
     });
 
     // input要素のフォーカスが外れたらtipを非表示にする
-    input_element.addEventListener( 'blur', function () {
+    input_element.addEventListener('blur', () => {
       tip.hidden = true;
     });
 
@@ -358,8 +356,8 @@ pal.util = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  inputChangeCallback = function ( input_element, callback ) {
-    input_element.addEventListener( 'change', function() {
+  inputChangeCallback = (input_element, callback) => {
+    input_element.addEventListener( 'change', () => {
       callback();
     });
   };
@@ -373,7 +371,7 @@ pal.util = (function () {
   // 戻り値: input要素の値
   // 例外発行: なし
   //
-  getTargetValue = function ( event ) {
+  getTargetValue = (event) => {
     var
       theEvent  = event || window.event,
       target    = theEvent.target || theEvent.srcElement;
@@ -395,7 +393,7 @@ pal.util = (function () {
   //        使ってイベントハンドラを設定します。
   //        IEのイベントモデル(IE Model)ではattachEventを設定します。
   //
-  addEventListener = function ( eventObj, event, eventHandler ) {
+  addEventListener = (eventObj, event, eventHandler) => {
     if ( document.addEventListener ) {
       eventObj.addEventListener( event, eventHandler, false );
     }
@@ -416,7 +414,7 @@ pal.util = (function () {
   //         妥当でなければ : false
   // 例外発行: なし
   //
-  checkInputField = function ( event, checkFunc ) {
+  checkInputField = (event, checkFunc) => {
     var
       //theEvent  = event || window.event,
       //target    = theEvent.target || theEvent.srcElement,
@@ -436,7 +434,7 @@ pal.util = (function () {
   //         妥当でなければ : false
   // 例外発行: なし
   //
-  isRange = function ( value, min, max ) {
+  isRange = (value, min, max) => {
     var
       valueNumber;
 
@@ -457,14 +455,14 @@ pal.util = (function () {
 
   // パブリックメソッド/isNonEmpty/開始
   // 目的: 空の値でないか検査
-  isNonEmpty = function ( value ) {
+  isNonEmpty = (value) => {
     return value !== "";
   };
   // パブリックメソッド/isNonEmpty/終了
 
   // パブリックメソッド/isInteger/開始
   // 目的: 整数かどうかを検査する
-  isInteger = function ( value ) {
+  isInteger = (value) => {
     var
       valueNumber;
 
@@ -506,4 +504,4 @@ pal.util = (function () {
     isNonEmpty          : isNonEmpty,
     isInteger           : isInteger
   };
-}());
+})();

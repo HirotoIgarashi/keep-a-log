@@ -58,7 +58,7 @@ pal.login = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickLogin = function ( event ) {
+  onClickLogin = (event) => {
     var
       requestType = 'POST',
       url = '/session/create',

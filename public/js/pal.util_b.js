@@ -15,9 +15,9 @@
 */
 /*global $, pal, ActiveXObject */
 
-pal.util_b = (function () {
+pal.util_b = (() => {
   'use strict';
-  //------------------ モジュールスコープ変数開始 ---------------------
+  //------------------ モジュールスコープ変数開始 ------------------------------
   var
     configMap = {
       regex_encode_html   : /[&"'><]/g,
@@ -51,15 +51,15 @@ pal.util_b = (function () {
   );
 
   delete configMap.encode_noamp_map['&'];
-  //------------------ モジュールスコープ変数終了 ---------------------
+  //------------------ モジュールスコープ変数終了 ------------------------------
 
-  //------------------ ユーティリティメソッド開始 ---------------------
+  //------------------ ユーティリティメソッド開始 ------------------------------
   // decodeHtml開始
   // HTMLエンティティをブラウザに適した方法でデコードする
   // http://stackoverflow.com/questions/1912501/\
   //  unescape-html-entitiles-in-javascriptを参照
   //
-  decodeHtml = function ( str ) {
+  decodeHtml = (str) => {
     return $('<div/>').html(str || '').text();
   };
   // decodeHtml終了
@@ -68,9 +68,9 @@ pal.util_b = (function () {
   // これはhtlエンティティのための単一パスエンコーダであり、
   // 任意の数の文字に対応する
   //
-  encodeHtml = function ( input_arg_str, exclude_amp ) {
+  encodeHtml = (input_arg_str, exclude_amp) => {
     var
-      input_str = String( input_arg_str ),
+      input_str = String(input_arg_str),
       regex, lookup_map
       ;
 
@@ -85,7 +85,7 @@ pal.util_b = (function () {
     return input_str.replace(regex,
       // function ( match, name ) {
       // jslintがエラーとなるためnameを削除する。
-      function ( match ) {
+      (match) => {
         return lookup_map[ match ] || '';
       }
     );
@@ -95,7 +95,7 @@ pal.util_b = (function () {
   // getEmSize開始
   // emのサイズをピクセルで返す
   //
-  getEmSize = function ( elem ) {
+  getEmSize = (elem) => {
     return Number(
       getComputedStyle( elem, '' ).fontSize.match(/\d*\.?\d*/)[0]
     );
@@ -104,7 +104,7 @@ pal.util_b = (function () {
 
   // getTimestamp開始
   // 目的: 現在日時のDate.parseの値を文字列で返す。
-  getTimestamp = function () {
+  getTimestamp = () => {
     var
       now_date,
       now_parse;
@@ -124,7 +124,7 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値: 引数のIDの値のコンテンツ
   // 例外発行: なし
-  getTplContent = function ( template_id ) {
+  getTplContent = (template_id) => {
     var tpl,
         content;
 
@@ -144,7 +144,7 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値: 引数のIDの値のコンテンツ
   // 例外発行: なし
-  getNowDateJp = function ( option ) {
+  getNowDateJp = (option) => {
     var
       day_jp = {
         0 : '日曜日',
@@ -168,7 +168,7 @@ pal.util_b = (function () {
         now.toLocaleTimeString()
       );
     }
-    else if (option === 'date and day'){
+    else if (option === 'date and day') {
       now_jp = (
         now.getFullYear() + '年' +
         ( now.getMonth() + 1 ) + '月' +
@@ -190,9 +190,9 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値: ISO9601形式の文字列
   // 例外発行: なし
-  getIsoExtFormat = function ( date_object ) {
+  getIsoExtFormat = (date_object) => {
 
-    function pad( number ) {
+    const pad = (number) => {
       if ( number < 10 ) {
         return '0' + number;
       }
@@ -225,7 +225,7 @@ pal.util_b = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  sendXmlHttpRequest = function ( requestType, url, async, responseHandle, sendData ) {
+  sendXmlHttpRequest = (requestType, url, async, responseHandle, sendData) => {
     var request = null;
 
     if ( window.XMLHttpRequest ) {
@@ -264,7 +264,13 @@ pal.util_b = (function () {
   };
   // sendXmlHttpRequest終了
   // init_send_request開始
-  init_send_request = function ( request, requestType, url, async, responseHandle, requestData ) {
+  init_send_request = (
+    request,
+    requestType,
+    url,
+    async,
+    responseHandle,
+    requestData) => {
 
     try {
       // HTTPレスポンスを処理するための関数を指定します。
@@ -274,10 +280,10 @@ pal.util_b = (function () {
       if ( requestType.toLowerCase() === "post" ) {
         // POSTの場合はContent-Headerが必要です。
         request.setRequestHeader( 'Content-Type', 'application/json' );
-        request.send( requestData );
+        request.send(requestData);
       }
       else {
-        request.send( null );
+        request.send(null);
       }
 
     }
@@ -300,7 +306,7 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値:
   // 例外発行: なし
-  createObjectLocal = function ( local_storage_key, list, callback ) {
+  createObjectLocal = (local_storage_key, list, callback) => {
     var
       // key,
       i,
@@ -326,13 +332,13 @@ pal.util_b = (function () {
   // ユーティリティメソッド/createObjectLocal/終了
 
   // ユーティリティメソッド/updateObjectLocal/開始
-  updateObjectLocal = function () {
+  updateObjectLocal = () => {
     console.log( 'updateObjectLocalが呼ばれました' );
   };
   // ユーティリティメソッド/updateObjectLocal/終了
 
   // ユーティリティメソッド/deleteObjectLocal/開始
-  deleteObjectLocal = function () {
+  deleteObjectLocal = () => {
     console.log( 'deleteObjectLocalが呼ばれました' );
   };
   // ユーティリティメソッド/deleteObjectLocal/終了
@@ -345,7 +351,7 @@ pal.util_b = (function () {
   // 設定:
   // 戻り値: keyの値
   // 例外発行: なし
-  readObjectLocal = function ( local_storage_key ) {
+  readObjectLocal = (local_storage_key) => {
     var item;
 
     // localStorageからaction-listの値を読み込む
@@ -357,7 +363,7 @@ pal.util_b = (function () {
   // ユーティリティメソッド/readObjectLocal/終了
 
   // ユーティリティメソッド/makeStringObject/開始
-  makeStringObject = function ( object ) {
+  makeStringObject = (object) => {
     var
       key,
       string_object = {};
@@ -371,9 +377,9 @@ pal.util_b = (function () {
     return string_object;
   };
   // ユーティリティメソッド/makeStringObject/終了
-  //------------------ ユーティリティメソッド終了 ---------------------
+  //------------------ ユーティリティメソッド終了 ------------------------------
 
-  //------------------ パブリックメソッド開始 -------------------------
+  //------------------ パブリックメソッド開始 ----------------------------------
   return {
     decodeHtml          : decodeHtml,
     encodeHtml          : encodeHtml,
@@ -389,5 +395,5 @@ pal.util_b = (function () {
     readObjectLocal     : readObjectLocal,
     makeStringObject    : makeStringObject
   };
-  //------------------ パブリックメソッド終了 -------------------------
-}());
+  //------------------ パブリックメソッド終了 ----------------------------------
+})();

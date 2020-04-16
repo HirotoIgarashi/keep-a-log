@@ -14,9 +14,9 @@
 pal = (function () {
   'use strict';
 
-  var initModule = function (id) {
-    var content;
-    content = document.getElementById(id);
+  // const initModule = function (id) {
+  const initModule = (id) => {
+    let content = document.getElementById(id);
 
     if ( pal.bom && content) {
       pal.bom.initModule( content );

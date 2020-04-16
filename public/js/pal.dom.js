@@ -139,34 +139,34 @@ pal.dom = (function () {
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
 
-    if ( current_location_hash.match( /#login/ ) ) {
+    if (current_location_hash.match(/#login/)) {
       pal.login.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#logout/ ) ) {
+    else if (current_location_hash.match(/#logout/)) {
       pal.logout.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#register/ ) ) {
-      pal.register.initModule();
+    else if (current_location_hash.match(/#register/)) {
+      pal.register.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#menu/ ) ) {
+    else if (current_location_hash.match(/#menu/)) {
       pal.menu.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#browser_information/ ) ) {
+    else if (current_location_hash.match(/#browser_information/)) {
       pal.browserInformation.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#list/ ) ) {
+    else if (current_location_hash.match(/#list/)) {
       pal.list.onHashchange( main_section );
     }
-    else if ( current_location_hash.match( /#lab/ ) ) {
+    else if (current_location_hash.match(/#lab/)) {
       pal.lab.initModule(main_section);
     }
-    else if ( current_location_hash.match( /#regist_schedule/ ) ) {
+    else if (current_location_hash.match(/#regist_schedule/)) {
       pal.registSchedule.onHashchange(main_section);
     }
-    else if ( current_location_hash.match( /#calendar/ ) ) {
+    else if (current_location_hash.match(/#calendar/)) {
       pal.calendar.onHashchange(main_section);
     }
-    else if ( current_location_hash.match( /#cycle_system/ ) ) {
+    else if (current_location_hash.match(/#cycle_system/)) {
       pal.cycleSystem.initModule( main_section );
     }
     else {

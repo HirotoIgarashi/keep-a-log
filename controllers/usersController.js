@@ -1,7 +1,7 @@
 // passportをロードする
 const passport = require('passport');
 
-// ユーザモデルをロードする
+// ----- ユーザモデルをロードする ------------------------------------
 const User = require('../models/user');
 const {check, validationResult} = require('express-validator');
 
@@ -19,9 +19,11 @@ const getUserParams = body => {
 
 module.exports = {
   getUserParams,
+  // ----- 全てのユーザを取得してレスポンスする ----------------------
   index: (req, res, next) => {
     User.find({})
-      // ユーザデータをレスポンスに格納し、次のミドルウェア関数を呼び出す
+      // ユーザデータをレスポンスに格納し、次のミドルウェア関数を
+    // 呼び出す
       .then(users => {
         res.locals.users = users;
         next();
@@ -32,7 +34,7 @@ module.exports = {
         next(error);
       });
   },
-  // 別のアクションでビューのレンダリングを行う
+  // ----- 別のアクションでビューのレンダリングを行う ----------------
   indexView: (req, res) => {
     res.render('users/index', {
       flashMessages: {
@@ -40,11 +42,11 @@ module.exports = {
       }
     });
   },
-  // フォームをレンダリングするnewアクションを追加
+  // ----- フォームをレンダリングするnewアクションを追加 -------------
   new: (req, res) => {
     res.render('users/new');
   },
-  // Ajaxのパラメータでユーザを作る
+  // ----- Ajaxのパラメータでユーザを作る ----------------------------
   createByAjax: (req, res) => {
     const getUserParams = body => {
       return {
@@ -61,12 +63,8 @@ module.exports = {
     // 検証
     const errors = validationResult(req);
 
-    console.log(errors);
-
     if (!errors.isEmpty()) {
       let messages = errors.array().map(e => e.msg);
-
-      console.log(messages);
 
       res.status(422).jsonp(messages);
       res.end();
@@ -90,43 +88,7 @@ module.exports = {
     }
     return;
   },
-    // console.log('req.session:');
-    // console.log(req.session);
-
-    // let newUser = new User(getUserParams(req.body));
-
-    // // バリデーションエラーが発生したので、ユーザデータを処理せず、
-    // // redirectViewアクションまでスキップする
-    // if (req.skip) {
-    //   next();
-    //   return;
-    // }
-
-    // // フォームのパラメータでユーザを作る
-    // User.register(newUser, req.body.password, (error, user) => {
-    //   if (user) {
-    //     // 成功のフラッシュメッセージで応答する
-    //     req.flash(
-    //       'success',
-    //       `${user.fullName}のアカウントの生成が成功しました。`
-    //     );
-    //     res.status(200);
-    //     res.end();
-    //   }
-    //   else {
-    //     console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
-    //     // 失敗のフラッシュメッセージで応答する
-    //     req.flash(
-    //       'error',
-    //       `次の理由でユーザアカウントの作成に失敗しました。: ${error.message}.`
-    //     );
-    //     res.status(200);
-    //     res.end();
-    //   }
-    // });
-    // return;
-    // },
-  // フォームのパラメータでユーザを作る
+  // ----- フォームのパラメータでユーザを作る ------------------------
   create: (req, res, next) => {
     let newUser = new User(getUserParams(req.body));
 
@@ -266,6 +228,7 @@ module.exports = {
         });
     }
   },
+  // ----- ユーザを削除する ------------------------------------------
   delete: (req, res, next) => {
     let userId = req.params.id;
     // ユーザをfindByIdAndRemoveで削除
@@ -284,64 +247,65 @@ module.exports = {
   login: (req, res) => {
     res.render('users/login');
   },
-  // passportのローカルストレージでユーザを認証---------------------------------
+  // ----- passportのローカルストレージでユーザを認証-----------------
   authenticate: passport.authenticate('local', {
-    // 認証状態が成功か失敗で異なるフラッシュメッセージとリダイレクトのパスを
-    // 準備
+    // 認証状態が成功か失敗で異なるフラッシュメッセージと
+    // リダイレクトのパスを準備
     failureRedirect: '/users/login',
     failureFlash: 'Failed to login',
     successRedirect: '/',
     successFlash: 'Logged in!'
   }),
-  // validateする項目
+
+  // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
+  authenticateAjax: function(req, res) {
+    console.log('authenticateAjax処理開始');
+    passport.authenticate('local', function(err, user, info) {
+      if (err) {
+        res.status(401);
+        res.end();
+        return;
+      }
+      if (!user) {
+        res.status(401).jsonp(info);
+        res.end();
+        return;
+      }
+      // ----- ログイン処理 ------------------------------------------
+      req.login(user, function(err) {
+        if (err) {
+          res.status(401);
+          res.end();
+          return;
+        }
+        res.status(200).jsonp(user);
+        res.end();
+        return;
+      });
+    })(req, res);
+  },
+  // ----- validateする項目を定義する --------------------------------
   validateItem: () => {
     // バリデーションルール
     return [
       // textフィールドの前後の空白を取り除きHTMLエスケープします
       check('text').trim().escape(),
-
-      // 正しいEメールである必要があります
       check('email')
-        // .isEmail().withMessage('正しいEメールアドレスである必要があります')
         .isEmail().withMessage(
-          // {param: 'email', text: '正しいEメールアドレスである必要があります'}
           '正しいEメールアドレスである必要があります'
         )
         .normalizeEmail(),
-
-      // パスワードは少なくとも5桁必要です。
       check('password').isLength({min: 5}).withMessage(
-        // {param: 'password', text: 'パスワードは少なくとも5桁必要です。'}
         'パスワードは少なくとも5桁必要です。'
       ),
-
-      // 郵便番号は7桁必要です。
       check('zipCode')
         .isLength({min: 7, max: 7}).withMessage(
-          // {param: 'zipCode', text: '郵便番号は7桁必要です。'}
           '郵便番号は7桁必要です。'
         )
-        .isInt().withMessage(
-          // {param: 'zipCode', text: '郵便番号には数字を入力して下さい。'}
-          '郵便番号には数字を入力して下さい。'
-        )
+        .isInt().withMessage('郵便番号には数字を入力して下さい。')
     ];
-    // return [
-    //   // textフィールドの前後の空白を取り除きHTMLエスケープします
-    //   body('text').trim().escape(),
-    //   // 正しいEメールである必要があります
-    //   body('email')
-    //     .isEmail().withMessage('正しいEメールアドレスである必要があります')
-    //     .normalizeEmail(),
-    //   // パスワードは少なくとも5桁必要です。
-    //   body('password').isLength({min: 5}).withMessage('パスワードは少なくとも5桁必要です。'),
-    //   // 郵便番号は7桁必要です。
-    //   body('zipCode')
-    //     .isLength({min: 7, max: 7}).withMessage('郵便番号は7桁必要です。')
-    //     .isInt().withMessage('郵便番号には数字を入力して下さい。')
-    // ];
   },
-  // validate関数を追加
+  // ----- validate関数を定義する ------------------------------------
   validate: (req, res, next) => {
       // 検証
       const errors = validationResult(req);
@@ -357,23 +321,67 @@ module.exports = {
       }
       next();
   },
-  // validate関数を追加
+  // ------ Ajaxでpostされたときのvalidate関数を追加 -----------------
   validateAjax: (req, res) => {
-      // 検証
-      const errors = validationResult(req);
+    const getUserParams = body => {
+      return {
+        name: {
+          first: body.first,
+          last: body.last
+        },
+        email: body.email,
+        password: body.password,
+        zipCode: body.zipCode
+      };
+    };
+    //------ 検証結果を格納する --------------------------------------
+    const result = validationResult(req);
 
-      console.log(errors);
+    if (!result.isEmpty()) {
+      let messages = result.array().map(e => {
+        return {value: e.value, msg: e.msg, param: e.param};
+      });
 
-      if (!errors.isEmpty()) {
-        let messages = errors.array().map(e => e.msg);
+      res.status(422).jsonp(messages);
+      res.end();
+    }
+    else {
+      //----- Ajaxのパラメータでユーザを作る -------------------------
+      let newUser = new User(getUserParams(req.body));
 
-        // 次の処理(create)をスキップして、directViewを実行する
-        req.skip = true;
-        req.flash('error', messages.join(' また '));
-
-        res.status(422).jsonp(messages);
-        res.end();
-      }
+      // フォームのパラメータでユーザを作る
+      User.register(newUser, req.body.password, (error, user) => {
+        if (user) {
+          // status 201: Created リクエストは成功し、その結果新たな
+          // リソースが作成された
+          res.status(201);
+          res.end();
+        }
+        else {
+          if (error.name === 'UserExistsError') {
+            console.log(
+              `ユーザアカウントの作成のエラー: ${error.message}`
+            );
+            // status 422: リクエストは適正ですが、意味が誤って
+            // いるため従うことができません。
+            res
+              .status(422)
+              .jsonp([{
+                value: 'req.body.email',
+                msg: error.message, param: 'email'
+              }]);
+            res.end();
+          }
+          else {
+            console.log(`不明のエラー: ${error.name}`);
+            console.log(`不明のエラー: ${error.message}`);
+            res.status(422).jsonp(error.message);
+            res.end();
+          }
+        }
+      });
+    }
+    return;
   }
 };
 

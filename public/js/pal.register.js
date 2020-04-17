@@ -51,8 +51,8 @@ pal.register = (function () {
 
     // -----formタグの作成 -------------------------------------------
     let formElement = util.dom.createElement('form');
-    util.dom.setAttribute(formElement, 'action', '/users/create');
-    util.dom.setAttribute(formElement, 'method', 'POST');
+    // util.dom.setAttribute(formElement, 'action', '/users/create');
+    // util.dom.setAttribute(formElement, 'method', 'POST');
 
     // -----姓のlabelとinput -----------------------------------------
     let firstLabelAndInput = util.dom.createLabelAndInput({
@@ -141,8 +141,8 @@ pal.register = (function () {
     util.dom.setAttribute(messageArea, 'id', 'message-area');
 
     // -----flashエリアを生成 ----------------------------------------
-    let flashArea = util.dom.createElement('div');
-    util.dom.setAttribute(flashArea, 'class', 'flashes');
+    // let flashArea = util.dom.createElement('div');
+    // util.dom.setAttribute(flashArea, 'class', 'flashes');
 
     // -----HTMLを組み立てる------------------------------------------
     util.dom.appendChild(divElement, formElement);
@@ -166,7 +166,7 @@ pal.register = (function () {
     util.dom.appendChild(divElement, messageArea);
 
     util.dom.appendChild(frag, divElement);
-    util.dom.appendChild(frag, flashArea);
+    // util.dom.appendChild(frag, flashArea);
 
     return frag;
   };
@@ -179,7 +179,6 @@ pal.register = (function () {
     // XMLHttpRequestによる送信を行う
     const requestType = 'POST';
     const url = '/user/create';
-
 
     let form_map = {};
 
@@ -213,11 +212,11 @@ pal.register = (function () {
     const message_area = document.getElementById('message-area');
 
     if (request && request.readyState === 4) {
-      if (request.status === 200) {
+      if (request.status === 201) {
         message_area.removeAttribute('hidden');
         message_area.textContent =
           'ユーザを作成しました。ステータス: ' + request.status;
-        setTimeout( function () {
+        setTimeout(function () {
           message_area.setAttribute('hidden', 'hidden');
           pal.bom.setLocationHash('');
         }, 5000);
@@ -295,8 +294,8 @@ pal.register = (function () {
     let inputFirstNameElement = document.getElementById('inputFirstName');
     inputFirstNameElement.focus();
 
+    //----- パスワードを表示する機能を追加する -----------------------
     const password = document.getElementById('inputPassword');
-
     const showPassword = document.getElementById( 'showPassword' );
 
     showPassword.addEventListener('change', () => {

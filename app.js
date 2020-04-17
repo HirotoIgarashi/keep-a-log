@@ -94,10 +94,9 @@ db.once('open', () => {
 // Userモデルをロードする
 const User = require('./models/user');
 
-// セッションのタイムを30日に設定する
+// セッションのタイムアウト時間を30日に設定する
 const expire_time = 1000 * 60 * 60 * 24 * 30;
 
-const {validationResult} = require('express-validator');
 // ---------------- モジュールスコープ変数終了 ---------------------------------
 
 // ---------------- ユーティリティメソッド開始 ---------------------------------
@@ -195,12 +194,8 @@ router.get('/', (req, res) => {
     headers   : { 'x-timestamp': Date.now(), 'x-sent': true }
   };
 
-  console.log(options.root);
-
   res.sendFile('pal.html', options, (error) => {
       if (error) {
-        console.log(error);
-        // res.status(error.status).end();
         res.end();
       }
       else {
@@ -210,106 +205,45 @@ router.get('/', (req, res) => {
   );
 });
 
-router.post('/session/create', (request, response) => {
-    let email = request.body.email;
-
-    // 開発用に全てのリクエストに200を返す
-    request.session.user = { email: email };
-    response.status(200);
-    response.end();
-  }
-);
-
-router.get('/session/read', (request, response) => {
-    if ( request.session.user ) {
-      response.status(200);
-      response.send( JSON.stringify( request.session.user ) );
-      response.end();
-    }
-    else {
-      // Non-Authoritative Informationのコード 203を返す
-      response.status(203);
-      response.send( { email: 'anonymous' } );
-      response.end();
-    }
-  }
-);
-
-router.get('/session/delete', (request, response) => {
-    if ( request.session.user ) {
-      request.session.destroy((err) => {
-        if (err) {
-          response.status( 500 );
-          response.end();
-        }
-        else {
-          response.status( 200 );
-          response.end();
-        }
-      });
-    }
-  }
-);
-
-// ------ /user/createのpostの処理 -----------------------------------
+// ------ ここからAjaxの処理/開始 ------------------------------------
 // Ajaxリクエストのフォームデータを処理する
 router.post(
   '/user/create',
   usersController.validateItem(),
-  // usersController.validateAjax
-  (req, res) => {
-    const getUserParams = body => {
-      return {
-        name: {
-          first: body.first,
-          last: body.last
-        },
-        email: body.email,
-        password: body.password,
-        zipCode: body.zipCode
-      };
-    };
-
-    // 検証
-    const result = validationResult(req);
-
-    if (!result.isEmpty()) {
-      let messages = result.array().map(e => {
-        return {value: e.value, msg: e.msg, param: e.param};
-      });
-
-      res.status(422).jsonp(messages);
-      res.end();
-    }
-    else {
-      // Ajaxのパラメータでユーザを作る
-      let newUser = new User(getUserParams(req.body));
-
-      // フォームのパラメータでユーザを作る
-      User.register(newUser, req.body.password, (error, user) => {
-        if (user) {
-          res.status(200);
-          res.end();
-        }
-        else {
-          if (error.name === 'UserExistsError') {
-            console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
-            res.status(422).jsonp([{value: 'req.body.email', msg: error.message, param: 'email'}]);
-            res.end();
-          }
-          else {
-            console.log(`不明のエラー: ${error.name}`);
-            console.log(`不明のエラー: ${error.message}`);
-            res.status(422).jsonp(error.message);
-            res.end();
-          }
-        }
-      });
-    }
-    return;
-  }
+  usersController.validateAjax
 );
+// ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
+router.post('/session/create', usersController.authenticateAjax);
 
+// ------ Ajaxの/user/logoutのget処理 --------------------------------
+router.get('/session/delete', (req, res) => {
+  // ------ ログアウトの処理 -----------------------------------------
+  req.logout();
+
+  res.status(200);
+  res.end();
+  return;
+});
+
+// ------ 認証されているかどうかの判定処理 ---------------------------
+router.get('/session/read', (req, res) => {
+  // ------ req.isAuthenticated()は認証されていればtrueを返す --------
+  if (req.isAuthenticated()) {
+    res.status(200);
+    res.send( JSON.stringify( req.user ) );
+    res.end();
+  }
+  else {
+    // Non-Authoritative Informationのコード 203を返す
+    res.status(203);
+    res.send({ email: 'anonymous' });
+    res.end();
+  }
+});
+
+// ------ ここからAjaxの処理/終了 ------------------------------------
+
+// ------ /user/createのpostの処理 -----------------------------------
 // インデックス経路を作成
 router.get('/users', usersController.index, usersController.indexView);
 
@@ -317,8 +251,6 @@ router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/login', usersController.login);
 
 // 同じパスに向かうPOSTリクエストを処理する経路
-// router.post('/users/login', usersController.authenticate,
-//             usersController.redirectView);
 router.post('/users/login', usersController.authenticate);
 
 // Createリクエストの処理でフォームを供給する

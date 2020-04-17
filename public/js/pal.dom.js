@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * pal.dom.js
  * PALのDOM(Document Object Model)制御モジュール
@@ -12,7 +14,6 @@
 /*global pal*/
 
 pal.dom = (function () {
-  'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
     configMap = {
@@ -59,11 +60,10 @@ pal.dom = (function () {
   };
   // ユーティリティメソッド/supportsTemplate/終了
 
-  // ユーティリティメソッド/readSession/開始
+  //----- ユーティリティメソッド/readSession/開始 --------------------
   readSession = function () {
-    var
-      requestType = 'GET',
-      url = '/session/read';
+    const requestType = 'GET';
+    const url = '/session/read';
 
     // AjaxによりGETする
     request = pal.util_b.sendXmlHttpRequest(
@@ -73,7 +73,7 @@ pal.dom = (function () {
       onReceiveSession
     );
   };
-  // ユーティリティメソッド/readSession/終了
+  //----- ユーティリティメソッド/readSession/終了 --------------------
 
   // ユーティリティメソッド/toggle_menu/開始
   toggle_menu = function () {
@@ -197,11 +197,8 @@ pal.dom = (function () {
   
 
   onReceiveSession = function () {
-    var
-      response_map;
-
     if ( request && request.readyState === 4 ) {
-      response_map = JSON.parse( request.responseText);
+      let response_map = JSON.parse(request.responseText);
 
       if (request.status === 200 ) {
         jqueryMap.$logout[0].style.visibility = 'visible';
@@ -343,10 +340,10 @@ pal.dom = (function () {
       menu_ahchor[ i ].addEventListener( 'click', toggle_menu, false );
     }
 
-    // フッターに日時を表示する(初回)
+    //----- フッターに日時を表示する(初回) ---------------------------
     jqueryMap.$date_info.textContent = pal.util_b.getNowDateJp();
 
-    // フッターに日時を表示する(次回以降)
+    //------ フッターに日時を表示する(次回以降) ----------------------
     setInterval(
       function () {
         jqueryMap.$date_info.textContent = pal.util_b.getNowDateJp();

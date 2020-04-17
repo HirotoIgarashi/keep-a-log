@@ -9,7 +9,7 @@ exports.respondNoResouceFound = (req, res) => {
 };
 
 // すべてのエラーをキャッチし、ステータスコード500でレスポンス
-exports.respondInternalError = (error, req, res) => {
+exports.respondInternalError = (error, req, res, next) => {
   let errorCode = httpStatus.INTERNAL_SERVER_ERROR;
   console.log(`ERROR occurred: ${error.statck}`);
   res.status(errorCode);

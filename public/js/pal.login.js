@@ -137,9 +137,17 @@ pal.login = (function () {
     const userInfo = document.getElementById('pal-dom-user-info');
 
     if ( request && request.readyState === 4 ) {
-      if ( request.status === 200 ) {
+
+      console.log('request:');
+      console.log(request);
+
+      let response = JSON.parse(request.response);
+
+      console.log('request.status:');
+      console.log(request.status);
+
+      if (request.status === 200) {
         // ----- ログインが成功したときの処理 ------------------------
-        let response = JSON.parse(request.response);
 
         message_area.removeAttribute( 'hidden' );
         message_area.textContent =
@@ -154,8 +162,7 @@ pal.login = (function () {
       }
       else {
         message_area.removeAttribute( 'hidden' );
-        let response = JSON.parse(request.response);
-        switch ( request.status ) {
+        switch (request.status) {
           case 401:
             console.log(response);
             // message_area.textContent =

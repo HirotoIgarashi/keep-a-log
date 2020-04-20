@@ -5,7 +5,7 @@ const router = require('express').Router();
 const usersController = require('../controllers/usersController');
 
 // Ajaxリクエストのフォームデータを処理する
-router.post('/user/create',
+router.post('/create',
             usersController.validateItem(),
             usersController.validateAjax
            );

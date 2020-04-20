@@ -5,10 +5,10 @@ const router = require('express').Router();
 const usersController = require('../controllers/usersController');
 
 // ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
-router.post('/session/create', usersController.authenticateAjax);
+router.post('/create', usersController.authenticateAjax);
 
 // ------ Ajaxの/user/logoutのget処理 --------------------------------
-router.get('/session/delete', (req, res) => {
+router.get('/delete', (req, res) => {
   // ------ ログアウトの処理 -----------------------------------------
   req.logout();
 
@@ -18,7 +18,7 @@ router.get('/session/delete', (req, res) => {
 });
 
 // ------ 認証されているかどうかの判定処理 ---------------------------
-router.get('/session/read', (req, res) => {
+router.get('/read', (req, res) => {
   // ------ req.isAuthenticated()は認証されていればtrueを返す --------
   if (req.isAuthenticated()) {
     res.status(200);

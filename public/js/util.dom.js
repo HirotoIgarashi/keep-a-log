@@ -1,9 +1,7 @@
 'use strict;'
 
-let util;
-if (!util) {
-  util = {};
-}
+/*global util */
+// domを操作するユーティリティ ---------------------------------------
 
 util.dom = (() => {
   const helloWorld = () => {
@@ -64,6 +62,7 @@ util.dom = (() => {
     return [labelElement, inputElement];
   };
 
+  // 関数をエクスポートする ------------------------------------------
   return {
     helloWorld: helloWorld,
     createFragment: createFragment,

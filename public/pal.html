@@ -41,21 +41,26 @@
             <div class="pal-dom-header-blank">
             </div>
             <button aria-label="エグジット" class="pal-dom-header-logout">
+              <span>ログアウト</span>
               <svg class="icon icon-exit">
                 <use href="#icon-exit"></use>
               </svg>
             </button>
             <button aria-label="エンター" class="pal-dom-header-login">
+              <span>ログイン</span>
               <svg class="icon icon-enter">
                 <use href="#icon-enter"></use>
               </svg>
             </button>
             <button aria-label="サインアップ" class="pal-dom-header-register">
+              <span>ユーザ登録</span>
               <svg class="icon icon-user-plus">
                 <use href="#icon-user-plus"></use>
               </svg>
             </button>
             <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
+              <span>メニュー</span>
+              <svg class="icon icon-user-plus">
               <svg class="icon icon-menu">
                 <switch>
                   <use href="#icon-menu"></use>
@@ -83,6 +88,13 @@
           <main id="pal-main"></main>
 
           <footer id="pal-footer">
+            <nav>
+              <ul>
+                <li><a href="#">ホーム</a></li>
+                <li><a href="#plan">プラン</a></li>
+                <li><a href="#calendar">カレンダー</a></li>
+              </ul>
+            </nav>
             <span id="pal-dom-user-info"></span>
             <span id="pal-dom-date-info"></span>
           </footer>
@@ -163,73 +175,6 @@
             </ul>
           </nav>
 
-        </template>
-
-        <!-- ログインページのテンプレート -->
-        <template id="login">
-          <h1>IDとパスワードを入力してログインして下さい。</h1>
-          <form>
-            <ul class="flex-outer">
-              <li>
-                <label class="pal-login-label" for="email">E-mailアドレス:</label>
-                <input class="pal-login-input" id="email" type="email" placeholder="Enter e-mail address" required>
-              </li>
-              <li>
-                <label class="pal-login-label" for="password">パスワード:</label>
-                <input class="pal-login-input" id="password" type="password" placeholder="Enter password" required>
-              </li>
-              <li>
-                <p>passwordの表示</p>
-                <ul class="flex-inner">
-                  <li>
-                    <input type="checkbox" id="show-password">
-                    <label for="show-password">show password</label>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <button class="pal-login-button" type="submit">login</button>
-              </li>
-            </ul>
-          </form>
-          <div id="pal-login-message-area" hidden="hidden"></div>
-        </template>
-
-        <!-- ログアウトページのテンプレート -->
-        <template id="logout">
-          <h1>ログアウトします。</h1>
-          <button id="agree">はい</button>
-          <button id="cancel">キャンセル</button>
-          <div id="message-area"></div> 
-        </template>
-
-        <!-- レジスターページのテンプレート -->
-        <template id="register">
-          <h1>アカウントの登録をします。</h1>
-          <form id="register">
-            <ul class="pal-register-ul">
-              <li>
-                <label for="email">メールアドレス<strong class="red" aria-hidden="true">*</strong></label>
-                <input type="text" id="email" name="email" aria-required="true">
-              </li>
-
-              <li>
-                <label for="username">ユーザ名<strong class="red" aria-hidden="true">*</strong></label>
-                <input type="text" id="username" name="username" placeholder="例:HotStuff666">
-              </li>
-              <li>
-                <label for="password">パスワード<strong class="red" aria-hidden="true">*</strong></label>
-                <input type="password" id="password" name="password">
-              </li>
-              <li>
-                <input type="checkbox" id="showPassword">
-                <label>パスワードを表示</label>
-              </li>
-              <li>
-                <button type="submit">登録する</button>
-              </li>
-            </ul>
-          </form>
         </template>
 
         <!-- シンプルリスト用 -->
@@ -1415,6 +1360,9 @@
         <script src="js/main.js"></script>
 
         <!-- 自作のjavascript -->
+        <script src="js/util.js"></script>
+        <script src="js/util.dom.js"></script>
+        <script src="js/util.date.js"></script>
         <script src="js/pal.js"></script>
         <script src="js/pal.util_b.js"></script>
         <script src="js/pal.util.js"></script>
@@ -1434,7 +1382,6 @@
         <script src="js/pal.registSchedule.js"></script>
         <script src="js/pal.calendar.js"></script>
         <script src="js/pal.cycleSystem.js"></script>
-        <script src="js/util.dom.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <!--

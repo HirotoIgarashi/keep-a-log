@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * pal.register.js
  * 登録機能
@@ -12,15 +14,8 @@
 
 /*global pal util */
 
-pal.register = (function () {
-  'use strict';
+pal.register = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
-  var
-    configMap = {
-      settable_map  : { color_name: true },
-      color_name    : 'blue'
-    },
-    configModule, initModule;
   let request = null;
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -140,10 +135,6 @@ pal.register = (function () {
     let messageArea = util.dom.createElement('div');
     util.dom.setAttribute(messageArea, 'id', 'message-area');
 
-    // -----flashエリアを生成 ----------------------------------------
-    // let flashArea = util.dom.createElement('div');
-    // util.dom.setAttribute(flashArea, 'class', 'flashes');
-
     // -----HTMLを組み立てる------------------------------------------
     util.dom.appendChild(divElement, formElement);
     util.dom.appendChild(formElement, h2Element);
@@ -166,7 +157,6 @@ pal.register = (function () {
     util.dom.appendChild(divElement, messageArea);
 
     util.dom.appendChild(frag, divElement);
-    // util.dom.appendChild(frag, flashArea);
 
     return frag;
   };
@@ -245,7 +235,7 @@ pal.register = (function () {
             break;
           case 422:
             message_area.textContent =
-              'validateのチェックでひっかかりました。ステータス: ' +
+              '入力された値が正しくありません。再度入力してください ステータス: ' +
                 request.status;
             break;
           case 500:
@@ -264,27 +254,8 @@ pal.register = (function () {
   // --------------------- イベントハンドラ終了 ----------------------
 
   // --------------------- パブリックメソッド開始 --------------------
-  // パブリックメソッド/configModule/開始
-  // 目的: 許可されたキーの構成を調整する
-  // 引数: 設定可能なキーバリューマップ
-  //  * color_name  - 使用する色
-  // 設定:
-  //  * configMap.settable_map 許可されたキーを宣言する
-  // 戻り値: true
-  // 例外発行: なし
-  //
-  configModule = function ( input_map ) {
-    pal.butil.setConfigMap({
-      input_map     : input_map,
-      settable_map  : configMap.settable_map,
-      config_map    : configMap
-    });
-    return true;
-  };
-  // パブリックメソッド/configModule/終了
-
   // -- パブリックメソッド(initModule)開始 ---------------------------
-  initModule = function (main_section) {
+  const initModule = function (main_section) {
     // mainセクションの子要素をすべて削除する
     pal.util.emptyElement(main_section);
 
@@ -296,7 +267,7 @@ pal.register = (function () {
 
     //----- パスワードを表示する機能を追加する -----------------------
     const password = document.getElementById('inputPassword');
-    const showPassword = document.getElementById( 'showPassword' );
+    const showPassword = document.getElementById('showPassword');
 
     showPassword.addEventListener('change', () => {
       let type = showPassword.checked ? 'text' : 'password';
@@ -308,13 +279,11 @@ pal.register = (function () {
     register_button.addEventListener('click', onClickRegister);
 
     return true;
-
   };
   // -- パブリックメソッド(initModule)終了 ---------------------------
-  // パブリックメソッドを返す
+  // パブリックメソッドを返す ----------------------------------------
   return {
-    configModule  : configModule,
     initModule    : initModule
   };
   // --------------------- パブリックメソッド終了 --------------------
-}());
+})();

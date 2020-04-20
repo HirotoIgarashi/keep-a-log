@@ -198,12 +198,12 @@ required="">\
 
   });
 
-  describe('createElement test', () => {
+  describe('ユーザ登録のテスト', () => {
     it('Ajaxでユーザの登録のstatus codeが200になるはず', (done) => {
       let request = null;
       const responseHandle = () => {
         if (request && request.readyState === 4) {
-          expect(request.status).to.be.equal(200);
+          expect(request.status).to.be.equal(201);
           done();
         }
       };
@@ -240,5 +240,12 @@ required="">\
 
   });
 
+  describe('Date関連のテスト', () => {
+    it('get nowで日付が返ってくるはず', (done) => {
+      let now = util.date.getNowDate();
+      expect(typeof now).to.be.equal('object');
+      done();
+    })
+  });
 });
 

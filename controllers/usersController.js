@@ -1,9 +1,15 @@
 // passportをロードする
 const passport = require('passport');
 
+// // jsonwebtokenをロードする
+// const jsonWebToken = require('jsonwebtoken');
+
 // ----- ユーザモデルをロードする ------------------------------------
 const User = require('../models/user');
 const {check, validationResult} = require('express-validator');
+
+// トークンをセットする ----------------------------------------------
+// const token = process.env.TOKEN || 'paltoken';
 
 const getUserParams = body => {
   return {
@@ -75,6 +81,10 @@ module.exports = {
 
       // フォームのパラメータでユーザを作る
       User.register(newUser, req.body.password, (error, user) => {
+
+        console.log('user:');
+        console.log(user);
+
         if (user) {
           res.status(200);
           res.end();
@@ -266,22 +276,44 @@ module.exports = {
         res.end();
         return;
       }
-      if (!user) {
+
+      if (user) {
+        // メールアドレスとパスワードの一致するユーザがいたらJWTに
+        // 署名する
+        // let signedToken = jsonWebToken.sign(
+        //   {
+        //     date: user._id,
+        //     exp: new Date().setDate(new Date().getDate() + 1)
+        //   },
+        //   'paljwtpass'
+        // );
+        // ----- ログイン処理 ------------------------------------------
+        req.login(user, function(err) {
+          if (err) {
+            res.status(401);
+            res.end();
+            return;
+          }
+          // res.status(200).jsonp(user);
+          // JWTでレスポンスする
+          res.status(200).jsonp(user);
+          // res.json({
+          // success: true,
+          // token: signedToken
+          // });
+          res.end();
+          return;
+        });
+      }
+      else {
         res.status(401).jsonp(info);
+        // res.json({
+        //   success: false,
+        //   message: 'Could not authenticate user.'
+        // });
         res.end();
         return;
       }
-      // ----- ログイン処理 ------------------------------------------
-      req.login(user, function(err) {
-        if (err) {
-          res.status(401);
-          res.end();
-          return;
-        }
-        res.status(200).jsonp(user);
-        res.end();
-        return;
-      });
     })(req, res);
   },
   // ----- validateする項目を定義する --------------------------------
@@ -383,5 +415,32 @@ module.exports = {
     }
     return;
   }
+  // // APIトークンを検証するミドルウェア関数 ---------------------------
+  // verifyToken: (req, res, next) => {
+  //   let token = req.query.apiToken;
+
+  //   // クエリパラメータにトークンが存在するか
+  //   if (token) {
+  //     // 提供されたAPIトークンを持つユーザを探す
+  //     User.findOne({apiToken: token})
+  //       .then(user => {
+  //         // そのAPIトークンを持つユーザが存在すればnextをコール
+  //         if (user) {
+  //           next();
+  //         }
+  //         else {
+  //           next(new Error('Invalid API token.'));
+  //         }
+  //       })
+  //       // エラーをエラーハンドルに渡す
+  //       .catch(error => {
+  //         next(new Error(error.message));
+  //       });
+  //   }
+  //   else {
+  //     // トークンが一致しなかったらエラーメッセージを返す
+  //     next(new Error('Invalid API token.'));
+  //   }
+  // }
 };
 

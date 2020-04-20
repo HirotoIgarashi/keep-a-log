@@ -11,10 +11,10 @@
 */
 /*global pal:true */
 
-pal = (function () {
+// pal = (function () {
+pal = (() => {
   'use strict';
 
-  // const initModule = function (id) {
   const initModule = (id) => {
     let content = document.getElementById(id);
 
@@ -25,5 +25,4 @@ pal = (function () {
   };
 
   return { initModule : initModule };
-
-}());
+})();

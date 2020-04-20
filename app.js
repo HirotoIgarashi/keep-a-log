@@ -98,6 +98,9 @@ const expire_time = 1000 * 60 * 60 * 24 * 30;
 // ---------------- ユーティリティメソッド終了 ---------------------------------
 
 // ---------------- サーバ構成開始 ---------------------------------------------
+// トークンを利用する ------------------------------------------------
+app.set('token', process.env.TOKEN || 'paltoken');
+
 // テストなら、ポート8001を使う
 if (process.env.NODE_ENV === 'test') {
   app.set('port', 8001 );
@@ -110,7 +113,8 @@ else {
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
 
-console.log(`Server Message: Expressが使っているビューエンジンは ${app.get('view engine')} です`);
+console.log(`Server Message: Expressが使っているビューエンジンは\
+${app.get('view engine')} です`);
 
 app.use(express.static('public'));
 
@@ -136,7 +140,6 @@ app.use(expressSession({
   cookie  : {
     secure    : false,
     httpOnly  : false,
-    // expires   : new Date(Date.now() + 4 * 404800000) 
     expires   : new Date(Date.now() + expire_time) 
   },
   store   : new RedisStore({
@@ -149,10 +152,10 @@ app.use(expressSession({
   resave            : false
 }));
 
-// connect-flashをミドルウェアとして使う
+// connect-flashをミドルウェアとして使う -----------------------------
 app.use(connectFlash());
 
-// フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入
+// フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
 app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
@@ -185,16 +188,20 @@ app.use('/', router);
 let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
-  console.log( 'Server Message: The Express.js server has started and is listening on port number:' + `${app.get('port')}`);
+  console.log(
+    'Server Message: The Express.js server has started and is\
+ listening on port number:' + `${app.get('port')}`);
   });
 }
 else {
   server = app.listen(port, () => {
-  console.log( 'Server Message: The Express.js server has started and is listening on port number:' + `${app.get('port')}`);
+  console.log(
+    'Server Message: The Express.js server has started and is\
+ listening on port number:' + `${app.get('port')}`);
   });
 }
 
-// サーバのインスタンスをsocket.ioに渡す
+// サーバのインスタンスをsocket.ioに渡す -----------------------------
 const io = require('socket.io')(server);
 
 module.exports = server;

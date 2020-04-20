@@ -7,10 +7,10 @@ const usersController = require('../controllers/usersController');
 // Createリクエストの処理でフォームを供給する
 router.get('/new', usersController.new);
 
-// ------ /user/createのpostの処理 -----------------------------------
-// インデックス経路を作成
-router.get('/', usersController.index, usersController.indexView);
+// どのリクエストでも処理の前にtokenの検証を実行する -----------------
+// router.use(usersController.verifyToken);
 
+// ------ /user/createのpostの処理 -----------------------------------
 // /users/loginに向かうGETリクエストを処理する経路
 router.get('/login', usersController.login);
 
@@ -25,6 +25,9 @@ router.post('/create',
             usersController.create,
             usersController.redirectView
            );
+
+// インデックス経路を作成
+router.get('/', usersController.index, usersController.indexView);
 
 // ユーザをshowで表示する
 router.get('/:id', usersController.show, usersController.showView);

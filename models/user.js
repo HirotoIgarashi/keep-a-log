@@ -26,6 +26,9 @@ var userSchema = new Schema({
     required: true,
     trim: true
   }
+  // apiToken: {
+  //   type: String
+  // }
 }, {
   // createAtとupdateAtの日時を記録する
   // タイムスタンププロパティを追加

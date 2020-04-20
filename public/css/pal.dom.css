@@ -120,3 +120,7 @@ p {
   box-shadow: 0 4px 0 #9999cc;
 }
 
+#pal-footer nav ul li {
+  display: inline-block;
+  list-style-type: none;
+}

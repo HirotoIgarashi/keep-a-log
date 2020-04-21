@@ -1,0 +1,51 @@
+<head>
+  <!-- サードパーティ javascript -->
+  <script src="js/vendor/jquery-1.12.0.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    #chat {
+      width: 100%;
+      height: 400px;
+      border: 1px solid #635956;
+      overflow: scroll;
+    }
+    #chat li {
+      text-decoration: none;
+      list-style: none;
+      padding: 10px;
+    }
+    .message.current-user {
+      font-weight: bold;
+      color: #3d41b4;
+    }
+  </style>
+</head>
+<body>
+  <%# ログイン中のユーザなら %>
+  <% if (currentUser) { %>
+    <div class="container">
+      <h1>Chat</h1>
+      <%# チャット入力用のHTMLフォーム %>
+      <form id="chatForm">
+        <%# テキスト用のカスタム入力要素 %>
+        <input id="chat-input" type="text">
+        <%# ユーザーデータを含むhiddenフィールドを追加 %>
+        <input id="chat-user-name" type="hidden" value="<%= currentUser.fullName %>">
+        <input id="chat-user-id" type="hidden" value="<%= currentUser._id %>">
+        <%# 送信ボタン %>
+        <input type="submit" class="button" value="Send">
+      </form>
+      <%# チャットボックス用にタグを作る %>
+      <div id="chat"></div>
+    
+      <script src="js/pal.js"></script>
+      <script src="js/pal.chat.js"></script>
+      <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+          console.log('ページの読み込みが完了しました:'+ event);
+          pal.chat.initModule();
+        });
+      </script>
+    </div>
+  <% } %>
+</body>

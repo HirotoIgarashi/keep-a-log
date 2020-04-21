@@ -15,25 +15,9 @@
 pal.calendar = (() => {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
-  var
-    // format_calendar_date, // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
-    format_iso_ext;       // Dateオブジェクトを与えてISO9601形式の文字列を求める
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
-  // ユーティリティメソッド/format_calendar_date/開始
-  // Dateオブジェクトを与えてYYYY年MM月DD日の文字列を求める
-  // format_calendar_date = function (date) {
-  //   return date.toLocaleDateString();
-  // };
-  // ユーティリティメソッド/format_calendar_date/終了
-
-  // ユーティリティメソッド/format_iso_ext/開始
-  // Dateオブジェクトを与えてISO9601形式の文字列を求める
-  format_iso_ext = function (date) {
-    return date.toISOString();
-  };
-  // ユーティリティメソッド/format_iso_ext/終了
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -65,9 +49,8 @@ pal.calendar = (() => {
     let currentHash;
     let beginingDate;
     let element;
-    var
-      calendar_date,
-      calendar_list = [];
+    let calendarDate;
+    let calendarList = [];
 
     // LocationHashを求める ------------------------------------------
     currentHash = pal.bom.getLocationHash();
@@ -144,8 +127,9 @@ pal.calendar = (() => {
 
     // カレンダー用のリストを作る。7 x 6 = 42コ
     for (let i = 0; i < 42; i = i + 1 ) {
-      calendar_date = new Date(beginingDate.getTime() + (1000*60*60*24 * i));
-      calendar_list.push(calendar_date);
+      // 1日後の日付を取得する
+      calendarDate = util.date.getDaysLater(beginingDate, i);
+      calendarList.push(calendarDate);
     }
 
     // カレンダーのlist要素をループする
@@ -157,12 +141,13 @@ pal.calendar = (() => {
     }
 
     for (let i = 0; i < 42; i = i + 1) {
-      element.textContent = calendar_list[i].getDate();
-      element.setAttribute(
+      element.textContent = calendarList[i].getDate();
+      util.dom.setAttribute(
+        element,
         'content',
-        format_iso_ext(calendar_list[i]).split('T')[0]
+        util.date.toISOString(calendarList[i]).split('T')[0]
       );
-      if (currentDate.getMonth() === calendar_list[ i ].getMonth()) {
+      if (currentDate.getMonth() === calendarList[i].getMonth()) {
         element.setAttribute( 'class', 'current-month' );
       }
       element = element.nextElementSibling;

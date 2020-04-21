@@ -1,9 +1,6 @@
 // passportをロードする
 const passport = require('passport');
 
-// // jsonwebtokenをロードする
-// const jsonWebToken = require('jsonwebtoken');
-
 // ----- ユーザモデルをロードする ------------------------------------
 const User = require('../models/user');
 const {check, validationResult} = require('express-validator');

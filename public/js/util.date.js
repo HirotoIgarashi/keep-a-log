@@ -51,6 +51,16 @@ util.date = (() => {
   };
   // getBeginingOfTheWeek終了 ----------------------------------------
 
+  // getDaysLater開始 ----------------------------------------
+  // ある日付と数を与えてある日付から数の値の前の日付を返す
+  const getDaysLater =
+    (date, num) => new Date(date.getTime() + (1000*60*60*24)*num);
+  // toISOString開始 -------------------------------------------------
+
+  // Dateオブジェクトを与えてISO8601形式の文字列を求める
+  const toISOString = (date) => date.toISOString();
+  // toISOString終了 -------------------------------------------------
+
   // 関数をエクスポートする ------------------------------------------
   return {
     getNowDate: getNowDate,
@@ -60,6 +70,8 @@ util.date = (() => {
     getYear: getYear,
     getMonth: getMonth,
     getDayOfTheWeek: getDayOfTheWeek,
-    getBeginingOfTheWeek: getBeginingOfTheWeek
+    getBeginingOfTheWeek: getBeginingOfTheWeek,
+    getDaysLater: getDaysLater,
+    toISOString: toISOString
   };
 })();

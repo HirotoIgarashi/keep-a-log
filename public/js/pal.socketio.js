@@ -24,13 +24,13 @@ pal.socketio = (function () {
     readObjectList;
 
   makeSio = function ( namespace ) {
-    var socket = io.connect(  namespace );
+    var socket = io.connect(namespace);
 
     return {
-      emit  : function ( event_name, data ) {
+      emit  : function (event_name, data) {
         socket.emit( event_name, data );
       },
-      on    : function ( event_name, callback ) {
+      on    : function (event_name, callback) {
         socket.on( event_name, function () {
           callback( arguments );
         });

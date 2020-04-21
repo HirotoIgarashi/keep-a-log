@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const homeController = require('../controllers/homeController');
+
 // Express.jsのRouterをロード ----------------------------------------
 const router = require('express').Router();
 
@@ -23,5 +25,7 @@ router.get('/', (req, res) => {
     }
   );
 });
+
+router.get('/chat', homeController.chat);
 
 module.exports = router;

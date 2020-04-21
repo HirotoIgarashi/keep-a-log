@@ -89,12 +89,11 @@ pal.module = (function () {
   // 例外発行: なし
   //
   initModule = function ( $container ) {
-    var helloWorld  = pal.util_b.getTplContent( 'test' );
+    var helloWorld  = pal.util_b.getTplContent('test');
 
     stateMap.$container = $container;
     setJqueryMap();
 
-    // jqueryMap.$container.html( '<h1>Hello World!</h1>' );
     jqueryMap.$container.html( helloWorld );
 
     return true;

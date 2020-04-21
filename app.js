@@ -176,6 +176,12 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 // ------------------ passportの設定終了 -----------------------------
+app.use((req, res, next) => {
+  res.locals.loggedIn = req.isAuthenticated();
+  res.locals.currentUser = req.user;
+  res.locals.flashMessages = req.flash();
+  next();
+});
 
 // morganの「combined」フォーマットでログを出すように指示します。
 app.use(morgan('combined'));
@@ -203,6 +209,8 @@ else {
 
 // サーバのインスタンスをsocket.ioに渡す -----------------------------
 const io = require('socket.io')(server);
+
+require('./controllers/chatController')(io);
 
 module.exports = server;
 // ---------------- サーバ起動終了 ---------------------------------------------

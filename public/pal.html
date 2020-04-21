@@ -29,9 +29,6 @@
 
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
-        <!-- サードパーティ javascript -->
-        <script src="/socket.io/socket.io.js"></script>
-
         <!-- メインページのテンプレート -->
         <template id="main-page">
           <header id="pal-header">
@@ -74,10 +71,8 @@
             <!-- メニューの内容 -->
             <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
               <ul id="pal-nav-menu">
-                <li><a href="#">ホーム</a></li>
                 <li><a href="#cycle_system">サイクルシステム</a></li>
                 <li><a href="#regist_schedule">予定の登録</a></li>
-                <li><a href="#calendar">カレンダー</a></li>
                 <li><a href="#list">アクションのリスト</a></li>
                 <li><a href="#browser_information">ブラウザ情報</a></li>
                 <li><a href="#lab">ラボラトリ</a></li>
@@ -93,6 +88,7 @@
                 <li><a href="#">ホーム</a></li>
                 <li><a href="#plan">プラン</a></li>
                 <li><a href="#calendar">カレンダー</a></li>
+                <li><a href="chat">チャット</a></li>
               </ul>
             </nav>
             <span id="pal-dom-user-info"></span>
@@ -1465,7 +1461,7 @@
         <div id="pal"></div>
 
         <script>
-          document.addEventListener('DOMContentLoaded', function(event) {
+          document.addEventListener('DOMContentLoaded', (event) => {
             pal.initModule('pal');
           });
         </script>

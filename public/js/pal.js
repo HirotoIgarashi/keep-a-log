@@ -19,7 +19,7 @@ pal = (() => {
     let content = document.getElementById(id);
 
     if ( pal.bom && content) {
-      pal.bom.initModule( content );
+      pal.bom.initModule(content);
     }
 
   };

@@ -137,14 +137,7 @@ pal.login = (function () {
     const userInfo = document.getElementById('pal-dom-user-info');
 
     if ( request && request.readyState === 4 ) {
-
-      console.log('request:');
-      console.log(request);
-
       let response = JSON.parse(request.response);
-
-      console.log('request.status:');
-      console.log(request.status);
 
       if (request.status === 200) {
         // ----- ログインが成功したときの処理 ------------------------

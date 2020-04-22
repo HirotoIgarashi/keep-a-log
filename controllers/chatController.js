@@ -1,8 +1,21 @@
-// チャットコントローラの内容をエクスポートする
+'use strict';
+
+const Message = require('../models/message.js');
+
+// チャットコントローラの内容をエクスポートする ----------------------
 module.exports = io => {
   // 新しいユーザ接続を監視する
   io.on('connection', client => {
     console.log('new connection');
+
+    Message.find({})
+      .sort({createdAt: -1})
+      .limit(10)
+      // 新しいソケットだけに10個まで最新メッセージを送る
+      // カスタムイベント
+      .then(messages => {
+        client.emit('load all messages', messages.reverse());
+      });
 
     // ユーザーの接続断を監視する
     client.on('disconnect', () => {
@@ -12,14 +25,20 @@ module.exports = io => {
     // カスタムメッセージイベントを監視する
     client.on('message', (data) => {
       // 受け取ったデータを全て集める
-      let messageAttribute = {
+      let messageAttributes = {
         content: data.content,
         userName: data.userName,
         user: data.userId
       };
+      let m = new Message(messageAttributes);
 
-      // データをmessageイベントの内容として送出
-      io.emit('message', messageAttribute);
+      // メッセージを保存する
+      m.save()
+        .then(() => {
+          // 保存に成功したらメッセージの値を送出
+          io.emit('message', messageAttributes);
+        })
+        .catch(error => console.log(`error: ${error.message}`));
     });
   });
 };

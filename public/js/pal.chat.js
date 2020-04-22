@@ -40,8 +40,6 @@ pal.chat = (() => {
     // クライアントサイドでsocket.ioを初期化
     const socket = io();
 
-    console.log('pal.chatが開始されました');
-
     // フォームが送出されたときにイベントを発行 ----------------------
     $('#chatForm').submit(() => {
       // ビューの入力フォームからテキストを取り込み、
@@ -60,8 +58,18 @@ pal.chat = (() => {
     });
 
     // イベントを監視し、チャットボックスに記入 ----------------------
-    socket.on('message', (message) => {
+    socket.on('message', message => {
+      console.log(`'メッセージが到着しました: ${message}`);
       displayMessage(message);
+    });
+
+    // load all messageイベントの処理で、届いたデータを解析する ------
+    socket.on('load all messages', (data) => {
+      data.forEach(message => {
+        // それぞれのメッセージをdisplayMessageに渡して
+        // チャットボックスに表示させる
+        displayMessage(message);
+      });
     });
 
     // displayMessage開始 --------------------------------------------

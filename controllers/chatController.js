@@ -4,7 +4,7 @@ const Message = require('../models/message.js');
 
 // チャットコントローラの内容をエクスポートする ----------------------
 module.exports = io => {
-  // 新しいユーザ接続を監視する
+  // 新しいユーザ接続を監視する --------------------------------------
   io.on('connection', client => {
     console.log('new connection');
 
@@ -17,12 +17,14 @@ module.exports = io => {
         client.emit('load all messages', messages.reverse());
       });
 
-    // ユーザーの接続断を監視する
+    // ユーザーの接続断を監視する ------------------------------------
     client.on('disconnect', () => {
+      // 接続中の他の全てのユーザにブロードキャストする --------------
+      client.broadcast.emit('user disconnected');
       console.log('user disconnected');
     });
 
-    // カスタムメッセージイベントを監視する
+    // カスタムメッセージイベントを監視する --------------------------
     client.on('message', (data) => {
       // 受け取ったデータを全て集める
       let messageAttributes = {
@@ -32,7 +34,7 @@ module.exports = io => {
       };
       let m = new Message(messageAttributes);
 
-      // メッセージを保存する
+      // メッセージを保存する ----------------------------------------
       m.save()
         .then(() => {
           // 保存に成功したらメッセージの値を送出

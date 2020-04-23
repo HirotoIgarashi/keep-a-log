@@ -1,962 +1,1256 @@
 <!doctype html>
+<!-- この行は70桁です                                              -->
 <html class="no-js" lang="ja">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>keeP A Log</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
-        <!-- Place favicon.ico in the root directory -->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>keeP A Log</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+    <!-- Place favicon.ico in the root directory -->
 
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
+    <!-- スタイルシート開始                                        -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pal.css">
+    <link rel="stylesheet" href="css/pal.dom.css">
+    <link rel="stylesheet" href="css/pal.top.css">
+    <link rel="stylesheet" href="css/pal.login.css">
+    <link rel="stylesheet" href="css/pal.menu.css">
+    <link rel="stylesheet" href="css/pal.list.css">
+    <link rel="stylesheet" href="css/pal.register.css">
+    <link rel="stylesheet" href="css/pal.registSchedule.css">
+    <link rel="stylesheet" href="css/pal.lab.css">
+    <link rel="stylesheet" href="css/pal.calendar.css">
+    <link rel="stylesheet" href="css/pal.cycleSystem.css">
+    <link rel="stylesheet" href="css/test.css">
+    <!-- スタイルシート終了                                        -->
 
-        <!-- スタイルシート -->
-        <link rel="stylesheet" href="css/pal.css">
-        <link rel="stylesheet" href="css/pal.dom.css">
-        <link rel="stylesheet" href="css/pal.top.css">
-        <link rel="stylesheet" href="css/pal.login.css">
-        <link rel="stylesheet" href="css/pal.menu.css">
-        <link rel="stylesheet" href="css/pal.list.css">
-        <link rel="stylesheet" href="css/pal.register.css">
-        <link rel="stylesheet" href="css/pal.registSchedule.css">
-        <link rel="stylesheet" href="css/pal.lab.css">
-        <link rel="stylesheet" href="css/pal.calendar.css">
-        <link rel="stylesheet" href="css/pal.cycleSystem.css">
-        <link rel="stylesheet" href="css/test.css">
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-
-        <!-- メインページのテンプレート -->
-        <template id="main-page">
-          <header id="pal-header">
-            <button class="pal-dom-header-title">
-              keeP-A-Log
-            </button>
-            <div class="pal-dom-header-blank">
-            </div>
-            <button aria-label="エグジット" class="pal-dom-header-logout">
-              <span>ログアウト</span>
-              <svg class="icon icon-exit">
-                <use href="#icon-exit"></use>
-              </svg>
-            </button>
-            <button aria-label="エンター" class="pal-dom-header-login">
-              <span>ログイン</span>
-              <svg class="icon icon-enter">
-                <use href="#icon-enter"></use>
-              </svg>
-            </button>
-            <button aria-label="サインアップ" class="pal-dom-header-register">
-              <span>ユーザ登録</span>
-              <svg class="icon icon-user-plus">
-                <use href="#icon-user-plus"></use>
-              </svg>
-            </button>
-            <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
-              <span>メニュー</span>
-              <svg class="icon icon-user-plus">
-              <svg class="icon icon-menu">
-                <switch>
-                  <use href="#icon-menu"></use>
-                  <foreignObject>
-                  <img src="image/pal_menu.png" alt="" />
-                  </foreignObject>
-                </switch>
-              </svg>
-              <span class="visually-hidden">メニュー</span>
-            </button>
-            <!-- メニューの内容 -->
-            <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
-              <ul id="pal-nav-menu">
-                <li><a href="#cycle_system">サイクルシステム</a></li>
-                <li><a href="#regist_schedule">予定の登録</a></li>
-                <li><a href="#list">アクションのリスト</a></li>
-                <li><a href="#browser_information">ブラウザ情報</a></li>
-                <li><a href="#lab">ラボラトリ</a></li>
-              </ul>
-            </nav>
-          </header>
-
-          <main id="pal-main"></main>
-
-          <footer id="pal-footer">
-            <nav>
-              <ul>
-                <li><a href="#">ホーム</a></li>
-                <li><a href="#plan">プラン</a></li>
-                <li><a href="#calendar">カレンダー</a></li>
-                <li><a href="chat">チャット</a></li>
-              </ul>
-            </nav>
-            <span id="pal-dom-user-info"></span>
-            <span id="pal-dom-date-info"></span>
-          </footer>
-        </template>
-
-        <template id="top-page">
-          <h1 class="pal-top-hello">KeeP-A-Logとは</h1>
-          <p>KeeP-A-Logとは記録を残すための作成中のWebアプリケーションの名前です。</p>
-          <p>いつ完成するのかはわかりません。</p>
-          <p>保存することができるデータはhttp://schema.org/にあるスキーマに対応できればいいと思っています。</p>
-        </template>
-
-        <!-- テスト用 -->
-        <template id="test">
-          <h1 class="pal-top-hello">Test!</h1>
-        </template>
-
-        <!-- ラボラトリ用 -->
-        <template id="lab">
-          <h1>Lab!</h1>
-          <hr>
-          <h2>基本のフォーム</h2>
-          <form>
-            <label>ラベル</label>
-            <input type="text">
-            <button type="submit">ボタン</button>
-          </form>
-          <hr>
-
-          <!-- Paused state -->
-          <h2>トグルボタン</h2>
-          <button id="pal-lab-play" type="button" aria-pressed="false" aria-label="play">
-            &#x25b6;
-          </button>
-
-          <!-- Playing state -->
-          <button id="pal-lab-pause" type="button" aria-pressed="true" aria-label="play">
-            &#x23f8;
-          </button>
-
-          <form id="pal-lab-form" hidden>
-            <label>id:</label>
-            <input type="text">
-            <button type="button">保存</button>
-          </form>
-
-          <hr>
-
-          <form>
-            <input type="text">
-            <button>送信</button>
-          </form>
-
-          <button id="pal-lab-button">何かを実行</button>
-          <button id="pal-lab-button-appear">ボタンらしいボタン</button>
-          <label>
-            <input type="checkbox" value="yes" />同意しますか？
-          </label>
-          <!-- aria-labelのサンプル -->
-          <button aria-label="元に戻す">&#xE000;</button>
-          </br>
-          <li>
-            <a href="#submenu" aria-haspopup="true" aria-controls="submenu">メインリンク</a>
-            <ul id="submenu">
-              <li><a href="/somewhere/">サブメニューリンク</a></li>
-              <li><a href="/somewhere/else/">もうひとつのリンク</a></li>
-            </ul>
-          </li>
-          <hr>
-          <iframe src="../mq-hello.html" width="190" id="a"></iframe>
-          <iframe src="../mq-hello.html" width="200" id="b"></iframe>
-          <iframe src="../mq-hello.html" width="210" id="c"></iframe>
-          <nav id="ul-test"v>
-            <ul>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-            </ul>
-          </nav>
-
-        </template>
-
-        <!-- シンプルリスト用 -->
-        <template id="list-page">
-          <h1>アクション(Action)のリスト</h1>
-          <div id="status"></div>
-          <button id="pal-list-new">
-            <svg class="icon icon-plus">
-              <use href="#icon-plus">
-              </use>
-            </svg>
-            新規作成
-          </button>
-          <button id="pal-list-new-cancel" class="hidden">
-            <svg class="icon icon-cross">
-              <use href="#icon-cross">
-              </use>
-            </svg>
-            作成をキャンセル
-          </button>
-          <div id="new-form-wrapper"></div>
-          <button id="pal-list-new-upload" class="hidden">
-            <svg class="icon icon-upload">
-              <use href="#icon-upload">
-              </use>
-            </svg>
-            送信
-          </button>
-          <div id="target"></div>
-        </template>
-
-        <!-- 予定の登録用 -->
-        <template id="schedule-registration">
-          <h1>予定の登録</h1>
-          <nav id="schedule-registration-menu">
-            <button>
-              予定の登録メニュー
-              <svg id="expand-button">
-                <use href="#icon-circle-down"></use>
-              </svg>
-              <svg id="contract-button" display="none">
-                <use href="#icon-circle-up"></use>
-              </svg>
-            </button>
-            <ul>
-              <li><a href="#regist_schedule/dayly" class="current-page">毎日の予定</a></li>
-              <li><a href="#regist_schedule/weekly">毎週の予定</a></li>
-              <li><a href="#regist_schedule/monthly/bydate">毎月の予定(日別)</a></li>
-              <li><a href="#regist_schedule/monthly/byorder">毎月の予定(第何何曜日)</a></li>
-              <li><a href="#regist_schedule/yearly">毎年の予定</a></li>
-            </ul>
-          </nav>
-          <main id="schedule-main">
-          </main>
-        </template>
-        <!-- 予定の登録用 -->
-        <!-- 毎日の予定の登録用 -->
-        <template id="schedule-registration-dayly">
-          <h1>毎日の予定</h1>
-          <nav>
-            <ul id="regist-dayly">
-              <li>0:00<a>+</a></li>
-              <li>1:00</li>
-              <li>2:00</li>
-              <li>3:00</li>
-              <li>4:00</li>
-              <li>5:00</li>
-              <li>6:00</li>
-              <li>7:00</li>
-              <li>8:00</li>
-              <li>9:00</li>
-              <li>10:00</li>
-              <li>11:00</li>
-              <li>12:00</li>
-              <li>13:00</li>
-              <li>14:00</li>
-              <li>15:00</li>
-              <li>16:00</li>
-              <li>17:00</li>
-              <li>18:00</li>
-              <li>19:00</li>
-              <li>20:00</li>
-              <li>21:00</li>
-              <li>22:00</li>
-              <li>23:00</li>
-            </ul>
-          </nav>
-        </template>
-
-        <!-- 毎週の予定の登録用 -->
-        <template id="schedule-registration-weekly">
-          <h1>毎週の予定</h1>
-          <ul id="weekly-schedule">
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>月</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>火</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>水</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>木</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>金</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>土</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
-            <li class="weekly-row">
-              <ul class="date-column">
-                <li>日</li>
-              </ul>
-              <ul class="time-column">
-                <li>0:00</li>
-                <li>1:00</li>
-                <li>2:00</li>
-                <li>3:00</li>
-                <li>4:00</li>
-                <li>5:00</li>
-                <li>6:00</li>
-                <li>7:00</li>
-                <li>8:00</li>
-                <li>9:00</li>
-                <li>10:00</li>
-                <li>11:00</li>
-                <li>12:00</li>
-                <li>13:00</li>
-                <li>14:00</li>
-                <li>15:00</li>
-                <li>16:00</li>
-                <li>17:00</li>
-                <li>18:00</li>
-                <li>19:00</li>
-                <li>20:00</li>
-                <li>21:00</li>
-                <li>22:00</li>
-                <li>23:00</li>
-              </ul>
-            </li>
-
+    <!-- メインページのテンプレート -->
+    <template id="main-page">
+      <header id="pal-header">
+        <button class="pal-dom-header-title">
+          keeP-A-Log
+        </button>
+        <div class="pal-dom-header-blank">
+          <span id="pal-dom-user-info"></span>
+        </div>
+        <button aria-label="エグジット" class="pal-dom-header-logout">
+          <span>ログアウト</span>
+          <svg class="icon icon-exit">
+            <use href="#icon-exit"></use>
+          </svg>
+        </button>
+        <button aria-label="エンター" class="pal-dom-header-login">
+          <span>ログイン</span>
+          <svg class="icon icon-enter">
+            <use href="#icon-enter"></use>
+          </svg>
+        </button>
+        <button aria-label="サインアップ" class="pal-dom-header-register">
+          <span>ユーザ登録</span>
+          <svg class="icon icon-user-plus">
+            <use href="#icon-user-plus"></use>
+          </svg>
+        </button>
+        <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
+          <span>メニュー</span>
+          <svg class="icon icon-user-plus">
+          <svg class="icon icon-menu">
+            <switch>
+              <use href="#icon-menu"></use>
+              <foreignObject>
+              <img src="image/pal_menu.png" alt="" />
+              </foreignObject>
+            </switch>
+          </svg>
+          <span class="visually-hidden">メニュー</span>
+        </button>
+        <!-- メニューの内容 -->
+        <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
+          <ul id="pal-nav-menu">
+            <li><a href="#cycle_system">サイクルシステム</a></li>
+            <li><a href="#regist_schedule">予定の登録</a></li>
+            <li><a href="#list">アクションのリスト</a></li>
+            <li><a href="#browser_information">ブラウザ情報</a></li>
+            <li><a href="#lab">ラボラトリ</a></li>
           </ul>
-        </template>
+        </nav>
+      </header>
+      <main id="pal-main"></main>
+      <footer id="pal-footer"></footer>
+    </template>
 
-        <template id="schedule-registration-monthly-by-date">
-          <h1>毎月の予定(日別)</h1>
-          <nav id="dayly-schedule">
-            <ul>
-              <li>1日</li>
-              <li>2日</li>
-              <li>3日</li>
-              <li>4日</li>
-              <li>5日</li>
-              <li>6日</li>
-              <li>7日</li>
-              <li>8日</li>
-              <li>9日</li>
-              <li>10日</li>
-              <li>11日</li>
-              <li>12日</li>
-              <li>13日</li>
-              <li>14日</li>
-              <li>15日</li>
-              <li>16日</li>
-              <li>17日</li>
-              <li>18日</li>
-              <li>19日</li>
-              <li>20日</li>
-              <li>21日</li>
-              <li>22日</li>
-              <li>23日</li>
-              <li>24日</li>
-              <li>25日</li>
-              <li>26日</li>
-              <li>27日</li>
-              <li>28日</li>
-              <li>29日</li>
-              <li>30日</li>
-              <li>31日</li>
-            </ul>
-          </nav>
-        </template>
+    <template id="top-page">
+      <h1 class="pal-top-hello">KeeP-A-Logとは</h1>
+      <p>KeeP-A-Logとは記録を残すための作成中のWebアプリケーションの名前です。</p>
+      <p>いつ完成するのかはわかりません。</p>
+      <p>保存することができるデータはhttp://schema.org/にあるスキーマに対応できればいいと思っています。</p>
+    </template>
 
-        <template id="schedule-registration-monthly-by-order">
-          <h1>毎月の予定(第何何曜日)</h1>
-          <nav id="dayly-schedule-by-order">
-            <ul>
-              <li>第1月曜日</li>
-              <li>第1火曜日</li>
-              <li>第1水曜日</li>
-              <li>第1木曜日</li>
-              <li>第1金曜日</li>
-              <li>第1土曜日</li>
-              <li>第1日曜日</li>
-              <li>第2月曜日</li>
-              <li>第2火曜日</li>
-              <li>第2水曜日</li>
-              <li>第2木曜日</li>
-              <li>第2金曜日</li>
-              <li>第2土曜日</li>
-              <li>第2日曜日</li>
-              <li>第3月曜日</li>
-              <li>第3火曜日</li>
-              <li>第3水曜日</li>
-              <li>第3木曜日</li>
-              <li>第3金曜日</li>
-              <li>第3土曜日</li>
-              <li>第3日曜日</li>
-              <li>第4月曜日</li>
-              <li>第4火曜日</li>
-              <li>第4水曜日</li>
-              <li>第4木曜日</li>
-              <li>第4金曜日</li>
-              <li>第4土曜日</li>
-              <li>第4日曜日</li>
-              <li>第5月曜日</li>
-              <li>第5火曜日</li>
-              <li>第5水曜日</li>
-              <li>第5木曜日</li>
-              <li>第5金曜日</li>
-              <li>第5土曜日</li>
-              <li>第5日曜日</li>
-            </ul>
-          </nav>
-        </template>
+    <!-- テスト用 -->
+    <template id="test">
+      <h1 class="pal-top-hello">Test!</h1>
+    </template>
 
-        <template id="schedule-registration-yearly">
-          <h1>毎年の予定</h1>
-          <nav id="yearly-schedule">
-            <ul>
-              <li>1月1日</li>
-              <li>1月2日</li>
-              <li>1月3日</li>
-              <li>1月4日</li>
-              <li>1月5日</li>
-              <li>1月6日</li>
-              <li>1月7日</li>
-              <li>1月8日</li>
-              <li>1月9日</li>
-              <li>1月10日</li>
-              <li>1月11日</li>
-              <li>1月12日</li>
-              <li>1月13日</li>
-              <li>1月14日</li>
-              <li>1月15日</li>
-              <li>1月16日</li>
-              <li>1月17日</li>
-              <li>1月18日</li>
-              <li>1月19日</li>
-              <li>1月20日</li>
-              <li>1月21日</li>
-              <li>1月22日</li>
-              <li>1月23日</li>
-              <li>1月24日</li>
-              <li>1月25日</li>
-              <li>1月26日</li>
-              <li>1月27日</li>
-              <li>1月28日</li>
-              <li>1月29日</li>
-              <li>1月30日</li>
-              <li>1月31日</li>
-              <li>2月1日</li>
-              <li>2月2日</li>
-              <li>2月3日</li>
-              <li>2月4日</li>
-              <li>2月5日</li>
-              <li>2月6日</li>
-              <li>2月7日</li>
-              <li>2月8日</li>
-              <li>2月9日</li>
-              <li>2月10日</li>
-              <li>2月11日</li>
-              <li>2月12日</li>
-              <li>2月13日</li>
-              <li>2月14日</li>
-              <li>2月15日</li>
-              <li>2月16日</li>
-              <li>2月17日</li>
-              <li>2月18日</li>
-              <li>2月19日</li>
-              <li>2月20日</li>
-              <li>2月21日</li>
-              <li>2月22日</li>
-              <li>2月23日</li>
-              <li>2月24日</li>
-              <li>2月25日</li>
-              <li>2月26日</li>
-              <li>2月27日</li>
-              <li>2月28日</li>
-              <li>2月29日</li>
-              <li>3月1日</li>
-              <li>3月2日</li>
-              <li>3月3日</li>
-              <li>3月4日</li>
-              <li>3月5日</li>
-              <li>3月6日</li>
-              <li>3月7日</li>
-              <li>3月8日</li>
-              <li>3月9日</li>
-              <li>3月10日</li>
-              <li>3月11日</li>
-              <li>3月12日</li>
-              <li>3月13日</li>
-              <li>3月14日</li>
-              <li>3月15日</li>
-              <li>3月16日</li>
-              <li>3月17日</li>
-              <li>3月18日</li>
-              <li>3月19日</li>
-              <li>3月20日</li>
-              <li>3月21日</li>
-              <li>3月22日</li>
-              <li>3月23日</li>
-              <li>3月24日</li>
-              <li>3月25日</li>
-              <li>3月26日</li>
-              <li>3月27日</li>
-              <li>3月28日</li>
-              <li>3月29日</li>
-              <li>3月30日</li>
-              <li>3月31日</li>
-              <li>4月1日</li>
-              <li>4月2日</li>
-              <li>4月3日</li>
-              <li>4月4日</li>
-              <li>4月5日</li>
-              <li>4月6日</li>
-              <li>4月7日</li>
-              <li>4月8日</li>
-              <li>4月9日</li>
-              <li>4月10日</li>
-              <li>4月11日</li>
-              <li>4月12日</li>
-              <li>4月13日</li>
-              <li>4月14日</li>
-              <li>4月15日</li>
-              <li>4月16日</li>
-              <li>4月17日</li>
-              <li>4月18日</li>
-              <li>4月19日</li>
-              <li>4月20日</li>
-              <li>4月21日</li>
-              <li>4月22日</li>
-              <li>4月23日</li>
-              <li>4月24日</li>
-              <li>4月25日</li>
-              <li>4月26日</li>
-              <li>4月27日</li>
-              <li>4月28日</li>
-              <li>4月29日</li>
-              <li>4月30日</li>
-              <li>5月1日</li>
-              <li>5月2日</li>
-              <li>5月3日</li>
-              <li>5月4日</li>
-              <li>5月5日</li>
-              <li>5月6日</li>
-              <li>5月7日</li>
-              <li>5月8日</li>
-              <li>5月9日</li>
-              <li>5月10日</li>
-              <li>5月11日</li>
-              <li>5月12日</li>
-              <li>5月13日</li>
-              <li>5月14日</li>
-              <li>5月15日</li>
-              <li>5月16日</li>
-              <li>5月17日</li>
-              <li>5月18日</li>
-              <li>5月19日</li>
-              <li>5月20日</li>
-              <li>5月21日</li>
-              <li>5月22日</li>
-              <li>5月23日</li>
-              <li>5月24日</li>
-              <li>5月25日</li>
-              <li>5月26日</li>
-              <li>5月27日</li>
-              <li>5月28日</li>
-              <li>5月29日</li>
-              <li>5月30日</li>
-              <li>5月31日</li>
-              <li>6月1日</li>
-              <li>6月2日</li>
-              <li>6月3日</li>
-              <li>6月4日</li>
-              <li>6月5日</li>
-              <li>6月6日</li>
-              <li>6月7日</li>
-              <li>6月8日</li>
-              <li>6月9日</li>
-              <li>6月10日</li>
-              <li>6月11日</li>
-              <li>6月12日</li>
-              <li>6月13日</li>
-              <li>6月14日</li>
-              <li>6月15日</li>
-              <li>6月16日</li>
-              <li>6月17日</li>
-              <li>6月18日</li>
-              <li>6月19日</li>
-              <li>6月20日</li>
-              <li>6月21日</li>
-              <li>6月22日</li>
-              <li>6月23日</li>
-              <li>6月24日</li>
-              <li>6月25日</li>
-              <li>6月26日</li>
-              <li>6月27日</li>
-              <li>6月28日</li>
-              <li>6月29日</li>
-              <li>6月30日</li>
-              <li>7月1日</li>
-              <li>7月2日</li>
-              <li>7月3日</li>
-              <li>7月4日</li>
-              <li>7月5日</li>
-              <li>7月6日</li>
-              <li>7月7日</li>
-              <li>7月8日</li>
-              <li>7月9日</li>
-              <li>7月10日</li>
-              <li>7月11日</li>
-              <li>7月12日</li>
-              <li>7月13日</li>
-              <li>7月14日</li>
-              <li>7月15日</li>
-              <li>7月16日</li>
-              <li>7月17日</li>
-              <li>7月18日</li>
-              <li>7月19日</li>
-              <li>7月20日</li>
-              <li>7月21日</li>
-              <li>7月22日</li>
-              <li>7月23日</li>
-              <li>7月24日</li>
-              <li>7月25日</li>
-              <li>7月26日</li>
-              <li>7月27日</li>
-              <li>7月28日</li>
-              <li>7月29日</li>
-              <li>7月30日</li>
-              <li>7月31日</li>
-              <li>8月1日</li>
-              <li>8月2日</li>
-              <li>8月3日</li>
-              <li>8月4日</li>
-              <li>8月5日</li>
-              <li>8月6日</li>
-              <li>8月7日</li>
-              <li>8月8日</li>
-              <li>8月9日</li>
-              <li>8月10日</li>
-              <li>8月11日</li>
-              <li>8月12日</li>
-              <li>8月13日</li>
-              <li>8月14日</li>
-              <li>8月15日</li>
-              <li>8月16日</li>
-              <li>8月17日</li>
-              <li>8月18日</li>
-              <li>8月19日</li>
-              <li>8月20日</li>
-              <li>8月21日</li>
-              <li>8月22日</li>
-              <li>8月23日</li>
-              <li>8月24日</li>
-              <li>8月25日</li>
-              <li>8月26日</li>
-              <li>8月27日</li>
-              <li>8月28日</li>
-              <li>8月29日</li>
-              <li>8月30日</li>
-              <li>8月31日</li>
-              <li>9月1日</li>
-              <li>9月2日</li>
-              <li>9月3日</li>
-              <li>9月4日</li>
-              <li>9月5日</li>
-              <li>9月6日</li>
-              <li>9月7日</li>
-              <li>9月8日</li>
-              <li>9月9日</li>
-              <li>9月10日</li>
-              <li>9月11日</li>
-              <li>9月12日</li>
-              <li>9月13日</li>
-              <li>9月14日</li>
-              <li>9月15日</li>
-              <li>9月16日</li>
-              <li>9月17日</li>
-              <li>9月18日</li>
-              <li>9月19日</li>
-              <li>9月20日</li>
-              <li>9月21日</li>
-              <li>9月22日</li>
-              <li>9月23日</li>
-              <li>9月24日</li>
-              <li>9月25日</li>
-              <li>9月26日</li>
-              <li>9月27日</li>
-              <li>9月28日</li>
-              <li>9月29日</li>
-              <li>9月30日</li>
-              <li>10月1日</li>
-              <li>10月2日</li>
-              <li>10月3日</li>
-              <li>10月4日</li>
-              <li>10月5日</li>
-              <li>10月6日</li>
-              <li>10月7日</li>
-              <li>10月8日</li>
-              <li>10月9日</li>
-              <li>10月10日</li>
-              <li>10月11日</li>
-              <li>10月12日</li>
-              <li>10月13日</li>
-              <li>10月14日</li>
-              <li>10月15日</li>
-              <li>10月16日</li>
-              <li>10月17日</li>
-              <li>10月18日</li>
-              <li>10月19日</li>
-              <li>10月20日</li>
-              <li>10月21日</li>
-              <li>10月22日</li>
-              <li>10月23日</li>
-              <li>10月24日</li>
-              <li>10月25日</li>
-              <li>10月26日</li>
-              <li>10月27日</li>
-              <li>10月28日</li>
-              <li>10月29日</li>
-              <li>10月30日</li>
-              <li>10月31日</li>
-              <li>11月1日</li>
-              <li>11月2日</li>
-              <li>11月3日</li>
-              <li>11月4日</li>
-              <li>11月5日</li>
-              <li>11月6日</li>
-              <li>11月7日</li>
-              <li>11月8日</li>
-              <li>11月9日</li>
-              <li>11月10日</li>
-              <li>11月11日</li>
-              <li>11月12日</li>
-              <li>11月13日</li>
-              <li>11月14日</li>
-              <li>11月15日</li>
-              <li>11月16日</li>
-              <li>11月17日</li>
-              <li>11月18日</li>
-              <li>11月19日</li>
-              <li>11月20日</li>
-              <li>11月21日</li>
-              <li>11月22日</li>
-              <li>11月23日</li>
-              <li>11月24日</li>
-              <li>11月25日</li>
-              <li>11月26日</li>
-              <li>11月27日</li>
-              <li>11月28日</li>
-              <li>11月29日</li>
-              <li>11月30日</li>
-              <li>12月1日</li>
-              <li>12月2日</li>
-              <li>12月3日</li>
-              <li>12月4日</li>
-              <li>12月5日</li>
-              <li>12月6日</li>
-              <li>12月7日</li>
-              <li>12月8日</li>
-              <li>12月9日</li>
-              <li>12月10日</li>
-              <li>12月11日</li>
-              <li>12月12日</li>
-              <li>12月13日</li>
-              <li>12月14日</li>
-              <li>12月15日</li>
-              <li>12月16日</li>
-              <li>12月17日</li>
-              <li>12月18日</li>
-              <li>12月19日</li>
-              <li>12月20日</li>
-              <li>12月21日</li>
-              <li>12月22日</li>
-              <li>12月23日</li>
-              <li>12月24日</li>
-              <li>12月25日</li>
-              <li>12月26日</li>
-              <li>12月27日</li>
-              <li>12月28日</li>
-              <li>12月29日</li>
-              <li>12月30日</li>
-              <li>12月31日</li>
-            </ul>
-          </nav>
-        </template>
+    <!-- ラボラトリ用 -->
+    <template id="lab">
+      <h1>Lab!</h1>
+      <hr>
+      <h2>基本のフォーム</h2>
+      <form>
+        <label>ラベル</label>
+        <input type="text">
+        <button type="submit">ボタン</button>
+      </form>
+      <hr>
 
-        <!-- カレンダー用 -->
-        <template id="calendar-tmpl">
-          <h1>カレンダー</h1>
+      <!-- Paused state -->
+      <h2>トグルボタン</h2>
+      <button id="pal-lab-play" type="button" aria-pressed="false" aria-label="play">
+        &#x25b6;
+      </button>
+
+      <!-- Playing state -->
+      <button id="pal-lab-pause" type="button" aria-pressed="true" aria-label="play">
+        &#x23f8;
+      </button>
+
+      <form id="pal-lab-form" hidden>
+        <label>id:</label>
+        <input type="text">
+        <button type="button">保存</button>
+      </form>
+
+      <hr>
+
+      <form>
+        <input type="text">
+        <button>送信</button>
+      </form>
+
+      <button id="pal-lab-button">何かを実行</button>
+      <button id="pal-lab-button-appear">ボタンらしいボタン</button>
+      <label>
+        <input type="checkbox" value="yes" />同意しますか？
+      </label>
+      <!-- aria-labelのサンプル -->
+      <button aria-label="元に戻す">&#xE000;</button>
+      </br>
+      <li>
+        <a href="#submenu" aria-haspopup="true" aria-controls="submenu">メインリンク</a>
+        <ul id="submenu">
+          <li><a href="/somewhere/">サブメニューリンク</a></li>
+          <li><a href="/somewhere/else/">もうひとつのリンク</a></li>
+        </ul>
+      </li>
+      <hr>
+      <iframe src="../mq-hello.html" width="190" id="a"></iframe>
+      <iframe src="../mq-hello.html" width="200" id="b"></iframe>
+      <iframe src="../mq-hello.html" width="210" id="c"></iframe>
+      <nav id="ul-test"v>
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </nav>
+
+    </template>
+
+    <!-- シンプルリスト用 -->
+    <template id="list-page">
+      <h1>アクション(Action)のリスト</h1>
+      <div id="status"></div>
+      <button id="pal-list-new">
+        <svg class="icon icon-plus">
+          <use href="#icon-plus">
+          </use>
+        </svg>
+        新規作成
+      </button>
+      <button id="pal-list-new-cancel" class="hidden">
+        <svg class="icon icon-cross">
+          <use href="#icon-cross">
+          </use>
+        </svg>
+        作成をキャンセル
+      </button>
+      <div id="new-form-wrapper"></div>
+      <button id="pal-list-new-upload" class="hidden">
+        <svg class="icon icon-upload">
+          <use href="#icon-upload">
+          </use>
+        </svg>
+        送信
+      </button>
+      <div id="target"></div>
+    </template>
+
+    <!-- 予定の登録用 -->
+    <template id="schedule-registration">
+      <h1>予定の登録</h1>
+      <nav id="schedule-registration-menu">
+        <button>
+          予定の登録メニュー
+          <svg id="expand-button">
+            <use href="#icon-circle-down"></use>
+          </svg>
+          <svg id="contract-button" display="none">
+            <use href="#icon-circle-up"></use>
+          </svg>
+        </button>
+        <ul>
+          <li>
+            <a href="#regist_schedule/dayly" class="current-page">毎日の予定</a>
+          </li>
+          <li>
+            <a href="#regist_schedule/weekly">毎週の予定</a>
+          </li>
+          <li>
+            <a href="#regist_schedule/monthly/bydate">毎月の予定(日別)</a>
+          </li>
+          <li>
+            <a href="#regist_schedule/monthly/byorder">毎月の予定(第何何曜日)</a>
+          </li>
+          <li>
+            <a href="#regist_schedule/yearly">毎年の予定</a>
+          </li>
+        </ul>
+      </nav>
+      <main id="schedule-main">
+      </main>
+    </template>
+    <!-- 予定の登録用 -->
+    <!-- 毎日の予定の登録用 -->
+    <template id="schedule-registration-dayly">
+      <h1>毎日の予定</h1>
+      <nav>
+        <ul id="regist-dayly">
+          <li>0:00<a>+</a></li>
+          <li>1:00</li>
+          <li>2:00</li>
+          <li>3:00</li>
+          <li>4:00</li>
+          <li>5:00</li>
+          <li>6:00</li>
+          <li>7:00</li>
+          <li>8:00</li>
+          <li>9:00</li>
+          <li>10:00</li>
+          <li>11:00</li>
+          <li>12:00</li>
+          <li>13:00</li>
+          <li>14:00</li>
+          <li>15:00</li>
+          <li>16:00</li>
+          <li>17:00</li>
+          <li>18:00</li>
+          <li>19:00</li>
+          <li>20:00</li>
+          <li>21:00</li>
+          <li>22:00</li>
+          <li>23:00</li>
+        </ul>
+      </nav>
+    </template>
+
+    <!-- 毎週の予定の登録用 -->
+    <template id="schedule-registration-weekly">
+      <h1>毎週の予定</h1>
+      <ul id="weekly-schedule">
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>月</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>火</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>水</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>木</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>金</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>土</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+        <li class="weekly-row">
+          <ul class="date-column">
+            <li>日</li>
+          </ul>
+          <ul class="time-column">
+            <li>0:00</li>
+            <li>1:00</li>
+            <li>2:00</li>
+            <li>3:00</li>
+            <li>4:00</li>
+            <li>5:00</li>
+            <li>6:00</li>
+            <li>7:00</li>
+            <li>8:00</li>
+            <li>9:00</li>
+            <li>10:00</li>
+            <li>11:00</li>
+            <li>12:00</li>
+            <li>13:00</li>
+            <li>14:00</li>
+            <li>15:00</li>
+            <li>16:00</li>
+            <li>17:00</li>
+            <li>18:00</li>
+            <li>19:00</li>
+            <li>20:00</li>
+            <li>21:00</li>
+            <li>22:00</li>
+            <li>23:00</li>
+          </ul>
+        </li>
+
+      </ul>
+    </template>
+
+    <template id="schedule-registration-monthly-by-date">
+      <h1>毎月の予定(日別)</h1>
+      <nav id="dayly-schedule">
+        <ul>
+          <li>1日</li>
+          <li>2日</li>
+          <li>3日</li>
+          <li>4日</li>
+          <li>5日</li>
+          <li>6日</li>
+          <li>7日</li>
+          <li>8日</li>
+          <li>9日</li>
+          <li>10日</li>
+          <li>11日</li>
+          <li>12日</li>
+          <li>13日</li>
+          <li>14日</li>
+          <li>15日</li>
+          <li>16日</li>
+          <li>17日</li>
+          <li>18日</li>
+          <li>19日</li>
+          <li>20日</li>
+          <li>21日</li>
+          <li>22日</li>
+          <li>23日</li>
+          <li>24日</li>
+          <li>25日</li>
+          <li>26日</li>
+          <li>27日</li>
+          <li>28日</li>
+          <li>29日</li>
+          <li>30日</li>
+          <li>31日</li>
+        </ul>
+      </nav>
+    </template>
+
+    <template id="schedule-registration-monthly-by-order">
+      <h1>毎月の予定(第何何曜日)</h1>
+      <nav id="dayly-schedule-by-order">
+        <ul>
+          <li>第1月曜日</li>
+          <li>第1火曜日</li>
+          <li>第1水曜日</li>
+          <li>第1木曜日</li>
+          <li>第1金曜日</li>
+          <li>第1土曜日</li>
+          <li>第1日曜日</li>
+          <li>第2月曜日</li>
+          <li>第2火曜日</li>
+          <li>第2水曜日</li>
+          <li>第2木曜日</li>
+          <li>第2金曜日</li>
+          <li>第2土曜日</li>
+          <li>第2日曜日</li>
+          <li>第3月曜日</li>
+          <li>第3火曜日</li>
+          <li>第3水曜日</li>
+          <li>第3木曜日</li>
+          <li>第3金曜日</li>
+          <li>第3土曜日</li>
+          <li>第3日曜日</li>
+          <li>第4月曜日</li>
+          <li>第4火曜日</li>
+          <li>第4水曜日</li>
+          <li>第4木曜日</li>
+          <li>第4金曜日</li>
+          <li>第4土曜日</li>
+          <li>第4日曜日</li>
+          <li>第5月曜日</li>
+          <li>第5火曜日</li>
+          <li>第5水曜日</li>
+          <li>第5木曜日</li>
+          <li>第5金曜日</li>
+          <li>第5土曜日</li>
+          <li>第5日曜日</li>
+        </ul>
+      </nav>
+    </template>
+
+    <template id="schedule-registration-yearly">
+      <h1>毎年の予定</h1>
+      <nav id="yearly-schedule">
+        <ul>
+          <li>1月1日</li>
+          <li>1月2日</li>
+          <li>1月3日</li>
+          <li>1月4日</li>
+          <li>1月5日</li>
+          <li>1月6日</li>
+          <li>1月7日</li>
+          <li>1月8日</li>
+          <li>1月9日</li>
+          <li>1月10日</li>
+          <li>1月11日</li>
+          <li>1月12日</li>
+          <li>1月13日</li>
+          <li>1月14日</li>
+          <li>1月15日</li>
+          <li>1月16日</li>
+          <li>1月17日</li>
+          <li>1月18日</li>
+          <li>1月19日</li>
+          <li>1月20日</li>
+          <li>1月21日</li>
+          <li>1月22日</li>
+          <li>1月23日</li>
+          <li>1月24日</li>
+          <li>1月25日</li>
+          <li>1月26日</li>
+          <li>1月27日</li>
+          <li>1月28日</li>
+          <li>1月29日</li>
+          <li>1月30日</li>
+          <li>1月31日</li>
+          <li>2月1日</li>
+          <li>2月2日</li>
+          <li>2月3日</li>
+          <li>2月4日</li>
+          <li>2月5日</li>
+          <li>2月6日</li>
+          <li>2月7日</li>
+          <li>2月8日</li>
+          <li>2月9日</li>
+          <li>2月10日</li>
+          <li>2月11日</li>
+          <li>2月12日</li>
+          <li>2月13日</li>
+          <li>2月14日</li>
+          <li>2月15日</li>
+          <li>2月16日</li>
+          <li>2月17日</li>
+          <li>2月18日</li>
+          <li>2月19日</li>
+          <li>2月20日</li>
+          <li>2月21日</li>
+          <li>2月22日</li>
+          <li>2月23日</li>
+          <li>2月24日</li>
+          <li>2月25日</li>
+          <li>2月26日</li>
+          <li>2月27日</li>
+          <li>2月28日</li>
+          <li>2月29日</li>
+          <li>3月1日</li>
+          <li>3月2日</li>
+          <li>3月3日</li>
+          <li>3月4日</li>
+          <li>3月5日</li>
+          <li>3月6日</li>
+          <li>3月7日</li>
+          <li>3月8日</li>
+          <li>3月9日</li>
+          <li>3月10日</li>
+          <li>3月11日</li>
+          <li>3月12日</li>
+          <li>3月13日</li>
+          <li>3月14日</li>
+          <li>3月15日</li>
+          <li>3月16日</li>
+          <li>3月17日</li>
+          <li>3月18日</li>
+          <li>3月19日</li>
+          <li>3月20日</li>
+          <li>3月21日</li>
+          <li>3月22日</li>
+          <li>3月23日</li>
+          <li>3月24日</li>
+          <li>3月25日</li>
+          <li>3月26日</li>
+          <li>3月27日</li>
+          <li>3月28日</li>
+          <li>3月29日</li>
+          <li>3月30日</li>
+          <li>3月31日</li>
+          <li>4月1日</li>
+          <li>4月2日</li>
+          <li>4月3日</li>
+          <li>4月4日</li>
+          <li>4月5日</li>
+          <li>4月6日</li>
+          <li>4月7日</li>
+          <li>4月8日</li>
+          <li>4月9日</li>
+          <li>4月10日</li>
+          <li>4月11日</li>
+          <li>4月12日</li>
+          <li>4月13日</li>
+          <li>4月14日</li>
+          <li>4月15日</li>
+          <li>4月16日</li>
+          <li>4月17日</li>
+          <li>4月18日</li>
+          <li>4月19日</li>
+          <li>4月20日</li>
+          <li>4月21日</li>
+          <li>4月22日</li>
+          <li>4月23日</li>
+          <li>4月24日</li>
+          <li>4月25日</li>
+          <li>4月26日</li>
+          <li>4月27日</li>
+          <li>4月28日</li>
+          <li>4月29日</li>
+          <li>4月30日</li>
+          <li>5月1日</li>
+          <li>5月2日</li>
+          <li>5月3日</li>
+          <li>5月4日</li>
+          <li>5月5日</li>
+          <li>5月6日</li>
+          <li>5月7日</li>
+          <li>5月8日</li>
+          <li>5月9日</li>
+          <li>5月10日</li>
+          <li>5月11日</li>
+          <li>5月12日</li>
+          <li>5月13日</li>
+          <li>5月14日</li>
+          <li>5月15日</li>
+          <li>5月16日</li>
+          <li>5月17日</li>
+          <li>5月18日</li>
+          <li>5月19日</li>
+          <li>5月20日</li>
+          <li>5月21日</li>
+          <li>5月22日</li>
+          <li>5月23日</li>
+          <li>5月24日</li>
+          <li>5月25日</li>
+          <li>5月26日</li>
+          <li>5月27日</li>
+          <li>5月28日</li>
+          <li>5月29日</li>
+          <li>5月30日</li>
+          <li>5月31日</li>
+          <li>6月1日</li>
+          <li>6月2日</li>
+          <li>6月3日</li>
+          <li>6月4日</li>
+          <li>6月5日</li>
+          <li>6月6日</li>
+          <li>6月7日</li>
+          <li>6月8日</li>
+          <li>6月9日</li>
+          <li>6月10日</li>
+          <li>6月11日</li>
+          <li>6月12日</li>
+          <li>6月13日</li>
+          <li>6月14日</li>
+          <li>6月15日</li>
+          <li>6月16日</li>
+          <li>6月17日</li>
+          <li>6月18日</li>
+          <li>6月19日</li>
+          <li>6月20日</li>
+          <li>6月21日</li>
+          <li>6月22日</li>
+          <li>6月23日</li>
+          <li>6月24日</li>
+          <li>6月25日</li>
+          <li>6月26日</li>
+          <li>6月27日</li>
+          <li>6月28日</li>
+          <li>6月29日</li>
+          <li>6月30日</li>
+          <li>7月1日</li>
+          <li>7月2日</li>
+          <li>7月3日</li>
+          <li>7月4日</li>
+          <li>7月5日</li>
+          <li>7月6日</li>
+          <li>7月7日</li>
+          <li>7月8日</li>
+          <li>7月9日</li>
+          <li>7月10日</li>
+          <li>7月11日</li>
+          <li>7月12日</li>
+          <li>7月13日</li>
+          <li>7月14日</li>
+          <li>7月15日</li>
+          <li>7月16日</li>
+          <li>7月17日</li>
+          <li>7月18日</li>
+          <li>7月19日</li>
+          <li>7月20日</li>
+          <li>7月21日</li>
+          <li>7月22日</li>
+          <li>7月23日</li>
+          <li>7月24日</li>
+          <li>7月25日</li>
+          <li>7月26日</li>
+          <li>7月27日</li>
+          <li>7月28日</li>
+          <li>7月29日</li>
+          <li>7月30日</li>
+          <li>7月31日</li>
+          <li>8月1日</li>
+          <li>8月2日</li>
+          <li>8月3日</li>
+          <li>8月4日</li>
+          <li>8月5日</li>
+          <li>8月6日</li>
+          <li>8月7日</li>
+          <li>8月8日</li>
+          <li>8月9日</li>
+          <li>8月10日</li>
+          <li>8月11日</li>
+          <li>8月12日</li>
+          <li>8月13日</li>
+          <li>8月14日</li>
+          <li>8月15日</li>
+          <li>8月16日</li>
+          <li>8月17日</li>
+          <li>8月18日</li>
+          <li>8月19日</li>
+          <li>8月20日</li>
+          <li>8月21日</li>
+          <li>8月22日</li>
+          <li>8月23日</li>
+          <li>8月24日</li>
+          <li>8月25日</li>
+          <li>8月26日</li>
+          <li>8月27日</li>
+          <li>8月28日</li>
+          <li>8月29日</li>
+          <li>8月30日</li>
+          <li>8月31日</li>
+          <li>9月1日</li>
+          <li>9月2日</li>
+          <li>9月3日</li>
+          <li>9月4日</li>
+          <li>9月5日</li>
+          <li>9月6日</li>
+          <li>9月7日</li>
+          <li>9月8日</li>
+          <li>9月9日</li>
+          <li>9月10日</li>
+          <li>9月11日</li>
+          <li>9月12日</li>
+          <li>9月13日</li>
+          <li>9月14日</li>
+          <li>9月15日</li>
+          <li>9月16日</li>
+          <li>9月17日</li>
+          <li>9月18日</li>
+          <li>9月19日</li>
+          <li>9月20日</li>
+          <li>9月21日</li>
+          <li>9月22日</li>
+          <li>9月23日</li>
+          <li>9月24日</li>
+          <li>9月25日</li>
+          <li>9月26日</li>
+          <li>9月27日</li>
+          <li>9月28日</li>
+          <li>9月29日</li>
+          <li>9月30日</li>
+          <li>10月1日</li>
+          <li>10月2日</li>
+          <li>10月3日</li>
+          <li>10月4日</li>
+          <li>10月5日</li>
+          <li>10月6日</li>
+          <li>10月7日</li>
+          <li>10月8日</li>
+          <li>10月9日</li>
+          <li>10月10日</li>
+          <li>10月11日</li>
+          <li>10月12日</li>
+          <li>10月13日</li>
+          <li>10月14日</li>
+          <li>10月15日</li>
+          <li>10月16日</li>
+          <li>10月17日</li>
+          <li>10月18日</li>
+          <li>10月19日</li>
+          <li>10月20日</li>
+          <li>10月21日</li>
+          <li>10月22日</li>
+          <li>10月23日</li>
+          <li>10月24日</li>
+          <li>10月25日</li>
+          <li>10月26日</li>
+          <li>10月27日</li>
+          <li>10月28日</li>
+          <li>10月29日</li>
+          <li>10月30日</li>
+          <li>10月31日</li>
+          <li>11月1日</li>
+          <li>11月2日</li>
+          <li>11月3日</li>
+          <li>11月4日</li>
+          <li>11月5日</li>
+          <li>11月6日</li>
+          <li>11月7日</li>
+          <li>11月8日</li>
+          <li>11月9日</li>
+          <li>11月10日</li>
+          <li>11月11日</li>
+          <li>11月12日</li>
+          <li>11月13日</li>
+          <li>11月14日</li>
+          <li>11月15日</li>
+          <li>11月16日</li>
+          <li>11月17日</li>
+          <li>11月18日</li>
+          <li>11月19日</li>
+          <li>11月20日</li>
+          <li>11月21日</li>
+          <li>11月22日</li>
+          <li>11月23日</li>
+          <li>11月24日</li>
+          <li>11月25日</li>
+          <li>11月26日</li>
+          <li>11月27日</li>
+          <li>11月28日</li>
+          <li>11月29日</li>
+          <li>11月30日</li>
+          <li>12月1日</li>
+          <li>12月2日</li>
+          <li>12月3日</li>
+          <li>12月4日</li>
+          <li>12月5日</li>
+          <li>12月6日</li>
+          <li>12月7日</li>
+          <li>12月8日</li>
+          <li>12月9日</li>
+          <li>12月10日</li>
+          <li>12月11日</li>
+          <li>12月12日</li>
+          <li>12月13日</li>
+          <li>12月14日</li>
+          <li>12月15日</li>
+          <li>12月16日</li>
+          <li>12月17日</li>
+          <li>12月18日</li>
+          <li>12月19日</li>
+          <li>12月20日</li>
+          <li>12月21日</li>
+          <li>12月22日</li>
+          <li>12月23日</li>
+          <li>12月24日</li>
+          <li>12月25日</li>
+          <li>12月26日</li>
+          <li>12月27日</li>
+          <li>12月28日</li>
+          <li>12月29日</li>
+          <li>12月30日</li>
+          <li>12月31日</li>
+        </ul>
+      </nav>
+    </template>
+
+    <!-- カレンダー用 -->
+    <template id="calendar-tmpl">
+      <h1>カレンダー</h1>
+      <nav id="calendar-menu">
+        <ul>
+          <li><a>今月</a></li>
+          <li>
+            <a href="#calendar/previous-month">&lt;先月</a>
+          </li>
+          <li>
+            <span></span>
+          </li>
+          <li>
+            <a href="#calendar/next-month">翌月&gt;</a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav id="calendar-frame">
+        <ul>
+          <li class="column-title">Mon</li>
+          <li class="column-title">Tue</li>
+          <li class="column-title">Wed</li>
+          <li class="column-title">Thu</li>
+          <li class="column-title">Fri</li>
+          <li class="column-title">Sat</li>
+          <li class="column-title">Sun</li>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+          <li>7</li>
+          <li>8</li>
+          <li>9</li>
+          <li>10</li>
+          <li>11</li>
+          <li>12</li>
+          <li>13</li>
+          <li>14</li>
+          <li>15</li>
+          <li>16</li>
+          <li>17</li>
+          <li>18</li>
+          <li>19</li>
+          <li>20</li>
+          <li>21</li>
+          <li>22</li>
+          <li>23</li>
+          <li>24</li>
+          <li>25</li>
+          <li>26</li>
+          <li>27</li>
+          <li>28</li>
+          <li>29</li>
+          <li>30</li>
+          <li>31</li>
+          <li>32</li>
+          <li>33</li>
+          <li>34</li>
+          <li>35</li>
+          <li>36</li>
+          <li>37</li>
+          <li>38</li>
+          <li>39</li>
+          <li>40</li>
+          <li>41</li>
+          <li>42</li>
+        </ul>
+      </nav>
+    </template>
+
+    <!-- サイクルシステム用 -->
+    <template id="cycle-system-tmpl">
+      <h1>サイクルシステム</h1>
+      <div class="tabbed">
+        <ul>
+          <li>
+            <a href="#cycle_system/per-date">
+              デイリー
+            </a>
+          </li>
+          <li>
+            <a href="#cycle_system/calendar">
+              カレンダー
+            </a>
+          </li>
+          <li>
+            <a href="#cycle_system/list-of-goals">
+              目標のリスト
+            </a>
+          </li>
+        </ul>
+
+        <section id="section1">
+          <h1>日毎の予定</h1>
+
+          <section id="pal-cyclesystem-current-date-title">
+            <h2 id="pal-cyclesystem-current-date"></h2>
+          </section>
+
+          <section id="pal-cyclesystem-tasklist">
+            <h2 id="pal-cyclesystem-tasklist-title">作業リスト</h2>
+
+            <button id="pal-task-add">
+              <svg class="icon icon-plus">
+                <use href="#icon-plus">
+                </use>
+              </svg>
+              新規作成
+            </button>
+            <button id="pal-task-add-cancel">
+              <svg class="icon icon-cross">
+                <use href="#icon-cross">
+                </use>
+              </svg>
+              作成をキャンセル
+            </button>
+
+            <form id="pal-task-add-form">
+              <label for="title">
+                項目 <strong class="red" aria-hidden="true">*</strong>
+              </label>
+              <input type="text"
+                     id="title"
+                     name="title"
+                     aria-describedby="title-tip"
+                     aria-required="true"
+                     autofocus>
+              <div role="tooltip"
+                   id="title-tip">
+              作業の内容をわかりやすく記入します。
+              </div>
+              <div id="title-alert" aria-live="assertive" role="alert">
+              必須項目です。
+              </div>
+
+              <label for="start-time">開始時間</label>
+              <div id="start-time">
+                <input type="number"
+                       min="0"
+                       max="23"
+                       id="start-time-hour"
+                       name="start-time-hour"
+                       aria-describedby="start-time-tip">
+                <label for="start-time-hour">時</label>
+                <input type="number"
+                       min="0"
+                       max="59"
+                       id="start-time-minute"
+                       name="start-time-minute"
+                       aria-describedby="start-time-tip">
+                <label for="start-time-minute">分</label>
+              </div>
+              <div role="tooltip"
+                   id="start-time-hour-tip">
+                開始時間の時を0から23の範囲で入力します。
+              </div>
+              <div role="tooltip"
+                   id="start-time-minute-tip">
+                開始時間の分を0から59の範囲で入力します。
+              </div>
+
+              <ul id="start-time-alert">
+                <li id="start-hour-alert"
+                     aria-live="assertive"
+                     role="alert">
+                  時は0から23までの値を入力します。
+                </li>
+                <li id="start-minute-alert"
+                     aria-live="assertive"
+                     role="alert">
+                  分は0から59までの値を入力します。
+                </li>
+              </ul>
+
+              <label for="required-time">所要時間</label>
+              <div id="required-time">
+                <input type="number"
+                       min="0"
+                       max="8"
+                       id="required-time-hour"
+                       name="required-time-hour"
+                       aria-describedby="required-time-tip">
+                <span>時間</span>
+                <input type="number"
+                       min="0"
+                       max="59"
+                       id="required-time-minute"
+                       name="required-time-minute"
+                       aria-describedby="required-time-tip">
+                <span>分</span>
+              </div>
+              <div role="tooltip" id="required-time-hour-tip">
+                時は0から23までの値を入力します。
+              </div>
+              <div role="tooltip" id="required-time-minute-tip">
+                分は0から59までの値を入力します。
+              </div>
+
+              <ul id="required-time-alert">
+                <li id="required-hour-alert"
+                     aria-live="assertive"
+                     role="alert">
+                時間の値は任意ですが最大8時間を目処に作業を分割します。
+                </li>
+                <li id="required-minute-alert"
+                     aria-live="assertive"
+                     role="alert">
+                分は0から59までの値を入力します。
+                </li>
+              </ul>
+
+              <label for="priority">優先順位</label>
+              <div id="priority">
+                <input type="radio"
+                       id="priorityChoice1"
+                       name="priority"
+                       value="A"
+                       aria-describedby="priority-tip">
+                <label for="priorityChoice1">A</label>
+                <input type="radio"
+                       id="priorityChoice2"
+                       name="priority"
+                       value="B"
+                       aria-describedby="priority-tip">
+                <label for="priorityChoice1">B</label>
+                <input type="radio"
+                       id="priorityChoice3"
+                       name="priority"
+                       value="C"
+                       aria-describedby="priority-tip">
+                <label for="priorityChoice1">C</label>
+                <!--
+                <div role="tooltip" id="priority-tip">
+                  省略するとBを割り当てます。
+                </div>
+                -->
+              </div>
+
+              <label for="complete-status">済</label>
+              <input type="checkbox"
+                     id="complete-status"
+                     name="complete-status"
+                     aria-describedby="complete-status-tip">
+              <div role="tooltip" id="complete-status-tip">
+                既に完了しているときはチェックをいれます。
+              </div>
+
+              <button type="button" id="task-add-button">登録</button>
+            </form>
+
+            <table id="pal-cyclesystem-tasklist">
+              <tbody>
+                <tr>
+                  <th>済</th>
+                  <th>優先順位</th>
+                  <th>時間</th>
+                  <th>項目</th>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="pal-cyclesystem-schedule">
+            <h2 id="pal-cyclesystem-schedule-title">スケジュール</h2>
+            <table>
+              <tbody>
+                <tr><td>6</td></tr>
+                <tr><td>7</td></tr>
+                <tr><td>8</td></tr>
+                <tr><td>9</td></tr>
+                <tr><td>10</td></tr>
+                <tr><td>11</td></tr>
+                <tr><td>12</td></tr>
+                <tr><td>13</td></tr>
+                <tr><td>14</td></tr>
+                <tr><td>15</td></tr>
+                <tr><td>16</td></tr>
+                <tr><td>17</td></tr>
+                <tr><td>18</td></tr>
+                <tr><td>19</td></tr>
+                <tr><td>20</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+        </section>
+
+        <section id="section2">
+          <h2>カレンダー</h2>
           <nav id="calendar-menu">
             <ul>
               <li><a>今月</a></li>
-              <li><a href="#calendar/previous-month">&lt;先月</a></li>
+              <li><a href="#cycle_system/previous-month">&lt;先月</a></li>
               <li><span></span></li>
-              <li><a href="#calendar/next-month">翌月&gt;</a></li>
+              <li><a href="#cycle_system/next-month">翌月&gt;</a></li>
             </ul>
           </nav>
 
@@ -969,519 +1263,165 @@
               <li class="column-title">Fri</li>
               <li class="column-title">Sat</li>
               <li class="column-title">Sun</li>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
-              <li>6</li>
-              <li>7</li>
-              <li>8</li>
-              <li>9</li>
-              <li>10</li>
-              <li>11</li>
-              <li>12</li>
-              <li>13</li>
-              <li>14</li>
-              <li>15</li>
-              <li>16</li>
-              <li>17</li>
-              <li>18</li>
-              <li>19</li>
-              <li>20</li>
-              <li>21</li>
-              <li>22</li>
-              <li>23</li>
-              <li>24</li>
-              <li>25</li>
-              <li>26</li>
-              <li>27</li>
-              <li>28</li>
-              <li>29</li>
-              <li>30</li>
-              <li>31</li>
-              <li>32</li>
-              <li>33</li>
-              <li>34</li>
-              <li>35</li>
-              <li>36</li>
-              <li>37</li>
-              <li>38</li>
-              <li>39</li>
-              <li>40</li>
-              <li>41</li>
-              <li>42</li>
+              <li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>
+              <li>6</li><li>7</li><li>8</li><li>9</li><li>10</li>
+              <li>11</li><li>12</li><li>13</li><li>14</li><li>15</li>
+              <li>16</li><li>17</li><li>18</li><li>19</li><li>20</li>
+              <li>21</li><li>22</li><li>23</li><li>24</li><li>25</li>
+              <li>26</li><li>27</li><li>28</li><li>29</li><li>30</li>
+              <li>31</li><li>32</li><li>33</li><li>34</li><li>35</li>
+              <li>36</li><li>37</li><li>38</li><li>39</li><li>40</li>
+              <li>41</li><li>42</li>
             </ul>
           </nav>
-        </template>
+        </section>
+        <section id="section3">
+          <h2>目標のリスト</h2>
+        </section>
+      </div>
 
-        <!-- サイクルシステム用 -->
-        <template id="cycle-system-tmpl">
-          <h1>サイクルシステム</h1>
+    </template>
 
-          <div class="tabbed">
-            <ul>
-              <li>
-                <a href="#cycle_system/per-date">
-                  デイリー
-                </a>
-              </li>
-              <li>
-                <a href="#cycle_system/calendar">
-                  カレンダー
-                </a>
-              </li>
-              <li>
-                <a href="#cycle_system/list-of-goals">
-                  目標のリスト
-                </a>
-              </li>
-            </ul>
+  </head>
+  <body>
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-            <section id="section1">
-              <h1>日毎の予定</h1>
+    <!-- Add your site or application content here -->
+    <!-- <p>Hello world! This is HTML5 Boilerplate.</p> -->
 
-              <section id="pal-cyclesystem-current-date-title">
-                <h2 id="pal-cyclesystem-current-date"></h2>
-              </section>
+    <!-- <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script> -->
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
 
-              <section id="pal-cyclesystem-tasklist">
-                <h2 id="pal-cyclesystem-tasklist-title">作業リスト</h2>
+    <!-- 自作のjavascript -->
+    <script src="js/util.js"></script>
+    <script src="js/util.dom.js"></script>
+    <script src="js/util.date.js"></script>
+    <script src="js/pal.js"></script>
+    <script src="js/pal.util_b.js"></script>
+    <script src="js/pal.util.js"></script>
+    <script src="js/pal.bom.js"></script>
+    <script src="js/pal.dom.js"></script>
+    <script src="js/pal.top.js"></script>
+    <script src="js/pal.login.js"></script>
+    <script src="js/pal.logout.js"></script>
+    <script src="js/pal.menu.js"></script>
+    <script src="js/pal.list.js"></script>
+    <script src="js/pal.schema.js"></script>
+    <script src="js/pal.socketio.js"></script>
+    <script src="js/pal.array.js"></script>
+    <script src="js/pal.browserInformation.js"></script>
+    <script src="js/pal.register.js"></script>
+    <script src="js/pal.lab.js"></script>
+    <script src="js/pal.registSchedule.js"></script>
+    <script src="js/pal.calendar.js"></script>
+    <script src="js/pal.cycleSystem.js"></script>
 
-                <button id="pal-task-add">
-                  <svg class="icon icon-plus">
-                    <use href="#icon-plus">
-                    </use>
-                  </svg>
-                  新規作成
-                </button>
-                <button id="pal-task-add-cancel">
-                  <svg class="icon icon-cross">
-                    <use href="#icon-cross">
-                    </use>
-                  </svg>
-                  作成をキャンセル
-                </button>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <!--
+    <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+    </script>
+    -->
 
-                <form id="pal-task-add-form">
-                  <label for="title">
-                    項目 <strong class="red" aria-hidden="true">*</strong>
-                  </label>
-                  <input type="text"
-                         id="title"
-                         name="title"
-                         aria-describedby="title-tip"
-                         aria-required="true"
-                         autofocus>
-                  <div role="tooltip"
-                       id="title-tip">
-                  作業の内容をわかりやすく記入します。
-                  </div>
-                  <div id="title-alert" aria-live="assertive" role="alert">
-                  必須項目です。
-                  </div>
+    <svg style="display: none;">
+      <symbol id="navicon" viewBox="0 0 20 20">
+        <path d="m0-0v4h20v-4h-20zm0 8v4h20v-4h-20zm0 8v4h20v-4h-20z" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 48 48">
+        <title>menu</title>
+        <path d="M3 9h42v9h-42zM3 21h42v9h-42zM3 33h42v9h-42z" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-user-plus" viewBox="0 0 48 48">
+        <title>user-plus</title>
+        <path d="M18 34.5c0-7.089 4.494-13.148 10.783-15.478 0.763-1.713 1.217-3.617 1.217-5.522 0-7.456 0-13.5-9-13.5s-9 6.044-9 13.5c0 4.643 2.695 9.286 6 11.148v2.474c-10.177 0.832-18 5.832-18 11.878h18.624c-0.406-1.431-0.624-2.941-0.624-4.5z"></path>
+        <path d="M34.5 21c-7.456 0-13.5 6.044-13.5 13.5s6.044 13.5 13.5 13.5c7.456 0 13.5-6.044 13.5-13.5s-6.044-13.5-13.5-13.5zM42 36h-6v6h-3v-6h-6v-3h6v-6h3v6h6v3z"></path>
+      </symbol>
+      <symbol id="icon-enter" viewBox="0 0 48 48">
+        <title>enter</title>
+        <path d="M18 24h-15v-6h15v-6l9 9-9 9zM48 0v39l-18 9v-9h-18v-12h3v9h15v-27l12-6h-27v12h-3v-15z"></path>
+      </symbol>
+      <symbol id="icon-exit" viewBox="0 0 48 48">
+        <title>exit</title>
+        <path d="M36 30v-6h-15v-6h15v-6l9 9zM33 27v12h-15v9l-18-9v-39h33v15h-3v-12h-24l12 6v27h12v-9z"></path>
+      </symbol>
+    </svg>
 
-                  <label for="start-time">開始時間</label>
-                  <div id="start-time">
-                    <input type="number"
-                           min="0"
-                           max="23"
-                           id="start-time-hour"
-                           name="start-time-hour"
-                           aria-describedby="start-time-tip">
-                    <label for="start-time-hour">時</label>
-                    <input type="number"
-                           min="0"
-                           max="59"
-                           id="start-time-minute"
-                           name="start-time-minute"
-                           aria-describedby="start-time-tip">
-                    <label for="start-time-minute">分</label>
-                  </div>
-                  <div role="tooltip"
-                       id="start-time-hour-tip">
-                    開始時間の時を0から23の範囲で入力します。
-                  </div>
-                  <div role="tooltip"
-                       id="start-time-minute-tip">
-                    開始時間の分を0から59の範囲で入力します。
-                  </div>
+    <svg style="display: none;">
+      <symbol id="icon-circle-down" viewBox="0 0 48 48">
+        <title>circle-down</title>
+        <path d="M48 24c0-13.255-10.745-24-24-24s-24 10.745-24 24 10.745 24 24 24 24-10.745 24-24zM4.5 24c0-10.77 8.73-19.5 19.5-19.5s19.5 8.73 19.5 19.5-8.73 19.5-19.5 19.5-19.5-8.73-19.5-19.5z"></path>
+      <path d="M14.871 16.629l-4.243 4.243 13.371 13.371 13.371-13.371-4.243-4.243-9.129 9.129z"></path>
+      </symbol>
+    </svg>
 
-                  <ul id="start-time-alert">
-                    <li id="start-hour-alert"
-                         aria-live="assertive"
-                         role="alert">
-                      時は0から23までの値を入力します。
-                    </li>
-                    <li id="start-minute-alert"
-                         aria-live="assertive"
-                         role="alert">
-                      分は0から59までの値を入力します。
-                    </li>
-                  </ul>
+    <svg style="display: none;">
+      <symbol id="icon-circle-up" viewBox="0 0 48 48">
+      <title>circle-up</title>
+      <path d="M0 24c0 13.255 10.745 24 24 24s24-10.745 24-24-10.745-24-24-24-24 10.745-24 24zM43.5 24c0 10.77-8.73 19.5-19.5 19.5s-19.5-8.73-19.5-19.5 8.73-19.5 19.5-19.5 19.5 8.73 19.5 19.5z"></path>
+      <path d="M33.129 31.371l4.243-4.243-13.371-13.371-13.371 13.371 4.243 4.243 9.129-9.129z"></path>
+      </symbol>
+    </svg>
 
-                  <label for="required-time">所要時間</label>
-                  <div id="required-time">
-                    <input type="number"
-                           min="0"
-                           max="8"
-                           id="required-time-hour"
-                           name="required-time-hour"
-                           aria-describedby="required-time-tip">
-                    <span>時間</span>
-                    <input type="number"
-                           min="0"
-                           max="59"
-                           id="required-time-minute"
-                           name="required-time-minute"
-                           aria-describedby="required-time-tip">
-                    <span>分</span>
-                  </div>
-                  <div role="tooltip" id="required-time-hour-tip">
-                    時は0から23までの値を入力します。
-                  </div>
-                  <div role="tooltip" id="required-time-minute-tip">
-                    分は0から59までの値を入力します。
-                  </div>
+    <svg style="display: none;">
+      <symbol id="icon-plus" viewBox="0 0 48 48">
+      <title>plus</title>
+      <path d="M46.5 18h-16.5v-16.5c0-0.828-0.672-1.5-1.5-1.5h-9c-0.828 0-1.5 0.672-1.5 1.5v16.5h-16.5c-0.828 0-1.5 0.672-1.5 1.5v9c0 0.828 0.672 1.5 1.5 1.5h16.5v16.5c0 0.828 0.672 1.5 1.5 1.5h9c0.828 0 1.5-0.672 1.5-1.5v-16.5h16.5c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5z"></path>
+      </symbol>
+    </svg>
 
-                  <ul id="required-time-alert">
-                    <li id="required-hour-alert"
-                         aria-live="assertive"
-                         role="alert">
-                    時間の値は任意ですが最大8時間を目処に作業を分割します。
-                    </li>
-                    <li id="required-minute-alert"
-                         aria-live="assertive"
-                         role="alert">
-                    分は0から59までの値を入力します。
-                    </li>
-                  </ul>
+    <svg style="display: none;">
+      <symbol id="icon-minus" viewBox="0 0 48 48">
+      <title>minus</title>
+      <path d="M0 19.5v9c0 0.828 0.672 1.5 1.5 1.5h45c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5h-45c-0.828 0-1.5 0.672-1.5 1.5z"></path>
+      </symbol>
+    </svg>
 
-                  <label for="priority">優先順位</label>
-                  <div id="priority">
-                    <input type="radio"
-                           id="priorityChoice1"
-                           name="priority"
-                           value="A"
-                           aria-describedby="priority-tip">
-                    <label for="priorityChoice1">A</label>
-                    <input type="radio"
-                           id="priorityChoice2"
-                           name="priority"
-                           value="B"
-                           aria-describedby="priority-tip">
-                    <label for="priorityChoice1">B</label>
-                    <input type="radio"
-                           id="priorityChoice3"
-                           name="priority"
-                           value="C"
-                           aria-describedby="priority-tip">
-                    <label for="priorityChoice1">C</label>
-                    <!--
-                    <div role="tooltip" id="priority-tip">
-                      省略するとBを割り当てます。
-                    </div>
-                    -->
-                  </div>
+    <svg style="display: none;">
+      <symbol id="icon-cross" viewBox="0 0 48 48">
+      <title>cross</title>
+      <path d="M47.562 38.562c-0-0-0-0-0.001-0l-14.561-14.562 14.561-14.562c0-0 0-0 0.001-0 0.157-0.157 0.27-0.34 0.343-0.535 0.199-0.533 0.086-1.157-0.343-1.586l-6.879-6.879c-0.429-0.429-1.052-0.542-1.586-0.343-0.195 0.073-0.378 0.186-0.535 0.343 0 0-0 0-0 0l-14.562 14.562-14.562-14.562c-0-0-0-0-0-0-0.157-0.157-0.34-0.27-0.535-0.343-0.533-0.199-1.157-0.086-1.586 0.343l-6.879 6.879c-0.429 0.429-0.542 1.052-0.343 1.586 0.073 0.195 0.186 0.378 0.343 0.535 0 0 0 0 0 0l14.562 14.562-14.562 14.562c-0 0-0 0-0 0-0.157 0.157-0.27 0.34-0.343 0.535-0.199 0.533-0.086 1.157 0.343 1.586l6.879 6.879c0.429 0.429 1.052 0.542 1.586 0.343 0.195-0.073 0.378-0.186 0.535-0.343 0-0 0-0 0-0l14.562-14.562 14.562 14.562c0 0 0 0 0.001 0 0.157 0.157 0.34 0.27 0.535 0.343 0.533 0.199 1.157 0.086 1.586-0.343l6.879-6.879c0.429-0.429 0.542-1.053 0.343-1.586-0.073-0.195-0.186-0.378-0.343-0.535z"></path>
+      </symbol>
+    </svg>
 
-                  <label for="complete-status">済</label>
-                  <input type="checkbox"
-                         id="complete-status"
-                         name="complete-status"
-                         aria-describedby="complete-status-tip">
-                  <div role="tooltip" id="complete-status-tip">
-                    既に完了しているときはチェックをいれます。
-                  </div>
+    <svg style="display: none;">
+      <symbol id="icon-upload" viewBox="0 0 32 32">
+      <title>upload</title>
+      <path d="M14 18h4v-8h6l-8-8-8 8h6zM20 13.5v3.085l9.158 3.415-13.158 4.907-13.158-4.907 9.158-3.415v-3.085l-12 4.5v8l16 6 16-6v-8z"></path>
+      </symbol>
+    </svg>
 
-                  <button type="button" id="task-add-button">登録</button>
-                </form>
+    <div id="pal"></div>
 
-                <table id="pal-cyclesystem-tasklist">
-                  <tbody>
-                    <tr>
-                      <th>済</th>
-                      <th>優先順位</th>
-                      <th>時間</th>
-                      <th>項目</th>
-                    </tr>
-                    <tr>
-                      <td><input type="checkbox"></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+        pal.initModule('pal');
+      });
+    </script>
 
-              <section id="pal-cyclesystem-schedule">
-                <h2 id="pal-cyclesystem-schedule-title">スケジュール</h2>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>6</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                    </tr>
-                    <tr>
-                      <td>10</td>
-                    </tr>
-                    <tr>
-                      <td>11</td>
-                    </tr>
-                    <tr>
-                      <td>12</td>
-                    </tr>
-                    <tr>
-                      <td>13</td>
-                    </tr>
-                    <tr>
-                      <td>14</td>
-                    </tr>
-                    <tr>
-                      <td>15</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
-                    </tr>
-                    <tr>
-                      <td>17</td>
-                    </tr>
-                    <tr>
-                      <td>18</td>
-                    </tr>
-                    <tr>
-                      <td>19</td>
-                    </tr>
-                    <tr>
-                      <td>20</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
+    <div id="mocha"></div>
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
 
-            </section>
+    <script class="mocha-init">
+      chai.should();
+      const expect = chai.expect;
 
-            <section id="section2">
-              <h2>カレンダー</h2>
-              <nav id="calendar-menu">
-                <ul>
-                  <li><a>今月</a></li>
-                  <li><a href="#cycle_system/previous-month">&lt;先月</a></li>
-                  <li><span></span></li>
-                  <li><a href="#cycle_system/next-month">翌月&gt;</a></li>
-                </ul>
-              </nav>
+      mocha.setup('bdd');
+      mocha.checkLeaks();
+    </script>
 
-              <nav id="calendar-frame">
-                <ul>
-                  <li class="column-title">Mon</li>
-                  <li class="column-title">Tue</li>
-                  <li class="column-title">Wed</li>
-                  <li class="column-title">Thu</li>
-                  <li class="column-title">Fri</li>
-                  <li class="column-title">Sat</li>
-                  <li class="column-title">Sun</li>
-                  <li>1</li>
-                  <li>2</li>
-                  <li>3</li>
-                  <li>4</li>
-                  <li>5</li>
-                  <li>6</li>
-                  <li>7</li>
-                  <li>8</li>
-                  <li>9</li>
-                  <li>10</li>
-                  <li>11</li>
-                  <li>12</li>
-                  <li>13</li>
-                  <li>14</li>
-                  <li>15</li>
-                  <li>16</li>
-                  <li>17</li>
-                  <li>18</li>
-                  <li>19</li>
-                  <li>20</li>
-                  <li>21</li>
-                  <li>22</li>
-                  <li>23</li>
-                  <li>24</li>
-                  <li>25</li>
-                  <li>26</li>
-                  <li>27</li>
-                  <li>28</li>
-                  <li>29</li>
-                  <li>30</li>
-                  <li>31</li>
-                  <li>32</li>
-                  <li>33</li>
-                  <li>34</li>
-                  <li>35</li>
-                  <li>36</li>
-                  <li>37</li>
-                  <li>38</li>
-                  <li>39</li>
-                  <li>40</li>
-                  <li>41</li>
-                  <li>42</li>
-                </ul>
-              </nav>
-            </section>
-            <section id="section3">
-              <h2>目標のリスト</h2>
-            </section>
-          </div>
-
-        </template>
-
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-
-        <!-- Add your site or application content here -->
-        <!-- <p>Hello world! This is HTML5 Boilerplate.</p> -->
-
-        <!-- <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script> -->
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-
-        <!-- 自作のjavascript -->
-        <script src="js/util.js"></script>
-        <script src="js/util.dom.js"></script>
-        <script src="js/util.date.js"></script>
-        <script src="js/pal.js"></script>
-        <script src="js/pal.util_b.js"></script>
-        <script src="js/pal.util.js"></script>
-        <script src="js/pal.bom.js"></script>
-        <script src="js/pal.dom.js"></script>
-        <script src="js/pal.top.js"></script>
-        <script src="js/pal.login.js"></script>
-        <script src="js/pal.logout.js"></script>
-        <script src="js/pal.menu.js"></script>
-        <script src="js/pal.list.js"></script>
-        <script src="js/pal.schema.js"></script>
-        <script src="js/pal.socketio.js"></script>
-        <script src="js/pal.array.js"></script>
-        <script src="js/pal.browserInformation.js"></script>
-        <script src="js/pal.register.js"></script>
-        <script src="js/pal.lab.js"></script>
-        <script src="js/pal.registSchedule.js"></script>
-        <script src="js/pal.calendar.js"></script>
-        <script src="js/pal.cycleSystem.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <!--
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='https://www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
-        </script>
-        -->
-
-        <svg style="display: none;">
-          <symbol id="navicon" viewBox="0 0 20 20">
-            <path d="m0-0v4h20v-4h-20zm0 8v4h20v-4h-20zm0 8v4h20v-4h-20z" fill="currentColor" />
-          </symbol>
-          <symbol id="icon-menu" viewBox="0 0 48 48">
-            <title>menu</title>
-            <path d="M3 9h42v9h-42zM3 21h42v9h-42zM3 33h42v9h-42z" fill="currentColor" />
-          </symbol>
-          <symbol id="icon-user-plus" viewBox="0 0 48 48">
-            <title>user-plus</title>
-            <path d="M18 34.5c0-7.089 4.494-13.148 10.783-15.478 0.763-1.713 1.217-3.617 1.217-5.522 0-7.456 0-13.5-9-13.5s-9 6.044-9 13.5c0 4.643 2.695 9.286 6 11.148v2.474c-10.177 0.832-18 5.832-18 11.878h18.624c-0.406-1.431-0.624-2.941-0.624-4.5z"></path>
-            <path d="M34.5 21c-7.456 0-13.5 6.044-13.5 13.5s6.044 13.5 13.5 13.5c7.456 0 13.5-6.044 13.5-13.5s-6.044-13.5-13.5-13.5zM42 36h-6v6h-3v-6h-6v-3h6v-6h3v6h6v3z"></path>
-          </symbol>
-          <symbol id="icon-enter" viewBox="0 0 48 48">
-            <title>enter</title>
-            <path d="M18 24h-15v-6h15v-6l9 9-9 9zM48 0v39l-18 9v-9h-18v-12h3v9h15v-27l12-6h-27v12h-3v-15z"></path>
-          </symbol>
-          <symbol id="icon-exit" viewBox="0 0 48 48">
-            <title>exit</title>
-            <path d="M36 30v-6h-15v-6h15v-6l9 9zM33 27v12h-15v9l-18-9v-39h33v15h-3v-12h-24l12 6v27h12v-9z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-circle-down" viewBox="0 0 48 48">
-            <title>circle-down</title>
-            <path d="M48 24c0-13.255-10.745-24-24-24s-24 10.745-24 24 10.745 24 24 24 24-10.745 24-24zM4.5 24c0-10.77 8.73-19.5 19.5-19.5s19.5 8.73 19.5 19.5-8.73 19.5-19.5 19.5-19.5-8.73-19.5-19.5z"></path>
-          <path d="M14.871 16.629l-4.243 4.243 13.371 13.371 13.371-13.371-4.243-4.243-9.129 9.129z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-circle-up" viewBox="0 0 48 48">
-          <title>circle-up</title>
-          <path d="M0 24c0 13.255 10.745 24 24 24s24-10.745 24-24-10.745-24-24-24-24 10.745-24 24zM43.5 24c0 10.77-8.73 19.5-19.5 19.5s-19.5-8.73-19.5-19.5 8.73-19.5 19.5-19.5 19.5 8.73 19.5 19.5z"></path>
-          <path d="M33.129 31.371l4.243-4.243-13.371-13.371-13.371 13.371 4.243 4.243 9.129-9.129z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-plus" viewBox="0 0 48 48">
-          <title>plus</title>
-          <path d="M46.5 18h-16.5v-16.5c0-0.828-0.672-1.5-1.5-1.5h-9c-0.828 0-1.5 0.672-1.5 1.5v16.5h-16.5c-0.828 0-1.5 0.672-1.5 1.5v9c0 0.828 0.672 1.5 1.5 1.5h16.5v16.5c0 0.828 0.672 1.5 1.5 1.5h9c0.828 0 1.5-0.672 1.5-1.5v-16.5h16.5c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-minus" viewBox="0 0 48 48">
-          <title>minus</title>
-          <path d="M0 19.5v9c0 0.828 0.672 1.5 1.5 1.5h45c0.828 0 1.5-0.672 1.5-1.5v-9c0-0.828-0.672-1.5-1.5-1.5h-45c-0.828 0-1.5 0.672-1.5 1.5z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-cross" viewBox="0 0 48 48">
-          <title>cross</title>
-          <path d="M47.562 38.562c-0-0-0-0-0.001-0l-14.561-14.562 14.561-14.562c0-0 0-0 0.001-0 0.157-0.157 0.27-0.34 0.343-0.535 0.199-0.533 0.086-1.157-0.343-1.586l-6.879-6.879c-0.429-0.429-1.052-0.542-1.586-0.343-0.195 0.073-0.378 0.186-0.535 0.343 0 0-0 0-0 0l-14.562 14.562-14.562-14.562c-0-0-0-0-0-0-0.157-0.157-0.34-0.27-0.535-0.343-0.533-0.199-1.157-0.086-1.586 0.343l-6.879 6.879c-0.429 0.429-0.542 1.052-0.343 1.586 0.073 0.195 0.186 0.378 0.343 0.535 0 0 0 0 0 0l14.562 14.562-14.562 14.562c-0 0-0 0-0 0-0.157 0.157-0.27 0.34-0.343 0.535-0.199 0.533-0.086 1.157 0.343 1.586l6.879 6.879c0.429 0.429 1.052 0.542 1.586 0.343 0.195-0.073 0.378-0.186 0.535-0.343 0-0 0-0 0-0l14.562-14.562 14.562 14.562c0 0 0 0 0.001 0 0.157 0.157 0.34 0.27 0.535 0.343 0.533 0.199 1.157 0.086 1.586-0.343l6.879-6.879c0.429-0.429 0.542-1.053 0.343-1.586-0.073-0.195-0.186-0.378-0.343-0.535z"></path>
-          </symbol>
-        </svg>
-
-        <svg style="display: none;">
-          <symbol id="icon-upload" viewBox="0 0 32 32">
-          <title>upload</title>
-          <path d="M14 18h4v-8h6l-8-8-8 8h6zM20 13.5v3.085l9.158 3.415-13.158 4.907-13.158-4.907 9.158-3.415v-3.085l-12 4.5v8l16 6 16-6v-8z"></path>
-          </symbol>
-        </svg>
-
-        <div id="pal"></div>
-
-        <script>
-          document.addEventListener('DOMContentLoaded', (event) => {
-            pal.initModule('pal');
-          });
-        </script>
-
-        <div id="mocha"></div>
-        <script src="https://unpkg.com/chai/chai.js"></script>
-        <script src="https://unpkg.com/mocha/mocha.js"></script>
-
-        <script class="mocha-init">
-          chai.should();
-          const expect = chai.expect;
-
-          mocha.setup('bdd');
-          mocha.checkLeaks();
-        </script>
-
-        <script src="test/test.pal.js"></script>
-        <script class="mocha-exec">
-          mocha.run();
-        </script>
-
-    </body>
+    <script src="test/test.pal.js"></script>
+    <script class="mocha-exec">
+      mocha.run();
+    </script>
+  </body>
 </html>

@@ -8,6 +8,10 @@
   grid-template-rows  : auto auto auto;
 }
 
+a {
+  color: #eee;
+}
+
 #pal-header {
   grid-row              : 1;
   justify-content       : space-between;
@@ -46,6 +50,18 @@
   grid-row    : 1;
 }
 
+#pal-header button {
+  border-radius: 0.25em;
+  box-shadow: 0 4px 0 #9999cc;
+}
+
+.pal-dom-header-logout span,
+.pal-dom-header-login span,
+.pal-dom-header-register span,
+.pal-dom-header-menu span {
+  font-size: 70%;
+}
+
 /* ナビゲーションのスタイル */
 #pal-nav {
   position    : absolute;
@@ -71,40 +87,46 @@ p {
   color:  #222;
 }
 
+.pal-dom-header-title,
+.pal-dom-header-blank,
+.pal-dom-header-logout,
+.pal-dom-header-login,
+.pal-dom-header-menu,
+.pal-dom-header-register {
+  background      : #9999cc;
+  color           : #eee;
+  text-align      : center;
+}
+
+/* マウスオーバーされたときに色を変化させる */
+.pal-dom-header-title:hover,
+.pal-dom-header-register:hover,
+.pal-dom-header-login:hover,
+.pal-dom-header-logout:hover,
+.pal-dom-header-menu:hover {
+  background  : #333399;
+}
+
+div img,
+nav img {
+  height  : calc( 1.3em + 0.25vw );
+  width   : calc( 1.3em + 0.25vw );
+}
+
 #pal-footer {
   grid-row    : 3;
   background  : #9999cc;
   color       : #eee;
 }
 
-  .pal-dom-header-title,
-  .pal-dom-header-blank,
-  .pal-dom-header-logout,
-  .pal-dom-header-login,
-  .pal-dom-header-menu,
-  .pal-dom-header-register {
-    background      : #9999cc;
-    color           : #eee;
-    text-align      : center;
-    padding-top     : 6px;
-    padding-right   : 6px;
-    padding-bottom  : 6px;
-    padding-left    : 6px;
-  }
-    /* マウスオーバーされたときに色を変化させる */
-    .pal-dom-header-title:hover,
-    .pal-dom-header-register:hover,
-    .pal-dom-header-login:hover,
-    .pal-dom-header-logout:hover,
-    .pal-dom-header-menu:hover {
-      background  : #333399;
-    }
+#pal-footer nav ul li {
+  display: inline-block;
+  list-style-type: none;
+}
 
-    div img,
-    nav img {
-      height  : calc( 1.3em + 0.25vw );
-      width   : calc( 1.3em + 0.25vw );
-    }
+#pal-footer nav ul li button a {
+  text-decoration: none;
+}
 
 .icon {
   display       : inline-block;
@@ -115,12 +137,13 @@ p {
   fill          : currentColor;
 }
 
-#pal-header button {
-  border-radius: 0.25em;
-  box-shadow: 0 4px 0 #9999cc;
+button {
+  background: #9999cc;
+  margin: 3px;
+  padding: 2px 5px;
+  color: #eee;
 }
 
-#pal-footer nav ul li {
-  display: inline-block;
-  list-style-type: none;
+button:hover {
+  background  : #333399;
 }

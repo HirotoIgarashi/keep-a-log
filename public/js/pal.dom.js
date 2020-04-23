@@ -11,34 +11,27 @@
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-/*global pal*/
+/*global pal util*/
 
-pal.dom = (function () {
+pal.dom = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
+  const configMap = {
+    logout_title          : 'ログアウトします。',
+    login_title           : 'IDとパスワードでログインします。',
+    register_title        : 'IDとパスワードを登録します。',
+    menu_retracted_title  : 'クリックしてメニューを開きます',
+    menu_extended_title   : 'クリックしてメニューを閉じます'
+  };
+
+  let request;  // XMLHttpRequest
   var
-    configMap = {
-      logout_title          : 'ログアウトします。',
-      login_title           : 'IDとパスワードでログインします。',
-      register_title        : 'IDとパスワードを登録します。',
-      menu_retracted_title  : 'クリックしてメニューを開きます',
-      menu_extended_title   : 'クリックしてメニューを閉じます'
-    },
     stateMap = {
       $container        : null,
       is_menu_retracted : true
     },
     jqueryMap = {},
-    supportsTemplate,
-    setJqueryMap,
-    readSession,
-    onClickTop,
-    onClickLogin, onClickLogout, onClickRegister,
-    onReceiveSession,
-    toggle_menu,
+    setJqueryMap;
     // onResize,
-    setSection,
-    request,  // XMLHttpRequest
-    initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
   //--------------------- ユーティリティメソッド開始 -----------------
   // ユーティリティメソッド/supportsTemplate/開始
@@ -52,7 +45,7 @@ pal.dom = (function () {
   //  * true  - templateタグを利用できる
   //  * false - templateタグを利用できない
   // 例外発行: なし
-  supportsTemplate = function () {
+  const supportsTemplate = function () {
     var
       template  = document.createElement('template');
 
@@ -61,7 +54,7 @@ pal.dom = (function () {
   // ユーティリティメソッド/supportsTemplate/終了
 
   //----- ユーティリティメソッド/readSession/開始 --------------------
-  readSession = function () {
+  const readSession = function () {
     const requestType = 'GET';
     const url = '/session/read';
 
@@ -76,14 +69,14 @@ pal.dom = (function () {
   //----- ユーティリティメソッド/readSession/終了 --------------------
 
   // ユーティリティメソッド/toggle_menu/開始
-  toggle_menu = function () {
+  const toggle_menu = function () {
     // メニューの表示非表示を切り替える
     var
       site_button,
       site_menu,
       expanded;
 
-    // ボタンとメニューのノードを取得
+    // ボタンとメニューのノードを取得 --------------------------------
     site_button = document.querySelector( '.pal-dom-header-menu' );
     site_menu = document.querySelector( '[aria-label="サイト"]' );
 
@@ -126,15 +119,11 @@ pal.dom = (function () {
   // 戻り値: なし
   // 例外発行: なし
   // 
-  setSection = function () {
-    var
-      main_section,
-      current_location_hash;
-
-    current_location_hash = pal.bom.getLocationHash();
-
+  const setSection = () => {
     // mainセクションを取得する
-    main_section = document.getElementById('pal-main');
+    const main_section = document.getElementById('pal-main');
+
+    let current_location_hash = pal.bom.getLocationHash();
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
@@ -176,27 +165,81 @@ pal.dom = (function () {
 
   };
   // DOMメソッド/setSection/終了
+  // DOMメソッド/makeFooter/開始 -------------------------------------
+  const makeFooter = () => {
+    let frag = util.dom.createFragment();
+    // navタグの作成 -------------------------------------------------
+    let navElement = util.dom.createElement('nav');
+    let ulElement = util.dom.createElement('ul');
+
+    let liHome = util.dom.createElement('li');
+    let buttonHome = util.dom.createElement('button');
+    let anchorHome = util.dom.createElement('a');
+    util.dom.setAttribute(anchorHome, 'href', '#');
+    util.dom.setAttribute(anchorHome, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorHome, 'ホーム');
+    util.dom.appendChild(buttonHome, anchorHome);
+    util.dom.appendChild(liHome, buttonHome);
+
+    let liPlan = util.dom.createElement('li');
+    let buttonPlan = util.dom.createElement('button');
+    let anchorPlan = util.dom.createElement('a');
+    util.dom.setAttribute(anchorPlan, 'href', '#plan');
+    util.dom.setAttribute(anchorPlan, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorPlan, 'プラン');
+    util.dom.appendChild(buttonPlan, anchorPlan);
+    util.dom.appendChild(liPlan, buttonPlan);
+
+    let liCalendar = util.dom.createElement('li');
+    let buttonCalendar = util.dom.createElement('button');
+    let anchorCalendar = util.dom.createElement('a');
+    util.dom.setAttribute(anchorCalendar, 'href', '#calendar');
+    util.dom.setAttribute(anchorCalendar, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorCalendar, 'カレンダー');
+    util.dom.appendChild(buttonCalendar, anchorCalendar);
+    util.dom.appendChild(liCalendar, buttonCalendar);
+
+    let liChat = util.dom.createElement('li');
+    let buttonChat = util.dom.createElement('button');
+    let anchorChat = util.dom.createElement('a');
+    util.dom.setAttribute(anchorChat, 'href', '/chat');
+    util.dom.setAttribute(anchorChat, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorChat, 'チャット');
+    util.dom.appendChild(buttonChat, anchorChat);
+    util.dom.appendChild(liChat, buttonChat);
+
+    let spanElement = util.dom.createElement('span');
+    util.dom.setAttribute(spanElement, 'id', 'pal-dom-date-info');
+
+    // -----HTMLを組み立てる------------------------------------------
+    // ulタグの組み立て/開始 ------------------------------------------
+    util.dom.appendChild(ulElement, liHome);
+    util.dom.appendChild(ulElement, liPlan);
+    util.dom.appendChild(ulElement, liCalendar);
+    util.dom.appendChild(ulElement, liChat);
+    // ulタグの組み立て/終了 ------------------------------------------
+    util.dom.appendChild(navElement, ulElement);
+
+    util.dom.appendChild(frag, navElement);
+    util.dom.appendChild(frag, spanElement);
+
+    return frag;
+  };
+  // DOMメソッド/makeFooter/終了 -------------------------------------
   //--------------------- DOMメソッド終了 ----------------------------
-
   // --------------------- イベントハンドラ開始 ----------------------
-  onClickTop = function ( /* event */ ) {
-    pal.bom.setLocationHash('');
-  };
+  const onClickTop = ( /* event */ ) => pal.bom.setLocationHash('');
 
-  onClickLogout = function ( /* event */ ) {
+  const onClickLogout = ( /* event */ ) =>
     pal.bom.setLocationHash('logout');
-  };
 
-  onClickLogin = function ( /* event */ ) {
+  const onClickLogin = ( /* event */ ) =>
     pal.bom.setLocationHash('login');
-  };
 
-  onClickRegister = function ( /* event */ ) {
+  const onClickRegister = ( /* event */ ) =>
     pal.bom.setLocationHash('register');
-  };
-  
 
-  onReceiveSession = function () {
+  const onReceiveSession = () => {
     if ( request && request.readyState === 4 ) {
       let response_map = JSON.parse(request.responseText);
 
@@ -271,25 +314,30 @@ pal.dom = (function () {
   // 戻り値: なし
   // 例外発行: なし
   //
-  initModule = function (content) {
+  const initModule = (content) => {
+    const mainPage = document.querySelector('#main-page').content;
     var
-      i,
       site_button,
       site_button_rect,
       site_menu,
-      menu_ahchor,
-      mainPage = document.querySelector('#main-page').content;
+      menu_ahchor;
 
     // HTMLをロードし、jQueryコレクションをマッピングする
     stateMap.$container = content;
 
-    // templateタグが利用可能であればtemplate#main-pageを描画する
+    // templateタグが利用可能であればtemplate#main-pageを描画する-----
     if (supportsTemplate()) {
       content.appendChild(mainPage);
     }
     else {
       console.log( 'templateは利用できません。' );
     }
+
+    // footerを表示する ----------------------------------------------
+    util.dom.appendChild(
+      document.querySelector('#pal-footer'),
+      makeFooter()
+    );
 
     // ウィンドウのサイズが変更されたときのイベント
     // window.addEventListener( 'resize', onResize );
@@ -336,7 +384,7 @@ pal.dom = (function () {
     // メニューのaタグを取得
     menu_ahchor = document.querySelectorAll( '#pal-nav-menu a' );
 
-    for ( i = 0; i < menu_ahchor.length; i = i + 1 ) {
+    for (let i = 0; i < menu_ahchor.length; i = i + 1 ) {
       menu_ahchor[ i ].addEventListener( 'click', toggle_menu, false );
     }
 
@@ -359,4 +407,4 @@ pal.dom = (function () {
     setSection  : setSection
   };
   // --------------------- パブリックメソッド終了 --------------------
-}());
+})();

@@ -59,8 +59,11 @@ pal.chat = (() => {
 
     // イベントを監視し、チャットボックスに記入 ----------------------
     socket.on('message', message => {
-      console.log(`'メッセージが到着しました: ${message}`);
       displayMessage(message);
+      // アイコンのアニメーションを行う ------------------------------
+      for (let i = 0; i < 2; i++) {
+        $('.chat-icon').fadeOut(200).fadeIn(200);
+      }
     });
 
     // load all messageイベントの処理で、届いたデータを解析する ------
@@ -71,6 +74,14 @@ pal.chat = (() => {
         displayMessage(message);
       });
     });
+
+    // user disconnectedイベントを監視してカスタムメッセージを表示 ---
+    socket.on('user disconnected', () => displayMessage(
+      {
+       userName: 'Notice',
+       content: 'User left the chat'
+      })
+    );
 
     // displayMessage開始 --------------------------------------------
     let displayMessage = (message) => {

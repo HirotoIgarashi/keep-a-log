@@ -26,7 +26,7 @@
   color       : #eee;
   text-align  : center;
   height      : 1.8rem;
-  font-size   : 90%;
+  font-size   : 80%;
 }
 
 #calendar-frame ul li {
@@ -38,6 +38,6 @@
 /* 今月の日付                                                       */
 #calendar-frame ul li.current-month {
   color     : black;
-  font-size : 90%;
+  font-size : 80%;
 }
 

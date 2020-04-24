@@ -24,13 +24,12 @@ pal.dom = (() => {
   };
 
   let request;  // XMLHttpRequest
+  let elementMap = {};
   var
     stateMap = {
       $container        : null,
       is_menu_retracted : true
-    },
-    jqueryMap = {},
-    setJqueryMap;
+    };
     // onResize,
   //--------------------- モジュールスコープ変数終了 -----------------
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -89,12 +88,12 @@ pal.dom = (() => {
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
-  // DOMメソッド/setJqueryMap/開始
-  setJqueryMap = function () {
+  // DOMメソッド/setElementMap/開始
+  const setElementMap = () => {
     var
       content = stateMap.$container;
 
-    jqueryMap = {
+    elementMap = {
       $container  : content,
       $top        : content.getElementsByClassName('pal-dom-header-title'),
       $user_info  : document.getElementById('pal-dom-user-info'),
@@ -107,7 +106,7 @@ pal.dom = (() => {
       $menu_list  : content.getElementsByClassName('pal-dom-menu-list')
     };
   };
-  // DOMメソッド/setJqueryMap/終了
+  // DOMメソッド/setElementMap/終了
 
   // DOMメソッド/setSection/開始
   // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を取得して対応する
@@ -124,6 +123,8 @@ pal.dom = (() => {
     const main_section = document.getElementById('pal-main');
 
     let current_location_hash = pal.bom.getLocationHash();
+
+    console.log(current_location_hash);
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
@@ -244,16 +245,18 @@ pal.dom = (() => {
       let response_map = JSON.parse(request.responseText);
 
       if (request.status === 200 ) {
-        jqueryMap.$logout[0].style.visibility = 'visible';
-        jqueryMap.$login[0].style.visibility = 'hidden';
-        jqueryMap.$register[0].style.visibility = 'hidden';
-        jqueryMap.$user_info.textContent = response_map.email;
+        elementMap.$logout[0].style.visibility = 'visible';
+        elementMap.$login[0].style.visibility = 'hidden';
+        elementMap.$register[0].style.visibility = 'hidden';
+        elementMap.$user_info.textContent =
+          `${response_map.name.first} ${response_map.name.last}
+としてログインしています`;
       }
       else {
-        jqueryMap.$logout[0].style.visibility = 'hidden';
-        jqueryMap.$login[0].style.visibility = 'visible';
-        jqueryMap.$register[0].style.visibility = 'visible';
-        jqueryMap.$user_info.textContent = response_map.email;
+        elementMap.$logout[0].style.visibility = 'hidden';
+        elementMap.$login[0].style.visibility = 'visible';
+        elementMap.$register[0].style.visibility = 'visible';
+        elementMap.$user_info.textContent = response_map.email;
       }
     }
   };
@@ -342,7 +345,8 @@ pal.dom = (() => {
     // ウィンドウのサイズが変更されたときのイベント
     // window.addEventListener( 'resize', onResize );
 
-    setJqueryMap();
+    // DOM要素を取得する ---------------------------------------------
+    setElementMap();
 
     // 機能モジュールを設定して初期化する/開始
     pal.top.initModule(mainPage);
@@ -351,19 +355,19 @@ pal.dom = (() => {
 
     // クリックハンドラをバインドする
     // ヘッダーのトップ
-    jqueryMap.$top[0].addEventListener('click', onClickTop);
+    elementMap.$top[0].addEventListener('click', onClickTop);
 
     // ヘッダーのログアウト
-    jqueryMap.$logout[0].setAttribute('title', configMap.logout_title);
-    jqueryMap.$logout[0].addEventListener('click', onClickLogout);
+    elementMap.$logout[0].setAttribute('title', configMap.logout_title);
+    elementMap.$logout[0].addEventListener('click', onClickLogout);
 
     // ヘッダーのログイン要素
-    jqueryMap.$login[0].setAttribute('title', configMap.login_title);
-    jqueryMap.$login[0].addEventListener('click', onClickLogin);
+    elementMap.$login[0].setAttribute('title', configMap.login_title);
+    elementMap.$login[0].addEventListener('click', onClickLogin);
 
     // ヘッダーのサインアップ要素
-    jqueryMap.$register[0].setAttribute('title', configMap.register_title);
-    jqueryMap.$register[0].addEventListener('click', onClickRegister);
+    elementMap.$register[0].setAttribute('title', configMap.register_title);
+    elementMap.$register[0].addEventListener('click', onClickRegister);
 
     // ボタンとメニューのノードを取得
     site_button = document.querySelector( '.pal-dom-header-menu' );
@@ -389,12 +393,12 @@ pal.dom = (() => {
     }
 
     //----- フッターに日時を表示する(初回) ---------------------------
-    jqueryMap.$date_info.textContent = pal.util_b.getNowDateJp();
+    elementMap.$date_info.textContent = pal.util_b.getNowDateJp();
 
     //------ フッターに日時を表示する(次回以降) ----------------------
     setInterval(
       function () {
-        jqueryMap.$date_info.textContent = pal.util_b.getNowDateJp();
+        elementMap.$date_info.textContent = pal.util_b.getNowDateJp();
       },
       1000
     );

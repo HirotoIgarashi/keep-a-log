@@ -2,19 +2,18 @@
  * pal.dom.css
  * DOMのスタイル
 */
-
-#pal {
-  display             : grid;
-  grid-template-rows  : auto auto auto;
-}
-
 #pal-header {
   grid-row              : 1;
   justify-content       : space-between;
   background            : #9999cc;
+  color                 : #eee;
+  font-size: 75%;
+}
+
+#pal-header-nav {
   display               : grid;
-  grid-template-columns : 120px 4fr;
-  color: #eee;
+  grid-template-columns : 110px 4fr;
+  grid-template-rows    : auto auto auto;
 }
 
 .pal-dom-header-title {
@@ -77,7 +76,6 @@
 }
 
 #pal-main {
-  grid-row    : 2;
   background  : #eee;
 }
 p {
@@ -111,9 +109,9 @@ nav img {
 }
 
 #pal-footer {
-  grid-row    : 3;
   background  : #9999cc;
   color       : #eee;
+  font-size: 75%;
 }
 
 #pal-footer nav ul li {

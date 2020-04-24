@@ -33,53 +33,55 @@
     <!-- メインページのテンプレート -->
     <template id="main-page">
       <header id="pal-header">
-        <button class="pal-dom-header-title">
-          keeP-A-Log
-        </button>
-        <div class="pal-dom-header-blank">
-        </div>
-        <button aria-label="エグジット" class="pal-dom-header-logout">
-          <span>ログアウト</span>
-          <svg class="icon icon-exit">
-            <use href="#icon-exit"></use>
-          </svg>
-        </button>
-        <button aria-label="エンター" class="pal-dom-header-login">
-          <span>ログイン</span>
-          <svg class="icon icon-enter">
-            <use href="#icon-enter"></use>
-          </svg>
-        </button>
-        <button aria-label="サインアップ" class="pal-dom-header-register">
-          <span>ユーザ登録</span>
-          <svg class="icon icon-user-plus">
-            <use href="#icon-user-plus"></use>
-          </svg>
-        </button>
-        <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
-          <span>メニュー</span>
-          <svg class="icon icon-user-plus">
-          <svg class="icon icon-menu">
-            <switch>
-              <use href="#icon-menu"></use>
-              <foreignObject>
-              <img src="image/pal_menu.png" alt="" />
-              </foreignObject>
-            </switch>
-          </svg>
-          <span class="visually-hidden">メニュー</span>
-        </button>
-        <span id="pal-dom-user-info"></span>
-        <!-- メニューの内容 -->
-        <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
-          <ul id="pal-nav-menu">
-            <li><a href="#cycle_system">サイクルシステム</a></li>
-            <li><a href="#regist_schedule">予定の登録</a></li>
-            <li><a href="#list">アクションのリスト</a></li>
-            <li><a href="#browser_information">ブラウザ情報</a></li>
-            <li><a href="#lab">ラボラトリ</a></li>
-          </ul>
+        <nav id="pal-header-nav">
+          <button class="pal-dom-header-title">
+            keeP-A-Log
+          </button>
+          <div class="pal-dom-header-blank">
+          </div>
+          <button aria-label="エグジット" class="pal-dom-header-logout">
+            <span>ログアウト</span>
+            <svg class="icon icon-exit">
+              <use href="#icon-exit"></use>
+            </svg>
+          </button>
+          <button aria-label="エンター" class="pal-dom-header-login">
+            <span>ログイン</span>
+            <svg class="icon icon-enter">
+              <use href="#icon-enter"></use>
+            </svg>
+          </button>
+          <button aria-label="サインアップ" class="pal-dom-header-register">
+            <span>ユーザ登録</span>
+            <svg class="icon icon-user-plus">
+              <use href="#icon-user-plus"></use>
+            </svg>
+          </button>
+          <button aria-expanded="false" aria-label="メニュー" class="pal-dom-header-menu">
+            <span>メニュー</span>
+            <svg class="icon icon-user-plus">
+            <svg class="icon icon-menu">
+              <switch>
+                <use href="#icon-menu"></use>
+                <foreignObject>
+                <img src="image/pal_menu.png" alt="" />
+                </foreignObject>
+              </switch>
+            </svg>
+            <span class="visually-hidden">メニュー</span>
+          </button>
+          <!-- メニューの内容 -->
+          <nav id="pal-nav" aria-label="サイト" class="pal-dom-header-site">
+            <ul id="pal-nav-menu">
+              <li><a href="#cycle_system">サイクルシステム</a></li>
+              <li><a href="#regist_schedule">予定の登録</a></li>
+              <li><a href="#list">アクションのリスト</a></li>
+              <li><a href="#browser_information">ブラウザ情報</a></li>
+              <li><a href="#lab">ラボラトリ</a></li>
+            </ul>
+          </nav>
         </nav>
+        <span id="pal-dom-user-info"></span>
       </header>
       <main id="pal-main"></main>
       <footer id="pal-footer"></footer>

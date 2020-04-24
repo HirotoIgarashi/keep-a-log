@@ -95,13 +95,25 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+button {
+  background: #9999cc;
+  margin: 3px;
+  padding: 2px 5px;
+  color: #eee;
+}
 
+button:hover {
+  background  : #333399;
+}
 
+a {
+  color: inherit;
+}
 
-
-
-
-
+/*a {
+  color: #eee;
+}
+*/
 
 
 

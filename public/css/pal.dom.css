@@ -8,16 +8,13 @@
   grid-template-rows  : auto auto auto;
 }
 
-a {
-  color: #eee;
-}
-
 #pal-header {
   grid-row              : 1;
   justify-content       : space-between;
   background            : #9999cc;
   display               : grid;
   grid-template-columns : 120px 4fr;
+  color: #eee;
 }
 
 .pal-dom-header-title {
@@ -52,14 +49,14 @@ a {
 
 #pal-header button {
   border-radius: 0.25em;
-  box-shadow: 0 4px 0 #9999cc;
+  box-shadow: 0 1px 0 #9999cc;
 }
 
 .pal-dom-header-logout span,
 .pal-dom-header-login span,
 .pal-dom-header-register span,
 .pal-dom-header-menu span {
-  font-size: 70%;
+  font-size: 60%;
 }
 
 /* ナビゲーションのスタイル */
@@ -137,13 +134,3 @@ nav img {
   fill          : currentColor;
 }
 
-button {
-  background: #9999cc;
-  margin: 3px;
-  padding: 2px 5px;
-  color: #eee;
-}
-
-button:hover {
-  background  : #333399;
-}

@@ -46,10 +46,12 @@
   grid-row    : 1;
 }
 
+/*
 #pal-header button {
   border-radius: 0.25em;
   box-shadow: 0 1px 0 #9999cc;
 }
+*/
 
 .pal-dom-header-logout span,
 .pal-dom-header-login span,
@@ -117,10 +119,6 @@ nav img {
 #pal-footer nav ul li {
   display: inline-block;
   list-style-type: none;
-}
-
-#pal-footer nav ul li button a {
-  text-decoration: none;
 }
 
 .icon {

@@ -98,8 +98,17 @@ textarea {
 button {
   background: #9999cc;
   margin: 3px;
-  padding: 2px 5px;
-  color: #eee;
+  padding: 2px 4px;
+  color: inherit;
+  border-width: 0.3px;
+  border-style: outset;
+  border-color: buttonface;
+  border-image: initial;
+  /*
+  border-radius: 0.25em;
+  box-shadow: 0 1px 0 #9999cc;
+  box-shadow: 10px 10px 10px 5px;
+  */
 }
 
 button:hover {
@@ -108,13 +117,8 @@ button:hover {
 
 a {
   color: inherit;
+  text-decoration: none;
 }
-
-/*a {
-  color: #eee;
-}
-*/
-
 
 
 

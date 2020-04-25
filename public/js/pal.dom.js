@@ -124,8 +124,6 @@ pal.dom = (() => {
 
     let current_location_hash = pal.bom.getLocationHash();
 
-    console.log(current_location_hash);
-
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
 

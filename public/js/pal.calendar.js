@@ -21,12 +21,86 @@ pal.calendar = (() => {
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
+  const makeCalendar = () => {
+    let frag = util.dom.createFragment();
+    // h1タグの作成
+    let h1Tag = util.dom.createElement('h1');
+    util.dom.innerHTML(h1Tag, 'カレンダー');
+    // navタグの作成
+    let navTag = util.dom.createElement('nav');
+    util.dom.setAttribute(navTag, 'id', 'calendar-menu');
+    let ulTag = util.dom.createElement('ul');
+
+    let liToday = util.dom.createElement('li');
+    let anchorToday = util.dom.createElement('a');
+    util.dom.innerHTML(anchorToday, '今月');
+    util.dom.appendChild(liToday, anchorToday);
+
+    let liPre = util.dom.createElement('li');
+    let anchorPre = util.dom.createElement('a');
+    util.dom.setAttribute(anchorPre, 'href', '#calendar/previous-month');
+    util.dom.innerHTML(anchorPre, '&lt;先月');
+    util.dom.appendChild(liPre, anchorPre);
+
+    let liMonth = util.dom.createElement('li');
+    let spanBlank = util.dom.createElement('span');
+    util.dom.appendChild(liMonth, spanBlank);
+
+    let liNext = util.dom.createElement('li');
+    let anchorNext = util.dom.createElement('a');
+    util.dom.setAttribute(anchorNext, 'href', '#calendar/next-month');
+    util.dom.innerHTML(anchorNext, '翌月&gt;');
+    util.dom.appendChild(liNext, anchorNext);
+
+    util.dom.appendChild(ulTag, liToday);
+    util.dom.appendChild(ulTag, liPre);
+    util.dom.appendChild(ulTag, liMonth);
+    util.dom.appendChild(ulTag, liNext);
+
+    util.dom.appendChild(navTag, ulTag);
+
+    // calendar用navタグの作成
+    const dayArray = ['月','火','水','木','金','土','日'];
+    let navCalendar = util.dom.createElement('nav');
+    util.dom.setAttribute(navCalendar, 'id', 'calendar-frame');
+    let ulCalendar =  util.dom.createElement('ul');
+
+    for (let i = 0; i < 42; i = i +1) {
+      let liDate = util.dom.createElement('li');
+      // liタグにspanタグとulタグ追加する ----------------------------
+      let spanTag = util.dom.createElement('span');
+      let ulTag = util.dom.createElement('ul');
+      util.dom.appendChild(liDate, spanTag);
+      util.dom.appendChild(liDate, ulTag);
+
+      // 曜日の設定 --------------------------------------------------
+      if (i < 7) {
+        let spanTags = liDate.getElementsByTagName('span');
+        util.dom.setAttribute(liDate, 'class', 'column-title');
+        util.dom.innerHTML(spanTags[0], dayArray[i]);
+      }
+      // else {
+      //   util.dom.innerHTML(liDate, i);
+      // }
+
+      util.dom.appendChild(ulCalendar, liDate);
+    }
+
+    util.dom.appendChild(navCalendar, ulCalendar);
+
+    // -----HTMLを組み立てる------------------------------------------
+    util.dom.appendChild(frag, h1Tag);
+    util.dom.appendChild(frag, navTag);
+    util.dom.appendChild(frag, navCalendar);
+
+    return frag;
+  };
   //--------------------- DOMメソッド終了 ----------------------------
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
   const onHashchange = (mainSection) => {
-    const menu = pal.util_b.getTplContent('calendar-tmpl');
+    // const menu = pal.util_b.getTplContent('calendar-tmpl');
     const pattern = /^#calendar\/([0-9]+)\/([0-9]+)/;
 
     let now = util.date.getNowDate();
@@ -48,7 +122,7 @@ pal.calendar = (() => {
     let menuNext;
     let currentHash;
     let beginingDate;
-    let element;
+    let liElement;
     let calendarDate;
     let calendarList = [];
 
@@ -62,17 +136,12 @@ pal.calendar = (() => {
       pal.bom.setLocationHash(currentHash);
     }
 
-    // mainセクションの子要素をすべて削除する
+    // mainセクションの子要素をすべて削除する ------------------------
     // mainセクションの子要素の削除は下位のモジュールにまかせる
     pal.util.emptyElement(mainSection);
 
-    // メニューを表示する --------------------------------------------
-    if (menu) {
-      mainSection.appendChild(menu);
-    }
-    else {
-      console.log('メニューのテンプレートが見つかりませんでした。');
-    }
+    // カレンダーを表示する --------------------------------------------
+    mainSection.appendChild(makeCalendar());
 
     // 現在のhashから年の値と月の値を取得する
     let matchString = currentHash.match(pattern);
@@ -82,7 +151,7 @@ pal.calendar = (() => {
     // Dateオブジェクトを生成する
     currentDate = util.date.getDate(currentYear, currentMonth);
 
-    // カレンダーメニューのDOM要素を取得する
+    // カレンダーメニューのDOM要素を取得する -------------------------
     menuElements = document.querySelectorAll('#calendar-menu ul li');
     menuMonthElements = menuElements[0].firstElementChild;
     menuPrevious = menuElements[1].firstElementChild;
@@ -133,24 +202,50 @@ pal.calendar = (() => {
     }
 
     // カレンダーのlist要素をループする
-    element = document.querySelector( '#calendar-frame ul li');
+    liElement = document.querySelector('#calendar-frame ul li');
 
     // 曜日を表示している行をとばす
     for (let i = 0; i < 7; i = i + 1 ) {
-      element = element.nextElementSibling;
+      liElement = liElement.nextElementSibling;
     }
 
-    for (let i = 0; i < 42; i = i + 1) {
-      element.textContent = calendarList[i].getDate();
+    for (let i = 0; i < 35; i = i + 1) {
+      let currentDateInList = calendarList[i];
+      let spanTags = liElement.getElementsByTagName('span');
+
+      spanTags[0].innerHTML = currentDateInList.getDate();
+
+      let currentDateInListString = util.date.getYMDString(currentDateInList);
+
+      let currentDateString = util.date.getYMDString(currentDate);
+      let nowDateString = util.date.getYMDString(now);
+
       util.dom.setAttribute(
-        element,
+        liElement,
         'content',
-        util.date.toISOString(calendarList[i]).split('T')[0]
+        currentDateInListString
       );
-      if (currentDate.getMonth() === calendarList[i].getMonth()) {
-        element.setAttribute( 'class', 'current-month' );
+
+      // 今月かどうか ------------------------------------------------
+      if (util.date.getMonth(currentDateInList) ===
+          util.date.getMonth(currentDate)) {
+        // 今日だったらclass属性の値にcurrent-monthとtodayを加える
+        if (currentDateInListString === nowDateString) {
+          util.dom.setAttribute(
+            liElement,
+            'class',
+            'current-month today'
+          );
+        }
+        else {
+          util.dom.setAttribute(
+            liElement,
+            'class',
+            'current-month'
+          );
+        }
       }
-      element = element.nextElementSibling;
+      liElement = liElement.nextElementSibling;
     }
     // }
     return true;
@@ -166,12 +261,10 @@ pal.calendar = (() => {
   // 例外発行: なし
   //
   const initModule = (mainSection) => {
-
-    // mainセクションの子要素をすべて削除する
-    // mainセクションの子要素の削除は下位のモジュールにまかせる
+    // mainセクションの子要素をすべて削除する ------------------------
     pal.util.emptyElement(mainSection);
 
-    // hashの状態により表示を切り替える
+    // hashの状態により表示を切り替える ------------------------------
     onHashchange(mainSection);
 
     return true;

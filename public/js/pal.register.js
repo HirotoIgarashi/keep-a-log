@@ -228,9 +228,9 @@ pal.register = (() => {
               'E-mailアドレスかパスワードが不正です。ステータス: ' +
                 request.status;
             break;
-          case 404:
+          case 409:
             message_area.textContent =
-              'ページが見つかりません。ステータス: ' +
+              '入力されたEmailアドレスはすでに使われています。ステータス: ' +
                 request.status;
             break;
           case 422:

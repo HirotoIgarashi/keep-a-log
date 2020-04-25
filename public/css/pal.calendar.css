@@ -21,6 +21,12 @@
   grid-template-columns : repeat(7, auto);
 }
 
+#calendar-frame ul li {
+  height    : 3rem;
+  color     : grey;
+  font-size : 70%;
+}
+
 #calendar-frame ul li.column-title {
   background  : #9999CC;
   color       : #eee;
@@ -29,10 +35,17 @@
   font-size   : 80%;
 }
 
-#calendar-frame ul li {
-  height    : 3rem;
-  color     : grey;
-  font-size : 70%;
+#calendar-frame ul li span {
+  margin-left: 4px;
+}
+#calendar-frame ul li.today span {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background: skyblue;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 26px;
 }
 
 /* 今月の日付                                                       */

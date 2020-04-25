@@ -26,7 +26,7 @@ module.exports = {
   index: (req, res, next) => {
     User.find({})
       // ユーザデータをレスポンスに格納し、次のミドルウェア関数を
-    // 呼び出す
+      // 呼び出す
       .then(users => {
         res.locals.users = users;
         next();
@@ -66,9 +66,14 @@ module.exports = {
     // 検証
     const errors = validationResult(req);
 
+    console.log(errors);
+
     if (!errors.isEmpty()) {
       let messages = errors.array().map(e => e.msg);
 
+      console.log(messages);
+
+      // 422: Unprocessable Entity: 入力値の検証の失敗 ---------------
       res.status(422).jsonp(messages);
       res.end();
     }
@@ -83,12 +88,13 @@ module.exports = {
         console.log(user);
 
         if (user) {
-          res.status(200);
+          res.status(201);
           res.end();
         }
         else {
           console.log(`ユーザアカウントの作成のエラー: ${error.message}`);
-          res.status(422);
+          // 409: Conflict: 競合 現在のリソースと競合する ------------
+          res.status(409);
           res.end();
         }
       });
@@ -275,15 +281,6 @@ module.exports = {
       }
 
       if (user) {
-        // メールアドレスとパスワードの一致するユーザがいたらJWTに
-        // 署名する
-        // let signedToken = jsonWebToken.sign(
-        //   {
-        //     date: user._id,
-        //     exp: new Date().setDate(new Date().getDate() + 1)
-        //   },
-        //   'paljwtpass'
-        // );
         // ----- ログイン処理 ------------------------------------------
         req.login(user, function(err) {
           if (err) {
@@ -291,23 +288,13 @@ module.exports = {
             res.end();
             return;
           }
-          // res.status(200).jsonp(user);
-          // JWTでレスポンスする
           res.status(200).jsonp(user);
-          // res.json({
-          // success: true,
-          // token: signedToken
-          // });
           res.end();
           return;
         });
       }
       else {
         res.status(401).jsonp(info);
-        // res.json({
-        //   success: false,
-        //   message: 'Could not authenticate user.'
-        // });
         res.end();
         return;
       }
@@ -366,6 +353,7 @@ module.exports = {
     //------ 検証結果を格納する --------------------------------------
     const result = validationResult(req);
 
+    // 検証結果にエラーがあれば --------------------------------------
     if (!result.isEmpty()) {
       let messages = result.array().map(e => {
         return {value: e.value, msg: e.msg, param: e.param};
@@ -391,10 +379,8 @@ module.exports = {
             console.log(
               `ユーザアカウントの作成のエラー: ${error.message}`
             );
-            // status 422: リクエストは適正ですが、意味が誤って
-            // いるため従うことができません。
-            res
-              .status(422)
+            // status 409: Emailがすでに登録されている
+            res.status(409)
               .jsonp([{
                 value: 'req.body.email',
                 msg: error.message, param: 'email'

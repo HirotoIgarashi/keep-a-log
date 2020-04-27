@@ -46,8 +46,6 @@ pal.register = (() => {
 
     // -----formタグの作成 -------------------------------------------
     let formElement = util.dom.createElement('form');
-    // util.dom.setAttribute(formElement, 'action', '/users/create');
-    // util.dom.setAttribute(formElement, 'method', 'POST');
 
     // -----姓のlabelとinput -----------------------------------------
     let firstLabelAndInput = util.dom.createLabelAndInput({
@@ -85,12 +83,18 @@ pal.register = (() => {
       'autofocus': false
     });
 
+    // checkboxとlabelを囲むdivを作成する ----------------------------
+    let divShowPassword = util.dom.createElement('div');
+
     // -----パスワードを表示するcheckboxとlabelを生成 ----------------
     let showPasswordCheckbox = util.dom.createElement('input');
     util.dom.setAttribute(showPasswordCheckbox, 'type', 'checkbox');
     util.dom.setAttribute(showPasswordCheckbox, 'id', 'showPassword');
     let showPasswordLabel = util.dom.createElement('label');
     util.dom.innerHTML(showPasswordLabel, 'パスワードを表示');
+
+    util.dom.appendChild(divShowPassword, showPasswordCheckbox);
+    util.dom.appendChild(divShowPassword, showPasswordLabel);
 
     // -----パスワードのvalidate結果の表示エリアとinput --------------
     let inputPasswordResponse = util.dom.createElement('div');
@@ -144,9 +148,8 @@ pal.register = (() => {
     util.dom.appendChild(formElement, lastLabelAndInput[1]);
     util.dom.appendChild(formElement, passwordLabelAndInput[0]);
     util.dom.appendChild(formElement, passwordLabelAndInput[1]);
+    util.dom.appendChild(formElement, divShowPassword);
     util.dom.appendChild(formElement, inputPasswordResponse);
-    util.dom.appendChild(formElement, showPasswordCheckbox);
-    util.dom.appendChild(formElement, showPasswordLabel);
     util.dom.appendChild(formElement, emailLabelAndInput[0]);
     util.dom.appendChild(formElement, emailLabelAndInput[1]);
     util.dom.appendChild(formElement, inputEmailResponse);

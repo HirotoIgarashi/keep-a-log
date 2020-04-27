@@ -54,3 +54,8 @@
   font-size : 80%;
 }
 
+#calendar-nav ul li {
+  list-style: none;
+  font-size: 80%;
+  color: #eee;
+}

@@ -210,7 +210,8 @@ else {
 // サーバのインスタンスをsocket.ioに渡す -----------------------------
 const io = require('socket.io')(server);
 
-require('./controllers/chatController')(io);
+// require('./controllers/chatController')(io);
+require('./controllers/eventController')(io);
 
 module.exports = server;
 // ---------------- サーバ起動終了 ---------------------------------------------

@@ -68,7 +68,7 @@ input[type=password]::-ms-reveal {
 
 .data-form input {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 7px;
 }
 
 button#registerUser {

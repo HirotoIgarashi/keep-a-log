@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * pal.shell.js
  * PALのBOM(Browser Object Model)コントロールモジュール
@@ -12,7 +14,6 @@
 /*global pal*/
 
 pal.bom = (function () {
-  'use strict';
   var
     initModule,
     setLocationHash,
@@ -40,14 +41,14 @@ pal.bom = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // イベントハンドラ/onHashchange/開始
-  onHashchange = ( /* event */ ) => {
+  onHashchange = () => {
     pal.dom.setSection();
   };
   // イベントハンドラ/onHashchange/終了
   // --------------------- イベントハンドラ終了 ----------------------
 
-  // --------------------- コールバック開始 --------------------
-  // --------------------- コールバック終了 --------------------
+  // --------------------- コールバック開始 --------------------------
+  // --------------------- コールバック終了 --------------------------
 
   // --------------------- パブリックメソッド開始 --------------------
   initModule = (content) => {
@@ -59,8 +60,8 @@ pal.bom = (function () {
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。
     // そうしないと、トリガーイベントを処理できる状態になっていない。
-    // トリガーイベントはアンカーがロード状態と見なせることを保証するために
-    // 使う
+    // トリガーイベントはアンカーがロード状態と見なせることを保証する
+    // ために使う
     if (Object.prototype.hasOwnProperty.call(window, "onhashchange")) {
       window.addEventListener( "hashchange", onHashchange, false );
     }

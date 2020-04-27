@@ -27,8 +27,7 @@ pal.dom = (() => {
   let elementMap = {};
   var
     stateMap = {
-      $container        : null,
-      is_menu_retracted : true
+      $container        : null
     };
     // onResize,
   //--------------------- モジュールスコープ変数終了 -----------------
@@ -90,26 +89,23 @@ pal.dom = (() => {
   //--------------------- DOMメソッド開始 ----------------------------
   // DOMメソッド/setElementMap/開始
   const setElementMap = () => {
-    var
-      content = stateMap.$container;
+    // var
+    //   content = stateMap.$container;
 
     elementMap = {
-      $container  : content,
-      $top        : content.getElementsByClassName('pal-dom-header-title'),
-      $user_info  : document.getElementById('pal-dom-user-info'),
-      $date_info  : document.getElementById( 'pal-dom-date-info' ),
-      $logout     : content.getElementsByClassName('pal-dom-header-logout'),
-      $login      : content.getElementsByClassName('pal-dom-header-login'),
-      $register   : content.getElementsByClassName('pal-dom-header-register'),
-      $menu       : content.getElementsByClassName('pal-dom-header-menu'),
-      $main       : document.getElementById('pal-main'),
-      $menu_list  : content.getElementsByClassName('pal-dom-menu-list')
+      top       : document.getElementsByClassName('pal-dom-header-title'),
+      user_info : document.getElementById('pal-dom-user-info'),
+      date_info : document.getElementById('pal-dom-date-info'),
+      logout    : document.getElementsByClassName('pal-dom-header-logout'),
+      login     : document.getElementsByClassName('pal-dom-header-login'),
+      register  : document.getElementsByClassName('pal-dom-header-register')
     };
   };
   // DOMメソッド/setElementMap/終了
 
-  // DOMメソッド/setSection/開始
-  // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を取得して対応する
+  // DOMメソッド/setSection/開始 -------------------------------------
+  // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を
+  // 取得して対応する
   // モジュールを初期化する。
   // 必須引数: なし
   // オプション引数: なし
@@ -120,50 +116,53 @@ pal.dom = (() => {
   // 
   const setSection = () => {
     // mainセクションを取得する
-    const main_section = document.getElementById('pal-main');
+    const mainSection = document.getElementById('pal-main');
+    let currentLocationHash = pal.bom.getLocationHash();
+    let firstHash = currentLocationHash.split('/')[0];
 
-    let current_location_hash = pal.bom.getLocationHash();
-
-    // mainセクションの子要素をすべて削除する
-    // mainセクションの子要素の削除は下位のモジュールにまかせる
-
-    if (current_location_hash.match(/#login/)) {
-      pal.login.initModule(main_section);
+    // ロケーションハッシュの最初の文字列で処理を振り分ける
+    switch (firstHash) {
+      case '#login':
+        pal.login.initModule(mainSection);
+        break;
+      case '#logout':
+        pal.logout.initModule(mainSection);
+        break;
+      case '#register':
+        pal.register.initModule(mainSection);
+        break;
+      case '#menu':
+        pal.menu.initModule(mainSection);
+        break;
+      case '#calendar':
+        pal.calendar.onHashchange(mainSection);
+        break;
+      case '#event':
+        pal.event.initModule(mainSection);
+        break;
+      case '#browser_information':
+        pal.browserInformation.initModule(mainSection);
+        break;
+      case '#list':
+        pal.list.onHashchange(mainSection);
+        break;
+      case '#lab':
+        pal.lab.initModule(mainSection);
+        break;
+      case '#regist_schedule':
+        pal.registSchedule.onHashchange(mainSection);
+        break;
+      case '#cycle_system':
+        pal.cycleSystem.initModule(mainSection);
+        break;
+      default:
+        readSession();
+        pal.top.initModule(mainSection);
+        break;
     }
-    else if (current_location_hash.match(/#logout/)) {
-      pal.logout.initModule(main_section);
-    }
-    else if (current_location_hash.match(/#register/)) {
-      pal.register.initModule(main_section);
-    }
-    else if (current_location_hash.match(/#menu/)) {
-      pal.menu.initModule(main_section);
-    }
-    else if (current_location_hash.match(/#browser_information/)) {
-      pal.browserInformation.initModule(main_section);
-    }
-    else if (current_location_hash.match(/#list/)) {
-      pal.list.onHashchange( main_section );
-    }
-    else if (current_location_hash.match(/#lab/)) {
-      pal.lab.initModule(main_section);
-    }
-    else if (current_location_hash.match(/#regist_schedule/)) {
-      pal.registSchedule.onHashchange(main_section);
-    }
-    else if (current_location_hash.match(/#calendar/)) {
-      pal.calendar.onHashchange(main_section);
-    }
-    else if (current_location_hash.match(/#cycle_system/)) {
-      pal.cycleSystem.initModule( main_section );
-    }
-    else {
-      readSession();
-      pal.top.initModule(main_section);
-    }
-
   };
-  // DOMメソッド/setSection/終了
+  // DOMメソッド/setSection/終了 -------------------------------------
+
   // DOMメソッド/makeFooter/開始 -------------------------------------
   const makeFooter = () => {
     let frag = util.dom.createFragment();
@@ -243,18 +242,18 @@ pal.dom = (() => {
       let response_map = JSON.parse(request.responseText);
 
       if (request.status === 200 ) {
-        elementMap.$logout[0].style.visibility = 'visible';
-        elementMap.$login[0].style.visibility = 'hidden';
-        elementMap.$register[0].style.visibility = 'hidden';
-        elementMap.$user_info.textContent =
+        elementMap.logout[0].style.visibility = 'visible';
+        elementMap.login[0].style.visibility = 'hidden';
+        elementMap.register[0].style.visibility = 'hidden';
+        elementMap.user_info.textContent =
           `${response_map.name.first} ${response_map.name.last}
 としてログインしています`;
       }
       else {
-        elementMap.$logout[0].style.visibility = 'hidden';
-        elementMap.$login[0].style.visibility = 'visible';
-        elementMap.$register[0].style.visibility = 'visible';
-        elementMap.$user_info.textContent = response_map.email;
+        elementMap.logout[0].style.visibility = 'hidden';
+        elementMap.login[0].style.visibility = 'visible';
+        elementMap.register[0].style.visibility = 'visible';
+        elementMap.user_info.textContent = response_map.email;
       }
     }
   };
@@ -353,19 +352,19 @@ pal.dom = (() => {
 
     // クリックハンドラをバインドする
     // ヘッダーのトップ
-    elementMap.$top[0].addEventListener('click', onClickTop);
+    elementMap.top[0].addEventListener('click', onClickTop);
 
     // ヘッダーのログアウト
-    elementMap.$logout[0].setAttribute('title', configMap.logout_title);
-    elementMap.$logout[0].addEventListener('click', onClickLogout);
+    elementMap.logout[0].setAttribute('title', configMap.logout_title);
+    elementMap.logout[0].addEventListener('click', onClickLogout);
 
     // ヘッダーのログイン要素
-    elementMap.$login[0].setAttribute('title', configMap.login_title);
-    elementMap.$login[0].addEventListener('click', onClickLogin);
+    elementMap.login[0].setAttribute('title', configMap.login_title);
+    elementMap.login[0].addEventListener('click', onClickLogin);
 
     // ヘッダーのサインアップ要素
-    elementMap.$register[0].setAttribute('title', configMap.register_title);
-    elementMap.$register[0].addEventListener('click', onClickRegister);
+    elementMap.register[0].setAttribute('title', configMap.register_title);
+    elementMap.register[0].addEventListener('click', onClickRegister);
 
     // ボタンとメニューのノードを取得
     site_button = document.querySelector( '.pal-dom-header-menu' );
@@ -391,12 +390,12 @@ pal.dom = (() => {
     }
 
     //----- フッターに日時を表示する(初回) ---------------------------
-    elementMap.$date_info.textContent = pal.util_b.getNowDateJp();
+    elementMap.date_info.textContent = pal.util_b.getNowDateJp();
 
     //------ フッターに日時を表示する(次回以降) ----------------------
     setInterval(
       function () {
-        elementMap.$date_info.textContent = pal.util_b.getNowDateJp();
+        elementMap.date_info.textContent = pal.util_b.getNowDateJp();
       },
       1000
     );

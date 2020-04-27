@@ -39,7 +39,7 @@ pal.calendar = (() => {
     let liPre = util.dom.createElement('li');
     let anchorPre = util.dom.createElement('a');
     util.dom.setAttribute(anchorPre, 'href', '#calendar/previous-month');
-    util.dom.innerHTML(anchorPre, '&lt;先月');
+    util.dom.innerHTML(anchorPre, '<先月');
     util.dom.appendChild(liPre, anchorPre);
 
     let liMonth = util.dom.createElement('li');
@@ -49,7 +49,7 @@ pal.calendar = (() => {
     let liNext = util.dom.createElement('li');
     let anchorNext = util.dom.createElement('a');
     util.dom.setAttribute(anchorNext, 'href', '#calendar/next-month');
-    util.dom.innerHTML(anchorNext, '翌月&gt;');
+    util.dom.innerHTML(anchorNext, '翌月>');
     util.dom.appendChild(liNext, anchorNext);
 
     util.dom.appendChild(ulTag, liToday);
@@ -79,19 +79,38 @@ pal.calendar = (() => {
         util.dom.setAttribute(liDate, 'class', 'column-title');
         util.dom.innerHTML(spanTags[0], dayArray[i]);
       }
-      // else {
-      //   util.dom.innerHTML(liDate, i);
-      // }
 
       util.dom.appendChild(ulCalendar, liDate);
     }
 
     util.dom.appendChild(navCalendar, ulCalendar);
 
+    // navタグの作成 -------------------------------------------------
+    let navElement = util.dom.createElement('nav');
+    util.dom.setAttribute(navElement, 'id', 'calendar-nav');
+    let ulElement = util.dom.createElement('ul');
+
+    let liEvent = util.dom.createElement('li');
+    let buttonEvent = util.dom.createElement('button');
+    let anchorEvent = util.dom.createElement('a');
+    util.dom.setAttribute(anchorEvent, 'href', '#event/yearly/create');
+    util.dom.setAttribute(anchorEvent, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorEvent, '毎年の予定');
+    util.dom.appendChild(buttonEvent, anchorEvent);
+    util.dom.appendChild(liEvent, buttonEvent);
+
+    // -----HTMLを組み立てる------------------------------------------
+    // ulタグの組み立て/開始 ------------------------------------------
+    util.dom.appendChild(ulElement, liEvent);
+    // ulタグの組み立て/終了 ------------------------------------------
+    //
+    util.dom.appendChild(navElement, ulElement);
+
     // -----HTMLを組み立てる------------------------------------------
     util.dom.appendChild(frag, h1Tag);
     util.dom.appendChild(frag, navTag);
     util.dom.appendChild(frag, navCalendar);
+    util.dom.appendChild(frag, navElement);
 
     return frag;
   };
@@ -134,10 +153,10 @@ pal.calendar = (() => {
       // 今日の日付からyyyy/mmの形式でLocationHashをセットする
       currentHash += `/${nowYear}/${nowMonth}`;
       pal.bom.setLocationHash(currentHash);
+      return;
     }
 
     // mainセクションの子要素をすべて削除する ------------------------
-    // mainセクションの子要素の削除は下位のモジュールにまかせる
     pal.util.emptyElement(mainSection);
 
     // カレンダーを表示する --------------------------------------------
@@ -210,27 +229,26 @@ pal.calendar = (() => {
     }
 
     for (let i = 0; i < 35; i = i + 1) {
-      let currentDateInList = calendarList[i];
+      let currentCalenderList = calendarList[i];
       let spanTags = liElement.getElementsByTagName('span');
 
-      spanTags[0].innerHTML = currentDateInList.getDate();
+      spanTags[0].textContent = currentCalenderList.getDate();
 
-      let currentDateInListString = util.date.getYMDString(currentDateInList);
+      let currentCalenderListString = util.date.getYMDString(currentCalenderList);
 
-      let currentDateString = util.date.getYMDString(currentDate);
       let nowDateString = util.date.getYMDString(now);
 
       util.dom.setAttribute(
         liElement,
         'content',
-        currentDateInListString
+        currentCalenderListString
       );
 
       // 今月かどうか ------------------------------------------------
-      if (util.date.getMonth(currentDateInList) ===
+      if (util.date.getMonth(currentCalenderList) ===
           util.date.getMonth(currentDate)) {
         // 今日だったらclass属性の値にcurrent-monthとtodayを加える
-        if (currentDateInListString === nowDateString) {
+        if (currentCalenderListString === nowDateString) {
           util.dom.setAttribute(
             liElement,
             'class',
@@ -248,7 +266,7 @@ pal.calendar = (() => {
       liElement = liElement.nextElementSibling;
     }
     // }
-    return true;
+    return;
   };
   // --------------------- イベントハンドラ終了 ----------------------
 

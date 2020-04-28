@@ -1,0 +1,27 @@
+#pal-event-create {
+  width: 30%;
+  display: inline-block;
+}
+
+#pal-event-read {
+  position: absolute;
+  width: 70%;
+  display: inline-block;
+}
+
+#pal-event-create div input[type="checkbox"] {
+  width: 5%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#pal-event-create div input[type="checkbox"]:focus {
+  box-shadow: none;
+}
+
+#pal-event-create div label {
+  width: 95%;
+  display: inline-block;
+  vertical-align: middle;
+}
+

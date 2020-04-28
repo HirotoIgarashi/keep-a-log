@@ -6,7 +6,7 @@ const Message = require('../models/message.js');
 module.exports = io => {
   // 新しいユーザ接続を監視する --------------------------------------
   io.on('connection', client => {
-    console.log('new connection');
+    console.log('new chat connection');
 
     Message.find({})
       .sort({createdAt: -1})

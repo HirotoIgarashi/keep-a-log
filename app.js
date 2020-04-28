@@ -10,8 +10,8 @@
 */
 /*global */
 
-// この行は80桁です ------------------------------------------------------------
-// ---------------- モジュールスコープ変数開始 ---------------------------------
+// この行は70桁です --------------------------------------------------
+// ---------------- モジュールスコープ変数開始 -----------------------
 'use strict';
 // 待ち受けるポートの8000を定義する
 const port = 8000;
@@ -44,10 +44,7 @@ const client = redis.createClient();
 const router = require('./routes/index');
 
 const morgan = require('morgan');
-  // io            = require( 'socket.io'        )( server ),
-  // send_date,
-  // countIdx = 0;
-// mongooseをロード
+
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -83,7 +80,9 @@ const db = mongoose.connection;
 
 db.once('open', () => {
   // 「Mongooseを使ってMongoDBに接続できました！」
-  console.log('Server Message: Mongooseを使ってMongoDBに接続しました！');
+  console.log(
+    'Server Message: Mongooseを使ってMongoDBに接続しました！'
+  );
 });
 
 // Userモデルをロードする
@@ -92,12 +91,12 @@ const User = require('./models/user');
 // セッションのタイムアウト時間を30日に設定する
 const expire_time = 1000 * 60 * 60 * 24 * 30;
 
-// ---------------- モジュールスコープ変数終了 ---------------------------------
+// ---------------- モジュールスコープ変数終了 -----------------------
 
-// ---------------- ユーティリティメソッド開始 ---------------------------------
-// ---------------- ユーティリティメソッド終了 ---------------------------------
+// ---------------- ユーティリティメソッド開始 -----------------------
+// ---------------- ユーティリティメソッド終了 -----------------------
 
-// ---------------- サーバ構成開始 ---------------------------------------------
+// ---------------- サーバ構成開始 -----------------------------------
 // トークンを利用する ------------------------------------------------
 app.set('token', process.env.TOKEN || 'paltoken');
 
@@ -183,7 +182,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// morganの「combined」フォーマットでログを出すように指示します。
+// morganの「combined」フォーマットでログを出すように指示します。 ----
 app.use(morgan('combined'));
 
 // routes/index.jsを使う ---------------------------------------------
@@ -210,7 +209,7 @@ else {
 // サーバのインスタンスをsocket.ioに渡す -----------------------------
 const io = require('socket.io')(server);
 
-// require('./controllers/chatController')(io);
+require('./controllers/chatController')(io);
 require('./controllers/eventController')(io);
 
 module.exports = server;

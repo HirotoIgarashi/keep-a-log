@@ -12,7 +12,7 @@
   white   : true
 */
 
-/*global pal util*/
+/*global pal util io*/
 
 pal.event = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
@@ -25,19 +25,16 @@ pal.event = (() => {
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
-  const makeEventCreateForm = () => {
+  const makePage = () => {
     let frag = util.dom.createFragment();
 
-    // -----divタグの作成 --------------------------------------------
-    let div = util.dom.createElement('div');
-    util.dom.setAttribute(div, 'class', 'data-form');
+    // -----divCreateタグの作成開始 ----------------------------------
+    let divCreate = util.dom.createElement('div');
+    util.dom.setAttribute(divCreate, 'id', 'pal-event-create');
 
-    let h1 = util.dom.createElement('h1');
-    util.dom.innerHTML(
-      h1,
-      '年間の予定'
-    );
-    util.dom.appendChild(div, h1);
+    let h1Create = util.dom.createElement('h1');
+    util.dom.innerHTML(h1Create, '年間の予定');
+    util.dom.appendChild(divCreate, h1Create);
 
     // フォームを生成 ------------------------------------------------
     let form = util.dom.createElement('form');
@@ -120,14 +117,25 @@ pal.event = (() => {
     util.dom.setAttribute(button, 'type', 'submit');
     util.dom.setAttribute(button, 'id', 'registEvent');
     util.dom.innerHTML(button, '保存');
-
     // HTMLを組み立てる-----------------------------------------------
     util.dom.appendChild(form, button);
 
-    util.dom.appendChild(div, h1);
-    util.dom.appendChild(div, form);
+    util.dom.appendChild(divCreate, h1Create);
+    util.dom.appendChild(divCreate, form);
+    // -----divCreateタグの作成終了 ----------------------------------
 
-    util.dom.appendChild(frag, div);
+    // -----divReadタグの作成開始 ------------------------------------
+    let divRead = util.dom.createElement('div');
+    util.dom.setAttribute(divRead, 'id', 'pal-event-read');
+
+    let h1Read = util.dom.createElement('h1');
+    util.dom.innerHTML(h1Read, '年間予定のリスト');
+    util.dom.appendChild(divRead, h1Read);
+
+    // -----divReadタグの作成終了 ------------------------------------
+
+    util.dom.appendChild(frag, divCreate);
+    util.dom.appendChild(frag, divRead);
     return frag;
   };
   //--------------------- DOMメソッド終了 ----------------------------
@@ -163,7 +171,7 @@ pal.event = (() => {
 
     // eventScheduleを組み立てる 開始 --------------------------------
     eventSchedule.byMonth = month;
-    eventSchedule.bymonthDay = date;
+    eventSchedule.byMonthDay = date;
 
     if (year) {
       eventSchedule.startDate = `${year}-${month}-${date}`;
@@ -180,7 +188,28 @@ pal.event = (() => {
     // eventMapにeventScheduleを設定する
     eventMap.eventSchedule = eventSchedule;
 
-    console.log(eventMap);
+    socket.emit('event create', eventMap);
+    // socket.emit('event read', eventMap);
+    // socket.emit('event update', eventMap);
+    // socket.emit('event delete', eventMap);
+
+    socket.on('event create complete', () => {
+      socket.emit('event readAll');
+    });
+
+    socket.on('event readAll complete', (data) => {
+      console.log('readAll complete');
+      let main = document.getElementById('pal-event-read');
+      let div = util.dom.createElement('div');
+      util.dom.innerHTML(div, JSON.stringify(data));
+      util.dom.appendChild(
+        main,
+        div
+      )
+    });
+    // socket.on('event read complete', () => console.log('read complete'));
+    // socket.on('event update complete', () => console.log('update complete'));
+    // socket.on('event delete complete', () => console.log('delete complete'));
 
   };
   // onClickRegistButton開始 -----------------------------------------
@@ -203,7 +232,7 @@ pal.event = (() => {
         if (hashArray[1] === 'yearly') {
           // mainセクションの子要素をすべて削除する ------------------------
           pal.util.emptyElement(mainSection);
-          mainSection.appendChild(makeEventCreateForm());
+          mainSection.appendChild(makePage());
         }
         break;
       default:

@@ -33,27 +33,49 @@ module.exports = io => {
           return event.save();
         })
         .then((result) => {
-          console.log(`${result}を保存しました`);
-          console.log(`_idは${result._id}です`);
           // 保存に成功したらメッセージの値を送出
           client.emit('event create complete', result);
         })
-        .catch(error => console.log(`error: ${error.message}`));
+        .catch(error => console.log(`event create error: ${error.message}`));
     });
 
     // イベントの参照 ------------------------------------------------
     client.on('event readAll', () => {
+
       Event.find({})
-        .then((result) => {
-          client.emit('event readAll complete', result);
-        })
-        .catch(error => console.log(`error: ${error.message}`));
+        // .then((array) => {
+        //   array.forEach((data) =>  {
+        //     data.getJson().then(
+        //       (result) => {
+        //         console.log(result);
+        //         eventArray.push(result);
+        //       }
+        //     );
+        //   });
+        // })
+        // .then(() => {
+        //   return data.forEach((data) => {
+        //     EventSchedule.findOne({_id: data.eventSchedule})
+        //       .then((schedule) => {
+        //         data.eventSchedule = schedule;
+        //       })
+        //       .catch(error => console.log(`event readAll error: ${error.message}`));
+        //   });
+        // })
+        .then((data)=> client.emit('event readAll complete', data))
+        .catch(error => console.log(`event readAll error: ${error.message}`));
+
     });
 
     // イベントの参照 ------------------------------------------------
     client.on('event read', (id) => {
-      console.log(id);
-      client.emit('event read complete', id);
+      Event.findOne({_id: id})
+        .then((event) => {
+          client.emit('event read complete', event);
+          return event;
+        })
+        .catch(error => console.log(`event read error: ${error.message}`));
+
     });
 
     // イベントの更新 ------------------------------------------------
@@ -63,10 +85,47 @@ module.exports = io => {
     });
 
     // イベントの削除 ------------------------------------------------
-    client.on('event delete', (data) => {
-      console.log(data);
-      client.emit('event delete complete', data);
+    client.on('event delete', (id) => {
+      Event.findOne({_id: id})
+        .then((event) => {
+          return EventSchedule.findByIdAndRemove(event.eventSchedule);
+        })
+        .then(() => Event.findByIdAndRemove(id))
+        .catch(
+          error => console.log(`event delete error: ${error.message}`));
+
+      client.emit('event delete complete', id);
     });
+
+    // イベントスケジュールを全て読み込む ----------------------------
+    client.on('eventSchedule readAll', () => {
+      EventSchedule.find({})
+        .then((eventScheduleArray) => {
+          client.emit(
+            'eventSchedule readAll complete',
+            eventScheduleArray
+          );
+        })
+        .catch(
+          error => console.log(
+            `eventSchedule readAll error: ${error.message}`
+          )
+        );
+    });
+
+    // イベントスケジュールをidをキーとして読み込む ------------------
+    client.on('eventSchedule read', (id) => {
+      EventSchedule.findOne({_id: id})
+        .then((eventSchedule) => {
+          client.emit('eventSchedule read complete', eventSchedule);
+        })
+        .catch(
+          error => console.log(
+            `eventSchedule read error: ${error.message}`
+          )
+        );
+    });
+
   });
 };
 

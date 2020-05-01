@@ -2,11 +2,30 @@
  * pal.dom.css
  * DOMのスタイル
 */
+#pal {
+  /*position: relative;*/
+}
+
 #pal-header {
+  /*display: block;*/
+  /*position: relative;*/
   grid-row              : 1;
   justify-content       : space-between;
   background            : #9999cc;
   color                 : #eee;
+  font-size: 75%;
+}
+
+#pal-main {
+  /*position: relative;*/
+  background  : #eee;
+}
+
+#pal-footer {
+  /*display: block;*/
+  /*position: relative;*/
+  background  : #9999cc;
+  color       : #eee;
   font-size: 75%;
 }
 
@@ -46,13 +65,6 @@
   grid-row    : 1;
 }
 
-/*
-#pal-header button {
-  border-radius: 0.25em;
-  box-shadow: 0 1px 0 #9999cc;
-}
-*/
-
 .pal-dom-header-logout span,
 .pal-dom-header-login span,
 .pal-dom-header-register span,
@@ -77,9 +89,6 @@
   color: #eee;
 }
 
-#pal-main {
-  background  : #eee;
-}
 p {
   color:  #222;
 }
@@ -108,12 +117,6 @@ div img,
 nav img {
   height  : calc( 1.3em + 0.25vw );
   width   : calc( 1.3em + 0.25vw );
-}
-
-#pal-footer {
-  background  : #9999cc;
-  color       : #eee;
-  font-size: 75%;
 }
 
 #pal-footer nav ul li {

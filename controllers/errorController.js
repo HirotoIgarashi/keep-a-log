@@ -9,12 +9,11 @@ exports.respondNoResouceFound = (req, res) => {
 };
 
 // すべてのエラーをキャッチし、ステータスコード500でレスポンス
-exports.respondInternalError = (error, req, res, next) => {
+exports.respondInternalError = (error, req, res) => {
   let errorCode = httpStatus.INTERNAL_SERVER_ERROR;
   console.log(`ERROR occurred: ${error.statck}`);
   res.status(errorCode);
   res.send(`${errorCode} | Sorry, our application is experiencing a problem`);
-  next(error);
 };
 
 // エラー処理用のミドルウェアを追加

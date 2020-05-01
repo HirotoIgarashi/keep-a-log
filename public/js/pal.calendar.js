@@ -90,19 +90,33 @@ pal.calendar = (() => {
     util.dom.setAttribute(navElement, 'id', 'calendar-nav');
     let ulElement = util.dom.createElement('ul');
 
-    let liEvent = util.dom.createElement('li');
-    let buttonEvent = util.dom.createElement('button');
-    let anchorEvent = util.dom.createElement('a');
-    util.dom.setAttribute(anchorEvent, 'href', '#event/yearly/create');
-    util.dom.setAttribute(anchorEvent, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorEvent, '毎年の予定');
-    util.dom.appendChild(buttonEvent, anchorEvent);
-    util.dom.appendChild(liEvent, buttonEvent);
+    // 予定登録ボタン（日指定）の作成 --------------------------------
+    let liEventByDate = util.dom.createElement('li');
+    let buttonByDate = util.dom.createElement('button');
+    let anchorByDate = util.dom.createElement('a');
+    util.dom.setAttribute(anchorByDate, 'href', '#event/create/yearly');
+    util.dom.setAttribute(anchorByDate, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorByDate, '予定登録(日指定)');
+
+    util.dom.appendChild(buttonByDate, anchorByDate);
+    util.dom.appendChild(liEventByDate, buttonByDate);
+
+    // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
+    let liEventByDay = util.dom.createElement('li');
+    let buttonByDay = util.dom.createElement('button');
+    let anchorByDay = util.dom.createElement('a');
+    util.dom.setAttribute(anchorByDay, 'href', '#event/create/dayofweek');
+    util.dom.setAttribute(anchorByDay, 'onfocus', 'this.blur();');
+    util.dom.innerHTML(anchorByDay, '予定登録(第何何曜日指定)');
+
+    util.dom.appendChild(buttonByDay, anchorByDay);
+    util.dom.appendChild(liEventByDay, buttonByDay);
 
     // -----HTMLを組み立てる------------------------------------------
-    // ulタグの組み立て/開始 ------------------------------------------
-    util.dom.appendChild(ulElement, liEvent);
-    // ulタグの組み立て/終了 ------------------------------------------
+    // ulタグの組み立て/開始 -----------------------------------------
+    util.dom.appendChild(ulElement, liEventByDate);
+    util.dom.appendChild(ulElement, liEventByDay);
+    // ulタグの組み立て/終了 -----------------------------------------
     //
     util.dom.appendChild(navElement, ulElement);
 

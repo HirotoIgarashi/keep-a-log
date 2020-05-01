@@ -12,8 +12,34 @@ util.dom = (() => {
     return document.createDocumentFragment();
   };
 
-  const createElement = (tagName) => {
-    return document.createElement(tagName);
+  const createElement = (arg) => {
+    if (typeof arg === 'string') {
+      // 文字列が渡されたときの処理 ----------------------------------
+      return document.createElement(arg);
+    }
+    else if (typeof arg === 'object') {
+      let element = null;
+      // オブジェクトが渡されたときの処理 ----------------------------
+      // tagNameがあれば
+      if (arg.tagName) {element = document.createElement(arg.tagName);}
+
+      // idがあれば
+      if (arg.id) {setAttribute(element, 'id', arg.id);}
+
+      // innerHTMLがあれば
+      if (arg.innerHTML) {element.innerHTML = arg.innerHTML}
+
+      // typeがあれば
+      if (arg.type) {setAttribute(element, 'type', arg.type)}
+
+      // forがあれば
+      if (arg.for) {setAttribute(element, 'for', arg.for)}
+
+      return element;
+    }
+    else {
+      return null;
+    }
   };
 
   const innerHTML = (element, html) => {

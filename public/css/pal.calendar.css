@@ -55,6 +55,7 @@
 }
 
 #calendar-nav ul li {
+  display: inline-block;
   list-style: none;
   font-size: 80%;
   color: #eee;

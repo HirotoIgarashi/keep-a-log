@@ -1,11 +1,22 @@
+#pal-event {
+  display: flex;
+}
+
 #pal-event-create {
+  /*position: absolute;
+  top: 10px;
+  left: 10px;*/
   width: 30%;
+  margin-left: 2em;
+  margin-bottom: 2em;
   display: inline-block;
 }
 
 #pal-event-read {
-  position: absolute;
-  width: 70%;
+  /*position: absolute;
+  right: 10px;*/
+  width: 60%;
+  margin-left: 2em;
   display: inline-block;
 }
 
@@ -23,5 +34,17 @@
   width: 95%;
   display: inline-block;
   vertical-align: middle;
+}
+
+#pal-event-create form button {
+  margin-top: 0.5em;
+}
+
+#pal-event-read ul {
+  padding-inline-start: 1em;
+}
+
+#pal-event-read ul li {
+  list-style: none;
 }
 

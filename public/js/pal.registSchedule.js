@@ -59,7 +59,6 @@ pal.registSchedule = (function () {
       weekly            = pal.util_b.getTplContent( 'schedule-registration-weekly' ),
       monthly_by_date   = pal.util_b.getTplContent( 'schedule-registration-monthly-by-date' ),
       monthly_by_order  = pal.util_b.getTplContent( 'schedule-registration-monthly-by-order' ),
-      yearly            = pal.util_b.getTplContent( 'schedule-registration-yearly' ),
       current_page,
       anchor_list,
       i,
@@ -154,10 +153,6 @@ pal.registSchedule = (function () {
     else if ( current_hash === '#regist_schedule/monthly/byorder' ) {
       schedule_main.appendChild( monthly_by_order );
     }
-    else if ( current_hash === '#regist_schedule/yearly' ) {
-      schedule_main.appendChild( yearly );
-    }
-
 
     return true;
   };

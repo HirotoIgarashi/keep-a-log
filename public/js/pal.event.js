@@ -685,7 +685,7 @@ pal.event = (() => {
           let registButton = document.getElementById('registEvent');
           registButton.addEventListener('click', onClickRegistButton);
         }
-        else if (hashArray[2] === 'dayofweek') {
+        else if (hashArray[2] === 'dayOfTheWeek') {
           // mainセクションの子要素をすべて削除する ------------------
           pal.util.emptyElement(mainSection);
 

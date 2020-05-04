@@ -31,8 +31,9 @@
   background  : #9999CC;
   color       : #eee;
   text-align  : center;
-  height      : 1.8rem;
-  font-size   : 80%;
+  height      : 1.4rem;
+  padding: 0.2rem;
+  font-size   : 100%;
 }
 
 #calendar-frame ul li span {

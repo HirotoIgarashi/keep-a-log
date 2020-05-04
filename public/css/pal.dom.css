@@ -128,7 +128,7 @@ nav img {
 #pal-main-nav ul li {
   display: inline-block;
   list-style-type: none;
-  font-size: 90%;
+  /*font-size: 90%;*/
   color: #eee;
 }
 

@@ -2,14 +2,12 @@
  * pal.calendar.js
  * カレンダー用のモジュール
 */
-
 /*jslint          browser : true, continue  : true,
   devel   : true, indent  : 2,    maxerr    : 50,
   newcap  : true, nomen   : true, plusplus  : true,
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-
 /*global pal util*/
 
 pal.calendar = (() => {
@@ -23,33 +21,60 @@ pal.calendar = (() => {
   //--------------------- DOMメソッド開始 ----------------------------
   const makeCalendar = () => {
     let frag = util.dom.createFragment();
+
     // h1タグの作成
-    let h1Tag = util.dom.createElement('h1');
-    util.dom.innerHTML(h1Tag, 'カレンダー');
+    let h1Tag = util.dom.createElement({
+      tagName: 'h1',
+      textContent: 'カレンダー'
+    });
     // navタグの作成
-    let navTag = util.dom.createElement('nav');
-    util.dom.setAttribute(navTag, 'id', 'calendar-menu');
+    let navTag = util.dom.createElement({
+      tagName: 'nav',
+      id: 'calendar-menu'
+    });
+
+    // ulタグの作成
     let ulTag = util.dom.createElement('ul');
 
+    // liタグの作成
     let liToday = util.dom.createElement('li');
-    let anchorToday = util.dom.createElement('a');
-    util.dom.innerHTML(anchorToday, '今月');
-    util.dom.appendChild(liToday, anchorToday);
 
+    // anchorタグの作成
+    let anchorToday = util.dom.createElement({
+      tagName: 'a',
+      textContent: '今月'
+    });
+
+    // liタグの作成
     let liPre = util.dom.createElement('li');
-    let anchorPre = util.dom.createElement('a');
-    util.dom.setAttribute(anchorPre, 'href', '#calendar/previous-month');
-    util.dom.innerHTML(anchorPre, '<先月');
-    util.dom.appendChild(liPre, anchorPre);
 
+    // anchorタグの作成
+    let anchorPre = util.dom.createElement({
+      tagName: 'a',
+      href: '#calendar/previous-month',
+      innerHTML: '<先月'
+    });
+
+    // liタグの作成
     let liMonth = util.dom.createElement('li');
-    let spanBlank = util.dom.createElement('span');
-    util.dom.appendChild(liMonth, spanBlank);
 
+    // spanタグの作成
+    let spanBlank = util.dom.createElement('span');
+
+
+    // liタグの作成
     let liNext = util.dom.createElement('li');
-    let anchorNext = util.dom.createElement('a');
-    util.dom.setAttribute(anchorNext, 'href', '#calendar/next-month');
-    util.dom.innerHTML(anchorNext, '翌月>');
+
+    // anchorタグの作成
+    let anchorNext = util.dom.createElement({
+      tagName: 'a',
+      href: '#calendar/next-month',
+      innerHTML: '翌月>'
+    });
+
+    util.dom.appendChild(liToday, anchorToday);
+    util.dom.appendChild(liPre, anchorPre);
+    util.dom.appendChild(liMonth, spanBlank);
     util.dom.appendChild(liNext, anchorNext);
 
     util.dom.appendChild(ulTag, liToday);
@@ -61,8 +86,12 @@ pal.calendar = (() => {
 
     // calendar用navタグの作成
     const dayArray = ['月','火','水','木','金','土','日'];
-    let navCalendar = util.dom.createElement('nav');
-    util.dom.setAttribute(navCalendar, 'id', 'calendar-frame');
+
+    let navCalendar = util.dom.createElement({
+      tagName: 'nav',
+      id: 'calendar-frame'
+    });
+
     let ulCalendar =  util.dom.createElement('ul');
 
     for (let i = 0; i < 42; i = i +1) {
@@ -70,6 +99,7 @@ pal.calendar = (() => {
       // liタグにspanタグとulタグ追加する ----------------------------
       let spanTag = util.dom.createElement('span');
       let ulTag = util.dom.createElement('ul');
+
       util.dom.appendChild(liDate, spanTag);
       util.dom.appendChild(liDate, ulTag);
 
@@ -85,46 +115,10 @@ pal.calendar = (() => {
 
     util.dom.appendChild(navCalendar, ulCalendar);
 
-    // // navタグの作成 -------------------------------------------------
-    // let navElement = util.dom.createElement('nav');
-    // util.dom.setAttribute(navElement, 'id', 'calendar-nav');
-    // let ulElement = util.dom.createElement('ul');
-
-    // // 予定登録ボタン（日指定）の作成 --------------------------------
-    // let liEventByDate = util.dom.createElement('li');
-    // let buttonByDate = util.dom.createElement('button');
-    // let anchorByDate = util.dom.createElement('a');
-    // util.dom.setAttribute(anchorByDate, 'href', '#event/create/yearly');
-    // util.dom.setAttribute(anchorByDate, 'onfocus', 'this.blur();');
-    // util.dom.innerHTML(anchorByDate, '予定登録(日指定)');
-
-    // util.dom.appendChild(buttonByDate, anchorByDate);
-    // util.dom.appendChild(liEventByDate, buttonByDate);
-
-    // // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
-    // let liEventByDay = util.dom.createElement('li');
-    // let buttonByDay = util.dom.createElement('button');
-    // let anchorByDay = util.dom.createElement('a');
-    // util.dom.setAttribute(anchorByDay, 'href', '#event/create/dayofweek');
-    // util.dom.setAttribute(anchorByDay, 'onfocus', 'this.blur();');
-    // util.dom.innerHTML(anchorByDay, '予定登録(第何何曜日指定)');
-
-    // util.dom.appendChild(buttonByDay, anchorByDay);
-    // util.dom.appendChild(liEventByDay, buttonByDay);
-
-    // -----HTMLを組み立てる------------------------------------------
-    // ulタグの組み立て/開始 -----------------------------------------
-    // util.dom.appendChild(ulElement, liEventByDate);
-    // util.dom.appendChild(ulElement, liEventByDay);
-    // ulタグの組み立て/終了 -----------------------------------------
-    //
-    // util.dom.appendChild(navElement, ulElement);
-
     // -----HTMLを組み立てる------------------------------------------
     util.dom.appendChild(frag, h1Tag);
     util.dom.appendChild(frag, navTag);
     util.dom.appendChild(frag, navCalendar);
-    // util.dom.appendChild(frag, navElement);
 
     return frag;
   };
@@ -132,31 +126,34 @@ pal.calendar = (() => {
   const makeNav = () => {
     let frag = util.dom.createFragment();
 
-    let ulElement = util.dom.createElement(
-      {
-        tagName: 'ul',
-        id: 'pal-main-nav-calendar'
-      }
-    );
+    let ulElement = util.dom.createElement({
+      tagName: 'ul', id: 'pal-main-nav-calendar'
+    });
 
     // 予定登録ボタン（日指定）の作成 --------------------------------
     let liEventByDate = util.dom.createElement('li');
     let buttonByDate = util.dom.createElement('button');
-    let anchorByDate = util.dom.createElement('a');
-    util.dom.setAttribute(anchorByDate, 'href', '#event/create/yearly');
-    util.dom.setAttribute(anchorByDate, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorByDate, '予定登録(日指定)');
 
-    util.dom.appendChild(buttonByDate, anchorByDate);
-    util.dom.appendChild(liEventByDate, buttonByDate);
+    let anchorByDate = util.dom.createElement({
+      tagName: 'a',
+      href: '#event/create/yearly',
+      onfocus: 'this.blur();',
+      textContent: '予定登録(日指定)'
+    });
 
     // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
     let liEventByDay = util.dom.createElement('li');
     let buttonByDay = util.dom.createElement('button');
-    let anchorByDay = util.dom.createElement('a');
-    util.dom.setAttribute(anchorByDay, 'href', '#event/create/dayofweek');
-    util.dom.setAttribute(anchorByDay, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorByDay, '予定登録(第何何曜日指定)');
+
+    let anchorByDay = util.dom.createElement({
+      tagName: 'a',
+      href: '#event/create/dayOfTheWeek',
+      onfocus: 'this.blur();',
+      textContent: '予定登録(第何何曜日指定)'
+    });
+
+    util.dom.appendChild(buttonByDate, anchorByDate);
+    util.dom.appendChild(liEventByDate, buttonByDate);
 
     util.dom.appendChild(buttonByDay, anchorByDay);
     util.dom.appendChild(liEventByDay, buttonByDay);
@@ -164,10 +161,9 @@ pal.calendar = (() => {
     util.dom.appendChild(ulElement, liEventByDate);
     util.dom.appendChild(ulElement, liEventByDay);
 
-    // -----HTMLを組み立てる------------------------------------------
+    util.dom.appendChild(frag, ulElement);
 
     // -----HTMLを組み立てる------------------------------------------
-    util.dom.appendChild(frag, ulElement);
 
     return frag;
   };
@@ -219,7 +215,7 @@ pal.calendar = (() => {
     // カレンダーを表示する ------------------------------------------
     mainSection.appendChild(makeCalendar());
 
-    // pal-main-navを表示する ----------------------------------------
+    // pal-main-nav-calendarを表示する -------------------------------
     let palMainNav = document.querySelector('#pal-main-nav');
 
     if (!document.querySelector('#pal-main-nav-calendar')) {

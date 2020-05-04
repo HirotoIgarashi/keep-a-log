@@ -166,59 +166,15 @@ pal.dom = (() => {
   // DOMメソッド/makeFooter/開始 -------------------------------------
   const makeFooter = () => {
     let frag = util.dom.createFragment();
-    // navタグの作成 -------------------------------------------------
-    let navElement = util.dom.createElement('nav');
-    let ulElement = util.dom.createElement('ul');
 
-    let liHome = util.dom.createElement('li');
-    let buttonHome = util.dom.createElement('button');
-    let anchorHome = util.dom.createElement('a');
-    util.dom.setAttribute(anchorHome, 'href', '#');
-    util.dom.setAttribute(anchorHome, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorHome, 'ホーム');
-    util.dom.appendChild(buttonHome, anchorHome);
-    util.dom.appendChild(liHome, buttonHome);
-
-    let liPlan = util.dom.createElement('li');
-    let buttonPlan = util.dom.createElement('button');
-    let anchorPlan = util.dom.createElement('a');
-    util.dom.setAttribute(anchorPlan, 'href', '#plan');
-    util.dom.setAttribute(anchorPlan, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorPlan, 'プラン');
-    util.dom.appendChild(buttonPlan, anchorPlan);
-    util.dom.appendChild(liPlan, buttonPlan);
-
-    let liCalendar = util.dom.createElement('li');
-    let buttonCalendar = util.dom.createElement('button');
-    let anchorCalendar = util.dom.createElement('a');
-    util.dom.setAttribute(anchorCalendar, 'href', '#calendar');
-    util.dom.setAttribute(anchorCalendar, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorCalendar, 'カレンダー');
-    util.dom.appendChild(buttonCalendar, anchorCalendar);
-    util.dom.appendChild(liCalendar, buttonCalendar);
-
-    let liChat = util.dom.createElement('li');
-    let buttonChat = util.dom.createElement('button');
-    let anchorChat = util.dom.createElement('a');
-    util.dom.setAttribute(anchorChat, 'href', '/chat');
-    util.dom.setAttribute(anchorChat, 'onfocus', 'this.blur();');
-    util.dom.innerHTML(anchorChat, 'チャット');
-    util.dom.appendChild(buttonChat, anchorChat);
-    util.dom.appendChild(liChat, buttonChat);
-
-    let spanElement = util.dom.createElement('span');
-    util.dom.setAttribute(spanElement, 'id', 'pal-dom-date-info');
-
+    let spanElement = util.dom.createElement(
+      {
+        tagName: 'span',
+        id: 'pal-dom-date-info'
+      }
+    );
     // -----HTMLを組み立てる------------------------------------------
-    // ulタグの組み立て/開始 ------------------------------------------
-    util.dom.appendChild(ulElement, liHome);
-    util.dom.appendChild(ulElement, liPlan);
-    util.dom.appendChild(ulElement, liCalendar);
-    util.dom.appendChild(ulElement, liChat);
-    // ulタグの組み立て/終了 ------------------------------------------
-    util.dom.appendChild(navElement, ulElement);
 
-    util.dom.appendChild(frag, navElement);
     util.dom.appendChild(frag, spanElement);
 
     return frag;

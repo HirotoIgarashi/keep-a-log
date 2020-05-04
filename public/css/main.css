@@ -98,20 +98,33 @@ textarea {
 
 button {
   background: #9999cc;
+  border-radius: 0.25em;
+  box-shadow: 2px 2px 0 #cccccc;
   margin: 3px;
   padding: 2px 6px;
-  /*
-  color: inherit;
-  */
   color: #eee;
   border-width: 0.3px;
   border-style: outset;
   border-color: buttonface;
   border-image: initial;
+  outline: 2px solid transparent;
+  outline-offset: 100px;
+  transition: 0.5s all ease;
 }
 
-button:hover {
+button:focus {
+  outline: 2px solid #cccccc;
+  outline-offset: 0;
+}
+
+button:hover, button:focus {
   background  : #333399;
+}
+
+button:active {
+  position: relative;
+  top: 3px;
+  box-shadow: 0 0 0 #cccccc;
 }
 
 a {

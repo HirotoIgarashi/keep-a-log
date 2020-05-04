@@ -4,21 +4,18 @@
  * pal.event.js
  * イベント用のモジュール
 */
-
 /*jslint          browser : true, continue  : true,
   devel   : true, indent  : 2,    maxerr    : 50,
   newcap  : true, nomen   : true, plusplus  : true,
   regexp  : true, sloppy  : true, vars      : false,
   white   : true
 */
-
 /*global pal util io*/
 
 pal.event = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
   // クライアントサイドでsocket.ioを初期化
   const socket = io();
-
   let eventArray;
   let eventScheduleArray;
 
@@ -65,31 +62,44 @@ pal.event = (() => {
   const makeStructure = () => {
     let frag = util.dom.createFragment();
     // #pal-eventの作成 ----------------------------------------------
-    let divEvent =
-      util.dom.createElement({tagName: 'div', id: 'pal-event'});
+    let divEvent = util.dom.createElement({
+      tagName: 'div', id: 'pal-event'
+    });
     // -----divCreateタグの作成 --------------------------------------
-    let divCreate =
-      util.dom.createElement({tagName: 'div', id: 'pal-event-create'});
+    let divCreate = util.dom.createElement({
+      tagName: 'div', id: 'pal-event-create'
+    });
     // -----divReadタグの作成 ----------------------------------------
-    let divReadAll =
-      util.dom.createElement({tagName: 'div', id: 'pal-event-read'});
-
+    let divReadAll = util.dom.createElement({
+      tagName: 'div', id: 'pal-event-read'
+    });
     // 画面下部のコントロールエリアの表示 ----------------------------
-    let divEventControl =
-      util.dom.createElement({tagName: 'div', id: 'pal-event-control'});
-
+    let divEventControl = util.dom.createElement({
+      tagName: 'div', id: 'pal-event-control'
+    });
     // 戻るボタンの表示 ----------------------------------------------
-    let buttonBack = util.dom.createElement(
-      {tagName: 'button', id: 'pal-event-back', innerHTML: '戻る'}
-    );
+    let buttonBack = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'pal-event-back',
+      innerHTML: '戻る'
+    });
     buttonBack.addEventListener('click', onClickBack);
 
     // HTMLを組み立てる-----------------------------------------------
-    util.dom.appendChild(divEvent, divCreate);
-    util.dom.appendChild(divEvent, divReadAll);
-    util.dom.appendChild(divEventControl, buttonBack);
-    util.dom.appendChild(frag, divEvent);
-    util.dom.appendChild(frag, divEventControl);
+    let treeArray = [
+      frag, [
+        divEvent, [
+          divCreate,
+          divReadAll
+        ],
+        divEventControl, [
+          buttonBack
+        ]
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
 
     return frag;
   };
@@ -98,9 +108,9 @@ pal.event = (() => {
     let frag = util.dom.createFragment();
 
     // pal-event-createの内容開始 ------------------------------------
-    let h1Create = util.dom.createElement(
-      {tagName: 'h1', innerHTML: '年間予定の作成'}
-    );
+    let h1Create = util.dom.createElement({
+      tagName: 'h1', textContent: '年間予定の作成'
+    });
 
     // フォームを生成 ------------------------------------------------
     let form = util.dom.createElement('form');
@@ -136,21 +146,15 @@ pal.event = (() => {
 
     let divCheckbox = util.dom.createElement('div');
     // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-    let checkbox = util.dom.createElement(
-      {tagName: 'input', type: 'checkbox', id: 'repeatEveryYear'}
-    );
+    let checkbox = util.dom.createElement({
+      tagName: 'input', type: 'checkbox', id: 'repeatEveryYear'
+    });
 
-    let checkboxLabel =
-      util.dom.createElement(
-        {
-          tagName: 'label',
-          for: 'repeatEveryYear',
-          innerHTML: '毎年繰り返す'
-        }
-      );
-
-    util.dom.appendChild(divCheckbox, checkbox);
-    util.dom.appendChild(divCheckbox, checkboxLabel);
+    let checkboxLabel = util.dom.createElement({
+      tagName: 'label',
+      for: 'repeatEveryYear',
+      textContent: '毎年繰り返す'
+    });
 
     // -----イベントの名前のlabelとinput -----------------------------
     let inputName = util.dom.createLabelAndInput({
@@ -172,34 +176,163 @@ pal.event = (() => {
       'placeholder': '予定の説明を入力します'
     });
 
-    util.dom.appendChild(form, inputYear[0]);
-    util.dom.appendChild(form, inputYear[1]);
-    util.dom.appendChild(form, inputMonth[0]);
-    util.dom.appendChild(form, inputMonth[1]);
-    util.dom.appendChild(form, inputDate[0]);
-    util.dom.appendChild(form, inputDate[1]);
-    util.dom.appendChild(form, divCheckbox);
-    util.dom.appendChild(form, inputName[0]);
-    util.dom.appendChild(form, inputName[1]);
-    util.dom.appendChild(form, inputDescription[0]);
-    util.dom.appendChild(form, inputDescription[1]);
-
     // ボタンを生成 --------------------------------------------------
-    let button = util.dom.createElement(
-      { tagName: 'button',
-        type: 'submit',
-        id: 'registEvent',
-        innerHTML: '保存'
-      }
-    );
+    let button = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'registEvent',
+      innerHTML: '保存'
+    });
 
     // HTMLを組み立てる-----------------------------------------------
-    util.dom.appendChild(form, button);
+    let treeArray = [
+      frag, [
+        h1Create,
+        form, [
+          inputYear[0],
+          inputYear[1],
+          inputMonth[0],
+          inputMonth[1],
+          inputDate[0],
+          inputDate[1],
+          divCheckbox,[
+            checkbox,
+            checkboxLabel
+          ],
+          inputName[0],
+          inputName[1],
+          inputDescription[0],
+          inputDescription[1],
+          button
+        ]
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
 
-    util.dom.appendChild(frag, h1Create);
-    util.dom.appendChild(frag, form);
-    // -----divCreateタグの作成終了 ----------------------------------
-    // pal-event-createの内容終了 ------------------------------------
+    return frag;
+  };
+
+  const makeEventCreateByNanyoubi = () => {
+    let frag = util.dom.createFragment();
+
+    // pal-event-createの内容開始 ------------------------------------
+    let h1Create = util.dom.createElement({
+      tagName: 'h1',
+      textContent: '第何何曜日を指定して年間予定を作成します'
+    });
+
+    // フォームを生成 ------------------------------------------------
+    let form = util.dom.createElement('form');
+
+    // inputタグを生成 -----------------------------------------------
+    // -----年のlabelとinput -----------------------------------------
+    let inputYear = util.dom.createLabelAndInput({
+      'for': 'inputYear',
+      'innerHTML': '年: 何年から施行されたかを入力します',
+      'type': 'text',
+      'name': 'year',
+      'id': 'inputYear',
+      'placeholder': '西暦で入力します'
+    });
+    // -----月のlabelとinput -----------------------------------------
+    let inputMonth = util.dom.createLabelAndInput({
+      'for': 'inputMonth',
+      'innerHTML': '月(必須)',
+      'type': 'text',
+      'name': 'month',
+      'id': 'inputMonth',
+      'placeholder': '1から12までの数値を入力します'
+    });
+
+    // -----何番目のlabelとinput -------------------------------------
+
+    // -----曜日のlabelとinput ---------------------------------------
+    let inputWhatNumber = util.dom.createLabelAndInput({
+      'for': 'inputWhatNumber',
+      'innerHTML': '第何(必須)',
+      'type': 'text',
+      'name': 'whatNumber',
+      'id': 'inputWhatNumber',
+      'placeholder': '1から5までの数字を入力します'
+    });
+
+    // -----曜日のlabelとinput ---------------------------------------
+    let inputDay = util.dom.createLabelAndInput({
+      'for': 'inputDay',
+      'innerHTML': '曜日(必須)',
+      'type': 'text',
+      'name': 'day',
+      'id': 'inputDay',
+      'placeholder': 'MondayからSundayまでのテキストを入力します'
+    });
+
+    let divCheckbox = util.dom.createElement('div');
+    // -----パスワードを表示するcheckboxとlabelを生成 ----------------
+    let checkbox = util.dom.createElement({
+      tagName: 'input', type: 'checkbox', id: 'repeatEveryYear'
+    });
+
+    let checkboxLabel = util.dom.createElement({
+      tagName: 'label',
+      for: 'repeatEveryYear',
+      textContent: '毎年繰り返す'
+    });
+
+    // -----イベントの名前のlabelとinput -----------------------------
+    let inputName = util.dom.createLabelAndInput({
+      'for': 'inputName',
+      'innerHTML': '名前(必須)',
+      'type': 'text',
+      'name': 'name',
+      'id': 'inputName',
+      'placeholder': '予定の名前を入力します'
+    });
+
+    // -----イベントの説明のlabelとinput -----------------------------
+    let inputDescription = util.dom.createLabelAndInput({
+      'for': 'inputDescription',
+      'innerHTML': '説明',
+      'type': 'text',
+      'name': 'description',
+      'id': 'inputDescription',
+      'placeholder': '予定の説明を入力します'
+    });
+
+    // ボタンを生成 --------------------------------------------------
+    let button = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'createEvent',
+      textContent: '保存'
+    });
+
+    // HTMLを組み立てる-----------------------------------------------
+    let treeArray = [
+      frag, [
+        h1Create,
+        form, [
+          inputYear[0],
+          inputYear[1],
+          inputMonth[0],
+          inputMonth[1],
+          inputWhatNumber[0],
+          inputWhatNumber[1],
+          inputDay[0],
+          inputDay[1],
+          divCheckbox, [
+            checkbox, checkboxLabel
+          ],
+          inputName[0],
+          inputName[1],
+          inputDescription[0],
+          inputDescription[1],
+          button
+        ]
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
 
     return frag;
   };
@@ -207,51 +340,75 @@ pal.event = (() => {
   const makeEventRead = () => {
     let frag = util.dom.createFragment();
 
-    let h1Read =
-      util.dom.createElement(
-        {tagName: 'h1', innerHTML: '年間予定のリスト'}
-      );
-    let ulEventList =
-      util.dom.createElement(
-        {tagName: 'ul', id: 'pal-event-list'}
-      );
+    let h1Read = util.dom.createElement({
+      tagName: 'h1', textContent: '年間予定のリスト'
+    });
 
-    util.dom.appendChild(frag, h1Read);
-    util.dom.appendChild(frag, ulEventList);
+    let ulEventList = util.dom.createElement({
+      tagName: 'ul', id: 'pal-event-list'
+    });
+
+    // HTMLを組み立てる-----------------------------------------------
+    let treeArray = [
+      frag, [
+        h1Read,
+        ulEventList
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
 
     return frag;
   };
 
   const makeDeletePage = (id) => {
     let frag = util.dom.createFragment();
+
     // -----divCreateタグの作成開始 ----------------------------------
-    let divDelete = util.dom.createElement('div');
-    util.dom.setAttribute(divDelete, 'id', 'pal-event-delete');
+    let divDelete = util.dom.createElement({
+      tagName: 'div', id: 'pal-event-delete'
+    });
 
-    let h1Delete = util.dom.createElement('h1');
-    util.dom.innerHTML(h1Delete, 'このイベントを削除します');
+    let h1Delete = util.dom.createElement({
+      tagName: 'h1', textContent: 'このイベントを削除します'
+    });
 
-    let targetEvent = util.dom.createElement('div');
-    targetEvent.textContent = id;
+    let targetEvent = util.dom.createElement({
+      tagName:'div', textContent: id
+    });
 
-    // -----agreeボタンを生成 ---------------------------------------------
-    let agreeButton = util.dom.createElement('button');
-    util.dom.setAttribute(agreeButton, 'id', 'agree');
-    util.dom.innerHTML(agreeButton, 'はい');
+    // -----agreeボタンを生成 ----------------------------------------
+    let agreeButton = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'agree',
+      textContent: 'はい'
+    });
     agreeButton.addEventListener('click', onClickAgree);
 
-    // -----cancelボタンを生成 ---------------------------------------------
-    let cancelButton = util.dom.createElement('button');
-    util.dom.setAttribute(cancelButton, 'id', 'cancel');
-    util.dom.innerHTML(cancelButton, 'キャンセル');
+    // -----cancelボタンを生成 ---------------------------------------
+    let cancelButton = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'cancel',
+      textContent: 'キャンセル'
+    });
     cancelButton.addEventListener('click', onClickCancel);
 
-    util.dom.appendChild(divDelete, h1Delete);
-    util.dom.appendChild(divDelete, targetEvent);
-    util.dom.appendChild(divDelete, agreeButton);
-    util.dom.appendChild(divDelete, cancelButton);
+    // HTMLを組み立てる-----------------------------------------------
+    let treeArray = [
+      frag, [
+        divDelete, [
+          h1Delete,
+          targetEvent,
+          agreeButton,
+          cancelButton
+        ]
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
 
-    util.dom.appendChild(frag, divDelete);
     return frag;
   };
 
@@ -260,44 +417,62 @@ pal.event = (() => {
 
       let li = util.dom.createElement('li');
 
-      let spanId = util.dom.createElement('span');
-      util.dom.setAttribute(spanId, 'class', 'hidden');
-      util.dom.innerHTML(spanId, event._id);
+      let spanId = util.dom.createElement({
+        tagName: 'span', class: 'hidden', textContent: event._id
+      });
 
-      let spanByMonth = util.dom.createElement('span');
+      let spanByMonth = util.dom.createElement({
+        tagName: 'span',
+        textContent: `${event.eventSchedule.byMonth}月`
+      });
       spanByMonth.style.display = 'inline-block';
       spanByMonth.style.textAlign = 'right';
       spanByMonth.style.width = '2.5em';
-      util.dom.innerHTML(spanByMonth, `${event.eventSchedule.byMonth}月`);
 
-      let spanByMonthDay = util.dom.createElement('span');
+      let spanByMonthDay = util.dom.createElement({
+        tagName: 'span',
+        textContent: `${event.eventSchedule.byMonthDay}日`
+      });
       spanByMonthDay.style.display = 'inline-block';
       spanByMonthDay.style.textAlign = 'right';
       spanByMonthDay.style.width = '2.5em';
-      util.dom.innerHTML(spanByMonthDay, `${event.eventSchedule.byMonthDay}日`);
 
-      let spanName = util.dom.createElement('span');
+      let spanName = util.dom.createElement({
+        tagName: 'span', textContent: `${event.name}`
+      });
       spanName.style.display = 'inline-block';
       spanName.style.textAlign = 'left';
       spanName.style.width = '15em';
       spanName.style.marginLeft = '0.5em';
-      util.dom.innerHTML(spanName, `${event.name}`);
 
-      let editButton = util.dom.createElement('button');
-      editButton.textContent = '編集';
+      let editButton = util.dom.createElement({
+        tagName: 'button', type: 'button', textContent: '編集'
+      });
 
-      let deleteButton = util.dom.createElement('button')
-      util.dom.setAttribute(deleteButton, 'value', `#event/delete/${event._id}`);
-      deleteButton.textContent = '削除';
+      let deleteButton = util.dom.createElement({
+        tagName: 'button',
+        type: 'button',
+        value: `#event/delete/${event._id}`,
+        textContent: '削除'
+      });
       deleteButton.addEventListener('click', onClickDeletButton);
 
-      util.dom.appendChild(li, spanId);
-      util.dom.appendChild(li, spanByMonth);
-      util.dom.appendChild(li, spanByMonthDay);
-      util.dom.appendChild(li, spanName);
-      util.dom.appendChild(li, editButton);
-      util.dom.appendChild(li, deleteButton);
-      util.dom.appendChild(element, li)
+      // HTMLを組み立てる---------------------------------------------
+      let treeArray = [
+        element, [
+          li, [
+            spanId,
+            spanByMonth,
+            spanByMonthDay,
+            spanName,
+            editButton,
+            deleteButton
+          ]
+        ]
+      ];
+      // ツリー構造を作る --------------------------------------------
+      util.dom.appendByTreeArray(treeArray);
+
     });
   };
   //--------------------- DOMメソッド終了 ----------------------------
@@ -309,6 +484,7 @@ pal.event = (() => {
 
     // 全てのeventを読み込んだ結果を表示する -------------------------
     let palEventList = document.getElementById('pal-event-list');
+
     // pal-event-read以下の要素を削除する ----------------------------
     pal.util.emptyElement(palEventList);
 
@@ -335,11 +511,11 @@ pal.event = (() => {
     let eventSchedule = {};
 
     const repeatEveryYear =
-      document.getElementById('repeatEveryYear');
-    const year = document.getElementById('inputYear').value;
-    const month = document.getElementById('inputMonth').value;
-    const date = document.getElementById('inputDate').value;
+      document.getElementById( 'repeatEveryYear');
 
+    const year = document.getElementById( 'inputYear').value;
+    const month = document.getElementById( 'inputMonth').value;
+    const date = document.getElementById( 'inputDate').value;
     const name = document.getElementById('inputName').value;
     const description =
       document.getElementById('inputDescription').value;
@@ -375,8 +551,67 @@ pal.event = (() => {
       socket.emit('eventSchedule readAll');
       socket.emit('event readAll');
     });
+    return false;
   };
   // onClickRegistButton終了 -----------------------------------------
+
+  // onClickCreateButton開始 -----------------------------------------
+  const onClickCreateButton = (e) => {
+    let eventMap = {};
+    let eventSchedule = {};
+
+    const year = document.getElementById('inputYear').value;
+    const month = document.getElementById('inputMonth').value;
+    const whatNumber =
+      document.getElementById('inputWhatNumber').value;
+    const day = document.getElementById('inputDay').value;
+    const repeatEveryYear =
+      document.getElementById('repeatEveryYear');
+    const name = document.getElementById('inputName').value;
+    const description =
+      document.getElementById('inputDescription').value;
+
+    e.preventDefault();
+
+    // 第何何曜日の日付を取得する ------------------------------------
+    let resultDay = util.date.getDateByWhatNumberDay({
+      year: year, month: month, whatNumber: whatNumber, day: day
+    });
+    console.log(resultDay);
+
+    // eventScheduleを組み立てる 開始 --------------------------------
+    eventSchedule.byMonth = month;
+    eventSchedule.byMonthDay = resultDay.split('/')[2];
+
+    if (year) {
+      eventSchedule.startDate = `${year}-${month}-${day}`;
+    }
+    // 繰り返しがチェックされていたら
+    if (repeatEveryYear.checked) {
+      eventSchedule.repeatFrequency = 'P1Y';
+    }
+    // eventScheduleを組み立てる 終了 --------------------------------
+
+    eventMap.name = name;
+    eventMap.description = description;
+
+    // eventMapにeventScheduleを設定する
+    eventMap.eventSchedule = eventSchedule;
+
+    socket.emit('event create', eventMap);
+    // socket.emit('event read', eventMap);
+    // socket.emit('event update', eventMap);
+    // socket.emit('event delete', eventMap);
+
+    socket.on('event create complete', () => {
+      // 全てのeventを読み込む ---------------------------------------
+      socket.emit('eventSchedule readAll');
+      socket.emit('event readAll');
+    });
+    return false;
+  };
+
+  // onClickCreateButton終了 -----------------------------------------
 
   // onClickDeletButton開始 ------------------------------------------
   const onClickDeletButton =
@@ -392,7 +627,6 @@ pal.event = (() => {
     let id = event.target.previousSibling.textContent;
 
     socket.emit('event delete', id);
-    // pal.bom.setLocationHash('#event/create/yearly');
   };
 
   const onClickBack = () => {
@@ -405,11 +639,12 @@ pal.event = (() => {
   socket.on('event readAll complete', setEventArray);
   socket.on(
     'eventSchedule readAll complete',
-    (data) => eventScheduleArray = data);
-
+    (data) => eventScheduleArray = data
+  );
   socket.on(
     'event delete complete',
-    () => pal.bom.setLocationHash('#event/create/yearly'));
+    () => pal.bom.setLocationHash('#event/create/yearly')
+  );
   // ----- webSocket処理終了 -----------------------------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -457,6 +692,13 @@ pal.event = (() => {
           // 骨組みを表示する ----------------------------------------
           mainSection.appendChild(makeStructure());
 
+          // フォームを表示する --------------------------------------
+          let eventCreate =
+            document.getElementById('pal-event-create');
+          util.dom.appendChild(
+            eventCreate, makeEventCreateByNanyoubi()
+          );
+
           // イベントリストを表示する --------------------------------
           let eventRead = document.getElementById('pal-event-read');
           util.dom.appendChild(eventRead, makeEventRead());
@@ -465,8 +707,10 @@ pal.event = (() => {
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
 
-          // let registButton = document.getElementById('registEvent');
-          // registButton.addEventListener('click', onClickRegistButton);
+          let createButton = document.getElementById('createEvent');
+          createButton.addEventListener(
+            'click', onClickCreateButton
+          );
         }
         break;
       case 'delete':

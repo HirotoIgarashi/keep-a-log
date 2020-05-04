@@ -17,11 +17,17 @@
 }
 
 #pal-main {
+  grid-row : 2;
   /*position: relative;*/
   background  : #eee;
 }
 
+#pal-main-nav {
+  grid-row : 3;
+}
+
 #pal-footer {
+  grid-row : 4;
   /*display: block;*/
   /*position: relative;*/
   background  : #9999cc;
@@ -119,9 +125,11 @@ nav img {
   width   : calc( 1.3em + 0.25vw );
 }
 
-#pal-footer nav ul li {
+#pal-main-nav ul li {
   display: inline-block;
   list-style-type: none;
+  font-size: 90%;
+  color: #eee;
 }
 
 .icon {

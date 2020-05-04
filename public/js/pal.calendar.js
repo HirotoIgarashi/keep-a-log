@@ -85,10 +85,59 @@ pal.calendar = (() => {
 
     util.dom.appendChild(navCalendar, ulCalendar);
 
-    // navタグの作成 -------------------------------------------------
-    let navElement = util.dom.createElement('nav');
-    util.dom.setAttribute(navElement, 'id', 'calendar-nav');
-    let ulElement = util.dom.createElement('ul');
+    // // navタグの作成 -------------------------------------------------
+    // let navElement = util.dom.createElement('nav');
+    // util.dom.setAttribute(navElement, 'id', 'calendar-nav');
+    // let ulElement = util.dom.createElement('ul');
+
+    // // 予定登録ボタン（日指定）の作成 --------------------------------
+    // let liEventByDate = util.dom.createElement('li');
+    // let buttonByDate = util.dom.createElement('button');
+    // let anchorByDate = util.dom.createElement('a');
+    // util.dom.setAttribute(anchorByDate, 'href', '#event/create/yearly');
+    // util.dom.setAttribute(anchorByDate, 'onfocus', 'this.blur();');
+    // util.dom.innerHTML(anchorByDate, '予定登録(日指定)');
+
+    // util.dom.appendChild(buttonByDate, anchorByDate);
+    // util.dom.appendChild(liEventByDate, buttonByDate);
+
+    // // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
+    // let liEventByDay = util.dom.createElement('li');
+    // let buttonByDay = util.dom.createElement('button');
+    // let anchorByDay = util.dom.createElement('a');
+    // util.dom.setAttribute(anchorByDay, 'href', '#event/create/dayofweek');
+    // util.dom.setAttribute(anchorByDay, 'onfocus', 'this.blur();');
+    // util.dom.innerHTML(anchorByDay, '予定登録(第何何曜日指定)');
+
+    // util.dom.appendChild(buttonByDay, anchorByDay);
+    // util.dom.appendChild(liEventByDay, buttonByDay);
+
+    // -----HTMLを組み立てる------------------------------------------
+    // ulタグの組み立て/開始 -----------------------------------------
+    // util.dom.appendChild(ulElement, liEventByDate);
+    // util.dom.appendChild(ulElement, liEventByDay);
+    // ulタグの組み立て/終了 -----------------------------------------
+    //
+    // util.dom.appendChild(navElement, ulElement);
+
+    // -----HTMLを組み立てる------------------------------------------
+    util.dom.appendChild(frag, h1Tag);
+    util.dom.appendChild(frag, navTag);
+    util.dom.appendChild(frag, navCalendar);
+    // util.dom.appendChild(frag, navElement);
+
+    return frag;
+  };
+
+  const makeNav = () => {
+    let frag = util.dom.createFragment();
+
+    let ulElement = util.dom.createElement(
+      {
+        tagName: 'ul',
+        id: 'pal-main-nav-calendar'
+      }
+    );
 
     // 予定登録ボタン（日指定）の作成 --------------------------------
     let liEventByDate = util.dom.createElement('li');
@@ -112,19 +161,13 @@ pal.calendar = (() => {
     util.dom.appendChild(buttonByDay, anchorByDay);
     util.dom.appendChild(liEventByDay, buttonByDay);
 
-    // -----HTMLを組み立てる------------------------------------------
-    // ulタグの組み立て/開始 -----------------------------------------
     util.dom.appendChild(ulElement, liEventByDate);
     util.dom.appendChild(ulElement, liEventByDay);
-    // ulタグの組み立て/終了 -----------------------------------------
-    //
-    util.dom.appendChild(navElement, ulElement);
 
     // -----HTMLを組み立てる------------------------------------------
-    util.dom.appendChild(frag, h1Tag);
-    util.dom.appendChild(frag, navTag);
-    util.dom.appendChild(frag, navCalendar);
-    util.dom.appendChild(frag, navElement);
+
+    // -----HTMLを組み立てる------------------------------------------
+    util.dom.appendChild(frag, ulElement);
 
     return frag;
   };
@@ -173,8 +216,15 @@ pal.calendar = (() => {
     // mainセクションの子要素をすべて削除する ------------------------
     pal.util.emptyElement(mainSection);
 
-    // カレンダーを表示する --------------------------------------------
+    // カレンダーを表示する ------------------------------------------
     mainSection.appendChild(makeCalendar());
+
+    // pal-main-navを表示する ----------------------------------------
+    let palMainNav = document.querySelector('#pal-main-nav');
+
+    if (!document.querySelector('#pal-main-nav-calendar')) {
+      palMainNav.insertBefore(makeNav(), palMainNav.firstChild);
+    }
 
     // 現在のhashから年の値と月の値を取得する
     let matchString = currentHash.match(pattern);

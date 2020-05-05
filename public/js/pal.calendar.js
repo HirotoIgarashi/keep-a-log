@@ -21,7 +21,6 @@ pal.calendar = (() => {
   //--------------------- DOMメソッド開始 ----------------------------
   const makeCalendar = () => {
     let frag = util.dom.createFragment();
-
     // h1タグの作成
     let h1Tag = util.dom.createElement({
       tagName: 'h1',
@@ -32,39 +31,29 @@ pal.calendar = (() => {
       tagName: 'nav',
       id: 'calendar-menu'
     });
-
     // ulタグの作成
     let ulTag = util.dom.createElement('ul');
-
     // liタグの作成
     let liToday = util.dom.createElement('li');
-
     // anchorタグの作成
     let anchorToday = util.dom.createElement({
       tagName: 'a',
       textContent: '今月'
     });
-
     // liタグの作成
     let liPre = util.dom.createElement('li');
-
     // anchorタグの作成
     let anchorPre = util.dom.createElement({
       tagName: 'a',
       href: '#calendar/previous-month',
       innerHTML: '<先月'
     });
-
     // liタグの作成
     let liMonth = util.dom.createElement('li');
-
     // spanタグの作成
     let spanBlank = util.dom.createElement('span');
-
-
     // liタグの作成
     let liNext = util.dom.createElement('li');
-
     // anchorタグの作成
     let anchorNext = util.dom.createElement({
       tagName: 'a',
@@ -72,17 +61,25 @@ pal.calendar = (() => {
       innerHTML: '翌月>'
     });
 
-    util.dom.appendChild(liToday, anchorToday);
-    util.dom.appendChild(liPre, anchorPre);
-    util.dom.appendChild(liMonth, spanBlank);
-    util.dom.appendChild(liNext, anchorNext);
-
-    util.dom.appendChild(ulTag, liToday);
-    util.dom.appendChild(ulTag, liPre);
-    util.dom.appendChild(ulTag, liMonth);
-    util.dom.appendChild(ulTag, liNext);
-
-    util.dom.appendChild(navTag, ulTag);
+    // HTMLを組み立てる-----------------------------------------------
+    util.dom.appendByTreeArray([
+      navTag, [
+        ulTag, [
+          liToday, [
+            anchorToday
+          ],
+          liPre, [
+            anchorPre
+          ],
+          liMonth, [
+            spanBlank
+          ],
+          liNext, [
+            anchorNext
+          ]
+        ]
+      ]
+    ]);
 
     // calendar用navタグの作成
     const dayArray = ['月','火','水','木','金','土','日'];
@@ -100,8 +97,7 @@ pal.calendar = (() => {
       let spanTag = util.dom.createElement('span');
       let ulTag = util.dom.createElement('ul');
 
-      util.dom.appendChild(liDate, spanTag);
-      util.dom.appendChild(liDate, ulTag);
+      util.dom.appendByTreeArray([ liDate, [spanTag, ulTag] ]);
 
       // 曜日の設定 --------------------------------------------------
       if (i < 7) {
@@ -110,61 +106,21 @@ pal.calendar = (() => {
         util.dom.innerHTML(spanTags[0], dayArray[i]);
       }
 
-      util.dom.appendChild(ulCalendar, liDate);
+      util.dom.appendByTreeArray([ ulCalendar, [liDate] ]);
+
     }
 
-    util.dom.appendChild(navCalendar, ulCalendar);
-
+    // HTMLを組み立てる-----------------------------------------------
+    util.dom.appendByTreeArray([
+      frag, [
+        h1Tag,
+        navTag,
+        navCalendar, [
+          ulCalendar
+        ]
+      ]
+    ])
     // -----HTMLを組み立てる------------------------------------------
-    util.dom.appendChild(frag, h1Tag);
-    util.dom.appendChild(frag, navTag);
-    util.dom.appendChild(frag, navCalendar);
-
-    return frag;
-  };
-
-  const makeNav = () => {
-    let frag = util.dom.createFragment();
-
-    let ulElement = util.dom.createElement({
-      tagName: 'ul', id: 'pal-main-nav-calendar'
-    });
-
-    // 予定登録ボタン（日指定）の作成 --------------------------------
-    let liEventByDate = util.dom.createElement('li');
-    let buttonByDate = util.dom.createElement('button');
-
-    let anchorByDate = util.dom.createElement({
-      tagName: 'a',
-      href: '#event/create/yearly',
-      onfocus: 'this.blur();',
-      textContent: '予定登録(日指定)'
-    });
-
-    // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
-    let liEventByDay = util.dom.createElement('li');
-    let buttonByDay = util.dom.createElement('button');
-
-    let anchorByDay = util.dom.createElement({
-      tagName: 'a',
-      href: '#event/create/dayOfTheWeek',
-      onfocus: 'this.blur();',
-      textContent: '予定登録(第何何曜日指定)'
-    });
-
-    util.dom.appendChild(buttonByDate, anchorByDate);
-    util.dom.appendChild(liEventByDate, buttonByDate);
-
-    util.dom.appendChild(buttonByDay, anchorByDay);
-    util.dom.appendChild(liEventByDay, buttonByDay);
-
-    util.dom.appendChild(ulElement, liEventByDate);
-    util.dom.appendChild(ulElement, liEventByDay);
-
-    util.dom.appendChild(frag, ulElement);
-
-    // -----HTMLを組み立てる------------------------------------------
-
     return frag;
   };
   //--------------------- DOMメソッド終了 ----------------------------
@@ -217,10 +173,10 @@ pal.calendar = (() => {
 
     // pal-main-nav-calendarを表示する -------------------------------
     let palMainNav = document.querySelector('#pal-main-nav');
-
-    if (!document.querySelector('#pal-main-nav-calendar')) {
-      palMainNav.insertBefore(makeNav(), palMainNav.firstChild);
+    if (!document.querySelector('#pal-event-nav')) {
+      palMainNav.insertBefore(pal.event.makeNav(), palMainNav.firstChild);
     }
+    pal.event.setButtonPressed();
 
     // 現在のhashから年の値と月の値を取得する
     let matchString = currentHash.match(pattern);

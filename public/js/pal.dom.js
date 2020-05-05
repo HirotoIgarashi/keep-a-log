@@ -67,18 +67,12 @@ pal.dom = (() => {
   //----- ユーティリティメソッド/readSession/終了 --------------------
 
   // ユーティリティメソッド/toggle_menu/開始
-  const toggle_menu = function () {
-    // メニューの表示非表示を切り替える
-    var
-      site_button,
-      site_menu,
-      expanded;
-
+  const toggle_menu = () => {
     // ボタンとメニューのノードを取得 --------------------------------
-    site_button = document.querySelector( '.pal-dom-header-menu' );
-    site_menu = document.querySelector( '[aria-label="サイト"]' );
-
-    expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+    const site_button = document.querySelector('.pal-dom-header-menu');
+    const site_menu = document.querySelector('[aria-label="サイト"]');
+    // メニューの表示非表示を切り替える
+    let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
 
     site_button.setAttribute( 'aria-expanded', String(!expanded) );
     site_menu.hidden = expanded;
@@ -89,9 +83,6 @@ pal.dom = (() => {
   //--------------------- DOMメソッド開始 ----------------------------
   // DOMメソッド/setElementMap/開始
   const setElementMap = () => {
-    // var
-    //   content = stateMap.$container;
-
     elementMap = {
       top       : document.getElementsByClassName('pal-dom-header-title'),
       user_info : document.getElementById('pal-dom-user-info'),
@@ -120,6 +111,9 @@ pal.dom = (() => {
     let currentLocationHash = pal.bom.getLocationHash();
     let firstHash = currentLocationHash.split('/')[0];
 
+    // ボタンのaria-pressed属性の初期化 ------------------------------
+    setButtonPressed();
+
     // ロケーションハッシュの最初の文字列で処理を振り分ける
     switch (firstHash) {
       case '#login':
@@ -136,9 +130,11 @@ pal.dom = (() => {
         break;
       case '#calendar':
         pal.calendar.onHashchange(mainSection);
+        setButtonPressed('pal-nav-calendar');
         break;
       case '#event':
         pal.event.initModule(mainSection);
+        setButtonPressed('pal-nav-event');
         break;
       case '#browser_information':
         pal.browserInformation.initModule(mainSection);
@@ -158,10 +154,34 @@ pal.dom = (() => {
       default:
         readSession();
         pal.top.initModule(mainSection);
+        setButtonPressed('pal-nav-home');
         break;
     }
+
   };
   // DOMメソッド/setSection/終了 -------------------------------------
+
+
+  // hashが変更されときの処理 ----------------------------------------
+  const setButtonPressed = ((data) => {
+    const palNavHome = document.getElementById('pal-nav-home');
+    const palNavEvent = document.getElementById('pal-nav-event');
+    const palNavCalendar = document.getElementById('pal-nav-calendar');
+    const palNavChat = document.getElementById('pal-nav-chat');
+
+    const elementArray = [
+      palNavHome, palNavEvent, palNavCalendar, palNavChat
+    ];
+
+    if (!data) {
+      elementArray.forEach(
+        (element) => element.setAttribute('aria-pressed', 'false')
+      );
+    }
+    else {
+      document.getElementById(`${data}`).setAttribute('aria-pressed', 'true');
+    }
+  });
 
   // DOMメソッド/makeFooter/開始 -------------------------------------
   const makeFooter = () => {
@@ -336,14 +356,17 @@ pal.dom = (() => {
     site_button_rect = site_button.getBoundingClientRect();
     site_menu.style.top = site_button_rect.bottom + 'px';
 
-    site_button.addEventListener( 'click', toggle_menu, false );
+    site_button.addEventListener('click', toggle_menu, false );
 
     // メニューのaタグを取得
-    menu_ahchor = document.querySelectorAll( '#pal-nav-menu a' );
+    menu_ahchor = document.querySelectorAll('#pal-nav-menu a' );
 
     for (let i = 0; i < menu_ahchor.length; i = i + 1 ) {
-      menu_ahchor[ i ].addEventListener( 'click', toggle_menu, false );
+      menu_ahchor[ i ].addEventListener('click', toggle_menu, false );
     }
+
+    // ボタンのaria-pressed属性をtrueにする --------------------------
+    setButtonPressed('pal-nav-home');
 
     //----- フッターに日時を表示する(初回) ---------------------------
     elementMap.date_info.textContent = pal.util_b.getNowDateJp();

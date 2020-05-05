@@ -17,83 +17,82 @@ pal.top = (function () {
   // DOMメソッド/makeNav/開始 ----------------------------------------
   const makeNav = () => {
     let frag = util.dom.createFragment();
-
-    let ulElement = util.dom.createElement(
-      {
+    let ulElement = util.dom.createElement({
         tagName: 'ul',
         id: 'pal-main-nav-list'
-      }
-    );
-
+    });
     let liHome = util.dom.createElement('li');
-    let buttonHome = util.dom.createElement('button');
-
-    let anchorHome = util.dom.createElement(
-      {
-        tagName:'a',
-        href: '#',
-        onfocus: 'this.blur();',
-        innerHTML: 'ホーム'
-      }
-    );
-
-    util.dom.appendChild(buttonHome, anchorHome);
-    util.dom.appendChild(liHome, buttonHome);
-
+    let buttonHome = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-nav-home'
+    });
+    buttonHome.setAttribute('aria-pressed', 'false');
+    let anchorHome = util.dom.createElement({
+      tagName:'a',
+      href: '#',
+      onfocus: 'this.blur();',
+      textContent: 'ホーム' 
+    });
     let liPlan = util.dom.createElement('li');
-    let buttonPlan = util.dom.createElement('button');
-
-    let anchorPlan = util.dom.createElement(
-      {
-        tagName:'a',
-        href: '#plan',
-        onfocus: 'this.blur();',
-        innerHTML: 'プラン'
-      }
-    );
-
-    util.dom.appendChild(buttonPlan, anchorPlan);
-    util.dom.appendChild(liPlan, buttonPlan);
-
+    let buttonPlan = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-nav-event'
+    });
+    buttonPlan.setAttribute('aria-pressed', 'false');
+    let anchorPlan = util.dom.createElement({
+      tagName:'a',
+      href: '#event',
+      onfocus: 'this.blur();',
+      textContent: 'イベント'
+    });
     let liCalendar = util.dom.createElement('li');
-    let buttonCalendar = util.dom.createElement('button');
+    let buttonCalendar = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-nav-calendar'
+    });
+    buttonCalendar.setAttribute('aria-pressed', 'false');
+    let anchorCalendar = util.dom.createElement({
+      tagName:'a',
+      href: '#calendar',
+      onfocus: 'this.blur();',
+      textContent: 'カレンダー'
+    });
 
-    let anchorCalendar = util.dom.createElement(
-      {
-        tagName:'a',
-        href: '#calendar',
-        onfocus: 'this.blur();',
-        innerHTML: 'カレンダー'
-      }
-    );
-
-    util.dom.appendChild(buttonCalendar, anchorCalendar);
-    util.dom.appendChild(liCalendar, buttonCalendar);
 
     let liChat = util.dom.createElement('li');
-    let buttonChat = util.dom.createElement('button');
 
-    let anchorChat = util.dom.createElement(
-      {
+    let buttonChat = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-nav-chat'
+    });
+    buttonChat.setAttribute('aria-pressed', 'false');
+
+    let anchorChat = util.dom.createElement({
         tagName:'a',
         href: '/chat',
         onfocus: 'this.blur();',
-        innerHTML: 'チャット'
-      }
-    );
-
-    util.dom.appendChild(buttonChat, anchorChat);
-    util.dom.appendChild(liChat, buttonChat);
+        textContent: 'チャット'
+    });
 
     // -----HTMLを組み立てる------------------------------------------
-    // ulタグの組み立て/開始 ------------------------------------------
-    util.dom.appendChild(ulElement, liHome);
-    util.dom.appendChild(ulElement, liPlan);
-    util.dom.appendChild(ulElement, liCalendar);
-    util.dom.appendChild(ulElement, liChat);
-    // ulタグの組み立て/終了 ------------------------------------------
-
-    util.dom.appendChild(frag, ulElement);
+    util.dom.appendByTreeArray([
+      frag, [
+        ulElement, [
+          liHome, [buttonHome, [anchorHome]],
+          liPlan, [buttonPlan, [anchorPlan]],
+          liCalendar,[
+            buttonCalendar, [
+              anchorCalendar
+            ]
+          ],
+          liChat, [
+            buttonChat, [
+              anchorChat
+            ]
+          ]
+        ]
+      ]
+    ]);
 
     return frag;
   };

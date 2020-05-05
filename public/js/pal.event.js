@@ -56,6 +56,26 @@ pal.event = (() => {
 
     return mergedList;
   });
+
+  // hashが変更されときの処理 ----------------------------------------
+  const setButtonPressed = ((data) => {
+    const palEventNavYearly = document.getElementById('pal-event-nav-yearly');
+    const palEventNavDayoftheweek = document.getElementById('pal-event-nav-dayoftheweek');
+
+    const elementArray = [
+      palEventNavYearly, palEventNavDayoftheweek
+    ];
+
+    if (!data) {
+      elementArray.forEach(
+        (element) => element.setAttribute('aria-pressed', 'false')
+      );
+    }
+    else {
+      document.getElementById(`${data}`).setAttribute('aria-pressed', 'true');
+    }
+  });
+
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -475,6 +495,65 @@ pal.event = (() => {
 
     });
   };
+
+  // 
+  const makeNav = () => {
+    let frag = util.dom.createFragment();
+
+    let ulElement = util.dom.createElement({
+      // tagName: 'ul', id: 'pal-main-nav-calendar'
+      tagName: 'ul', id: 'pal-event-nav'
+    });
+
+    // 予定登録ボタン（日指定）の作成 --------------------------------
+    let liEventByDate = util.dom.createElement('li');
+    let buttonByDate = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-event-nav-yearly'
+    });
+
+    let anchorByDate = util.dom.createElement({
+      tagName: 'a',
+      href: '#event/create/yearly',
+      onfocus: 'this.blur();',
+      textContent: '予定登録(日指定)'
+    });
+
+    // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
+    let liEventByDay = util.dom.createElement('li');
+    let buttonByDay = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-event-nav-dayoftheweek'
+    });
+
+    let anchorByDay = util.dom.createElement({
+      tagName: 'a',
+      href: '#event/create/dayOfTheWeek',
+      onfocus: 'this.blur();',
+      textContent: '予定登録(第何何曜日指定)'
+    });
+
+    // HTMLを組み立てる-----------------------------------------------
+    util.dom.appendByTreeArray([
+      frag, [
+        ulElement, [
+          liEventByDate, [
+            buttonByDate, [
+              anchorByDate
+            ] 
+          ],
+          liEventByDay, [
+            buttonByDay, [
+              anchorByDay
+            ]
+          ]
+        ]
+      ]
+    ]);
+    // -----HTMLを組み立てる------------------------------------------
+
+    return frag;
+  };
   //--------------------- DOMメソッド終了 ----------------------------
   const setEventArray = (data) => {
     // eventArray変数にサーバーからのデータをセットする --------------
@@ -657,12 +736,20 @@ pal.event = (() => {
   //
   const initModule = (mainSection) => {
     let palEventList = document.getElementById('pal-event-list');
-    // hashの状態により表示を切り替える ------------------------------
     let hashArray = onHashchange(mainSection);
+    let eventCreate;
+    let eventRead;
+    let registButton;
+    let palMainNav;
+    let palEventNavYearly;
 
+    // hashの状態により表示を切り替える ------------------------------
     switch (hashArray[1]) {
       case 'create':
         if (hashArray[2] === 'yearly') {
+          // 初期化
+          setButtonPressed();
+
           // mainセクションの子要素をすべて削除する ------------------
           pal.util.emptyElement(mainSection);
 
@@ -670,22 +757,28 @@ pal.event = (() => {
           mainSection.appendChild(makeStructure());
 
           // フォームを表示する --------------------------------------
-          let eventCreate =
+          eventCreate =
             document.getElementById('pal-event-create');
           util.dom.appendChild(eventCreate, makeEventCreate());
 
           // イベントリストを表示する --------------------------------
-          let eventRead = document.getElementById('pal-event-read');
+          eventRead = document.getElementById('pal-event-read');
           util.dom.appendChild(eventRead, makeEventRead());
 
           // 全てのeventを読み込む -----------------------------------
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
 
-          let registButton = document.getElementById('registEvent');
+          registButton = document.getElementById('registEvent');
           registButton.addEventListener('click', onClickRegistButton);
+
+          let palEventNavYearly = document.getElementById('pal-event-nav-yearly');
+          palEventNavYearly.setAttribute('aria-pressed', 'true');
         }
         else if (hashArray[2] === 'dayOfTheWeek') {
+          // 初期化
+          setButtonPressed();
+
           // mainセクションの子要素をすべて削除する ------------------
           pal.util.emptyElement(mainSection);
 
@@ -711,6 +804,8 @@ pal.event = (() => {
           createButton.addEventListener(
             'click', onClickCreateButton
           );
+          let palEventNavDayoftheweek = document.getElementById('pal-event-nav-dayoftheweek');
+          palEventNavDayoftheweek.setAttribute('aria-pressed', 'true');
         }
         break;
       case 'delete':
@@ -720,6 +815,39 @@ pal.event = (() => {
         );
         break;
       default:
+        // mainセクションの子要素をすべて削除する --------------------
+        pal.util.emptyElement(mainSection);
+
+        // 骨組みを表示する ------------------------------------------
+        mainSection.appendChild(makeStructure());
+
+        // フォームを表示する ----------------------------------------
+        eventCreate =
+          document.getElementById('pal-event-create');
+        util.dom.appendChild(eventCreate, makeEventCreate());
+
+        // イベントリストを表示する ----------------------------------
+        eventRead = document.getElementById('pal-event-read');
+        util.dom.appendChild(eventRead, makeEventRead());
+
+        // pal-main-nav-calendarを表示する ---------------------------
+        palMainNav = document.querySelector('#pal-main-nav');
+        if (!document.querySelector('#pal-event-nav')) {
+          palMainNav.insertBefore(
+            pal.event.makeNav(), palMainNav.firstChild
+          );
+        }
+
+        // 全てのeventを読み込む -------------------------------------
+        socket.emit('eventSchedule readAll');
+        socket.emit('event readAll');
+
+        registButton = document.getElementById('registEvent');
+        registButton.addEventListener('click', onClickRegistButton);
+
+        palEventNavYearly = document.getElementById('pal-event-nav-yearly');
+        palEventNavYearly.setAttribute('aria-pressed', 'true');
+
         break;
     }
 
@@ -729,7 +857,9 @@ pal.event = (() => {
 
   // パブリックメソッドを返す
   return {
-    initModule: initModule
+    initModule: initModule,
+    makeNav: makeNav,
+    setButtonPressed: setButtonPressed
   };
   // --------------------- パブリックメソッド終了 --------------------
 })();

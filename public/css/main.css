@@ -96,6 +96,10 @@ textarea {
    作者のカスタムスタイル
    ========================================================================== */
 
+*:focus {
+  outline: none;
+}
+
 button {
   background: #9999cc;
   border-radius: 0.25em;
@@ -127,13 +131,17 @@ button:active {
   box-shadow: 0 0 0 #cccccc;
 }
 
+button[aria-pressed='true'] {
+  background  : #333399;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
 input {
-  text-indent: 0.25em;
+  text-indent: 0.4em;
   width: 100%;
 }
 

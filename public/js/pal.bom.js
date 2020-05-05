@@ -14,23 +14,18 @@
 /*global pal*/
 
 pal.bom = (function () {
-  var
-    initModule,
-    setLocationHash,
-    getLocationHash,
-    onHashchange;
   //--------------------- モジュールスコープ変数開始 -----------------
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
   // ユーティリティメソッド/setLocationHash/開始
-  setLocationHash = (hash) => {
+  const setLocationHash = (hash) => {
     window.location.hash = hash;
   };
   // ユーティリティメソッド/setLocationHash/終了
 
   // ユーティリティメソッド/getLocationHash/開始
-  getLocationHash = () => {
+  const getLocationHash = () => {
     return window.location.hash;
   };
   // ユーティリティメソッド/getLocationHash/終了
@@ -41,7 +36,7 @@ pal.bom = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // イベントハンドラ/onHashchange/開始
-  onHashchange = () => {
+  const onHashchange = () => {
     pal.dom.setSection();
   };
   // イベントハンドラ/onHashchange/終了
@@ -51,7 +46,7 @@ pal.bom = (function () {
   // --------------------- コールバック終了 --------------------------
 
   // --------------------- パブリックメソッド開始 --------------------
-  initModule = (content) => {
+  const initModule = (content) => {
 
     if ( pal.dom && content ) {
       pal.dom.initModule( content );
@@ -65,10 +60,6 @@ pal.bom = (function () {
     if (Object.prototype.hasOwnProperty.call(window, "onhashchange")) {
       window.addEventListener( "hashchange", onHashchange, false );
     }
-
-    // 初回ロード時にhashを確認する。
-    onHashchange();
-
   };
   // パブリックメソッド/initModule/終了
 

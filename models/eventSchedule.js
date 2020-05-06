@@ -3,6 +3,9 @@ const {Schema} = mongoose;
 
 // eventScheduleのスキーマを作る -------------------------------------
 const eventScheduleSchema = new Schema({
+  byDay: {
+    type: String
+  },
   byMonth: {
     type      :Number,
     min       : 1,

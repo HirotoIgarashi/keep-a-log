@@ -80,9 +80,6 @@ ${getDateString(date)}`;
 
   // 何年何月(2020-1)を与えられてその月の日付のリストを返す ----------
   const getMonthArray = ((arg) => {
-
-    console.log(arg);
-
     let result = [];
     let year = arg.split('-')[0];
     let month = arg.split('-')[1];

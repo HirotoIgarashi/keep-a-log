@@ -23,6 +23,7 @@ module.exports = io => {
 
       // eventScheduleを先に作成する ---------------------------------
       eventSchedule = new EventSchedule(data.eventSchedule);
+
       // メッセージを保存する ----------------------------------------
       eventSchedule.save()
         .then((savedData) => {
@@ -43,25 +44,6 @@ module.exports = io => {
     client.on('event readAll', () => {
 
       Event.find({})
-        // .then((array) => {
-        //   array.forEach((data) =>  {
-        //     data.getJson().then(
-        //       (result) => {
-        //         console.log(result);
-        //         eventArray.push(result);
-        //       }
-        //     );
-        //   });
-        // })
-        // .then(() => {
-        //   return data.forEach((data) => {
-        //     EventSchedule.findOne({_id: data.eventSchedule})
-        //       .then((schedule) => {
-        //         data.eventSchedule = schedule;
-        //       })
-        //       .catch(error => console.log(`event readAll error: ${error.message}`));
-        //   });
-        // })
         .then((data)=> client.emit('event readAll complete', data))
         .catch(error => console.log(`event readAll error: ${error.message}`));
 
@@ -69,10 +51,15 @@ module.exports = io => {
 
     // イベントの参照 ------------------------------------------------
     client.on('event read', (id) => {
+      let event = {};
       Event.findOne({_id: id})
-        .then((event) => {
+        .then((data) => {
+          event = data;
+          return EventSchedule.findOne({_id: data.eventSchedule})
+        })
+        .then((eventSchedule) => {
+          event.eventSchedule = eventSchedule;
           client.emit('event read complete', event);
-          return event;
         })
         .catch(error => console.log(`event read error: ${error.message}`));
 

@@ -76,6 +76,11 @@ util.dom = (() => {
   // 親ノードに子ノードを挿入する ------------------------------------
   const appendChild = ((frag, element) => frag.appendChild(element));
 
+  // 要素の前に要素を挿入する ----------------------------------------
+  const insertBefore =
+    ((source, destination) =>
+     destination.insertBefore(source, destination.firstChild));
+
   // ツリー構造を受取りツリー構造を返す ------------------------------
   const appendByTreeArray = (treeArray) => {
     let search = ((array) => {
@@ -133,6 +138,8 @@ util.dom = (() => {
     autofocusTrue: autofocusTrue,
     // 親ノードに子ノードを挿入する ----------------------------------
     appendChild: appendChild,
+    // 要素の前に要素を挿入する ----------------------------------------
+    insertBefore: insertBefore,
     // ツリー構造を受取りツリー構造を返す ----------------------------
     appendByTreeArray: appendByTreeArray,
     createLabelAndInput: createLabelAndInput

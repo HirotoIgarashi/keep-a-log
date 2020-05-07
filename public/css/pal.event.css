@@ -1,23 +1,23 @@
 #pal-event {
-  display: flex;
+  /* display: flex; */
 }
 
 #pal-event-create {
   /*position: absolute;
   top: 10px;
   left: 10px;*/
-  width: 30%;
+  width: 40%;
   margin-left: 2em;
   margin-bottom: 2em;
-  display: inline-block;
+  display: block;
 }
 
 #pal-event-read {
   /*position: absolute;
   right: 10px;*/
-  width: 60%;
+  /* width: 60%; */
   margin-left: 2em;
-  display: inline-block;
+  display: block;
 }
 
 #pal-event-create form label {

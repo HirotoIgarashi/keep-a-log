@@ -59,33 +59,34 @@ pal.event = (() => {
 
   // idとコールバック関数を引数とする。idをキーとしてHTML要素内の
   // id="id"の要素を取得して、その要素にコールバック関数を適用する
-  const callbackById = (id, callback) => {
-    return callback(document.getElementById(id));
-  };
+  const callbackById =
+    (id, callback) => callback(document.getElementById(id))
+
+  const callbackByQuerySelector =
+    (selector, callback) => callback(document.querySelector(selector))
 
   // hashが変更されときの処理 ----------------------------------------
-  const setButtonPressed = ((data) => {
+  const setButtonPressed = ((element) => {
     // イベント用のナビゲーションボタンを表示する --------------------
+    const palEventNavList =
+      callbackById('pal-event-nav-list', (data) => data);
     const palEventNavYearly =
       callbackById('pal-event-nav-yearly', (data) => data);
     const palEventNavDayoftheweek =
       callbackById('pal-event-nav-dayoftheweek', (data) => data);
 
     const elementArray = [
-      palEventNavYearly, palEventNavDayoftheweek
+      palEventNavList, palEventNavYearly, palEventNavDayoftheweek
     ];
 
-    if (!data) {
-      elementArray.forEach(
-        (element) => element.setAttribute('aria-pressed', 'false')
-      );
+    elementArray.forEach(
+      (element) => element.setAttribute('aria-pressed', 'false')
+    );
+
+    if (element) {
+      element.setAttribute('aria-pressed', 'true');
     }
-    else {
-      callbackById(
-        `${data}`,
-        (data) => data.setAttribute('aria-pressed', 'true')
-      );
-    }
+
   });
   //--------------------- ユーティリティメソッド終了 -----------------
 
@@ -120,7 +121,7 @@ pal.event = (() => {
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
-        divEvent, [ divCreate, divReadAll ],
+        divEvent, [divReadAll, divCreate],
         divEventControl, [ buttonBack ]
       ]
     ];
@@ -470,7 +471,7 @@ pal.event = (() => {
         value: `#event/delete/${event._id}`,
         textContent: '削除'
       });
-      deleteButton.addEventListener('click', onClickDeletButton);
+      deleteButton.addEventListener('click', onClickDeleteButton);
 
       // HTMLを組み立てる---------------------------------------------
       let treeArray = [
@@ -497,6 +498,20 @@ pal.event = (() => {
 
     let ulElement = util.dom.createElement({
       tagName: 'ul', id: 'pal-event-nav'
+    });
+
+    // 予定一覧ボタンの作成 ------------------------------------------
+    let liEventList = util.dom.createElement('li');
+    let buttonList = util.dom.createElement({
+      tagName: 'button',
+      id: 'pal-event-nav-list'
+    });
+
+    let anchorList = util.dom.createElement({
+      tagName: 'a',
+      href: '#event',
+      onfocus: 'this.blur();',
+      textContent: '予定一覧'
     });
 
     // 予定登録ボタン（日指定）の作成 --------------------------------
@@ -531,6 +546,9 @@ pal.event = (() => {
     util.dom.appendByTreeArray([
       frag, [
         ulElement, [
+          liEventList, [
+            buttonList, [ anchorList ] 
+          ],
           liEventByDate, [
             buttonByDate, [ anchorByDate ] 
           ],
@@ -559,7 +577,6 @@ pal.event = (() => {
       'pal-event-list',
       (data) => pal.util.emptyElement(data)
     );
-
     makeEventListElement(mergedList, eventList);
   };
 
@@ -593,11 +610,11 @@ pal.event = (() => {
       callbackById('inputDescription', (data) => data.value);
 
     // 第何何曜日が指定されたときの処理 ------------------------------
-    if (document.getElementById('inputWhatNumber')) {
+    if (callbackById('inputWhatNumber', data => data)) {
       whatNumber =
         callbackById('inputWhatNumber', data => data.value);
     }
-    if (document.getElementById('inputDay')) {
+    if (callbackById('inputDay', data => data)) {
       day = callbackById('inputDay', data => data.value);
     }
 
@@ -705,8 +722,8 @@ pal.event = (() => {
   const onClickReadButton =
     (event) => pal.bom.setLocationHash(event.target.value);
 
-  // onClickDeletButton開始 ------------------------------------------
-  const onClickDeletButton =
+  // onClickDeleteButton開始 ------------------------------------------
+  const onClickDeleteButton =
     (event) => pal.bom.setLocationHash(event.target.value);
 
   // onClickCancel開始 -----------------------------------------------
@@ -768,33 +785,25 @@ pal.event = (() => {
   // 例外発行: なし
   //
   const initModule = (mainSection) => {
-    let palEventList = callbackById('pal-event-list', data => data);
     let hashArray = onHashchange(mainSection);
     let palMainNav;
+    let listArray;
+    let findElement;
 
     // hashの状態により表示を切り替える ------------------------------
     switch (hashArray[1]) {
       case 'create':
         if (hashArray[2] === 'yearly') {
-          // 初期化
-          setButtonPressed();
+          // pal-event-create以下の要素を削除する --------------------
+          callbackById(
+            'pal-event-create',
+            data => pal.util.emptyElement(data)
+          );
 
-          // mainセクションの子要素をすべて削除する ------------------
-          pal.util.emptyElement(mainSection);
-
-          // 骨組みを表示する ----------------------------------------
-          mainSection.appendChild(makeStructure());
-
-          // フォームを表示する --------------------------------------
+          // event-createフォームを表示する --------------------------
           callbackById(
             'pal-event-create',
             data => util.dom.appendChild(data, makeEventCreate())
-          );
-
-          // イベントリストを表示する --------------------------------
-          callbackById(
-            'pal-event-read',
-            data => util.dom.appendChild(data, makeEventReadAll())
           );
 
           // 全てのeventを読み込む -----------------------------------
@@ -806,34 +815,23 @@ pal.event = (() => {
             data => data.addEventListener('click', onClickRegistButton)
           );
 
+          // 予定登録（日指定）を押されたようにする ------------------
           callbackById(
             'pal-event-nav-yearly',
-            data => data.setAttribute('aria-pressed', 'true')
-          );
+            data => setButtonPressed(data))
         }
         else if (hashArray[2] === 'dayOfTheWeek') {
-          // 初期化
-          setButtonPressed();
-
-          // mainセクションの子要素をすべて削除する ------------------
-          pal.util.emptyElement(mainSection);
-
-          // 骨組みを表示する ----------------------------------------
-          mainSection.appendChild(makeStructure());
+          // pal-event-create以下の要素を削除する --------------------
+          callbackById(
+            'pal-event-create',
+            data => pal.util.emptyElement(data)
+          );
 
           // フォームを表示する --------------------------------------
           callbackById(
             'pal-event-create',
             data => util.dom.appendChild(
               data, makeEventCreateByNanyoubi()
-            )
-          );
-
-          // イベントリストを表示する --------------------------------
-          callbackById(
-            'pal-event-read',
-            data => util.dom.appendChild(
-              data, makeEventReadAll()
             )
           );
 
@@ -848,7 +846,7 @@ pal.event = (() => {
 
           callbackById(
             'pal-event-nav-dayoftheweek',
-            (data) => data.setAttribute('aria-pressed', 'true')
+            (data) => setButtonPressed(data)
           );
         }
         break;
@@ -856,10 +854,19 @@ pal.event = (() => {
         socket.emit('event read', hashArray[2]);
         break;
       case 'delete':
-        palEventList.parentNode.insertBefore(
-          makeDeletePage(hashArray[2]),
-          palEventList
-        );
+        // 削除ボタンを押されたli要素のしたに削除していいかの
+        // 確認画面を表示する
+        listArray = document.querySelectorAll('span.hidden');
+        listArray.forEach((data) => {
+          if (data.textContent === hashArray[2]) {
+            findElement = data;
+          }
+        });
+        findElement.parentNode.parentNode
+          .insertBefore(
+            makeDeletePage(hashArray[2]),
+            findElement.parentNode.nextSibling
+          );
         break;
       default:
         // mainセクションの子要素をすべて削除する --------------------
@@ -868,10 +875,19 @@ pal.event = (() => {
         // 骨組みを表示する ------------------------------------------
         mainSection.appendChild(makeStructure());
 
-        // フォームを表示する ----------------------------------------
+        // pal-main-navを表示する ------------------------------------
+        palMainNav =
+          callbackByQuerySelector('#pal-main-nav', data => data);
+        callbackByQuerySelector('#pal-event-nav', (data) => {
+          if (!data) {
+            util.dom.insertBefore(pal.event.makeNav(), palMainNav);
+          }
+        });
+
+        // 予定一覧を押されたようにする ------------------------------
         callbackById(
-          'pal-event-create',
-          data => util.dom.appendChild(data, makeEventCreate())
+          'pal-event-nav-list',
+          (data) => setButtonPressed(data)
         );
 
         // イベントリストを表示する ----------------------------------
@@ -880,27 +896,9 @@ pal.event = (() => {
           data => util.dom.appendChild(data, makeEventReadAll())
         );
 
-        // pal-main-nav-calendarを表示する ---------------------------
-        palMainNav = document.querySelector('#pal-main-nav');
-        if (!document.querySelector('#pal-event-nav')) {
-          palMainNav.insertBefore(
-            pal.event.makeNav(), palMainNav.firstChild
-          );
-        }
-
-        // 全てのeventを読み込む -------------------------------------
+        // 全てのeventとeventScheduleを読み込む ----------------------
         socket.emit('eventSchedule readAll');
         socket.emit('event readAll');
-
-        callbackById(
-          'registEvent',
-          data => data.addEventListener('click', onClickRegistButton)
-        );
-
-        callbackById(
-          'pal-event-nav-yearly',
-          (data) => data.setAttribute('aria-pressed', 'true')
-        );
 
         break;
     }

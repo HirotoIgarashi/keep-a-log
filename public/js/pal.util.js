@@ -207,8 +207,7 @@ pal.util = (() => {
   // 例外発行: なし
   //
   emptyElement = (element) => {
-
-    while (element.firstChild) {
+    while (element && element.firstChild) {
       element.removeChild(element.firstChild);
     }
   };

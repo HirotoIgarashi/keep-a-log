@@ -22,7 +22,7 @@ pal.event = (() => {
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
-  // idをキーとしてオブジェクトを探す処理 ----------------------------
+  // _idをキーとしてオブジェクトを探す処理 ---------------------------
   const searchById = ((id, array) => {
     let result = null;
 
@@ -35,7 +35,7 @@ pal.event = (() => {
     return result;
   });
 
-  // リストをマージする処理 ------------------------------------------
+  // eventオブジェクトとeventScheduleオブジェクトをマージする処理 ----
   const mergeList = ((event, eventSchedule) => {
     let mergedList = [];
 
@@ -80,6 +80,33 @@ pal.event = (() => {
       element.setAttribute('aria-pressed', 'true');
     }
 
+  });
+
+  // 00:00から23:00までの文字列の配列を返す関数 ----------------------
+  const gethhmmArray = () => {
+    let result = [];
+    for (let i = 0; i < 24; i = i + 1) {
+      result.push(`${new String(i).padStart(2, '0')}:00`);
+    }
+
+    return result;
+  };
+
+  // hh:mm形式のデータを2つ引数にとり減算を行いhhlkjhhhhjkkう ----------------------
+  const getDifferenceTime = ((start, end) => {
+    let result;
+
+    let startHour = start.split(':')[0] * (1000 * 60 * 60);
+    let startMinute = start.split(':')[1] * (1000 * 60);
+
+    let endHour = end.split(':')[0] * (1000 * 60 * 60);
+    let endMinute = end.split(':')[1] * (1000 * 60);
+
+    let startTime = startHour + startMinute;
+    let endTime = endHour + endMinute;
+    result = (endTime - startTime) / (1000 * 60 * 60);
+
+    return result;
   });
   //--------------------- ユーティリティメソッド終了 -----------------
 
@@ -487,6 +514,8 @@ pal.event = (() => {
 
   const makeWeeklySchedule= () => {
     const dayArray = ['日', '月', '火', '水', '木', '金', '土'];
+    const hhmmArray = gethhmmArray();
+
     let dayIndex = 1;
 
     let frag = util.dom.createFragment();
@@ -495,6 +524,7 @@ pal.event = (() => {
       tagName: 'h1', textContent: '週間予定'
     });
 
+    // 曜日を切り替える部分/開始 -------------------------------------
     let navWeeklySchedule = util.dom.createElement('nav');
 
     let spanDay = util.dom.createElement({
@@ -515,7 +545,6 @@ pal.event = (() => {
       else {
         dayIndex = dayIndex - 1;
       }
-      console.log(spanDay);
       spanDay.innerHTML = `${dayArray[dayIndex]}曜日の予定`;
     });
 
@@ -534,12 +563,34 @@ pal.event = (() => {
       }
       spanDay.innerHTML = `${dayArray[dayIndex]}曜日の予定`;
     });
+    // 曜日を切り替える部分/終了 -------------------------------------
 
-    // HTMLを組み立てる---------------------------------------------
+    // hh:mmの部分/開始 ----------------------------------------------
+    let divHhMm = util.dom.createElement({
+      tagName: 'div',
+      class: 'firstColumn'
+    });
+    let divContent = util.dom.createElement({
+      tagName: 'div',
+      class: 'secondColumn'
+    });
+
+    hhmmArray.forEach((data) => {
+      let divRow = util.dom.createElement({
+        tagName: 'div', textContent: data
+      });
+      divRow.setAttribute('data-date', data);
+      util.dom.appendByTreeArray([divHhMm, [divRow]]);
+    });
+    // hh:mmの部分/終了 ----------------------------------------------
+
+    // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
         h1WeeklySchedule,
-        navWeeklySchedule, [previousButton, spanDay, nextButton]
+        navWeeklySchedule, [previousButton, spanDay, nextButton],
+        divHhMm,
+        divContent
       ]
     ];
     // ツリー構造を作る --------------------------------------------
@@ -995,6 +1046,66 @@ pal.event = (() => {
             'pal-event-nav-byday',
             (data) => setButtonPressed(data)
           );
+          // ここからは要素の位置情報を取得する試験 ------------------
+          // contentsの部分/開始 -------------------------------------
+          let testArray = [
+            {name: 'test1', startTime:'00:00', endTime: '01:00'},
+            {name: 'test2', startTime:'12:00', endTime: '14:00'}
+          ];
+
+          const divContent = document.querySelector('.secondColumn');
+
+          // div要素を作成する ---------------------------------------
+          testArray.forEach((data) => {
+
+            let divContentRow = util.dom.createElement({
+              tagName: 'div',
+              innerHTML: JSON.stringify(data)
+            });
+            divContentRow.setAttribute('data-date', data.startTime);
+
+            util.dom.appendByTreeArray([divContent, [divContentRow]]);
+          });
+
+          // contentsの部分/終了 -------------------------------------
+          let references =
+            document.querySelectorAll('.firstColumn div[data-date]');
+
+          let timeElements =
+            document.querySelectorAll('.secondColumn div[data-date]');
+
+          timeElements.forEach((element) => {
+            // let left = window.pageXOffset + clientRect.left;
+            // 基準になるポジションを設定して要素の場所を決定する ----
+            references.forEach((data) => {
+              let reference = data.getAttribute('data-date');
+              let current = element.getAttribute('data-date');
+
+              if (reference === current) {
+                let clientRect = data.getBoundingClientRect();
+                let top = window.pageYOffset + clientRect.top;
+                let right = window.pageXOffset + clientRect.right;
+                let bottom = window.pageYOffset + clientRect.bottom;
+
+                element.style.position = 'absolute';
+                element.style.marginLeft = '1em';
+                element.style.left = right + 'px';
+                element.style.top = (top + bottom) / 2 + 'px';
+                return;
+              }
+            });
+
+            let inner = JSON.parse(element.innerHTML);
+
+            let difference =
+              getDifferenceTime(inner.startTime, inner.endTime);
+            console.log(difference)
+
+            element.style.height = '2em';
+
+          });
+
+          // ここまでは要素の位置情報を取得する試験 ------------------
         }
         break;
       case 'read':

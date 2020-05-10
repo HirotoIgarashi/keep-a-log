@@ -95,11 +95,7 @@ pal.registSchedule = (function () {
 
       // button = document.querySelector( '#schedule-registration-menu button' );
       expand_svg = document.querySelector( '#expand-button' );
-      console.log( expand_svg );
       contract_svg = document.querySelector( '#contract-button' );
-      console.log( contract_svg );
-
-      console.log( expanded );
 
       if ( expanded ) {
         expand_svg.setAttribute( 'display', 'inline' );

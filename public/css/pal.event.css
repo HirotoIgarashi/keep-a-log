@@ -6,7 +6,7 @@
   /*position: absolute;
   top: 10px;
   left: 10px;*/
-  width: 40%;
+  width: 80%;
   margin-left: 2em;
   margin-bottom: 2em;
   display: block;
@@ -19,6 +19,17 @@
   margin-left: 2em;
   display: block;
 }
+
+#pal-event-read div.firstColumn,
+#pal-event-read div.secondColumn {
+  display: inline-block;
+}
+
+/*
+#pal-event-read div.secondColumn div {
+  position: absolute;
+}
+*/
 
 #pal-event-create form label {
   display: inline-block;
@@ -66,3 +77,7 @@
   list-style: none;
 }
 
+.secondColumn div{
+  color: #ccc;
+  background: blue;
+}

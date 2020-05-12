@@ -108,6 +108,34 @@ pal.event = (() => {
 
     return result;
   });
+
+  const procForEachDayOfTheWeek = () => {
+
+    console.log('曜日ごとの処理を開始します');
+
+    // 曜日ごとの処理開始 --------------------------------------------
+    // このページの曜日を取得する
+    let currentDay =
+      document.querySelector('#pal-event-read nav span')
+        .getAttribute('data-day');
+
+    // 曜日のinputを取得した曜日に設定する
+    let inputDatElement = document.querySelector('#inputDay');
+    inputDatElement.setAttribute('data-day', currentDay);
+    inputDatElement.setAttribute('value', currentDay);
+
+    // .secondColumn以下の要素を削除する
+    let secondColumn = document.querySelector('.secondColumn');
+    pal.util.emptyElement(secondColumn)
+
+    // 取得した曜日の予定を取得して表示する
+    // contentsの部分/開始 -------------------------------------------
+    socket.emit('eventSchedule search', {repeatFrequency: 'P1W'});
+
+    console.log('イベントスケジュールをサーチします');
+
+    // 曜日ごとの処理終了 --------------------------------------------
+  };
   //--------------------- ユーティリティメソッド終了 -----------------
 
   //--------------------- DOMメソッド開始 ----------------------------
@@ -228,7 +256,7 @@ pal.event = (() => {
       tagName: 'button',
       type: 'button',
       id: 'registEvent',
-      innerHTML: '保存'
+      textContent: '保存'
     });
 
     // HTMLを組み立てる-----------------------------------------------
@@ -514,6 +542,10 @@ pal.event = (() => {
 
   const makeWeeklySchedule= () => {
     const dayArray = ['日', '月', '火', '水', '木', '金', '土'];
+    const dayEnglishArray = [
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+      'Thursday', 'Friday', 'Saturday'
+    ];
     const hhmmArray = gethhmmArray();
 
     let dayIndex = 1;
@@ -531,11 +563,15 @@ pal.event = (() => {
       tagName: 'span',
       innerHTML: `${dayArray[dayIndex]}曜日の予定`
     });
+    // 初期値は月曜日
+    spanDay.setAttribute('data-day', dayEnglishArray[1]);
 
     let previousButton = util.dom.createElement({
       tagName: 'button', type: 'button', innerHTML: '<'
     });
     previousButton.addEventListener('click', (e) => {
+
+      console.log('左矢印ボタンがクリックされました');
 
       e.preventDefault();
 
@@ -546,12 +582,18 @@ pal.event = (() => {
         dayIndex = dayIndex - 1;
       }
       spanDay.innerHTML = `${dayArray[dayIndex]}曜日の予定`;
+      spanDay.setAttribute('data-day', dayEnglishArray[dayIndex]);
+      // 曜日ごとの処理 ----------------------------------------------
+      procForEachDayOfTheWeek();
+
     });
 
     let nextButton = util.dom.createElement({
       tagName: 'button', type: 'button', innerHTML: '>'
     });
     nextButton.addEventListener('click', (e) => {
+
+      console.log('右矢印ボタンがクリックされました');
 
       e.preventDefault();
 
@@ -562,6 +604,10 @@ pal.event = (() => {
         dayIndex = dayIndex + 1;
       }
       spanDay.innerHTML = `${dayArray[dayIndex]}曜日の予定`;
+      spanDay.setAttribute('data-day', dayEnglishArray[dayIndex]);
+      // 曜日ごとの処理 ----------------------------------------------
+      procForEachDayOfTheWeek();
+
     });
     // 曜日を切り替える部分/終了 -------------------------------------
 
@@ -606,9 +652,101 @@ pal.event = (() => {
       tagName: 'h1', textContent: '予定を登録します'
     });
 
+    let form = util.dom.createElement('form');
+    form.setAttribute('autocomplete', 'on');
+
+    // -----イベントの曜日のlabelとinput -----------------------------
+    let inputDay = util.dom.createLabelAndInput({
+      'for': 'inputDay',
+      'innerHTML': '曜日(必須)',
+      'type': 'text',
+      'name': 'day',
+      'id': 'inputDay',
+      'placeholder': '曜日を入力します'
+    });
+    inputDay[1].setAttribute('list', 'days');
+    // 初期値は月曜日 ------------------------------------------------
+    inputDay[1].setAttribute('value', 'Monday');
+
+    let datalist = util.dom.createElement({
+      tagName: 'datalist',
+      id: 'days'
+    });
+    let optionMonday = util.dom.createElement({
+      tagName: 'option', value: 'Monday' });
+    let optionTuesday = util.dom.createElement({
+      tagName: 'option', value: 'Tuesday' });
+    let optionWednesday = util.dom.createElement({
+      tagName: 'option', value: 'Wednesday' });
+    let optionThursday = util.dom.createElement({
+      tagName: 'option', value: 'Thursday' });
+    let optionFriday = util.dom.createElement({
+      tagName: 'option', value: 'Friday' });
+    let optionSaturday = util.dom.createElement({
+      tagName: 'option', value: 'Saturday' });
+    let optionSunday = util.dom.createElement({
+      tagName: 'option', value: 'Sunday' });
+
+    util.dom.appendByTreeArray([
+      datalist, [
+        optionMonday, optionTuesday, optionWednesday, optionThursday,
+        optionFriday, optionSaturday, optionSunday
+      ]
+    ]);
+    // -----イベントの名前のlabelとinput -----------------------------
+    let inputName = util.dom.createLabelAndInput({
+      'for': 'inputName',
+      'innerHTML': 'イベントの名前(必須)',
+      'type': 'text',
+      'name': 'name',
+      'id': 'inputName',
+      'placeholder': 'イベントの名前を入力します'
+    });
+
+    // -----イベントの開始時間のlabelとinput -------------------------
+    let inputStartTime = util.dom.createLabelAndInput({
+      'for': 'inputStartTime',
+      'innerHTML': '開始時間',
+      'type': 'text',
+      'name': 'startTime',
+      'id': 'inputStartTime',
+      'placeholder': '開始時間を入力します'
+    });
+    inputStartTime[1].setAttribute('pattern', '\\d\\d:\\d\\d');
+
+    // -----イベントの終了時間のlabelとinput -------------------------
+    let inputEndTime = util.dom.createLabelAndInput({
+      'for': 'inputEndTime',
+      'innerHTML': '終了時間',
+      'type': 'text',
+      'name': 'endTime',
+      'id': 'inputEndTime',
+      'placeholder': '終了時間を入力します'
+    });
+    inputEndTime[1].setAttribute('pattern', '\\d\\d:\\d\\d');
+
+    // ボタンを生成 --------------------------------------------------
+    let button = util.dom.createElement({
+      tagName: 'button',
+      type: 'button',
+      id: 'createEvent',
+      textContent: '保存'
+    });
+    button.addEventListener('click', onClickEventCreateWeekly);
+
     // HTMLを組み立てる---------------------------------------------
     let treeArray = [
-      frag, [h1WeeklySchedule]
+      frag, [
+        h1WeeklySchedule,
+        form, [
+          inputDay[0], inputDay[1],
+          datalist,
+          inputName[0], inputName[1],
+          inputStartTime[0], inputStartTime[1],
+          inputEndTime[0], inputEndTime[1],
+          button
+        ]
+      ]
     ];
     // ツリー構造を作る --------------------------------------------
     util.dom.appendByTreeArray(treeArray);
@@ -715,9 +853,57 @@ pal.event = (() => {
       'pal-event-read',
       data => util.dom.appendChild(data, makeEventReadAll())
     );
-    // 全てのeventとeventScheduleを読み込む ----------------------
+    // 全てのeventとeventScheduleを読み込む --------------------------
     socket.emit('eventSchedule readAll');
     socket.emit('event readAll');
+  };
+  // 週間予定を表示する ----------------------------------------------
+  const showWeeklyEvent = (element) => {
+
+    const divContent = document.querySelector('.secondColumn');
+
+    // div要素を作成する ---------------------------------------
+    let divContentRow = util.dom.createElement({
+      tagName: 'div',
+      // innerHTML: JSON.stringify(element)
+      innerHTML: element.name
+    });
+    divContentRow.setAttribute('data-date', element.eventSchedule.startTime);
+
+    util.dom.appendByTreeArray([divContent, [divContentRow]]);
+
+    // contentsの部分/終了 -------------------------------------
+    let references =
+      document.querySelectorAll('.firstColumn div[data-date]');
+
+    // let left = window.pageXOffset + clientRect.left;
+    // 基準になるポジションを設定して要素の場所を決定する ----
+    references.forEach((data) => {
+      let reference = data.getAttribute('data-date');
+      let current = divContentRow.getAttribute('data-date');
+
+      if (reference === current) {
+        let clientRect = data.getBoundingClientRect();
+        let top = window.pageYOffset + clientRect.top;
+        let right = window.pageXOffset + clientRect.right;
+        let bottom = window.pageYOffset + clientRect.bottom;
+
+        divContentRow.style.position = 'absolute';
+        divContentRow.style.marginLeft = '1em';
+        divContentRow.style.left = right + 'px';
+        divContentRow.style.top = (top + bottom) / 2 + 'px';
+        divContentRow.style.width = '18em';
+
+        // 要素の高さを設定する -----------------------------
+        let difference =
+          getDifferenceTime(
+            element.eventSchedule.startTime,
+            element.eventSchedule.endTime
+          );
+        divContentRow.style.height = `${(bottom - top) * difference}px`;
+        return;
+      }
+    });
   };
   //--------------------- DOMメソッド終了 ----------------------------
   const setEventArray = (data) => {
@@ -895,6 +1081,37 @@ pal.event = (() => {
     socket.emit('event delete', id);
   };
 
+  const onClickEventCreateWeekly = (e) => {
+
+    e.preventDefault();
+
+    let event = {};
+    let eventSchedule = {};
+
+    // formから値を取得する ------------------------------------------
+    const day = callbackById('inputDay', data => data.value);
+    const name = callbackById('inputName', data => data.value);
+    const startTime =
+      callbackById('inputStartTime', data => data.value);
+    const endTime =
+      callbackById('inputEndTime', data => data.value);
+
+    event.name = name;
+    eventSchedule.byDay = day;
+    eventSchedule.startTime = startTime;
+    eventSchedule.endTime = endTime;
+    eventSchedule.repeatFrequency = 'P1W';
+
+    event.eventSchedule = eventSchedule;
+
+    socket.emit('event createWeekly', event);
+
+    // eventの処理/終了 ------------------------------------------------
+    socket.on('event createWeekly complete', (data) => {
+      showWeeklyEvent(data);
+    });
+  };
+
   const onClickBack = () => {
     history.back();
   };
@@ -930,7 +1147,31 @@ pal.event = (() => {
     'event delete complete',
     () => pal.bom.setLocationHash('#event/create/yearly')
   );
-  // eventの処理/終了 ------------------------------------------------
+
+  socket.on('event search complete', (data) => {
+    // このページの曜日を取得する
+    let currentDay =
+      document.querySelector('#pal-event-read nav span')
+        .getAttribute('data-day');
+
+    if (data.eventSchedule.byDay === currentDay) {
+      showWeeklyEvent(data);
+    }
+  });
+
+  socket.on('eventSchedule search complete', (array) => {
+
+    console.log(array);
+
+    array.forEach((data) => {
+      console.log('イベントをサーチします');
+
+      console.log(data);
+
+      socket.emit('event search', {eventSchedule:data._id});
+    });
+  });
+
   // ----- webSocket処理終了 -----------------------------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -947,6 +1188,20 @@ pal.event = (() => {
     let listArray;
     let findElement;
 
+    // mainセクションの子要素をすべて削除する --------------------
+    pal.util.emptyElement(mainSection);
+    // 骨組みを表示する ------------------------------------------
+    mainSection.appendChild(makeStructure());
+
+    // pal-main-navを表示する ------------------------------------
+    palMainNav =
+      callbackByQuerySelector('#pal-main-nav', data => data);
+    callbackByQuerySelector('#pal-event-nav', (data) => {
+      if (!data) {
+        util.dom.insertBefore(pal.event.makeNav(), palMainNav);
+      }
+    });
+
     // hashの状態により表示を切り替える ------------------------------
     switch (hashArray[1]) {
       case 'create':
@@ -960,13 +1215,11 @@ pal.event = (() => {
             'pal-event-create',
             data => pal.util.emptyElement(data)
           );
-
           // event-createフォームを表示する --------------------------
           callbackById(
             'pal-event-create',
             data => util.dom.appendChild(data, makeEventCreate())
           );
-
           // 全てのeventを読み込む -----------------------------------
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
@@ -975,7 +1228,6 @@ pal.event = (() => {
             'registEvent',
             data => data.addEventListener('click', onClickRegistButton)
           );
-
           // 予定登録（日指定）を押されたようにする ------------------
           callbackById(
             'pal-event-nav-yearly',
@@ -991,7 +1243,6 @@ pal.event = (() => {
             'pal-event-create',
             data => pal.util.emptyElement(data)
           );
-
           // フォームを表示する --------------------------------------
           callbackById(
             'pal-event-create',
@@ -999,7 +1250,6 @@ pal.event = (() => {
               data, makeEventCreateByNanyoubi()
             )
           );
-
           // 全てのeventを読み込む -----------------------------------
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
@@ -1008,104 +1258,38 @@ pal.event = (() => {
             'createEvent',
             data => data.addEventListener('click', onClickCreateButton)
           );
-
           callbackById(
             'pal-event-nav-dayoftheweek',
             (data) => setButtonPressed(data)
           );
         }
+        // 曜日ごとの処理
         else if (hashArray[2] === 'dayly') {
-          // pal-event-read以下の要素を削除する ----------------------
+          // pal-event-read以下の要素を削除してフォームを表示する ----
           callbackById(
             'pal-event-read',
-            data => pal.util.emptyElement(data)
+            data => {
+              pal.util.emptyElement(data);
+              util.dom.appendChild(data, makeWeeklySchedule());
+            }
           );
-          // フォームを表示する --------------------------------------
-          callbackById(
-            'pal-event-read',
-            data => util.dom.appendChild(
-              data, makeWeeklySchedule()
-            )
-          );
-
-          // pal-event-create以下の要素を削除する --------------------
+          // pal-event-create以下の要素を削除してフォームを表示する --
           callbackById(
             'pal-event-create',
-            data => pal.util.emptyElement(data)
+            data => {
+              pal.util.emptyElement(data)+
+              util.dom.appendChild( data, makeEventCreateWeekly());
+            }
           );
-
-          // フォームを表示する --------------------------------------
-          callbackById(
-            'pal-event-create',
-            data => util.dom.appendChild(
-              data, makeEventCreateWeekly()
-            )
-          );
-
+          // ナビゲーションの予定登録（曜日指定)が押されたようにする
           callbackById(
             'pal-event-nav-byday',
             (data) => setButtonPressed(data)
           );
-          // ここからは要素の位置情報を取得する試験 ------------------
-          // contentsの部分/開始 -------------------------------------
-          let testArray = [
-            {name: 'test1', startTime:'00:00', endTime: '01:00'},
-            {name: 'test2', startTime:'12:00', endTime: '14:00'}
-          ];
 
-          const divContent = document.querySelector('.secondColumn');
+          // 曜日ごとの処理 ------------------------------------------
+          procForEachDayOfTheWeek();
 
-          // div要素を作成する ---------------------------------------
-          testArray.forEach((data) => {
-
-            let divContentRow = util.dom.createElement({
-              tagName: 'div',
-              innerHTML: JSON.stringify(data)
-            });
-            divContentRow.setAttribute('data-date', data.startTime);
-
-            util.dom.appendByTreeArray([divContent, [divContentRow]]);
-          });
-
-          // contentsの部分/終了 -------------------------------------
-          let references =
-            document.querySelectorAll('.firstColumn div[data-date]');
-
-          let timeElements =
-            document.querySelectorAll('.secondColumn div[data-date]');
-
-          timeElements.forEach((element) => {
-            // let left = window.pageXOffset + clientRect.left;
-            // 基準になるポジションを設定して要素の場所を決定する ----
-            references.forEach((data) => {
-              let reference = data.getAttribute('data-date');
-              let current = element.getAttribute('data-date');
-
-              if (reference === current) {
-                let clientRect = data.getBoundingClientRect();
-                let top = window.pageYOffset + clientRect.top;
-                let right = window.pageXOffset + clientRect.right;
-                let bottom = window.pageYOffset + clientRect.bottom;
-
-                element.style.position = 'absolute';
-                element.style.marginLeft = '1em';
-                element.style.left = right + 'px';
-                element.style.top = (top + bottom) / 2 + 'px';
-                return;
-              }
-            });
-
-            let inner = JSON.parse(element.innerHTML);
-
-            let difference =
-              getDifferenceTime(inner.startTime, inner.endTime);
-            console.log(difference)
-
-            element.style.height = '2em';
-
-          });
-
-          // ここまでは要素の位置情報を取得する試験 ------------------
         }
         break;
       case 'read':
@@ -1127,37 +1311,19 @@ pal.event = (() => {
           );
         break;
       default:
-        // mainセクションの子要素をすべて削除する --------------------
-        pal.util.emptyElement(mainSection);
-
-        // 骨組みを表示する ------------------------------------------
-        mainSection.appendChild(makeStructure());
-
-        // pal-main-navを表示する ------------------------------------
-        palMainNav =
-          callbackByQuerySelector('#pal-main-nav', data => data);
-        callbackByQuerySelector('#pal-event-nav', (data) => {
-          if (!data) {
-            util.dom.insertBefore(pal.event.makeNav(), palMainNav);
-          }
-        });
-
         // 予定一覧を押されたようにする ------------------------------
         callbackById(
           'pal-event-nav-list',
           (data) => setButtonPressed(data)
         );
-
         // イベントリストを表示する ----------------------------------
         callbackById(
           'pal-event-read',
           data => util.dom.appendChild(data, makeEventReadAll())
         );
-
         // 全てのeventとeventScheduleを読み込む ----------------------
         socket.emit('eventSchedule readAll');
         socket.emit('event readAll');
-
         break;
     }
 

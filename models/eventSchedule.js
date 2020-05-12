@@ -9,20 +9,24 @@ const eventScheduleSchema = new Schema({
   byMonth: {
     type      :Number,
     min       : 1,
-    max       : 12,
-    required  : true
+    max       : 12
   },
   byMonthDay: {
     type      :Number,
     min       : 1,
-    max       : 31,
-    required  : true
+    max       : 31
   },
   startDate: {
-    type:String
+    type: String
+  },
+  startTime: {
+    type: String
+  },
+  endTime: {
+    type: String
   },
   repeatFrequency : {
-    type:String
+    type: String
   }
 },{
   // createAtとupdateAtの日時を記録するタイムスタンププロパティを追加

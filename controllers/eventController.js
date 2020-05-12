@@ -54,6 +54,7 @@ module.exports = io => {
       let event = {};
       Event.findOne({_id: id})
         .then((data) => {
+          console.log(data);
           event = data;
           return EventSchedule.findOne({_id: data.eventSchedule})
         })
@@ -62,7 +63,21 @@ module.exports = io => {
           client.emit('event read complete', event);
         })
         .catch(error => console.log(`event read error: ${error.message}`));
+    });
 
+    // イベントの検索 ------------------------------------------------
+    client.on('event search', (key) => {
+      let event = {};
+      Event.findOne(key)
+        .then((data) => {
+          event = data;
+          return EventSchedule.findOne({_id: data.eventSchedule})
+        })
+        .then((eventSchedule) => {
+          event.eventSchedule = eventSchedule;
+          client.emit('event search complete', event);
+        })
+        .catch(error => console.log(`event read error: ${error.message}`));
     });
 
     // イベントの更新 ------------------------------------------------
@@ -105,6 +120,42 @@ module.exports = io => {
       EventSchedule.findOne({_id: id})
         .then((eventSchedule) => {
           client.emit('eventSchedule read complete', eventSchedule);
+        })
+        .catch(
+          error => console.log(
+            `eventSchedule read error: ${error.message}`
+          )
+        );
+    });
+
+    // 週間予定の作成 ------------------------------------------------
+    client.on('event createWeekly', (data) => {
+      let event;
+      let eventSchedule;
+
+      // eventScheduleを先に作成する ---------------------------------
+      eventSchedule = new EventSchedule(data.eventSchedule);
+
+      // メッセージを保存する ----------------------------------------
+      eventSchedule.save()
+        .then((savedData) => {
+          data.eventSchedule = savedData;
+          event = new Event(data);
+        })
+        .then(() => {
+          return event.save();
+        })
+        .then((result) => {
+          // 保存に成功したらメッセージの値を送出
+          client.emit('event createWeekly complete', result);
+        })
+        .catch(error => console.log(`event create error: ${error.message}`));
+    });
+
+    client.on('eventSchedule search', (key) => {
+      EventSchedule.find(key)
+        .then((array) => {
+          client.emit('eventSchedule search complete', array);
         })
         .catch(
           error => console.log(

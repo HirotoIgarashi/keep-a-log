@@ -143,8 +143,16 @@ a {
 input {
   text-indent: 0.4em;
   width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px;
+  margin-top: 0.1em;
+  margin-bottom:  0.8em;
 }
 
+input:focus {
+  border: 1px solid red;
+}
 
 /* ==========================================================================
    Helper classes

@@ -92,7 +92,7 @@ pal.event = (() => {
     return result;
   };
 
-  // hh:mm形式のデータを2つ引数にとり減算を行いhhlkjhhhhjkkう ----------------------
+  // hh:mm形式のデータを2つ引数にとり減算を行う ----------------------
   const getDifferenceTime = ((start, end) => {
     let result;
 
@@ -110,13 +110,10 @@ pal.event = (() => {
   });
 
   const procForEachDayOfTheWeek = () => {
-
-    console.log('曜日ごとの処理を開始します');
-
     // 曜日ごとの処理開始 --------------------------------------------
     // このページの曜日を取得する
     let currentDay =
-      document.querySelector('#pal-event-read nav span')
+      document.querySelector('#pal-event-read h2')
         .getAttribute('data-day');
 
     // 曜日のinputを取得した曜日に設定する
@@ -125,15 +122,12 @@ pal.event = (() => {
     inputDatElement.setAttribute('value', currentDay);
 
     // .secondColumn以下の要素を削除する
-    let secondColumn = document.querySelector('.secondColumn');
+    let secondColumn = document.querySelector('.secondColumn ul');
     pal.util.emptyElement(secondColumn)
 
-    // 取得した曜日の予定を取得して表示する
+    // 取得した曜日の予定をサーバーから取得する ----------------------
     // contentsの部分/開始 -------------------------------------------
     socket.emit('eventSchedule search', {repeatFrequency: 'P1W'});
-
-    console.log('イベントスケジュールをサーチします');
-
     // 曜日ごとの処理終了 --------------------------------------------
   };
   //--------------------- ユーティリティメソッド終了 -----------------
@@ -224,13 +218,11 @@ pal.event = (() => {
     let checkbox = util.dom.createElement({
       tagName: 'input', type: 'checkbox', id: 'repeatEveryYear'
     });
-
     let checkboxLabel = util.dom.createElement({
       tagName: 'label',
       for: 'repeatEveryYear',
       textContent: '毎年繰り返す'
     });
-
     // -----イベントの名前のlabelとinput -----------------------------
     let inputName = util.dom.createLabelAndInput({
       'for': 'inputName',
@@ -240,7 +232,6 @@ pal.event = (() => {
       'id': 'inputName',
       'placeholder': '予定の名前を入力します'
     });
-
     // -----イベントの説明のlabelとinput -----------------------------
     let inputDescription = util.dom.createLabelAndInput({
       'for': 'inputDescription',
@@ -250,7 +241,6 @@ pal.event = (() => {
       'id': 'inputDescription',
       'placeholder': '予定の説明を入力します'
     });
-
     // ボタンを生成 --------------------------------------------------
     let button = util.dom.createElement({
       tagName: 'button',
@@ -258,7 +248,6 @@ pal.event = (() => {
       id: 'registEvent',
       textContent: '保存'
     });
-
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
@@ -473,33 +462,46 @@ pal.event = (() => {
   // イベントリストの要素を作成する ----------------------------------
   const makeEventListElement = (array, element) => {
     array.forEach((event) => {
+
+      console.log(event);
+
       let li = util.dom.createElement('li');
-      let spanId = util.dom.createElement({
-        tagName: 'span', class: 'hidden', textContent: event._id
-      });
-      let spanByMonth = util.dom.createElement({
-        tagName: 'span',
-        textContent: `${event.eventSchedule.byMonth}月`
-      });
-      spanByMonth.style.display = 'inline-block';
-      spanByMonth.style.textAlign = 'right';
-      spanByMonth.style.width = '2.5em';
+      // 2020の部分は修正する必要あり
+      li.setAttribute(
+        'data-date',
+        `2020-\
+${event.eventSchedule.byMonth}-\
+${event.eventSchedule.byMonthDay}`
+      );
 
-      let spanByMonthDay = util.dom.createElement({
-        tagName: 'span',
-        textContent: `${event.eventSchedule.byMonthDay}日`
+      const h3 = util.dom.createElement({
+        tagName: 'h3',
+        innerHTML: event.name
       });
-      spanByMonthDay.style.display = 'inline-block';
-      spanByMonthDay.style.textAlign = 'right';
-      spanByMonthDay.style.width = '2.5em';
+      const dl = util.dom.createElement({
+        tagName: 'dl'
+      });
 
-      let spanName = util.dom.createElement({
-        tagName: 'span', textContent: `${event.name}`
+      // 隠し属性で_idを設定しておく ---------------------------------
+      const dtId = util.dom.createElement({
+        tagName: 'dt', textContent: '_id'
       });
-      spanName.style.display = 'inline-block';
-      spanName.style.textAlign = 'left';
-      spanName.style.width = '15em';
-      spanName.style.marginLeft = '0.5em';
+      dtId.setAttribute('class', 'visuallyhidden');
+      const ddId = util.dom.createElement({
+        tagName: 'dd',
+        textContent: event._id
+      });
+      ddId.setAttribute('class', 'visuallyhidden');
+
+      // 日付を表示する ----------------------------------------------
+      const dtDate = util.dom.createElement({
+        tagName: 'dt', textContent: '日付:'
+      });
+      const ddDate = util.dom.createElement({
+        tagName: 'dd',
+        textContent:
+          `${event.eventSchedule.byMonth}月${event.eventSchedule.byMonthDay}日`
+      });
 
       let readButton = util.dom.createElement({
         tagName: 'button',
@@ -525,13 +527,14 @@ pal.event = (() => {
       let treeArray = [
         element, [
           li, [
-            spanId,
-            spanByMonth,
-            spanByMonthDay,
-            spanName,
-            readButton,
-            editButton,
-            deleteButton
+            h3,
+            dl, [
+              dtId, ddId,
+              dtDate, ddDate,
+              readButton,
+              editButton,
+              deleteButton
+            ]
           ]
         ]
       ];
@@ -560,7 +563,7 @@ pal.event = (() => {
     let navWeeklySchedule = util.dom.createElement('nav');
 
     let spanDay = util.dom.createElement({
-      tagName: 'span',
+      tagName: 'h2',
       innerHTML: `${dayArray[dayIndex]}曜日の予定`
     });
     // 初期値は月曜日
@@ -570,8 +573,6 @@ pal.event = (() => {
       tagName: 'button', type: 'button', innerHTML: '<'
     });
     previousButton.addEventListener('click', (e) => {
-
-      console.log('左矢印ボタンがクリックされました');
 
       e.preventDefault();
 
@@ -592,8 +593,6 @@ pal.event = (() => {
       tagName: 'button', type: 'button', innerHTML: '>'
     });
     nextButton.addEventListener('click', (e) => {
-
-      console.log('右矢印ボタンがクリックされました');
 
       e.preventDefault();
 
@@ -616,11 +615,6 @@ pal.event = (() => {
       tagName: 'div',
       class: 'firstColumn'
     });
-    let divContent = util.dom.createElement({
-      tagName: 'div',
-      class: 'secondColumn'
-    });
-
     hhmmArray.forEach((data) => {
       let divRow = util.dom.createElement({
         tagName: 'div', textContent: data
@@ -630,13 +624,21 @@ pal.event = (() => {
     });
     // hh:mmの部分/終了 ----------------------------------------------
 
+    let divContent = util.dom.createElement({
+      tagName: 'div',
+      class: 'secondColumn'
+    });
+    let ulElement = util.dom.createElement({
+      tagName: 'ul', id: 'pal-event-read-ul'
+    });
+
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
         h1WeeklySchedule,
         navWeeklySchedule, [previousButton, spanDay, nextButton],
         divHhMm,
-        divContent
+        divContent, [ulElement]
       ]
     ];
     // ツリー構造を作る --------------------------------------------
@@ -860,17 +862,34 @@ pal.event = (() => {
   // 週間予定を表示する ----------------------------------------------
   const showWeeklyEvent = (element) => {
 
-    const divContent = document.querySelector('.secondColumn');
+    // 要素を追加する場所を探す --------------------------------------
+    const divContent = document.querySelector('.secondColumn ul');
+    // li要素を作成する ----------------------------------------------
+    let liContentRow = util.dom.createElement({
+      tagName: 'li'
+    });
+    liContentRow.setAttribute('data-date', element.eventSchedule.startTime);
 
-    // div要素を作成する ---------------------------------------
-    let divContentRow = util.dom.createElement({
-      tagName: 'div',
-      // innerHTML: JSON.stringify(element)
+    const h3 = util.dom.createElement({
+      tagName: 'h3',
       innerHTML: element.name
     });
-    divContentRow.setAttribute('data-date', element.eventSchedule.startTime);
 
-    util.dom.appendByTreeArray([divContent, [divContentRow]]);
+    const dl = util.dom.createElement({
+      tagName: 'dl',
+      innerHTML: `\
+<dt class="visuallyhidden">_id:</dt><dd class="visuallyhidden">${element._id} </dd>\
+<dt>曜日:</dt><dd>${element.eventSchedule.byDay} </dd>\
+<dt>開始時間:</dt><dd>${element.eventSchedule.startTime} </dd>\
+<dt>終了時間:</dt><dd>${element.eventSchedule.endTime}</dd>\
+`
+    });
+
+    util.dom.appendByTreeArray([
+      divContent, [
+        liContentRow, [h3, dl]
+      ]
+    ]);
 
     // contentsの部分/終了 -------------------------------------
     let references =
@@ -880,7 +899,7 @@ pal.event = (() => {
     // 基準になるポジションを設定して要素の場所を決定する ----
     references.forEach((data) => {
       let reference = data.getAttribute('data-date');
-      let current = divContentRow.getAttribute('data-date');
+      let current = liContentRow.getAttribute('data-date');
 
       if (reference === current) {
         let clientRect = data.getBoundingClientRect();
@@ -888,11 +907,11 @@ pal.event = (() => {
         let right = window.pageXOffset + clientRect.right;
         let bottom = window.pageYOffset + clientRect.bottom;
 
-        divContentRow.style.position = 'absolute';
-        divContentRow.style.marginLeft = '1em';
-        divContentRow.style.left = right + 'px';
-        divContentRow.style.top = (top + bottom) / 2 + 'px';
-        divContentRow.style.width = '18em';
+        liContentRow.style.position = 'absolute';
+        liContentRow.style.marginLeft = '1em';
+        liContentRow.style.left = right + 'px';
+        liContentRow.style.top = (top + bottom) / 2 + 'px';
+        liContentRow.style.width = '40em';
 
         // 要素の高さを設定する -----------------------------
         let difference =
@@ -900,7 +919,7 @@ pal.event = (() => {
             element.eventSchedule.startTime,
             element.eventSchedule.endTime
           );
-        divContentRow.style.height = `${(bottom - top) * difference}px`;
+        liContentRow.style.height = `${(bottom - top) * difference}px`;
         return;
       }
     });
@@ -914,13 +933,21 @@ pal.event = (() => {
 
     let mergedList = mergeList(eventArray, eventScheduleArray);
 
+    // let p1yArray = mergedList.filter((data) => {
+    //   return data.eventSchedule.repeatFrequency !== 'P1W';
+    // });
+
+    let p1yArray = mergedList.filter(
+      (data) => data.eventSchedule.repeatFrequency !== 'P1W'
+    )
+
     // 全てのeventを読み込んだ結果を表示する -------------------------
     // pal-event-read以下の要素を削除する ----------------------------
     callbackById(
       'pal-event-list',
       (data) => pal.util.emptyElement(data)
     );
-    makeEventListElement(mergedList, eventList);
+    makeEventListElement(p1yArray, eventList);
   };
 
   // --------------------- イベントハンドラ開始 ----------------------
@@ -1151,7 +1178,7 @@ pal.event = (() => {
   socket.on('event search complete', (data) => {
     // このページの曜日を取得する
     let currentDay =
-      document.querySelector('#pal-event-read nav span')
+      document.querySelector('#pal-event-read h2')
         .getAttribute('data-day');
 
     if (data.eventSchedule.byDay === currentDay) {
@@ -1160,14 +1187,7 @@ pal.event = (() => {
   });
 
   socket.on('eventSchedule search complete', (array) => {
-
-    console.log(array);
-
     array.forEach((data) => {
-      console.log('イベントをサーチします');
-
-      console.log(data);
-
       socket.emit('event search', {eventSchedule:data._id});
     });
   });

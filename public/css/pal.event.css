@@ -14,6 +14,11 @@
   display: block;
 }
 
+#pal-event-read nav button,
+#pal-event-read nav h2 {
+  display: inline-block;
+}
+
 #pal-event-read div.firstColumn,
 #pal-event-read div.secondColumn {
   display: inline-block;
@@ -68,6 +73,30 @@
 .firstColumn div {
   height: 2em;
 }
-.secondColumn div{
+.secondColumn li {
   background: #99CCFF;
+}
+
+#pal-event-read-ul h3 {
+  margin: 2px;
+}
+
+#pal-event-read ul li h3,
+#pal-event-read ul li dl,
+#pal-event-read ul li dl dt,
+#pal-event-read ul li dl dd {
+  display: inline-block;
+}
+
+#pal-event-read-ul h3,
+#pal-event-read-ul dl,
+#pal-event-read-ul dd,
+#pal-event-read-ul dt {
+  display: inline-block;
+}
+
+#pal-event-read-ul dd,
+#pal-event-read-ul dt {
+  font-size: 75%;
+  margin-left: 4px;
 }

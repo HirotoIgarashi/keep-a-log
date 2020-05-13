@@ -56,9 +56,6 @@ pal.registSchedule = (function () {
       schedule_main,
       menu              = pal.util_b.getTplContent( 'schedule-registration' ),
       dayly             = pal.util_b.getTplContent( 'schedule-registration-dayly' ),
-      weekly            = pal.util_b.getTplContent( 'schedule-registration-weekly' ),
-      monthly_by_date   = pal.util_b.getTplContent( 'schedule-registration-monthly-by-date' ),
-      monthly_by_order  = pal.util_b.getTplContent( 'schedule-registration-monthly-by-order' ),
       current_page,
       anchor_list,
       i,
@@ -137,17 +134,9 @@ pal.registSchedule = (function () {
     // LocationHashの値により登録フォームを表示する
     schedule_main = document.querySelector( '#schedule-main' );
 
-    if ( current_hash === '#regist_schedule' || current_hash === '#regist_schedule/dayly' ) {
+    if ( current_hash === '#regist_schedule' ||
+        current_hash === '#regist_schedule/dayly' ) {
       schedule_main.appendChild( dayly );
-    }
-    else if ( current_hash === '#regist_schedule/weekly' ) {
-      schedule_main.appendChild( weekly );
-    }
-    else if ( current_hash === '#regist_schedule/monthly/bydate' ) {
-      schedule_main.appendChild( monthly_by_date );
-    }
-    else if ( current_hash === '#regist_schedule/monthly/byorder' ) {
-      schedule_main.appendChild( monthly_by_order );
     }
 
     return true;

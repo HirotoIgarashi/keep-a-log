@@ -55,13 +55,9 @@ pal.dom = (() => {
   const readSession = function () {
     const requestType = 'GET';
     const url = '/session/read';
-
     // AjaxによりGETする
     request = pal.util_b.sendXmlHttpRequest(
-      requestType,
-      url,
-      true,
-      onReceiveSession
+      requestType, url, true, onReceiveSession
     );
   };
   //----- ユーティリティメソッド/readSession/終了 --------------------
@@ -367,6 +363,9 @@ pal.dom = (() => {
 
     // ボタンのaria-pressed属性をtrueにする --------------------------
     setButtonPressed('pal-nav-home');
+
+    // セッションがあるかを確認する ----------------------------------
+    readSession();
 
     //----- フッターに日時を表示する(初回) ---------------------------
     elementMap.date_info.textContent = pal.util_b.getNowDateJp();

@@ -92,12 +92,12 @@ pal.dom = (() => {
 
   // DOMメソッド/setSection/開始 -------------------------------------
   // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を
-  // 取得して対応する
+  // 取得して必要なモジュールを呼び出す
   // モジュールを初期化する。
   // 必須引数: なし
   // オプション引数: なし
   // 設定:
-  //  * current_location_hash: カレントのハッシュの値を格納する。
+  //  * currentLocationHash: カレントのハッシュの値を格納する。
   // 戻り値: なし
   // 例外発行: なし
   // 
@@ -183,12 +183,9 @@ pal.dom = (() => {
   const makeFooter = () => {
     let frag = util.dom.createFragment();
 
-    let spanElement = util.dom.createElement(
-      {
-        tagName: 'span',
-        id: 'pal-dom-date-info'
-      }
-    );
+    let spanElement = util.dom.createElement( 'span', {
+      id: 'pal-dom-date-info'
+    });
     // -----HTMLを組み立てる------------------------------------------
 
     util.dom.appendChild(frag, spanElement);

@@ -8,12 +8,34 @@ util.dom = (() => {
 
   const createFragment = () => document.createDocumentFragment();
 
-  const createElement = (arg) => {
+  const createElement = (arg, option) => {
     if (typeof arg === 'string') {
       // 文字列が渡されたときの処理 ----------------------------------
-      return document.createElement(arg);
+      let element = document.createElement(arg);
+      // elementの属性を設定する -------------------------------------
+      if (option) {
+        Object.keys(option).forEach((data) => {
+          // textContentがあれば
+          if (data === 'textContent') {
+            element.textContent = option[data];
+          }
+          // innerHTMLがあれば
+          else if (data === 'innerHTML') {
+            element.innerHTML = option[data];
+          }
+          // valueがあれば
+          else if (data === 'value') {
+            element.value = option[data];
+          }
+          else {
+            element.setAttribute(data, option[data])
+          }
+        })
+      }
+      return element;
     }
     else if (typeof arg === 'object') {
+      // console.log(Object.keys(arg));
       let element = null;
       // オブジェクトが渡されたときの処理 ----------------------------
       // tagNameがあれば

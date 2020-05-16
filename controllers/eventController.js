@@ -54,7 +54,6 @@ module.exports = io => {
       let event = {};
       Event.findOne({_id: id})
         .then((data) => {
-          console.log(data);
           event = data;
           return EventSchedule.findOne({_id: data.eventSchedule})
         })
@@ -82,7 +81,6 @@ module.exports = io => {
 
     // イベントの更新 ------------------------------------------------
     client.on('event update', (data) => {
-      console.log(data);
       client.emit('event update complete', data);
     });
 

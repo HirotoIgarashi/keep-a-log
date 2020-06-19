@@ -1,17 +1,9 @@
 'use strict';
-
 /*
  * pal.event.js
  * イベント用のモジュール
 */
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true
-*/
 /*global pal util io*/
-
 pal.event = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
   // クライアントサイドでsocket.ioを初期化
@@ -19,6 +11,123 @@ pal.event = (() => {
   let eventArray;
   let eventScheduleArray;
 
+  // 週間予定のパラメータ --------------------------------------------
+  const eventWeeklyParam = {
+    eventId: {
+      "class": "visuallyhidden"
+    },
+    eventScheduleId: {
+      "class": "visuallyhidden"
+    },
+    name: {
+      type        : String,
+      required    : true,
+      labelText   : '予定の名前（必須）',
+      placeholder : '予定の名前を入力します'
+    },
+    description: {
+      type      : String,
+      labelText   : '予定の説明',
+      placeholder : '予定の説明を入力します'
+    },
+    // eventSchedule: {
+    byDay: {
+      type        : String,
+      labelText   : '曜日（必須）',
+      placeholder : '曜日を入力します'
+    },
+    startTime: {
+      type        : String,
+      labelText   : '開始時間（必須）',
+      placeholder : '開始時間を入力します'
+    },
+    endTime: {
+      type        : String,
+      labelText   : '終了時間（必須）',
+      placeholder : '終了時間を入力します'
+    },
+    repeatFrequency : {
+      type: String,
+      labelText: '繰り返し'
+    }
+  };
+
+  // 年間予定のパラメータ --------------------------------------------
+  const eventYearlyParam = {
+    eventId: {
+      "class": "visuallyhidden"
+    },
+    eventScheduleId: {
+      "class": "visuallyhidden"
+    },
+    name: {
+      type        : String,
+      required    : true,
+      labelText   : '予定の名前（必須）',
+      placeholder : '予定の名前を入力します'
+    },
+    description: {
+      type      : String,
+      labelText   : '予定の説明',
+      placeholder : '予定の説明を入力します'
+    },
+    byMonth: {
+      type        : Number,
+      min         : 1,
+      max         : 12,
+      labelText   : '月（必須）:',
+      placeholder : '1から12までの数値を入力します'
+    },
+    byMonthDay: {
+      type        : Number,
+      min         : 1,
+      max         : 31,
+      labelText   : '日（必須）:',
+      placeholder : '1から31までの数値を入力します'
+    },
+    repeatFrequency : {
+      type: String,
+      labelText: '繰り返し'
+    }
+  };
+  //--------------------- モジュールスコープ変数終了 -----------------
+
+  // 年間予定曜日指定のパラメータ ------------------------------------
+  const eventYearlyDayOfTheWeekParam = {
+    eventId: {
+      "class": "visuallyhidden"
+    },
+    eventScheduleId: {
+      "class": "visuallyhidden"
+    },
+    name: {
+      type        : String,
+      required    : true,
+      labelText   : '予定の名前（必須）',
+      placeholder : '予定の名前を入力します'
+    },
+    description: {
+      type      : String,
+      labelText   : '予定の説明',
+      placeholder : '予定の説明を入力します'
+    },
+    byMonth: {
+      type        : Number,
+      min         : 1,
+      max         : 12,
+      labelText   : '月（必須）:',
+      placeholder : '1から12までの数値を入力します'
+    },
+    byDay: {
+      type        : String,
+      labelText   : '曜日（必須）',
+      placeholder : '曜日を入力します'
+    },
+    repeatFrequency : {
+      type: String,
+      labelText: '繰り返し'
+    }
+  };
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -32,7 +141,6 @@ pal.event = (() => {
     });
     return result;
   });
-
   // eventオブジェクトとeventScheduleオブジェクトをマージする処理 ----
   const mergeList = ((event, eventSchedule) => {
     let mergedList = [];
@@ -55,29 +163,18 @@ pal.event = (() => {
     return mergedList;
   });
 
-  // idとコールバック関数を引数とする。idをキーとしてHTML要素内の
-  // id="id"の要素を取得して、その要素にコールバック関数を適用する
-  const callbackById =
-    (id, callback) => callback(document.getElementById(id))
-
-  const callbackByQuerySelector =
-    (selector, callback) => callback(document.querySelector(selector))
-
   // hashが変更されときの処理 ----------------------------------------
   const setButtonPressed = ((element) => {
-    // #pal-event-nav以下の全てのボタンのaria-pressed属性の値を
-    // falseにする
+    // element以下の全てのボタンのaria-pressed属性の値をfalseにする
     let liEventNav =
       document.querySelectorAll('#pal-event-nav li button');
     liEventNav.forEach((element) => {
       element.setAttribute('aria-pressed', 'false');
     });
-
     // 引数であるボタンのaria-pressed属性の値をtrueにする
     if (element) {
       element.setAttribute('aria-pressed', 'true');
     }
-
   });
 
   // 00:00から23:00までの文字列の配列を返す関数 ----------------------
@@ -106,23 +203,159 @@ pal.event = (() => {
   const procForEachDayOfTheWeek = () => {
     // 曜日ごとの処理開始 --------------------------------------------
     // このページの曜日を取得する
-    let currentDay =
-      document.querySelector('#pal-event-read h2')
-        .getAttribute('data-day');
+    let currentDay = util.dom.querySelector('#pal-event-read h2')
+                        .getAttribute('data-day');
 
     // 曜日のinputを取得した曜日に設定する
-    let inputDatElement = document.querySelector('#inputDay');
-    inputDatElement.setAttribute('data-day', currentDay);
-    inputDatElement.setAttribute('value', currentDay);
+    util.core.compose(
+      util.dom.setAttributeCurried(currentDay)('data-day'),
+      util.dom.setAttributeCurried(currentDay)('value'),
+      util.dom.querySelector,
+    )('#byDay');
 
     // .secondColumn以下の要素を削除する
-    let secondColumn = document.querySelector('.secondColumn ul');
-    pal.util.emptyElement(secondColumn)
+    util.core.compose(
+      util.dom.emptyElement,
+      util.dom.querySelector
+    )('.secondColumn ul');
 
     // 取得した曜日の予定をサーバーから取得する ----------------------
-    // contentsの部分/開始 -------------------------------------------
     socket.emit('eventSchedule search', {repeatFrequency: 'P1W'});
     // 曜日ごとの処理終了 --------------------------------------------
+  };
+
+  const getYearlyValueFromForm = () => {
+    let event = {};
+    let eventSchedule = {};
+
+    const eventParam = ['eventId', 'name', 'description'];
+    const eventScheduleParam = [
+      'eventScheduleId',
+      'byMonth',
+      'byMonthDay',
+      'byDay',
+      'repeatFrequency'
+    ];
+
+    util.dom.getValueFromForm(
+      eventYearlyParam, event, eventSchedule, eventParam, eventScheduleParam
+    );
+    // 毎週繰り返すのでP1Yを設定する ---------------------------------
+    eventSchedule.repeatFrequency = 'P1Y';
+    // eventオブジェクトとeventScheduleオブジェクトを関連付ける ------
+    event.eventSchedule = eventSchedule;
+
+    return event;
+  };
+
+  const getWeeklyValueFromForm = () => {
+    let event = {};
+    let eventSchedule = {};
+
+    const eventParam = ['eventId', 'name', 'description'];
+    const eventScheduleParam = [
+      'eventScheduleId',
+      'byDay',
+      'startTime',
+      'endTime',
+      'repeatFrequency'
+    ];
+
+    util.dom.getValueFromForm(
+      eventWeeklyParam, event, eventSchedule, eventParam, eventScheduleParam
+    );
+    // 毎週繰り返すのでP1Wを設定する ---------------------------------
+    eventSchedule.repeatFrequency = 'P1W';
+    // eventオブジェクトとeventScheduleオブジェクトを関連付ける ------
+    event.eventSchedule = eventSchedule;
+
+    return event;
+  };
+
+  const makeDlElement = (obj) => {
+    // ToDo: repeatFrequencyの値によってreturnする内容を変える -------
+    // repeatFrequencyの値はobj.eventSchedule.repeatFrequency
+    const dl = util.dom.createElement('dl');
+    let h2 = util.dom.createElement('h2', {
+      textContent: obj.name
+    });
+
+    const dtName = util.dom.createDt({textContent: '予定の名前:'});
+
+    const ddName = util.dom.createDd({});
+
+    const dtDescription =
+      util.dom.createDt({textContent: '予定の説明:'});
+
+    const ddDescription = util.dom.createDd({
+      textContent: obj.description
+    });
+
+    const dtByMonth = util.dom.createDt({textContent: '月:'});
+
+    const ddByMonth = util.dom.createDd({
+      textContent: obj.eventSchedule.byMonth
+    });
+
+    const dtByMonthDay = util.dom.createDt({ textContent: '日:' });
+
+    const ddByMonthDay = util.dom.createDd({
+      textContent: obj.eventSchedule.byMonthDay
+    });
+
+    const dtRepeatFrequency = util.dom.createDt({
+      textContent: '繰り返し:'
+    });
+
+    const ddRepeatFrequency = util.dom.createDd({
+      textContent: obj.eventSchedule.repeatFrequency
+    });
+
+    const dtByDay = util.dom.createDt({ textContent: '曜日:' });
+
+    const ddByDay = util.dom.createDd({
+      textContent: obj.eventSchedule.byDay
+    });
+
+    const dtStartTime = util.dom.createDt({
+      textContent: '開始時間:'
+    });
+
+    const ddStartTime = util.dom.createDd({
+      textContent: obj.eventSchedule.startTime
+    });
+
+    const dtEndTime = util.dom.createDt({
+      textContent: '終了時間:'
+    });
+
+    const ddEndTime = util.dom.createDd({
+      textContent: obj.eventSchedule.endTime
+    });
+
+    const dtStartDate = util.dom.createDt({ textContent: '開始日:' });
+
+    const ddStartDate = util.dom.createDd({
+      textContent: obj.eventSchedule.startDate
+    });
+
+    // HTMLを組み立てる-----------------------------------------------
+    let treeArray = [
+      dl, [
+        dtName, ddName, [h2],
+        dtDescription, ddDescription,
+        dtByMonth, ddByMonth,
+        dtByMonthDay, ddByMonthDay,
+        dtRepeatFrequency, ddRepeatFrequency,
+        dtByDay, ddByDay,
+        dtStartTime, ddStartTime,
+        dtEndTime, ddEndTime,
+        dtStartDate, ddStartDate
+      ]
+    ];
+    // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
+    return dl;
   };
   //--------------------- ユーティリティメソッド終了 -----------------
 
@@ -149,7 +382,7 @@ pal.event = (() => {
       id: 'pal-event-back',
       innerHTML: '戻る'
     });
-    buttonBack.addEventListener('click', onClickBack);
+    buttonBack.addEventListener('click', onClickCancel);
 
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
@@ -164,7 +397,7 @@ pal.event = (() => {
     return frag;
   };
 
-  const makeEventCreate = () => {
+  const makeEventCreateYearly = () => {
     let frag = util.dom.createFragment();
 
     // pal-event-createの内容開始 ------------------------------------
@@ -172,82 +405,16 @@ pal.event = (() => {
       textContent: '年間予定の作成'
     });
     // フォームを生成 ------------------------------------------------
-    let form = util.dom.createElement('form');
-    // inputタグを生成 -----------------------------------------------
-    // -----年のlabelとinput -----------------------------------------
-    let inputYear = util.dom.createLabelAndInput({
-      'for': 'inputYear',
-      'innerHTML': '年',
-      'type': 'text',
-      'name': 'year',
-      'id': 'inputYear',
-      'placeholder': '西暦で入力します'
-    });
-    // -----月のlabelとinput -----------------------------------------
-    let inputMonth = util.dom.createLabelAndInput({
-      'for': 'inputMonth',
-      'innerHTML': '月(必須)',
-      'type': 'text',
-      'name': 'month',
-      'id': 'inputMonth',
-      'placeholder': '1から12までの数値を入力します'
-    });
-    // -----日のlabelとinput -----------------------------------------
-    let inputDate = util.dom.createLabelAndInput({
-      'for': 'inputDate',
-      'innerHTML': '日(必須)',
-      'type': 'text',
-      'name': 'date',
-      'id': 'inputDate',
-      'placeholder': '1から31までの数値を入力します'
-    });
-    let divCheckbox = util.dom.createElement('div');
-    // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-    let checkbox = util.dom.createElement('input', {
-      type: 'checkbox', id: 'repeatEveryYear'
-    });
-    let checkboxLabel = util.dom.createElement('label', {
-      for: 'repeatEveryYear',
-      textContent: '毎年繰り返す'
-    });
-    // -----イベントの名前のlabelとinput -----------------------------
-    let inputName = util.dom.createLabelAndInput({
-      'for': 'inputName',
-      'innerHTML': '名前(必須)',
-      'type': 'text',
-      'name': 'name',
-      'id': 'inputName',
-      'placeholder': '予定の名前を入力します'
-    });
-    // -----イベントの説明のlabelとinput -----------------------------
-    let inputDescription = util.dom.createLabelAndInput({
-      'for': 'inputDescription',
-      'innerHTML': '説明',
-      'type': 'text',
-      'name': 'description',
-      'id': 'inputDescription',
-      'placeholder': '予定の説明を入力します'
-    });
+    let form = util.dom.makeForm(eventYearlyParam);
+
     // 保存ボタンを生成 ----------------------------------------------
     let button = util.dom.createElement('button', {
-      type: 'button',
-      id: 'registEvent',
-      textContent: '保存'
+      type: 'button', id: 'registEvent', textContent: '保存'
     });
+
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
-      frag, [
-        h1Create,
-        form, [
-          inputYear[0], inputYear[1],
-          inputMonth[0], inputMonth[1],
-          inputDate[0], inputDate[1],
-          divCheckbox,[ checkbox, checkboxLabel ],
-          inputName[0], inputName[1],
-          inputDescription[0], inputDescription[1],
-          button
-        ]
-      ]
+      frag, [ h1Create, form, button ]
     ];
     // ツリー構造を作る ----------------------------------------------
     util.dom.appendByTreeArray(treeArray);
@@ -255,78 +422,15 @@ pal.event = (() => {
     return frag;
   };
 
-  const makeEventCreateByNanyoubi = () => {
+  // 年間予定（第何何曜日指定）のページを作成する --------------------
+  const makeEventCreateDayOfTheWeek = () => {
     let frag = util.dom.createFragment();
     // pal-event-createの内容開始 ------------------------------------
     let h1Create = util.dom.createElement('h1', {
       textContent: '第何何曜日を指定して年間予定を作成します'
     });
     // フォームを生成 ------------------------------------------------
-    let form = util.dom.createElement('form');
-    // inputタグを生成 -----------------------------------------------
-    // -----年のlabelとinput -----------------------------------------
-    let inputYear = util.dom.createLabelAndInput({
-      'for': 'inputYear',
-      'innerHTML': '年: 何年から施行されたかを入力します',
-      'type': 'text',
-      'name': 'year',
-      'id': 'inputYear',
-      'placeholder': '西暦で入力します'
-    });
-    // -----月のlabelとinput -----------------------------------------
-    let inputMonth = util.dom.createLabelAndInput({
-      'for': 'inputMonth',
-      'innerHTML': '月(必須)',
-      'type': 'text',
-      'name': 'month',
-      'id': 'inputMonth',
-      'placeholder': '1から12までの数値を入力します'
-    });
-    // -----曜日のlabelとinput ---------------------------------------
-    let inputWhatNumber = util.dom.createLabelAndInput({
-      'for': 'inputWhatNumber',
-      'innerHTML': '第何(必須)',
-      'type': 'text',
-      'name': 'whatNumber',
-      'id': 'inputWhatNumber',
-      'placeholder': '1から5までの数字を入力します'
-    });
-    // -----曜日のlabelとinput ---------------------------------------
-    let inputDay = util.dom.createLabelAndInput({
-      'for': 'inputDay',
-      'innerHTML': '曜日(必須)',
-      'type': 'text',
-      'name': 'day',
-      'id': 'inputDay',
-      'placeholder': 'MondayからSundayまでのテキストを入力します'
-    });
-    let divCheckbox = util.dom.createElement('div');
-    // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-    let checkbox = util.dom.createElement('input', {
-      type: 'checkbox', id: 'repeatEveryYear'
-    });
-    let checkboxLabel = util.dom.createElement('label', {
-      for: 'repeatEveryYear',
-      textContent: '毎年繰り返す'
-    });
-    // -----イベントの名前のlabelとinput -----------------------------
-    let inputName = util.dom.createLabelAndInput({
-      'for': 'inputName',
-      'innerHTML': '名前(必須)',
-      'type': 'text',
-      'name': 'name',
-      'id': 'inputName',
-      'placeholder': '予定の名前を入力します'
-    });
-    // -----イベントの説明のlabelとinput -----------------------------
-    let inputDescription = util.dom.createLabelAndInput({
-      'for': 'inputDescription',
-      'innerHTML': '説明',
-      'type': 'text',
-      'name': 'description',
-      'id': 'inputDescription',
-      'placeholder': '予定の説明を入力します'
-    });
+    let form = util.dom.makeForm(eventYearlyDayOfTheWeekParam);
     // 保存ボタンを生成 ----------------------------------------------
     let button = util.dom.createElement('button', {
       type: 'button',
@@ -335,21 +439,38 @@ pal.event = (() => {
     });
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
-      frag, [
-        h1Create,
-        form, [
-          inputYear[0], inputYear[1],
-          inputMonth[0], inputMonth[1],
-          inputWhatNumber[0], inputWhatNumber[1],
-          inputDay[0], inputDay[1],
-          divCheckbox, [ checkbox, checkboxLabel ],
-          inputName[0], inputName[1],
-          inputDescription[0], inputDescription[1],
-          button
-        ]
-      ]
+      frag, [ h1Create, form, button ]
     ];
     // ツリー構造を作る ----------------------------------------------
+    util.dom.appendByTreeArray(treeArray);
+    return frag;
+  };
+
+  // 週間予定（曜日指定）のページを作成する --------------------------
+  const makeEventCreateWeekly = () => {
+    let frag = util.dom.createFragment();
+    let h1WeeklySchedule = util.dom.createElement('h1', {
+      textContent: '週間予定を登録します'
+    });
+
+    // ToDo: 引数は配列で渡すようにする
+    // 形式はmongooseのschema定義に従っているが、
+    // labelTextとplaceholderのプロパティはこのプログラム独自の
+    // ルールとなっている。それぞれがlabelタグのテキスト、
+    // inputタグのplaceholderの値になる
+    let form = util.dom.makeForm(eventWeeklyParam);
+
+    // ボタンを生成 --------------------------------------------------
+    let button = util.dom.createElement('button', {
+      type: 'button', id: 'createEvent', textContent: '保存'
+    });
+    button.addEventListener('click', onClickEventCreateWeekly);
+
+    // HTMLを組み立てる---------------------------------------------
+    let treeArray = [
+      frag, [ h1WeeklySchedule, form, button]
+    ];
+    // ツリー構造を作る --------------------------------------------
     util.dom.appendByTreeArray(treeArray);
 
     return frag;
@@ -373,7 +494,6 @@ pal.event = (() => {
     ];
     // ツリー構造を作る ----------------------------------------------
     util.dom.appendByTreeArray(treeArray);
-
     return frag;
   };
 
@@ -387,19 +507,37 @@ pal.event = (() => {
       textContent: 'イベントの詳細'
     });
 
-    const dl = util.dom.createElement('dl');
-    const dtName = util.dom.createElement('dt', {
-      textContent: '予定の名前'
-    });
-    const ddName = util.dom.createElement('dd', {
-      textContent: eventObject.name
-    });
+    const dl = makeDlElement(eventObject);
 
-
+    // 編集ボタンの設定
+    let updateButton = util.dom.createElement('button', {
+      type: 'button',
+    });
+    let updateAnchor = util.dom.createElement('a', {
+      href: `#event/update/${eventObject._id}`,
+      textContent: '編集'
+    });
+    // 削除ボタンの設定
+    let deleteButton = util.dom.createElement('button', {
+      type: 'button'
+    });
+    let deleteAnchor = util.dom.createElement('a', {
+      href: `#event/delete/${eventObject._id}`,
+      textContent: '削除'
+    });
+    // -----cancelボタンを生成 ---------------------------------------
+    let cancelButton = util.dom.createElement('button', {
+      type: 'button', id: 'cancel', textContent: '戻る'
+    });
+    cancelButton.addEventListener('click', onClickCancel);
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
-        div, [h1, dl, [dtName, ddName]
+        div, [
+          h1, dl,
+          updateButton, [updateAnchor],
+          deleteButton, [deleteAnchor],
+          cancelButton
         ]
       ]
     ];
@@ -408,7 +546,8 @@ pal.event = (() => {
     return frag;
   };
 
-  const makeEventUpdate = (eventObject) => {
+  const makeEventUpdate = (event) => {
+    let form;
     let frag = util.dom.createFragment();
     // -----全体を含めるdivタグの作成 --------------------------------
     let div = util.dom.createElement('div', {
@@ -417,22 +556,40 @@ pal.event = (() => {
     let h1 = util.dom.createElement('h1', {
       textContent: 'イベント情報を編集します'
     });
-    const dl = util.dom.createElement('dl');
-    const dtName = util.dom.createElement('dt', {
-      textContent: '予定の名前'
+    // formを表示する
+    if (event.eventSchedule.repeatFrequency === 'P1Y') {
+      // 曜日が第何何曜日指定かどうかを判定する
+      // byDayに値が設定されていれば第何何曜日と判定する
+      if (event.eventSchedule.byDay) {
+        form = util.dom.makeForm(eventYearlyDayOfTheWeekParam);
+      }
+      else {
+        form = util.dom.makeForm(eventYearlyParam);
+      }
+    }
+    else if (event.eventSchedule.repeatFrequency === 'P1W') {
+      form = util.dom.makeForm(eventWeeklyParam);
+    }
+
+    let saveButton = util.dom.createElement('button', {
+      type: 'button', id: 'createEvent', textContent: '保存'
     });
-    const ddName = util.dom.createElement('dd', {
-      textContent: eventObject.name
+
+    if (event.eventSchedule.repeatFrequency === 'P1Y') {
+      saveButton.addEventListener('click', onClickEventUpdateYearly);
+    }
+    else if (event.eventSchedule.repeatFrequency === 'P1W') {
+      saveButton.addEventListener('click', onClickEventUpdateWeekly);
+    }
+    // -----cancelボタンを生成 ---------------------------------------
+    let cancelButton = util.dom.createElement('button', {
+      type: 'button', id: 'cancel', textContent: 'キャンセル'
     });
-
-
-
-
+    cancelButton.addEventListener('click', onClickCancel);
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
-        div, [h1, dl, [dtName, ddName]
-        ]
+        div, [ h1, form, saveButton, cancelButton ]
       ]
     ];
     // ツリー構造を作る ----------------------------------------------
@@ -449,14 +606,7 @@ pal.event = (() => {
     let h1 = util.dom.createElement('h1', {
       textContent: 'このイベントを削除します'
     });
-    const dl = util.dom.createElement('dl');
-    const dtName = util.dom.createElement('dt', {
-      textContent: '予定の名前'
-    });
-    const ddName = util.dom.createElement('dd', {
-      textContent: eventObject.name
-    });
-
+    const dl = makeDlElement(eventObject);
     // -----agreeボタンを生成 ----------------------------------------
     let agreeButton = util.dom.createElement('button', {
       type: 'button', id: 'agree', textContent: 'はい'
@@ -470,11 +620,7 @@ pal.event = (() => {
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
-        div, [
-          h1,
-          dl, [dtName, ddName],
-          agreeButton, cancelButton
-        ]
+        div, [ h1, dl, agreeButton, cancelButton ]
       ]
     ];
     // ツリー構造を作る ----------------------------------------------
@@ -496,18 +642,16 @@ ${event.eventSchedule.byMonthDay}`
       const dl = util.dom.createElement('dl');
 
       // 隠し属性で_idを設定しておく ---------------------------------
-      const dtId = util.dom.createElement('dt', {
+      const dtId = util.dom.createDt({
         textContent: '_id', class: 'visuallyhidden'
       });
-      const ddId = util.dom.createElement('dd', {
+      const ddId = util.dom.createDd({
         textContent: event._id, class: 'visuallyhidden'
       });
 
       // 日付を表示する ----------------------------------------------
-      const dtDate = util.dom.createElement('dt', {
-        textContent: '日付:'
-      });
-      const ddDate = util.dom.createElement('dd', {
+      const dtDate = util.dom.createDt({ textContent: '日付:' });
+      const ddDate = util.dom.createDd({
         textContent:
           `${event.eventSchedule.byMonth}月${event.eventSchedule.byMonthDay}日`
       });
@@ -586,9 +730,7 @@ ${event.eventSchedule.byMonthDay}`
       type: 'button', innerHTML: '<'
     });
     previousButton.addEventListener('click', (e) => {
-
       e.preventDefault();
-
       if (dayIndex === 0) {
         dayIndex = 6;
       }
@@ -599,16 +741,13 @@ ${event.eventSchedule.byMonthDay}`
       spanDay.setAttribute('data-day', dayEnglishArray[dayIndex]);
       // 曜日ごとの処理 ----------------------------------------------
       procForEachDayOfTheWeek();
-
     });
 
     let nextButton = util.dom.createElement('button', {
       type: 'button', innerHTML: '>'
     });
     nextButton.addEventListener('click', (e) => {
-
       e.preventDefault();
-
       if (dayIndex === 6) {
         dayIndex = 0;
       }
@@ -619,7 +758,6 @@ ${event.eventSchedule.byMonthDay}`
       spanDay.setAttribute('data-day', dayEnglishArray[dayIndex]);
       // 曜日ごとの処理 ----------------------------------------------
       procForEachDayOfTheWeek();
-
     });
     // 曜日を切り替える部分/終了 -------------------------------------
 
@@ -645,124 +783,14 @@ ${event.eventSchedule.byMonthDay}`
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
-        h1WeeklySchedule,
-        navWeeklySchedule, [previousButton, spanDay, nextButton],
+        navWeeklySchedule, [
+          h1WeeklySchedule, previousButton, spanDay, nextButton
+        ],
         divHhMm,
         divContent, [ulElement]
       ]
     ];
     // ツリー構造を作る ----------------------------------------------
-    util.dom.appendByTreeArray(treeArray);
-
-    return frag;
-  };
-
-  const makeEventCreateWeekly = () => {
-    let frag = util.dom.createFragment();
-
-    let h1WeeklySchedule = util.dom.createElement('h1', {
-      textContent: '予定を登録します'
-    });
-
-    let form = util.dom.createElement('form', {autocomplete: 'on'});
-
-    // -----イベントの曜日のlabelとinput -----------------------------
-    let inputDay = util.dom.createLabelAndInput({
-      'for': 'inputDay',
-      'innerHTML': '曜日(必須)',
-      'type': 'text',
-      'name': 'day',
-      'id': 'inputDay',
-      'placeholder': '曜日を入力します'
-    });
-    inputDay[1].setAttribute('list', 'days');
-    // 初期値は月曜日 ------------------------------------------------
-    inputDay[1].setAttribute('value', 'Monday');
-
-    let datalist = util.dom.createElement('datalist', {
-      id: 'days'
-    });
-    let optionMonday = util.dom.createElement('option', {
-      value: 'Monday'
-    });
-    let optionTuesday = util.dom.createElement('option', {
-      value: 'Tuesday'
-    });
-    let optionWednesday = util.dom.createElement('option', {
-      value: 'Wednesday'
-    });
-    let optionThursday = util.dom.createElement('option', {
-      value: 'Thursday'
-    });
-    let optionFriday = util.dom.createElement('option', {
-      value: 'Friday'
-    });
-    let optionSaturday = util.dom.createElement('option', {
-      value: 'Saturday'
-    });
-    let optionSunday = util.dom.createElement('option', {
-      value: 'Sunday'
-    });
-
-    util.dom.appendByTreeArray([
-      datalist, [
-        optionMonday, optionTuesday, optionWednesday, optionThursday,
-        optionFriday, optionSaturday, optionSunday
-      ]
-    ]);
-    // -----イベントの名前のlabelとinput -----------------------------
-    let inputName = util.dom.createLabelAndInput({
-      'for': 'inputName',
-      'innerHTML': 'イベントの名前(必須)',
-      'type': 'text',
-      'name': 'name',
-      'id': 'inputName',
-      'placeholder': 'イベントの名前を入力します'
-    });
-
-    // -----イベントの開始時間のlabelとinput -------------------------
-    let inputStartTime = util.dom.createLabelAndInput({
-      'for': 'inputStartTime',
-      'innerHTML': '開始時間',
-      'type': 'text',
-      'name': 'startTime',
-      'id': 'inputStartTime',
-      'placeholder': '開始時間を入力します'
-    });
-    inputStartTime[1].setAttribute('pattern', '\\d\\d:\\d\\d');
-
-    // -----イベントの終了時間のlabelとinput -------------------------
-    let inputEndTime = util.dom.createLabelAndInput({
-      'for': 'inputEndTime',
-      'innerHTML': '終了時間',
-      'type': 'text',
-      'name': 'endTime',
-      'id': 'inputEndTime',
-      'placeholder': '終了時間を入力します'
-    });
-    inputEndTime[1].setAttribute('pattern', '\\d\\d:\\d\\d');
-
-    // ボタンを生成 --------------------------------------------------
-    let button = util.dom.createElement('button', {
-      type: 'button', id: 'createEvent', textContent: '保存'
-    });
-    button.addEventListener('click', onClickEventCreateWeekly);
-
-    // HTMLを組み立てる---------------------------------------------
-    let treeArray = [
-      frag, [
-        h1WeeklySchedule,
-        form, [
-          inputDay[0], inputDay[1],
-          datalist,
-          inputName[0], inputName[1],
-          inputStartTime[0], inputStartTime[1],
-          inputEndTime[0], inputEndTime[1],
-          button
-        ]
-      ]
-    ];
-    // ツリー構造を作る --------------------------------------------
     util.dom.appendByTreeArray(treeArray);
 
     return frag;
@@ -788,7 +816,7 @@ ${event.eventSchedule.byMonthDay}`
       textContent: '予定一覧'
     });
 
-    // 予定登録ボタン（曜日指定）の作成 ------------------------------
+    // 年間予定ボタン（曜日指定）の作成 ------------------------------
     let liEventDay = util.dom.createElement('li');
     let buttonDay = util.dom.createElement('button', {
       id: 'pal-event-nav-byday'
@@ -800,7 +828,7 @@ ${event.eventSchedule.byMonthDay}`
       textContent: '週間予定(曜日指定)'
     });
 
-    // 予定登録ボタン（日指定）の作成 --------------------------------
+    // 年間予定ボタン（日指定）の作成 --------------------------------
     let liEventByDate = util.dom.createElement('li');
     let buttonByDate = util.dom.createElement('button', {
       id: 'pal-event-nav-yearly'
@@ -809,10 +837,10 @@ ${event.eventSchedule.byMonthDay}`
     let anchorByDate = util.dom.createElement('a', {
       href: '#event/create/yearly',
       onfocus: 'this.blur();',
-      textContent: '予定登録(日指定)'
+      textContent: '年間予定(日指定)'
     });
 
-    // 予定登録ボタン（第何何曜日指定）の作成 ------------------------
+    // 年間予定ボタン（第何何曜日指定）の作成 ------------------------
     let liEventByDay = util.dom.createElement('li');
     let buttonByDay = util.dom.createElement('button', {
       id: 'pal-event-nav-dayoftheweek'
@@ -821,44 +849,31 @@ ${event.eventSchedule.byMonthDay}`
     let anchorByDay = util.dom.createElement('a', {
       href: '#event/create/dayOfTheWeek',
       onfocus: 'this.blur();',
-      textContent: '予定登録(第何何曜日指定)'
+      textContent: '年間予定(第何何曜日指定)'
     });
 
     // HTMLを組み立てる-----------------------------------------------
     util.dom.appendByTreeArray([
       frag, [
         ulElement, [
-          liEventList, [
-            buttonList, [ anchorList ] 
-          ],
-          liEventDay, [
-            buttonDay, [ anchorDay ] 
-          ],
-          liEventByDate, [
-            buttonByDate, [ anchorByDate ] 
-          ],
-          liEventByDay, [
-            buttonByDay, [ anchorByDay ]
-          ]
+          liEventList, [ buttonList, [ anchorList ] ],
+          liEventDay, [ buttonDay, [ anchorDay ] ],
+          liEventByDate, [ buttonByDate, [ anchorByDate ] ],
+          liEventByDay, [ buttonByDay, [ anchorByDay ] ]
         ]
       ]
     ]);
-    // -----HTMLを組み立てる------------------------------------------
-
     return frag;
   };
 
   const showEventReadAll = () => {
-    // pal-event-read以下の要素を削除する ----------------------------
-    callbackById(
-      'pal-event-read',
-      data => pal.util.emptyElement(data)
-    );
-    // イベントリストを表示する --------------------------------------
-    callbackById(
-      'pal-event-read',
-      data => util.dom.appendChild(data, makeEventReadAll())
-    );
+    // pal-event-read以下の要素を削除してDOM要素を追加する -----------
+    util.core.compose(
+      util.dom.appendChildCurried(makeEventReadAll()),
+      util.dom.emptyElement,
+      util.dom.getElementById
+    )('pal-event-read');
+
     // 全てのeventとeventScheduleを読み込む --------------------------
     socket.emit('eventSchedule readAll');
     socket.emit('event readAll');
@@ -892,7 +907,6 @@ ${event.eventSchedule.byMonthDay}`
       href: `#event/read/${element._id}`,
       textContent: '表示'
     });
-
     // 編集ボタンの設定
     let updateButton = util.dom.createElement('button', {
       type: 'button'
@@ -901,7 +915,6 @@ ${event.eventSchedule.byMonthDay}`
       href: `#event/update/${element._id}`,
       textContent: '編集'
     });
-
     // 削除ボタンの設定
     let deleteButton = util.dom.createElement('button', {
       type: 'button'
@@ -965,8 +978,11 @@ ${event.eventSchedule.byMonthDay}`
   };
   //--------------------- DOMメソッド終了 ----------------------------
   const setEventArray = (data) => {
-    const eventList = callbackById('pal-event-list', (data) => data);
-
+    const eventList =
+      util.core.compose(
+        (data) => data,
+        util.dom.getElementById
+      )('pal-event-list');
     // eventArray変数にサーバーからのデータをセットする --------------
     eventArray = data;
 
@@ -978,10 +994,10 @@ ${event.eventSchedule.byMonthDay}`
 
     // 全てのeventを読み込んだ結果を表示する -------------------------
     // pal-event-read以下の要素を削除する ----------------------------
-    callbackById(
-      'pal-event-list',
-      (data) => pal.util.emptyElement(data)
-    );
+    util.core.compose(
+      util.dom.emptyElement,
+      util.dom.getElementById
+    )('pal-event-list');
     makeEventYearlyList(p1yArray, eventList);
   };
 
@@ -999,61 +1015,13 @@ ${event.eventSchedule.byMonthDay}`
 
   // onClickRegistButton開始 -----------------------------------------
   const onClickRegistButton = (e) => {
-    let eventMap = {};
-    let eventSchedule = {};
-    let whatNumber;
-    let day;
-
-    const repeatEveryYear =
-      callbackById('repeatEveryYear', (data) => data);
-
-    const year = callbackById('inputYear', data => data.value);
-    const month = callbackById('inputMonth', data => data.value);
-    const date = callbackById('inputDate', data => data.value);
-    const name = callbackById('inputName', data => data.value);
-    const description =
-      callbackById('inputDescription', (data) => data.value);
-
-    // 第何何曜日が指定されたときの処理 ------------------------------
-    if (callbackById('inputWhatNumber', data => data)) {
-      whatNumber =
-        callbackById('inputWhatNumber', data => data.value);
-    }
-    if (callbackById('inputDay', data => data)) {
-      day = callbackById('inputDay', data => data.value);
-    }
 
     e.preventDefault();
 
-    // eventScheduleを組み立てる 開始 --------------------------------
-    eventSchedule.byMonth = month;
-    eventSchedule.byMonthDay = date;
-
-    if (year) {
-      eventSchedule.startDate = `${year}-${month}-${date}`;
-    }
-    // 繰り返しがチェックされていたら
-    if (repeatEveryYear.checked) {
-      eventSchedule.repeatFrequency = 'P1Y';
-    }
-    // 第何何曜日が指定されたときの処理 ------------------------------
-    if (whatNumber === undefined && day === undefined) {
-      console.log('何曜日が指定されていません');
-    }
-    else {
-      console.log('何曜日が指定されています');
-    }
-    // eventScheduleを組み立てる 終了 --------------------------------
-
-    eventMap.name = name;
-    eventMap.description = description;
-
-    // eventMapにeventScheduleを設定する
-    eventMap.eventSchedule = eventSchedule;
+    // フォームから値を取得する
+    let eventMap = getYearlyValueFromForm();
 
     socket.emit('event create', eventMap);
-    // socket.emit('event update', eventMap);
-
     socket.on('event create complete', () => {
       // 全てのeventを読み込む ---------------------------------------
       socket.emit('eventSchedule readAll');
@@ -1065,21 +1033,31 @@ ${event.eventSchedule.byMonthDay}`
 
   // onClickCreateButton開始 -----------------------------------------
   const onClickCreateButton = (e) => {
+
+    e.preventDefault();
+
     let eventMap = {};
     let eventSchedule = {};
 
-    const year = callbackById('inputYear', data => data.value);
-    const month = callbackById('inputMonth', data => data.value);
-    const whatNumber =
-      callbackById('inputWhatNumber', data => data.value);
-    const day = callbackById('inputDay', data => data.value);
-    const repeatEveryYear =
-      callbackById('repeatEveryYear', data => data.value);
-    const name = callbackById('inputName', data => data.value);
-    const description =
-      callbackById('inputDescription', data => data.value)
+    let year = new Date().getFullYear();
 
-    e.preventDefault();
+    const name = util.core.compose(
+      util.dom.getValue, util.dom.getElementById)('name');
+
+    const description = util.core.compose(
+      util.dom.getValue, util.dom.getElementById)('description');
+
+    const month = util.core.compose(
+      util.dom.getValue, util.dom.getElementById)('byMonth');
+
+    const byDay = util.core.compose(
+      util.dom.getValue, util.dom.getElementById)('byDay');
+
+    const repeatFrequency = util.core.compose(
+      util.dom.getValue, util.dom.getElementById)('repeatFrequency');
+
+    let whatNumber = byDay[0];
+    let day = byDay.slice(1, byDay.length);
 
     // 第何何曜日の日付を取得する ------------------------------------
     let resultDay = util.date.getDateByWhatNumberDay({
@@ -1090,19 +1068,10 @@ ${event.eventSchedule.byMonthDay}`
     eventSchedule.byMonth = month;
     eventSchedule.byMonthDay = resultDay.split('/')[2];
 
-    if (year) {
-      eventSchedule.startDate = `${year}-${month}-${day}`;
-    }
-    // 繰り返しがチェックされていたら
-    if (repeatEveryYear.checked) {
-      eventSchedule.repeatFrequency = 'P1Y';
-    }
-    if (whatNumber) {
-      if (day) {
-        eventSchedule.byDay = `${whatNumber}${day}`;
-      }
-    }
+    eventSchedule.repeatFrequency = repeatFrequency;
+    eventSchedule.byDay = byDay;
     // eventScheduleを組み立てる 終了 --------------------------------
+
     eventMap.name = name;
     eventMap.description = description;
 
@@ -1110,9 +1079,6 @@ ${event.eventSchedule.byMonthDay}`
     eventMap.eventSchedule = eventSchedule;
 
     socket.emit('event create', eventMap);
-    // socket.emit('event read', eventMap);
-    // socket.emit('event update', eventMap);
-    // socket.emit('event delete', eventMap);
 
     socket.on('event create complete', () => {
       // 全てのeventを読み込む ---------------------------------------
@@ -1137,38 +1103,28 @@ ${event.eventSchedule.byMonthDay}`
   };
 
   const onClickEventCreateWeekly = (e) => {
-
     e.preventDefault();
 
-    let event = {};
-    let eventSchedule = {};
-
-    // formから値を取得する ------------------------------------------
-    const day = callbackById('inputDay', data => data.value);
-    const name = callbackById('inputName', data => data.value);
-    const startTime =
-      callbackById('inputStartTime', data => data.value);
-    const endTime =
-      callbackById('inputEndTime', data => data.value);
-
-    event.name = name;
-    eventSchedule.byDay = day;
-    eventSchedule.startTime = startTime;
-    eventSchedule.endTime = endTime;
-    eventSchedule.repeatFrequency = 'P1W';
-
-    event.eventSchedule = eventSchedule;
+    // フォームから値を取得する
+    let event = getWeeklyValueFromForm();
 
     socket.emit('event createWeekly', event);
-
-    // eventの処理/終了 ----------------------------------------------
-    socket.on('event createWeekly complete', (data) => {
-      makeEventWeeklyList(data);
-    });
   };
+  // 週間予定の更新処理
+  const onClickEventUpdateWeekly = (e) => {
+    e.preventDefault();
+    // フォームから値を取得する
+    let event = getWeeklyValueFromForm();
+    socket.emit('event update', event);
+  };
+  // 年間予定の更新処理
+  const onClickEventUpdateYearly = (e) => {
+    e.preventDefault();
 
-  const onClickBack = () => {
-    history.back();
+    // フォームから値を取得する
+    let event = getYearlyValueFromForm();
+
+    socket.emit('event update', event);
   };
   // --------------------- イベントハンドラ終了 ----------------------
 
@@ -1191,48 +1147,155 @@ ${event.eventSchedule.byMonthDay}`
   socket.on('event read complete', (eventObject) => {
     const currentHash = pal.bom.getLocationHash();
     let crud = currentHash.split('/')[1]
-
-    console.log(crud);
-
-    console.log(eventObject);
-
     // socket.emit('event read')したときのロケーションハッシュにより
     // 処理を切り分ける
     switch (crud) {
       // 表示ボタンがクリックされたとき -----------------------------
       case 'read':
-        callbackById(
-          'pal-event-read',
-          element =>
-          util.dom.appendChild(element, makeEventRead(eventObject))
-        );
+        util.core.compose(
+          util.dom.appendChildCurried(makeEventRead(eventObject)),
+          util.dom.getElementById
+        )('pal-event-read');
         break;
       // 編集ボタンがクリックされたとき ------------------------------
       case 'update':
-        callbackById(
-          'pal-event-read',
-          element => 
-          util.dom.appendChild(element, makeEventUpdate(eventObject))
-        );
+
+        // 編集フォームを表示する
+        util.core.compose(
+          util.dom.appendChildCurried(makeEventUpdate(eventObject)),
+          util.dom.getElementById
+        )('pal-event-read');
+
+        if (eventObject.eventSchedule.repeatFrequency === 'P1W') {
+          // ToDo: eventWeeklyParamを使うようにする ------------------
+          // 隠し属性のid値に設定する
+          util.core.compose(
+            util.dom.setValue(eventObject._id),
+            util.dom.getElementById
+          )('eventId');
+          // input要素に値をセットする
+          util.core.compose(
+            util.dom.setValue(eventObject.name),
+            util.dom.getElementById
+          )('name');
+          util.core.compose(
+            util.dom.setValue(eventObject.description),
+            util.dom.getElementById
+          )('description');
+          // 隠し属性のid値に設定する
+          util.core.compose(
+            util.dom.setValue(eventObject.eventSchedule._id),
+            util.dom.getElementById
+          )('eventScheduleId');
+          util.core.compose(
+            util.dom.setValue(eventObject.eventSchedule.byDay),
+            util.dom.getElementById
+          )('byDay');
+          util.core.compose(
+            util.dom.setValue(eventObject.eventSchedule.startTime),
+            util.dom.getElementById
+          )('startTime');
+          util.core.compose(
+            util.dom.setValue(eventObject.eventSchedule.endTime),
+            util.dom.getElementById
+          )('endTime');
+        }
+        else if (eventObject.eventSchedule.repeatFrequency === 'P1Y') {
+          if (eventObject.eventSchedule.byDay) {
+            // 第何何曜日の処理
+            // ToDo: eventWeeklyParamを使うようにする ------------------
+            // 隠し属性のid値に設定する
+            util.core.compose(
+              util.dom.setValue(eventObject._id),
+              util.dom.getElementById
+            )('eventId');
+            // input要素に値をセットする
+            util.core.compose(
+              util.dom.setValue(eventObject.name),
+              util.dom.getElementById
+            )('name');
+            util.core.compose(
+              util.dom.setValue(eventObject.description),
+              util.dom.getElementById
+            )('description');
+            // 隠し属性のid値に設定する
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule._id),
+              util.dom.getElementById
+            )('eventScheduleId');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.byMonth),
+              util.dom.getElementById
+            )('byMonth');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.byDay),
+              util.dom.getElementById
+            )('byDay');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.repeatFrequency),
+              util.dom.getElementById
+            )('repeatFrequency');
+          }
+          else {
+            // 年間予定の処理
+            // ToDo: eventWeeklyParamを使うようにする ------------------
+            // 隠し属性のid値に設定する
+            util.core.compose(
+              util.dom.setValue(eventObject._id),
+              util.dom.getElementById
+            )('eventId');
+            // input要素に値をセットする
+            util.core.compose(
+              util.dom.setValue(eventObject.name),
+              util.dom.getElementById
+            )('name');
+            util.core.compose(
+              util.dom.setValue(eventObject.description),
+              util.dom.getElementById
+            )('description');
+            // 隠し属性のid値に設定する
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule._id),
+              util.dom.getElementById
+            )('eventScheduleId');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.byMonth),
+              util.dom.getElementById
+            )('byMonth');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.byMonthDay),
+              util.dom.getElementById
+            )('byMonthDay');
+            util.core.compose(
+              util.dom.setValue(eventObject.eventSchedule.repeatFrequency),
+              util.dom.getElementById
+            )('repeatFrequency');
+          }
+        }
         break;
       // 削除ボタンがクリックされたとき ------------------------------
       case 'delete':
-        callbackById(
-          'pal-event-read',
-          element =>
-          util.dom.appendChild(element, makeEventDelete(eventObject))
-        );
+        util.core.compose(
+          util.dom.appendChildCurried(makeEventDelete(eventObject)),
+          util.dom.getElementById
+        )('pal-event-read');
         break;
       default:
-        console.log('ロケーションハッシュの処理が不正です');
+        console.log('ロケーションハッシュの処理に間違いがあります');
         break;
     }
 
   });
+  // event update complete -------------------------------------------
+  socket.on(
+    'event update complete',
+    () => history.back()
+  );
+
   // event delete complete -------------------------------------------
   socket.on(
     'event delete complete',
-    () => pal.bom.setLocationHash('#event/create/yearly')
+    () => history.back()
   );
 
   socket.on('event search complete', (data) => {
@@ -1252,6 +1315,9 @@ ${event.eventSchedule.byMonthDay}`
     });
   });
 
+  socket.on('event createWeekly complete', (data) => {
+    makeEventWeeklyList(data);
+  });
   // ----- webSocket処理終了 -----------------------------------------
 
   // --------------------- パブリックメソッド開始 --------------------
@@ -1266,21 +1332,21 @@ ${event.eventSchedule.byMonthDay}`
     let hashArray = onHashchange(mainSection);
     let crud = hashArray[1];
     let eventId = hashArray[2];
-    let palMainNav;
 
-    // mainセクションの子要素をすべて削除する ------------------------
-    pal.util.emptyElement(mainSection);
-    // 骨組みを表示する ----------------------------------------------
-    mainSection.appendChild(makeStructure());
+    // mainセクションの子要素をすべて削除して骨組みを表示する --------
+    util.core.compose(
+      util.dom.appendChildCurried(makeStructure()),
+      util.dom.emptyElement
+    )(mainSection);
 
+    // ToDo: util.dom.insertBeforeを汎用的にして上に加える
     // pal-main-navを表示する ----------------------------------------
-    palMainNav =
-      callbackByQuerySelector('#pal-main-nav', data => data);
-    callbackByQuerySelector('#pal-event-nav', (data) => {
-      if (!data) {
-        util.dom.insertBefore(pal.event.makeNav(), palMainNav);
-      }
-    });
+    let palMainNav = util.dom.querySelector('#pal-main-nav');
+    let palEventNav = util.dom.querySelector('#pal-event-nav');
+
+    if (!palEventNav) {
+      util.dom.insertBefore(makeNav(), palMainNav);
+    }
 
     // hashの状態により表示を切り替える ------------------------------
     switch (crud) {
@@ -1290,111 +1356,91 @@ ${event.eventSchedule.byMonthDay}`
           // 表示する
           showEventReadAll();
 
-          // pal-event-create以下の要素を削除する --------------------
-          callbackById(
-            'pal-event-create',
-            data => pal.util.emptyElement(data)
-          );
-          // event-createフォームを表示する --------------------------
-          callbackById(
-            'pal-event-create',
-            data => util.dom.appendChild(data, makeEventCreate())
-          );
+          // pal-event-create以下の要素を削除してevent-create --------
+          // フォームを表示する --------------------------------------
+          util.core.compose(
+            util.dom.appendChildCurried(makeEventCreateYearly()),
+            util.dom.emptyElement,
+            util.dom.getElementById
+          )('pal-event-create');
           // 全てのeventを読み込む -----------------------------------
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
 
-          callbackById(
-            'registEvent',
-            data => data.addEventListener('click', onClickRegistButton)
-          );
-          // 予定登録（日指定）を押されたようにする ------------------
-          callbackById(
-            'pal-event-nav-yearly',
-            data => setButtonPressed(data))
+          util.core.compose(
+            util.dom.addClickEventListener(onClickRegistButton),
+            util.dom.getElementById
+          )('registEvent');
+          // 年間予定（日指定）を押されたようにする ------------------
+          util.core.compose(
+            setButtonPressed,
+            util.dom.getElementById
+          )('pal-event-nav-yearly');
         }
         else if (hashArray[2] === 'dayOfTheWeek') {
           // pal-event-read以下の要素を削除してeventReadAllの値を
           // 表示する
           showEventReadAll();
 
-          // pal-event-create以下の要素を削除する --------------------
-          callbackById(
-            'pal-event-create',
-            data => pal.util.emptyElement(data)
-          );
-          // フォームを表示する --------------------------------------
-          callbackById(
-            'pal-event-create',
-            data => util.dom.appendChild(
-              data, makeEventCreateByNanyoubi()
-            )
-          );
+          // pal-event-create以下の要素を削除してフォームを表示する --
+          util.core.compose(
+            util.dom.appendChildCurried(makeEventCreateDayOfTheWeek()),
+            util.dom.emptyElement,
+            util.dom.getElementById
+          )('pal-event-create');
           // 全てのeventを読み込む -----------------------------------
           socket.emit('eventSchedule readAll');
           socket.emit('event readAll');
 
-          callbackById(
-            'createEvent',
-            data => data.addEventListener('click', onClickCreateButton)
-          );
-          callbackById(
-            'pal-event-nav-dayoftheweek',
-            (data) => setButtonPressed(data)
-          );
+          util.core.compose(
+            util.dom.addClickEventListener(onClickCreateButton),
+            util.dom.getElementById
+          )('createEvent');
+
+          // ナビゲーションの年間予定（第何何曜日指定)が押された
+          // ようにする
+          util.core.compose(
+            setButtonPressed,
+            util.dom.getElementById
+          )('pal-event-nav-dayoftheweek');
         }
         // 曜日ごとの処理
         else if (hashArray[2] === 'weekly') {
           // pal-event-read以下の要素を削除してフォームを表示する ----
-          callbackById(
-            'pal-event-read',
-            data => {
-              pal.util.emptyElement(data);
-              util.dom.appendChild(data, makeWeeklySchedule());
-            }
-          );
+          util.core.compose(
+            util.dom.appendChildCurried(makeWeeklySchedule()),
+            util.dom.emptyElement,
+            util.dom.getElementById
+          )('pal-event-read');
           // pal-event-create以下の要素を削除してフォームを表示する --
-          callbackById(
-            'pal-event-create',
-            data => {
-              pal.util.emptyElement(data)+
-              util.dom.appendChild(data, makeEventCreateWeekly());
-            }
-          );
-          // ナビゲーションの予定登録（曜日指定)が押されたようにする
-          callbackById(
-            'pal-event-nav-byday',
-            (data) => setButtonPressed(data)
-          );
+          util.core.compose(
+            util.dom.appendChildCurried(makeEventCreateWeekly()),
+            util.dom.emptyElement,
+            util.dom.getElementById
+          )('pal-event-create');
+          // ナビゲーションの年間予定（曜日指定)が押されたようにする
+          util.core.compose(
+            setButtonPressed,
+            util.dom.getElementById
+          )('pal-event-nav-byday');
 
           // 曜日ごとの処理 ------------------------------------------
           procForEachDayOfTheWeek();
-
         }
         break;
       case 'read':
-        socket.emit('event read', eventId);
-        break;
       case 'update':
-        socket.emit('event read', eventId);
-        break;
       case 'delete':
         socket.emit('event read', eventId);
         break;
       default:
         // 予定一覧を押されたようにする ------------------------------
-        callbackById(
-          'pal-event-nav-list',
-          (data) => setButtonPressed(data)
-        );
+        util.core.compose(
+          setButtonPressed,
+          util.dom.getElementById
+        )('pal-event-nav-list');
         // イベントリストを表示する ----------------------------------
-        callbackById(
-          'pal-event-read',
-          data => util.dom.appendChild(data, makeEventReadAll())
-        );
-        // 全てのeventとeventScheduleを読み込む ----------------------
-        socket.emit('eventSchedule readAll');
-        socket.emit('event readAll');
+        showEventReadAll();
         break;
     }
 

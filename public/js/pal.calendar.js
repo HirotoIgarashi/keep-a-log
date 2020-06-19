@@ -22,32 +22,25 @@ pal.calendar = (() => {
   const makeCalendar = () => {
     let frag = util.dom.createFragment();
     // h1タグの作成
-    let h1Tag = util.dom.createElement({
-      tagName: 'h1',
-      textContent: 'カレンダー'
-    });
+    let h1Tag =
+      util.dom.createElement('h1', { textContent: 'カレンダー' });
     // navタグの作成
-    let navTag = util.dom.createElement({
-      tagName: 'nav',
-      id: 'calendar-menu'
-    });
+    let navTag =
+      util.dom.createElement('nav', { id: 'calendar-menu' });
     // ulタグの作成
     let ulTag = util.dom.createElement('ul');
     // liタグの作成
     let liToday = util.dom.createElement('li');
     // anchorタグの作成
-    let anchorToday = util.dom.createElement({
-      tagName: 'a',
-      textContent: '今月'
-    });
+    let anchorToday =
+      util.dom.createElement('a', { textContent: '今月' });
     // liタグの作成
     let liPre = util.dom.createElement('li');
     // anchorタグの作成
-    let anchorPre = util.dom.createElement({
-      tagName: 'a',
-      href: '#calendar/previous-month',
-      innerHTML: '<先月'
-    });
+    let anchorPre = util.dom.createElement(
+      'a',
+      { href: '#calendar/previous-month', innerHTML: '<先月' }
+    );
     // liタグの作成
     let liMonth = util.dom.createElement('li');
     // spanタグの作成
@@ -55,28 +48,19 @@ pal.calendar = (() => {
     // liタグの作成
     let liNext = util.dom.createElement('li');
     // anchorタグの作成
-    let anchorNext = util.dom.createElement({
-      tagName: 'a',
-      href: '#calendar/next-month',
-      innerHTML: '翌月>'
-    });
+    let anchorNext = util.dom.createElement(
+      'a',
+      { href: '#calendar/next-month', innerHTML: '翌月>' }
+    );
 
     // HTMLを組み立てる-----------------------------------------------
     util.dom.appendByTreeArray([
       navTag, [
         ulTag, [
-          liToday, [
-            anchorToday
-          ],
-          liPre, [
-            anchorPre
-          ],
-          liMonth, [
-            spanBlank
-          ],
-          liNext, [
-            anchorNext
-          ]
+          liToday, [ anchorToday ],
+          liPre, [ anchorPre ],
+          liMonth, [ spanBlank ],
+          liNext, [ anchorNext ]
         ]
       ]
     ]);
@@ -84,8 +68,7 @@ pal.calendar = (() => {
     // calendar用navタグの作成
     const dayArray = ['月','火','水','木','金','土','日'];
 
-    let navCalendar = util.dom.createElement({
-      tagName: 'nav',
+    let navCalendar = util.dom.createElement('nav', {
       id: 'calendar-frame'
     });
 
@@ -112,13 +95,7 @@ pal.calendar = (() => {
 
     // HTMLを組み立てる-----------------------------------------------
     util.dom.appendByTreeArray([
-      frag, [
-        h1Tag,
-        navTag,
-        navCalendar, [
-          ulCalendar
-        ]
-      ]
+      frag, [ h1Tag, navTag, navCalendar, [ ulCalendar ] ]
     ])
     // -----HTMLを組み立てる------------------------------------------
     return frag;
@@ -166,7 +143,8 @@ pal.calendar = (() => {
     }
 
     // mainセクションの子要素をすべて削除する ------------------------
-    pal.util.emptyElement(mainSection);
+    // pal.util.emptyElement(mainSection);
+    util.dom.emptyElement(mainSection);
 
     // カレンダーを表示する ------------------------------------------
     mainSection.appendChild(makeCalendar());
@@ -266,16 +244,12 @@ pal.calendar = (() => {
         // 今日だったらclass属性の値にcurrent-monthとtodayを加える
         if (currentCalenderListString === nowDateString) {
           util.dom.setAttribute(
-            liElement,
-            'class',
-            'current-month today'
+            liElement, 'class', 'current-month today'
           );
         }
         else {
           util.dom.setAttribute(
-            liElement,
-            'class',
-            'current-month'
+            liElement, 'class', 'current-month'
           );
         }
       }

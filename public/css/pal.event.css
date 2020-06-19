@@ -14,6 +14,11 @@
   display: block;
 }
 
+#pal-event-read h1,
+#pal-event-read h2 {
+  display: inline-block;
+}
+
 #pal-event-read nav button,
 #pal-event-read nav h2 {
   display: inline-block;
@@ -22,6 +27,7 @@
 #pal-event-read div.firstColumn,
 #pal-event-read div.secondColumn {
   display: inline-block;
+  /* font-size: 65%; */
 }
 
 #pal-event-create form label {

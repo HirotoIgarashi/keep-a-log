@@ -203,7 +203,7 @@ required="">\
       let request = null;
       const responseHandle = () => {
         if (request && request.readyState === 4) {
-          expect(request.status).to.be.equal(201);
+          expect(request.status).to.be.equal(409);
           done();
         }
       };
@@ -246,6 +246,160 @@ required="">\
       expect(typeof now).to.be.equal('object');
       done();
     })
+  });
+});
+// -------------------------------------------------------------------
+describe('エラー、警告、情報を出力するテスト', () => {
+  it('fail, warn, noteのテスト', (done) => {
+    expect(() => {util.core.fail('引数は文字列である必要があります')})
+      .to.throw();
+    expect(() => {util.core.warn('ageを数値に変換できませんでした')})
+      .to.not.throw();
+    expect(() => {util.core.note('ageを数値に変換しようとしています')})
+      .to.not.throw();
+    done();
+  });
+});
+
+describe('インデックス指定するテスト', () => {
+  it('nthのテスト', (done) => {
+    const letters = ['a', 'b', 'c'];
+    expect(util.core.nth(letters, 1)).to.be.equal('b');
+    expect(util.core.nth('abc', 0)).to.be.equal('a');
+    expect(() =>
+      {util.core.nth({}, 2)})
+        .to
+        .throw(
+          Error,
+          'インデックス指定可能ではないデータ型は' +
+            'サポートされていません'
+        );
+    expect(() =>
+      {util.core.nth(letters, 4000)})
+        .to.throw(Error, '指定されたインデックスは範囲外です');
+    expect(() => {util.core.nth(letters, 'aaaa')})
+      .to.throw(Error, 'インデックスは整数である必要があります');
+    done();
+  });
+  it('secondのテスト', (done) => {
+    expect(util.core.second(['a', 'b'])).to.be.equal('b');
+    expect(util.core.second('fogus')).to.be.equal('o');
+    expect(() =>
+      {util.core.second({})})
+        .to
+        .throw(
+          Error,
+          'インデックス指定可能ではないデータ型は' +
+            'サポートされていません'
+        );
+    done();
+  });
+});
+
+describe('関数型プログラミングのテスト', () => {
+  it('関数合成のテスト', (done) => {
+    const f = (x) => x * x + 1;
+    const g = (x) => x - 2;
+
+    expect(util.core.compose(f, g)(2)).to.eql(f(g(2)));
+    done();
+  });
+  it('関数(function)かどうか', (done) => {
+    const add = (x, y) => x + y;
+    expect(util.core.isFunction(add)).true;
+    expect(util.core.isFunction({})).false;
+    expect(util.core.isFunction(1)).false;
+    expect(util.core.isFunction([])).false;
+    done();
+  });
+  it('配列(Array)かどうか', (done) => {
+    expect(util.core.isArray([1, 2, 3])).true;
+    expect(util.core.isArray({foo: 123})).false;
+    expect(util.core.isArray('foobar')).false;
+    expect(util.core.isArray(undefined)).false;
+    done();
+  });
+  it('文字列(String)かどうか', (done) => {
+    expect(util.core.isString(1)).false;
+    expect(util.core.isString('Hello')).true;
+    expect(util.core.isString(true)).false;
+    expect(util.core.isString(undefined)).false;
+    done();
+  });
+  it('整数(Integer)かどうか', (done) => {
+    expect(util.core.isInteger(1)).true;
+    expect(util.core.isInteger(-1)).true;
+    expect(util.core.isInteger('1')).true;
+    expect(util.core.isInteger(1.5)).false;
+    expect(util.core.isInteger(-1.5)).false;
+    expect(util.core.isInteger('Hello')).false;
+    expect(util.core.isInteger(true)).false;
+    expect(util.core.isInteger(undefined)).false;
+    done();
+  });
+  it('インデックス可能(StringかArray)かどうか', (done) => {
+    expect(util.core.isIndexed([1, 2, 3])).true;
+    expect(util.core.isIndexed('Hello')).true;
+    expect(util.core.isIndexed(1)).false;
+    expect(util.core.isIndexed(true)).false;
+    expect(util.core.isIndexed(undefined)).false;
+    done();
+  });
+  it('偶数かどうか', (done) => {
+    expect(util.core.isEven(2)).true;
+    expect(util.core.isEven(1)).false;
+    done();
+  });
+  it('奇数かどうか', (done) => {
+    expect(util.core.isOdd(2)).false;
+    expect(util.core.isOdd(1)).true;
+    done();
+  });
+  it('存在する(existy)かどうか', (done) => {
+    expect(util.core.existy(null)).false;
+    expect(util.core.existy(undefined)).false;
+    expect(util.core.existy({}.notHere)).false;
+    expect(util.core.existy((function(){})())).false;
+    expect(util.core.existy(0)).true;
+    expect(util.core.existy(false)).true;
+    done();
+  });
+  it('true(truthy)かどうか', (done) => {
+    expect(util.core.truthy(false)).false;
+    expect(util.core.truthy(undefined)).false;
+    expect(util.core.truthy(0)).true;
+    expect(util.core.truthy('')).true;
+    done();
+  });
+  it('comparatorのテスト', (done) => {
+    expect([2, 3, -6, 0, -108, 42].sort()).deep.equal([ -108, -6, 0, 2, 3, 42 ]);
+    expect([0, -1, -2].sort()).deep.equal([-1, -2, 0]);
+    expect([2, 3, -1, -6, 0, -108, 42, 10].sort(util.core.compareLessThanOrEqual))
+      .deep.equal([ -108, -6, -1, 0, 2, 3, 10, 42 ]);
+    expect([2, 3, -1, -6, 0, -108, 42, 10]
+      .sort(util.core.comparator(util.core.lessOrEqual)))
+      .deep.equal([ -108, -6, -1, 0, 2, 3, 10, 42 ]);
+    done();
+  });
+// この行は80桁です ------------------------------------------------------------
+  it('Functionだったら実行する', (done) => {
+    expect(util.core.executeIfHasFunction([1,2,3], 'reverse'))
+      .deep.equal([3,2,1]);
+    expect(util.core.executeIfHasFunction({foo: 42}, 'foo'))
+      .deep.equal(42);
+    expect(util.core.executeIfHasFunction([1, 2, 3], 'notHere'))
+      .deep.equal(undefined);
+    done();
+  });
+  it('existyのテスト', (done) => {
+    expect([null, undefined, 1, 2, false].map(util.core.existy))
+      .deep.equal([false , false, true, true, true]);
+    done();
+  });
+  it('truthyのテスト', (done) => {
+    expect([null, undefined, 1, 2, false].map(util.core.truthy))
+      .deep.equal([false , false, true, true, false]);
+    done();
   });
 });
 

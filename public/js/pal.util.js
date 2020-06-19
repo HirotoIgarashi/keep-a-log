@@ -20,14 +20,7 @@
 
 pal.util = (() => {
   var
-    makeError,
     setConfigMap,
-    addChange,
-    clearFormAll,
-    clearForm,
-    clearElement,
-    emptyElementById,
-    emptyElement,
     showElement,
     hideElement,
     toggleElement,
@@ -35,10 +28,7 @@ pal.util = (() => {
     inputChangeCallback,
     getTargetValue,
     addEventListener,
-    checkInputField,
-    isNonEmpty,
-    isInteger,
-    isRange;
+    checkInputField;
 
   // 実装予定の関数
   // getTargetValue       : eventを受け取り値を返す
@@ -61,8 +51,8 @@ pal.util = (() => {
   // 戻り値: 新たに作成されたエラーオブジェクト
   // 例外発行: なし
   //
-  makeError = (name_text, msg_text, data) => {
-    var error = new Error();
+  const makeError = (name_text, msg_text, data) => {
+    let error = new Error();
 
     error.name = name_text;
     error.message = msg_text;
@@ -74,9 +64,7 @@ pal.util = (() => {
   // パブリックコンストラクタ/makeError/終了
 
   // ユーティリティメソッド/addChange/開始
-  addChange = (ob) => {
-    var i;
-
+  const addChange = (ob) => {
     ob.change = (callback) => {
       if ( callback ) {
         if ( !this._change ) {
@@ -88,7 +76,7 @@ pal.util = (() => {
         if ( !this._change ) {
           return;
         }
-        for ( i = 0; i < this._change.length; i++ ) {
+        for (let i = 0; i < this._change.length; i++ ) {
           this._change[i].apply( this );
         }
       }
@@ -135,26 +123,19 @@ pal.util = (() => {
   // 戻り値: なし
   // 例外発行: なし
   //
-  clearFormAll = function () {
-    var
-      i;
-
-    for ( i = 0; i < document.forms.length; i += 1 ) {
+  const clearFormAll = () => {
+    for (let i = 0; i < document.forms.length; i += 1 ) {
       clearForm( document.forms[i] );
     }
-
   };
   // パブリックメソッド/clearFormAll/終了
-  clearForm = (form) => {
-    var
-      i;
-
-    for ( i = 0; i < form.elements.length; i += 1 ) {
+  const clearForm = (form) => {
+    for (let i = 0; i < form.elements.length; i += 1 ) {
       clearElement( form.elements[i] );
     }
   };
 
-  clearElement = (element) => {
+  const clearElement = (element) => {
     switch( element.type ) {
       case 'hidden':
       case 'submit':
@@ -189,29 +170,14 @@ pal.util = (() => {
   // 戻り値: なし
   // 例外発行: なし
   //
-  emptyElementById = (element_id) => {
+  const emptyElementById = (element_id) => {
     // 新規作成のアンカーを削除する
     let element = document.getElementById(element_id);
-
     while (element && element.firstChild) {
       element.removeChild(element.firstChild);
     }
   };
   // パブリックメソッド/emptyElementById/終了
-
-  // パブリックメソッド/emptyElement/開始
-  // 目的: 引数のHTML要素の子要素をすべて削除する
-  // 引数:
-  //  * element  : HTML要素。この子要素をすべて削除する
-  // 戻り値: なし
-  // 例外発行: なし
-  //
-  emptyElement = (element) => {
-    while (element && element.firstChild) {
-      element.removeChild(element.firstChild);
-    }
-  };
-  // パブリックメソッド/emptyElement/終了
 
   // パブリックメソッド/showElement/開始
   // 目的: HTML要素id値を引数を受け取りhidden="true"の状態を見えるように
@@ -423,74 +389,12 @@ pal.util = (() => {
   };
   // パブリックメソッド/checkInputField/終了
 
-  // パブリックメソッド/isRange/開始
-  // 目的: 第1引数の値が第2引数と第3引数の間にあるかをチェックする
-  // 引数:
-  //  * value : チェック対象の値
-  //  * min   : 下限値
-  //  * max   : 上限値
-  // 戻り値: 妥当であれば   : true
-  //         妥当でなければ : false
-  // 例外発行: なし
-  //
-  isRange = (value, min, max) => {
-    var
-      valueNumber;
-
-    if ( typeof value === 'string' ) {
-      valueNumber = Number( value );
-    }
-    else {
-      valueNumber = value;
-    }
-
-    if ( min > valueNumber || valueNumber > max ) {
-      return false;
-    }
-    return true;
-
-  };
-  // パブリックメソッド/isRange/終了
-
-  // パブリックメソッド/isNonEmpty/開始
-  // 目的: 空の値でないか検査
-  isNonEmpty = (value) => {
-    return value !== "";
-  };
-  // パブリックメソッド/isNonEmpty/終了
-
-  // パブリックメソッド/isInteger/開始
-  // 目的: 整数かどうかを検査する
-  isInteger = (value) => {
-    var
-      valueNumber;
-
-    // ポリフィル
-    Number.isInteger = Number.isInteger || function( value ) {
-      return typeof value === 'number' &&
-        isFinite( value ) &&
-        Math.floor( value ) === value;
-    };
-
-    if ( typeof value === 'string' ) {
-      valueNumber = Number( value );
-    }
-    else {
-      valueNumber = value;
-    }
-
-    return Number.isInteger( valueNumber );
-
-  };
-  // パブリックメソッド/isNonEmpty/終了
-
   return {
     makeError           : makeError,
     addChange           : addChange,
     setConfigMap        : setConfigMap,
     clearFormAll        : clearFormAll,
     emptyElementById    : emptyElementById,
-    emptyElement        : emptyElement,
     showElement         : showElement,
     hideElement         : hideElement,
     toggleElement       : toggleElement,
@@ -498,9 +402,6 @@ pal.util = (() => {
     inputChangeCallback : inputChangeCallback,
     getTargetValue      : getTargetValue,
     addEventListener    : addEventListener,
-    checkInputField     : checkInputField,
-    isRange             : isRange,
-    isNonEmpty          : isNonEmpty,
-    isInteger           : isInteger
+    checkInputField     : checkInputField
   };
 })();

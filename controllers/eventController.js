@@ -81,7 +81,25 @@ module.exports = io => {
 
     // イベントの更新 ------------------------------------------------
     client.on('event update', (data) => {
-      client.emit('event update complete', data);
+
+      // メッセージを保存する ----------------------------------------
+      EventSchedule.findByIdAndUpdate(data.eventSchedule._id, {
+        $set: data.eventSchedule
+      })
+        .then((savedData) => {
+          data.eventSchedule = savedData._id;
+          return data;
+        })
+        .then((data) => {
+          return Event.findByIdAndUpdate(data._id, {
+            $set: data
+          })
+        })
+        .then((result) => {
+          // 保存に成功したらメッセージの値を送出
+          client.emit('event update complete', result);
+        })
+        .catch(error => console.log(`event create error: ${error.message}`));
     });
 
     // イベントの削除 ------------------------------------------------
@@ -130,6 +148,8 @@ module.exports = io => {
     client.on('event createWeekly', (data) => {
       let event;
       let eventSchedule;
+
+      console.log(data);
 
       // eventScheduleを先に作成する ---------------------------------
       eventSchedule = new EventSchedule(data.eventSchedule);

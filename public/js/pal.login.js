@@ -190,7 +190,7 @@ pal.login = (function () {
     const main_section = document.getElementById( 'pal-main' );
 
     // mainセクションの子要素をすべて削除する
-    pal.util.emptyElement( main_section );
+    util.dom.emptyElement( main_section );
 
     //----- ログインフォームを表示する -------------------------------
     main_section.appendChild(makeLoginForm());

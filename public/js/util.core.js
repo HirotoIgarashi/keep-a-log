@@ -22,12 +22,6 @@ util.core = (() => {
   //   }
   // };
   const compose = (...fs) => x => fs.reduceRight((acc, f) => f(acc), x);
-  // const compose =
-  //   (...fs) => x => {
-  //     fs.reduceRight((acc, f) => {
-  //       f(acc), x
-  //     });
-  //   };
 
   // 関数を引数にとり2段階までカリー化を行う
   const curry2 = (fun) => {

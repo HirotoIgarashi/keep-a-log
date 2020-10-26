@@ -133,7 +133,7 @@ pal.logout = (function () {
     const main_section = document.getElementById( 'pal-main' );
 
     // mainセクションの子要素をすべて削除する
-    pal.util.emptyElement( main_section );
+    util.dom.emptyElement( main_section );
 
     main_section.appendChild(makeLogOutPage());
 

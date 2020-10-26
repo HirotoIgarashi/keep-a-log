@@ -9,6 +9,7 @@ util.dom = (() => {
   const getElementById = (id) => document.getElementById(id);
 
   const querySelector = (selector) => document.querySelector(selector);
+  const querySelectorAll = (selector) => document.querySelectorAll(selector);
 
   const getValue = (element) => element.value;
 
@@ -102,8 +103,18 @@ util.dom = (() => {
     }
   };
 
+  const createAnchor = (option) => (createElement('a', option));
   const createDt = (option) => (createElement('dt', option));
   const createDd = (option) => (createElement('dd', option));
+  const createDl = (option) => (createElement('dl', option));
+  const createDiv = (option) => (createElement('div', option));
+  const createButton = (option) => (createElement('button', option));
+  const createH1 = (option) => (createElement('h1', option));
+  const createH2 = (option) => (createElement('h2', option));
+  const createH3 = (option) => (createElement('h3', option));
+  const createUl = (option) => (createElement('ul', option));
+  const createLi = (option) => (createElement('li', option));
+  const createNav = (option) => (createElement('nav', option));
 
   const innerHTML = (element, html) => {
     element.innerHTML = html;
@@ -310,16 +321,27 @@ util.dom = (() => {
   // 関数をエクスポートする ------------------------------------------
   return {
     helloWorld: helloWorld,
-    getElementById  : getElementById,
-    querySelector   : querySelector,
-    getValue        : getValue,
-    setValue        : setValue,
-    emptyElement    : emptyElement,
-    createFragment  : createFragment,
-    createElement   : createElement,
-    createDt        : createDt,
-    createDd        : createDd,
-    innerHTML       : innerHTML,
+    getElementById    : getElementById,
+    querySelector     : querySelector,
+    querySelectorAll  : querySelectorAll,
+    getValue          : getValue,
+    setValue          : setValue,
+    emptyElement      : emptyElement,
+    createFragment    : createFragment,
+    createElement     : createElement,
+    createAnchor      : createAnchor,
+    createDt          : createDt,
+    createDd          : createDd,
+    createDl          : createDl,
+    createDiv         : createDiv,
+    createButton      : createButton,
+    createH1          : createH1,
+    createH2          : createH2,
+    createH3          : createH3,
+    createUl          : createUl,
+    createLi          : createLi,
+    createNav         : createNav,
+    innerHTML         : innerHTML,
     addClickEventListener : addClickEventListener,
     setAttribute        : setAttribute,
     setAttributeCurried : setAttributeCurried,

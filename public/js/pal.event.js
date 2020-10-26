@@ -13,28 +13,22 @@ pal.event = (() => {
 
   // 週間予定のパラメータ --------------------------------------------
   const eventWeeklyParam = {
-    eventId: {
-      "class": "visuallyhidden"
-    },
-    eventScheduleId: {
-      "class": "visuallyhidden"
-    },
+    eventId: { "class": "visuallyhidden" },
+    eventScheduleId: { "class": "visuallyhidden" },
     name: {
-      type        : String,
-      required    : true,
+      type        : String, required    : true,
       labelText   : '予定の名前（必須）',
       placeholder : '予定の名前を入力します'
     },
     description: {
-      type      : String,
+      type        : String,
       labelText   : '予定の説明',
       placeholder : '予定の説明を入力します'
     },
     // eventSchedule: {
     byDay: {
       type        : String,
-      labelText   : '曜日（必須）',
-      placeholder : '曜日を入力します'
+      labelText   : '曜日（必須）', placeholder : '曜日を入力します'
     },
     startTime: {
       type        : String,
@@ -46,63 +40,45 @@ pal.event = (() => {
       labelText   : '終了時間（必須）',
       placeholder : '終了時間を入力します'
     },
-    repeatFrequency : {
-      type: String,
-      labelText: '繰り返し'
-    }
+    repeatFrequency : { type: String, labelText: '繰り返し' }
   };
 
   // 年間予定のパラメータ --------------------------------------------
   const eventYearlyParam = {
-    eventId: {
-      "class": "visuallyhidden"
-    },
-    eventScheduleId: {
-      "class": "visuallyhidden"
-    },
+    eventId: { "class": "visuallyhidden" },
+    eventScheduleId: { "class": "visuallyhidden" },
     name: {
-      type        : String,
-      required    : true,
+      type        : String, required    : true,
       labelText   : '予定の名前（必須）',
       placeholder : '予定の名前を入力します'
     },
     description: {
-      type      : String,
+      type        : String,
       labelText   : '予定の説明',
       placeholder : '予定の説明を入力します'
     },
     byMonth: {
       type        : Number,
-      min         : 1,
-      max         : 12,
+      min : 1, max  : 12,
       labelText   : '月（必須）:',
       placeholder : '1から12までの数値を入力します'
     },
     byMonthDay: {
       type        : Number,
-      min         : 1,
-      max         : 31,
+      min : 1, max  : 31,
       labelText   : '日（必須）:',
       placeholder : '1から31までの数値を入力します'
     },
-    repeatFrequency : {
-      type: String,
-      labelText: '繰り返し'
-    }
+    repeatFrequency : { type: String, labelText: '繰り返し' }
   };
   //--------------------- モジュールスコープ変数終了 -----------------
 
   // 年間予定曜日指定のパラメータ ------------------------------------
   const eventYearlyDayOfTheWeekParam = {
-    eventId: {
-      "class": "visuallyhidden"
-    },
-    eventScheduleId: {
-      "class": "visuallyhidden"
-    },
+    eventId: { "class": "visuallyhidden" },
+    eventScheduleId: { "class": "visuallyhidden" },
     name: {
-      type        : String,
-      required    : true,
+      type        : String, required    : true,
       labelText   : '予定の名前（必須）',
       placeholder : '予定の名前を入力します'
     },
@@ -112,9 +88,7 @@ pal.event = (() => {
       placeholder : '予定の説明を入力します'
     },
     byMonth: {
-      type        : Number,
-      min         : 1,
-      max         : 12,
+      type        : Number, min : 1, max  : 12,
       labelText   : '月（必須）:',
       placeholder : '1から12までの数値を入力します'
     },
@@ -123,10 +97,7 @@ pal.event = (() => {
       labelText   : '曜日（必須）',
       placeholder : '曜日を入力します'
     },
-    repeatFrequency : {
-      type: String,
-      labelText: '繰り返し'
-    }
+    repeatFrequency : { type: String, labelText: '繰り返し' }
   };
   //--------------------- モジュールスコープ変数終了 -----------------
 
@@ -167,7 +138,7 @@ pal.event = (() => {
   const setButtonPressed = ((element) => {
     // element以下の全てのボタンのaria-pressed属性の値をfalseにする
     let liEventNav =
-      document.querySelectorAll('#pal-event-nav li button');
+      util.dom.querySelectorAll('#pal-event-nav li button');
     liEventNav.forEach((element) => {
       element.setAttribute('aria-pressed', 'false');
     });
@@ -238,7 +209,11 @@ pal.event = (() => {
     ];
 
     util.dom.getValueFromForm(
-      eventYearlyParam, event, eventSchedule, eventParam, eventScheduleParam
+      eventYearlyParam,
+      event,
+      eventSchedule,
+      eventParam,
+      eventScheduleParam
     );
     // 毎週繰り返すのでP1Yを設定する ---------------------------------
     eventSchedule.repeatFrequency = 'P1Y';
@@ -262,7 +237,11 @@ pal.event = (() => {
     ];
 
     util.dom.getValueFromForm(
-      eventWeeklyParam, event, eventSchedule, eventParam, eventScheduleParam
+      eventWeeklyParam,
+      event,
+      eventSchedule,
+      eventParam,
+      eventScheduleParam
     );
     // 毎週繰り返すのでP1Wを設定する ---------------------------------
     eventSchedule.repeatFrequency = 'P1W';
@@ -275,10 +254,8 @@ pal.event = (() => {
   const makeDlElement = (obj) => {
     // ToDo: repeatFrequencyの値によってreturnする内容を変える -------
     // repeatFrequencyの値はobj.eventSchedule.repeatFrequency
-    const dl = util.dom.createElement('dl');
-    let h2 = util.dom.createElement('h2', {
-      textContent: obj.name
-    });
+    const dl = util.dom.createDl();
+    let h2 = util.dom.createH2({ textContent: obj.name });
 
     const dtName = util.dom.createDt({textContent: '予定の名前:'});
 
@@ -318,16 +295,14 @@ pal.event = (() => {
     });
 
     const dtStartTime = util.dom.createDt({
-      textContent: '開始時間:'
+      textContent: '開始時間:' 
     });
 
     const ddStartTime = util.dom.createDd({
       textContent: obj.eventSchedule.startTime
     });
 
-    const dtEndTime = util.dom.createDt({
-      textContent: '終了時間:'
-    });
+    const dtEndTime = util.dom.createDt({ textContent: '終了時間:' });
 
     const ddEndTime = util.dom.createDd({
       textContent: obj.eventSchedule.endTime
@@ -342,14 +317,10 @@ pal.event = (() => {
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       dl, [
-        dtName, ddName, [h2],
-        dtDescription, ddDescription,
-        dtByMonth, ddByMonth,
-        dtByMonthDay, ddByMonthDay,
-        dtRepeatFrequency, ddRepeatFrequency,
-        dtByDay, ddByDay,
-        dtStartTime, ddStartTime,
-        dtEndTime, ddEndTime,
+        dtName, ddName, [h2], dtDescription, ddDescription,
+        dtByMonth, ddByMonth, dtByMonthDay, ddByMonthDay,
+        dtRepeatFrequency, ddRepeatFrequency, dtByDay, ddByDay,
+        dtStartTime, ddStartTime, dtEndTime, ddEndTime,
         dtStartDate, ddStartDate
       ]
     ];
@@ -363,26 +334,20 @@ pal.event = (() => {
   const makeStructure = () => {
     let frag = util.dom.createFragment();
     // #pal-eventの作成 ----------------------------------------------
-    let divEvent = util.dom.createElement('div', {id: 'pal-event'});
+    let divEvent = util.dom.createDiv({ id: 'pal-event' });
     // -----divCreateタグの作成 --------------------------------------
-    let divCreate = util.dom.createElement(
-      'div', {id: 'pal-event-create'}
-    );
+    let divCreate = util.dom.createDiv({ id: 'pal-event-create' });
     // -----divReadタグの作成 ----------------------------------------
-    let divReadAll = util.dom.createElement(
-      'div', {id: 'pal-event-read'}
-    );
+    let divReadAll = util.dom.createDiv({ id: 'pal-event-read' });
     // 画面下部のコントロールエリアの表示 ----------------------------
-    let divEventControl = util.dom.createElement(
-      'div', { id: 'pal-event-control' }
-    );
-    // 戻るボタンの表示 ----------------------------------------------
-    let buttonBack = util.dom.createElement('button', {
-      type: 'button',
-      id: 'pal-event-back',
-      innerHTML: '戻る'
+    let divEventControl = util.dom.createDiv({
+      id: 'pal-event-control'
     });
-    buttonBack.addEventListener('click', onClickCancel);
+    // 戻るボタンの表示 ----------------------------------------------
+    let buttonBack = util.dom.createButton({
+      type: 'button', id: 'pal-event-back', innerHTML: '戻る'
+    });
+    util.dom.addClickEventListener(onClickCancel)(buttonBack);
 
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
@@ -401,17 +366,16 @@ pal.event = (() => {
     let frag = util.dom.createFragment();
 
     // pal-event-createの内容開始 ------------------------------------
-    let h1Create = util.dom.createElement('h1', {
+    let h1Create = util.dom.createH1({
       textContent: '年間予定の作成'
     });
     // フォームを生成 ------------------------------------------------
     let form = util.dom.makeForm(eventYearlyParam);
 
     // 保存ボタンを生成 ----------------------------------------------
-    let button = util.dom.createElement('button', {
+    let button = util.dom.createButton({
       type: 'button', id: 'registEvent', textContent: '保存'
     });
-
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [ h1Create, form, button ]
@@ -426,16 +390,14 @@ pal.event = (() => {
   const makeEventCreateDayOfTheWeek = () => {
     let frag = util.dom.createFragment();
     // pal-event-createの内容開始 ------------------------------------
-    let h1Create = util.dom.createElement('h1', {
+    let h1Create = util.dom.createH1({
       textContent: '第何何曜日を指定して年間予定を作成します'
     });
     // フォームを生成 ------------------------------------------------
     let form = util.dom.makeForm(eventYearlyDayOfTheWeekParam);
     // 保存ボタンを生成 ----------------------------------------------
-    let button = util.dom.createElement('button', {
-      type: 'button',
-      id: 'createEvent',
-      textContent: '保存'
+    let button = util.dom.createButton({
+      type: 'button', id: 'createEvent', textContent: '保存'
     });
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
@@ -449,7 +411,7 @@ pal.event = (() => {
   // 週間予定（曜日指定）のページを作成する --------------------------
   const makeEventCreateWeekly = () => {
     let frag = util.dom.createFragment();
-    let h1WeeklySchedule = util.dom.createElement('h1', {
+    let h1WeeklySchedule = util.dom.createH1({
       textContent: '週間予定を登録します'
     });
 
@@ -461,16 +423,16 @@ pal.event = (() => {
     let form = util.dom.makeForm(eventWeeklyParam);
 
     // ボタンを生成 --------------------------------------------------
-    let button = util.dom.createElement('button', {
+    let button = util.dom.createButton({
       type: 'button', id: 'createEvent', textContent: '保存'
     });
-    button.addEventListener('click', onClickEventCreateWeekly);
+    util.dom.addClickEventListener(onClickEventCreateWeekly)(button);
 
-    // HTMLを組み立てる---------------------------------------------
+    // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [ h1WeeklySchedule, form, button]
     ];
-    // ツリー構造を作る --------------------------------------------
+    // ツリー構造を作る ----------------------------------------------
     util.dom.appendByTreeArray(treeArray);
 
     return frag;
@@ -479,14 +441,12 @@ pal.event = (() => {
   const makeEventReadAll = () => {
     let now = new Date();
     let frag = util.dom.createFragment();
-    let h1 = util.dom.createElement('h1', {textContent: '年間予定'});
-    let h2 = util.dom.createElement('h2', {
+    let h1 = util.dom.createH1({textContent: '年間予定'});
+    let h2 = util.dom.createH2({
       textContent: `${now.getFullYear()}年の予定`
     });
 
-    let ulEventList = util.dom.createElement('ul', {
-      id: 'pal-event-list'
-    });
+    let ulEventList = util.dom.createUl({ id: 'pal-event-list' });
 
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
@@ -500,36 +460,28 @@ pal.event = (() => {
   const makeEventRead = (eventObject) => {
     let frag = util.dom.createFragment();
     // -----全体を含めるdivタグの作成 --------------------------------
-    let div = util.dom.createElement('div', {
-      id: 'pal-event-read'
-    });
-    let h1 = util.dom.createElement('h1', {
-      textContent: 'イベントの詳細'
-    });
+    let div = util.dom.createDiv({ id: 'pal-event-read' });
+    let h1 = util.dom.createH1({ textContent: 'イベントの詳細' });
 
     const dl = makeDlElement(eventObject);
 
     // 編集ボタンの設定
-    let updateButton = util.dom.createElement('button', {
-      type: 'button',
-    });
-    let updateAnchor = util.dom.createElement('a', {
+    let updateButton = util.dom.createButton({ type: 'button' });
+    let updateAnchor = util.dom.createAnchor({
       href: `#event/update/${eventObject._id}`,
       textContent: '編集'
     });
     // 削除ボタンの設定
-    let deleteButton = util.dom.createElement('button', {
-      type: 'button'
-    });
-    let deleteAnchor = util.dom.createElement('a', {
+    let deleteButton = util.dom.createButton({ type: 'button' });
+    let deleteAnchor = util.dom.createAnchor({
       href: `#event/delete/${eventObject._id}`,
       textContent: '削除'
     });
     // -----cancelボタンを生成 ---------------------------------------
-    let cancelButton = util.dom.createElement('button', {
+    let cancelButton = util.dom.createButton({
       type: 'button', id: 'cancel', textContent: '戻る'
     });
-    cancelButton.addEventListener('click', onClickCancel);
+    util.dom.addClickEventListener(onClickCancel)(cancelButton);
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
@@ -550,10 +502,8 @@ pal.event = (() => {
     let form;
     let frag = util.dom.createFragment();
     // -----全体を含めるdivタグの作成 --------------------------------
-    let div = util.dom.createElement('div', {
-      id: 'pal-event-read'
-    });
-    let h1 = util.dom.createElement('h1', {
+    let div = util.dom.createDiv({ id: 'pal-event-read' });
+    let h1 = util.dom.createH1({
       textContent: 'イベント情報を編集します'
     });
     // formを表示する
@@ -571,21 +521,25 @@ pal.event = (() => {
       form = util.dom.makeForm(eventWeeklyParam);
     }
 
-    let saveButton = util.dom.createElement('button', {
+    let saveButton = util.dom.createButton({
       type: 'button', id: 'createEvent', textContent: '保存'
     });
 
     if (event.eventSchedule.repeatFrequency === 'P1Y') {
-      saveButton.addEventListener('click', onClickEventUpdateYearly);
+      util.dom.addClickEventListener(
+        onClickEventUpdateYearly
+      )(saveButton);
     }
     else if (event.eventSchedule.repeatFrequency === 'P1W') {
-      saveButton.addEventListener('click', onClickEventUpdateWeekly);
+      util.dom.addClickEventListener(
+        onClickEventUpdateWeekly
+      )(saveButton);
     }
     // -----cancelボタンを生成 ---------------------------------------
-    let cancelButton = util.dom.createElement('button', {
+    let cancelButton = util.dom.createButton({
       type: 'button', id: 'cancel', textContent: 'キャンセル'
     });
-    cancelButton.addEventListener('click', onClickCancel);
+    util.dom.addClickEventListener(onClickCancel)(cancelButton);
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
@@ -600,23 +554,21 @@ pal.event = (() => {
   const makeEventDelete = (eventObject) => {
     let frag = util.dom.createFragment();
     // -----全体を含めるdivタグの作成 --------------------------------
-    let div = util.dom.createElement('div', {
-      id: 'pal-event-delete'
-    });
-    let h1 = util.dom.createElement('h1', {
+    let div = util.dom.createDiv({ id: 'pal-event-delete' });
+    let h1 = util.dom.createH1({
       textContent: 'このイベントを削除します'
     });
     const dl = makeDlElement(eventObject);
     // -----agreeボタンを生成 ----------------------------------------
-    let agreeButton = util.dom.createElement('button', {
+    let agreeButton = util.dom.createButton({
       type: 'button', id: 'agree', textContent: 'はい'
     });
-    agreeButton.addEventListener('click', onClickAgree);
+    util.dom.addClickEventListener(onClickAgree)(agreeButton);
     // -----cancelボタンを生成 ---------------------------------------
-    let cancelButton = util.dom.createElement('button', {
+    let cancelButton = util.dom.createButton({
       type: 'button', id: 'cancel', textContent: 'キャンセル'
     });
-    cancelButton.addEventListener('click', onClickCancel);
+    util.dom.addClickEventListener(onClickCancel)(cancelButton);
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
       frag, [
@@ -631,15 +583,15 @@ pal.event = (() => {
   // イベントリストの要素を作成する ----------------------------------
   const makeEventYearlyList = (array, element) => {
     array.forEach((event) => {
-      let li = util.dom.createElement('li', {
+      let li = util.dom.createLi({
       // 2020の部分は修正する必要あり
         'data-date':
         `2020-\
 ${event.eventSchedule.byMonth}-\
 ${event.eventSchedule.byMonthDay}`
       });
-      const h3 = util.dom.createElement('h3', {innerHTML: event.name});
-      const dl = util.dom.createElement('dl');
+      const h3 = util.dom.createH3({innerHTML: event.name});
+      const dl = util.dom.createDl();
 
       // 隠し属性で_idを設定しておく ---------------------------------
       const dtId = util.dom.createDt({
@@ -653,32 +605,24 @@ ${event.eventSchedule.byMonthDay}`
       const dtDate = util.dom.createDt({ textContent: '日付:' });
       const ddDate = util.dom.createDd({
         textContent:
-          `${event.eventSchedule.byMonth}月${event.eventSchedule.byMonthDay}日`
+          `${event.eventSchedule.byMonth}月\
+${event.eventSchedule.byMonthDay}日`
       });
 
       // 表示ボタンの設定
-      let readButton = util.dom.createElement('button', {
-        type: 'button'
-      });
-      let readAnchor = util.dom.createElement('a', {
-        href: `#event/read/${event._id}`,
-        textContent: '表示'
+      let readButton = util.dom.createButton({ type: 'button' });
+      let readAnchor = util.dom.createAnchor({
+        href: `#event/read/${event._id}`, textContent: '表示'
       });
       // 編集ボタンの設定
-      let updateButton = util.dom.createElement('button', {
-        type: 'button',
-      });
-      let updateAnchor = util.dom.createElement('a', {
-        href: `#event/update/${event._id}`,
-        textContent: '編集'
+      let updateButton = util.dom.createButton({ type: 'button' });
+      let updateAnchor = util.dom.createAnchor({
+        href: `#event/update/${event._id}`, textContent: '編集'
       });
       // 削除ボタンの設定
-      let deleteButton = util.dom.createElement('button', {
-        type: 'button'
-      });
-      let deleteAnchor = util.dom.createElement('a', {
-        href: `#event/delete/${event._id}`,
-        textContent: '削除'
+      let deleteButton = util.dom.createButton({ type: 'button' });
+      let deleteAnchor = util.dom.createAnchor({
+        href: `#event/delete/${event._id}`, textContent: '削除'
       });
 
       // HTMLを組み立てる---------------------------------------------
@@ -687,9 +631,7 @@ ${event.eventSchedule.byMonthDay}`
           li, [
             h3,
             dl, [
-              dtId, ddId,
-              dtDate, ddDate,
-              readButton, [readAnchor],
+              dtId, ddId, dtDate, ddDate, readButton, [readAnchor],
               updateButton, [updateAnchor],
               deleteButton, [deleteAnchor]
             ]
@@ -704,8 +646,8 @@ ${event.eventSchedule.byMonthDay}`
   const makeWeeklySchedule= () => {
     const dayArray = ['日', '月', '火', '水', '木', '金', '土'];
     const dayEnglishArray = [
-      'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-      'Thursday', 'Friday', 'Saturday'
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday'
     ];
     const hhmmArray = gethhmmArray();
 
@@ -713,22 +655,23 @@ ${event.eventSchedule.byMonthDay}`
 
     let frag = util.dom.createFragment();
 
-    let h1WeeklySchedule = util.dom.createElement('h1', {
+    let h1WeeklySchedule = util.dom.createH1({
       textContent: '週間予定'
     });
 
     // 曜日を切り替える部分/開始 -------------------------------------
-    let navWeeklySchedule = util.dom.createElement('nav');
+    let navWeeklySchedule = util.dom.createNav();
 
-    let spanDay = util.dom.createElement('h2', {
+    let spanDay = util.dom.createH2({
       innerHTML: `${dayArray[dayIndex]}曜日の予定`,
       // 初期値は月曜日
       'data-day': dayEnglishArray[1]
     });
 
-    let previousButton = util.dom.createElement('button', {
+    let previousButton = util.dom.createButton({
       type: 'button', innerHTML: '<'
     });
+
     previousButton.addEventListener('click', (e) => {
       e.preventDefault();
       if (dayIndex === 0) {
@@ -743,7 +686,7 @@ ${event.eventSchedule.byMonthDay}`
       procForEachDayOfTheWeek();
     });
 
-    let nextButton = util.dom.createElement('button', {
+    let nextButton = util.dom.createButton({
       type: 'button', innerHTML: '>'
     });
     nextButton.addEventListener('click', (e) => {
@@ -762,23 +705,17 @@ ${event.eventSchedule.byMonthDay}`
     // 曜日を切り替える部分/終了 -------------------------------------
 
     // hh:mmの部分/開始 ----------------------------------------------
-    let divHhMm = util.dom.createElement('div', {
-      class: 'firstColumn'
-    });
+    let divHhMm = util.dom.createDiv({ class: 'firstColumn' });
     hhmmArray.forEach((data) => {
-      let divRow = util.dom.createElement('div', {
+      let divRow = util.dom.createDiv({
         textContent: data, 'data-date': data
       });
       util.dom.appendByTreeArray([divHhMm, [divRow]]);
     });
     // hh:mmの部分/終了 ----------------------------------------------
 
-    let divContent = util.dom.createElement('div', {
-      class: 'secondColumn'
-    });
-    let ulElement = util.dom.createElement('ul', {
-      id: 'pal-event-read-ul'
-    });
+    let divContent = util.dom.createDiv({ class: 'secondColumn' });
+    let ulElement = util.dom.createUl({ id: 'pal-event-read-ul' });
 
     // HTMLを組み立てる-----------------------------------------------
     let treeArray = [
@@ -786,8 +723,7 @@ ${event.eventSchedule.byMonthDay}`
         navWeeklySchedule, [
           h1WeeklySchedule, previousButton, spanDay, nextButton
         ],
-        divHhMm,
-        divContent, [ulElement]
+        divHhMm, divContent, [ulElement]
       ]
     ];
     // ツリー構造を作る ----------------------------------------------
@@ -800,53 +736,49 @@ ${event.eventSchedule.byMonthDay}`
   const makeNav = () => {
     let frag = util.dom.createFragment();
 
-    let ulElement = util.dom.createElement('ul', {
-      id: 'pal-event-nav'
-    });
+    let ulElement = util.dom.createUl({ id: 'pal-event-nav' });
 
     // 予定一覧ボタンの作成 ------------------------------------------
-    let liEventList = util.dom.createElement('li');
-    let buttonList = util.dom.createElement('button', {
+    let liEventList = util.dom.createLi();
+    let buttonList = util.dom.createButton({
       id: 'pal-event-nav-list'
     });
 
-    let anchorList = util.dom.createElement('a', {
-      href: '#event',
-      onfocus: 'this.blur();',
-      textContent: '予定一覧'
+    let anchorList = util.dom.createAnchor({
+      href: '#event', onfocus: 'this.blur();', textContent: '予定一覧'
     });
 
     // 年間予定ボタン（曜日指定）の作成 ------------------------------
-    let liEventDay = util.dom.createElement('li');
-    let buttonDay = util.dom.createElement('button', {
+    let liEventDay = util.dom.createLi();
+    let buttonDay = util.dom.createButton({
       id: 'pal-event-nav-byday'
     });
 
-    let anchorDay = util.dom.createElement('a', {
+    let anchorDay = util.dom.createAnchor({
       href: '#event/create/weekly',
       onfocus: 'this.blur();',
       textContent: '週間予定(曜日指定)'
     });
 
     // 年間予定ボタン（日指定）の作成 --------------------------------
-    let liEventByDate = util.dom.createElement('li');
-    let buttonByDate = util.dom.createElement('button', {
+    let liEventByDate = util.dom.createLi();
+    let buttonByDate = util.dom.createButton({
       id: 'pal-event-nav-yearly'
     });
 
-    let anchorByDate = util.dom.createElement('a', {
+    let anchorByDate = util.dom.createAnchor({
       href: '#event/create/yearly',
       onfocus: 'this.blur();',
       textContent: '年間予定(日指定)'
     });
 
     // 年間予定ボタン（第何何曜日指定）の作成 ------------------------
-    let liEventByDay = util.dom.createElement('li');
-    let buttonByDay = util.dom.createElement('button', {
+    let liEventByDay = util.dom.createLi();
+    let buttonByDay = util.dom.createButton({
       id: 'pal-event-nav-dayoftheweek'
     });
 
-    let anchorByDay = util.dom.createElement('a', {
+    let anchorByDay = util.dom.createAnchor({
       href: '#event/create/dayOfTheWeek',
       onfocus: 'this.blur();',
       textContent: '年間予定(第何何曜日指定)'
@@ -882,15 +814,15 @@ ${event.eventSchedule.byMonthDay}`
   const makeEventWeeklyList = (element) => {
 
     // 要素を追加する場所を探す --------------------------------------
-    const divContent = document.querySelector('.secondColumn ul');
+    const divContent = util.dom.querySelector('.secondColumn ul');
     // li要素を作成する ----------------------------------------------
-    let li = util.dom.createElement('li', {
+    let li = util.dom.createLi({
       'data-date': element.eventSchedule.startTime
     });
 
-    const h3 = util.dom.createElement('h3', { innerHTML: element.name });
+    const h3 = util.dom.createH3({ innerHTML: element.name });
 
-    const dl = util.dom.createElement('dl', {
+    const dl = util.dom.createDl({
       innerHTML: `\
 <dt class="visuallyhidden">_id:</dt><dd class="visuallyhidden">${element._id} </dd>\
 <dt>曜日:</dt><dd>${element.eventSchedule.byDay} </dd>\
@@ -900,46 +832,34 @@ ${event.eventSchedule.byMonthDay}`
     });
 
     // 表示ボタンの設定
-    let readButton = util.dom.createElement('button', {
-      type: 'button'
-    });
-    let readAnchor = util.dom.createElement('a', {
-      href: `#event/read/${element._id}`,
-      textContent: '表示'
+    let readButton = util.dom.createButton({ type: 'button' });
+    let readAnchor = util.dom.createAnchor({
+      href: `#event/read/${element._id}`, textContent: '表示'
     });
     // 編集ボタンの設定
-    let updateButton = util.dom.createElement('button', {
-      type: 'button'
-    });
-    let updateAnchor = util.dom.createElement('a', {
-      href: `#event/update/${element._id}`,
-      textContent: '編集'
+    let updateButton = util.dom.createButton({ type: 'button' });
+    let updateAnchor = util.dom.createAnchor({
+      href: `#event/update/${element._id}`, textContent: '編集'
     });
     // 削除ボタンの設定
-    let deleteButton = util.dom.createElement('button', {
-      type: 'button'
-    });
-    let deleteAnchor = util.dom.createElement('a', {
-      href: `#event/delete/${element._id}`,
-      textContent: '削除'
+    let deleteButton = util.dom.createButton({ type: 'button' });
+    let deleteAnchor = util.dom.createAnchor({
+      href: `#event/delete/${element._id}`, textContent: '削除'
     });
 
     // HTMLを組み立てる-----------------------------------------------
     util.dom.appendByTreeArray([
       divContent, [
         li, [
-          h3,
-          dl,
-          readButton, [readAnchor],
-          updateButton, [updateAnchor],
-          deleteButton, [deleteAnchor]
+          h3, dl, readButton, [readAnchor],
+          updateButton, [updateAnchor], deleteButton, [deleteAnchor]
         ]
       ]
     ]);
 
     // contentsの部分/終了 -------------------------------------------
     let references =
-      document.querySelectorAll('.firstColumn div[data-date]');
+      util.dom.querySelectorAll('.firstColumn div[data-date]');
 
     // 基準になるポジションを設定して要素の場所を決定する ------------
     references.forEach((data) => {
@@ -961,8 +881,8 @@ ${event.eventSchedule.byMonthDay}`
         // 一時間分の高さ: bottom - top
         // 中間点: (top + bottom) / 2
         li.style.top =
-          ((top + bottom)/2 + (bottom - top)*current.split(':')[1]/ 60) +
-            'px';
+          ((top + bottom)/2 +
+           (bottom - top)*current.split(':')[1]/ 60) + 'px';
         li.style.width = '40em';
 
         // 要素の高さを設定する --------------------------------------
@@ -978,7 +898,7 @@ ${event.eventSchedule.byMonthDay}`
   };
   //--------------------- DOMメソッド終了 ----------------------------
   const setEventArray = (data) => {
-    const eventList =
+    const eventList = 
       util.core.compose(
         (data) => data,
         util.dom.getElementById
@@ -1150,7 +1070,7 @@ ${event.eventSchedule.byMonthDay}`
     // socket.emit('event read')したときのロケーションハッシュにより
     // 処理を切り分ける
     switch (crud) {
-      // 表示ボタンがクリックされたとき -----------------------------
+      // 表示ボタンがクリックされたとき ------------------------------
       case 'read':
         util.core.compose(
           util.dom.appendChildCurried(makeEventRead(eventObject)),
@@ -1232,7 +1152,9 @@ ${event.eventSchedule.byMonthDay}`
               util.dom.getElementById
             )('byDay');
             util.core.compose(
-              util.dom.setValue(eventObject.eventSchedule.repeatFrequency),
+              util.dom.setValue(
+                eventObject.eventSchedule.repeatFrequency
+              ),
               util.dom.getElementById
             )('repeatFrequency');
           }
@@ -1267,7 +1189,9 @@ ${event.eventSchedule.byMonthDay}`
               util.dom.getElementById
             )('byMonthDay');
             util.core.compose(
-              util.dom.setValue(eventObject.eventSchedule.repeatFrequency),
+              util.dom.setValue(
+                eventObject.eventSchedule.repeatFrequency
+              ),
               util.dom.getElementById
             )('repeatFrequency');
           }
@@ -1301,7 +1225,7 @@ ${event.eventSchedule.byMonthDay}`
   socket.on('event search complete', (data) => {
     // このページの曜日を取得する
     let currentDay =
-      document.querySelector('#pal-event-read h2')
+      util.dom.querySelector('#pal-event-read h2')
         .getAttribute('data-day');
 
     if (data.eventSchedule.byDay === currentDay) {

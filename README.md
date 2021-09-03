@@ -27,15 +27,21 @@ $ mongod~~
 redisのインストールが必要。
 Ubuntuの場合、redisのインストールは
 
+```
 $ sudo apt install redis
+```
 
-nodemonをインストールしておく
+nodemonをインストールする。
 
+```
 $ npm install -g nodemon
+```
 
 githubからクローンする
 
+```
 $ git clone https://github.com/HirotoIgarashi/keep-a-log.git
+```
 
 $ cd keep-a-log
 

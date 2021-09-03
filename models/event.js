@@ -13,8 +13,8 @@ const eventSchema = new Schema({
     type      : String
   },
   eventSchedule: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "EventSchedule"
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "EventSchedule"
   }
 },{
   // createAtとupdateAtの日時を記録するタイムスタンププロパティを追加

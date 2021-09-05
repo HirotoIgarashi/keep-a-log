@@ -1,6 +1,10 @@
 var cradle = require('cradle');
 
-var db = new(cradle.Connection)().database('quotes');
+var db = new(cradle.Connection)(
+  'localhost',
+  5984,
+  { auth: { username: 'admin', password: 'hiroto' } }
+).database('quotes');
 var params = { author: process.argv[2], quote: process.argv[3] };
 
 function errorHandler(err) {

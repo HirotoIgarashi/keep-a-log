@@ -1,4 +1,4 @@
-'use strict;'
+'use strict';
 
 // Express.jsのRouterをロード ----------------------------------------
 const router = require('express').Router();

@@ -1,4 +1,4 @@
-'use strict;'
+'use strict';
 
 // Express.jsのRouterと、ユーザコントローラをロードする --------------
 const router = require('express').Router();
@@ -19,12 +19,13 @@ router.post('/login', usersController.authenticate);
 
 // Createのフォームからデータを送出するリクエストを処理し、
 // ビューを表示する
-router.post('/create',
-            usersController.validateItem(),
-            usersController.validate,
-            usersController.create,
-            usersController.redirectView
-           );
+router.post(
+  '/create',
+  usersController.validateItem(),
+  usersController.validate,
+  usersController.create,
+  usersController.redirectView
+);
 
 // インデックス経路を作成
 router.get('/', usersController.index, usersController.indexView);
@@ -36,18 +37,20 @@ router.get('/:id', usersController.show, usersController.showView);
 router.get('/:id/edit', usersController.edit);
 
 // Editフォームからのデータを処理して、ユーザShowページを表示
-router.put('/:id/update',
-           usersController.validateItem(),
-           usersController.validate,
-           usersController.update,
-           usersController.redirectView
-          );
+router.put(
+  '/:id/update',
+  usersController.validateItem(),
+  usersController.validate,
+  usersController.update,
+  usersController.redirectView
+);
 
 // ユーザdelete処理を追加
-router.delete('/:id/delete',
-              usersController.delete,
-              usersController.redirectView
-             );
+router.delete(
+  '/:id/delete',
+  usersController.delete,
+  usersController.redirectView
+);
 
 // このモジュールのルータをエクスポート ------------------------------
 module.exports = router;

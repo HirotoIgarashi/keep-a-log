@@ -139,13 +139,13 @@ app.use(expressSession({
   cookie  : {
     secure    : false,
     httpOnly  : false,
-    expires   : new Date(Date.now() + expire_time) 
+    expires   : new Date(Date.now() + expire_time)
   },
   store   : new RedisStore({
     host       : 'localhost',
-    port       : 6379, 
+    port       : 6379,
     client     : client,
-    disableTTL : true 
+    disableTTL : true
   }),
   saveUninitialized : false,
   resave            : false

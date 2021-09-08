@@ -18,6 +18,7 @@ const port = 8000;
 
 // expressのモジュールをロードする
 const express = require('express');
+const { check, validationResult } = require('express-validator');
 
 // expressアプリケーションをapp定数に代入
 const app = express();
@@ -41,52 +42,12 @@ const RedisStore = require('connect-redis')(expressSession);
 const client = redis.createClient();
 
 // Express.jsのRouterをロード ----------------------------------------
-const router = require('./routes/index');
+// const router = require('./routes/index');
 
 const morgan = require('morgan');
 
-const mongoose = require('mongoose');
-
-mongoose.Promise = global.Promise;
-
-// データベース接続を設定
-// テスト環境ではテスト用データベースを使う
-if (process.env.NODE_ENV === 'test') {
-  mongoose.connect(
-    'mongodb://localhost:27017/pal_test_db',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
-    }
-  );
-}
-// デフォルトでは公開用のデータベースを使う
-else {
-  mongoose.connect(
-    'mongodb://localhost:27017/pal',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
-    }
-  );
-}
-
-// データベースをdb変数に代入
-const db = mongoose.connection;
-
-db.once('open', () => {
-  // 「Mongooseを使ってMongoDBに接続できました！」
-  console.log(
-    'Server Message: Mongooseを使ってMongoDBに接続しました！'
-  );
-});
-
 // Userモデルをロードする
-const User = require('./models/user');
+// const User = require('./models/user');
 
 // セッションのタイムアウト時間を30日に設定する
 const expire_time = 1000 * 60 * 60 * 24 * 30;
@@ -155,7 +116,7 @@ app.use(expressSession({
 app.use(connectFlash());
 
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
-app.use((req, res, next) => {
+app.use( (req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
@@ -168,14 +129,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Userのログインストラテジーを設定
-passport.use(User.createStrategy());
+// passport.use(User.createStrategy());
 
 // ユーザデータのシリアライズ／デシリアライズを行うように、
 // passportを設定する
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 // ------------------ passportの設定終了 -----------------------------
-app.use((req, res, next) => {
+app.use( (req, res, next) => {
   res.locals.loggedIn = req.isAuthenticated();
   res.locals.currentUser = req.user;
   res.locals.flashMessages = req.flash();
@@ -186,7 +147,185 @@ app.use((req, res, next) => {
 app.use(morgan('combined'));
 
 // routes/index.jsを使う ---------------------------------------------
-app.use('/', router);
+// app.use('/', router);
+
+const homeController = require('./controllers/homeController');
+
+// pal.htmlの配信
+// ホームページの経路を作る
+app.get('/', (req, res) => {
+  const options = {
+    root: path.join( __dirname, './public' ),
+    dotfiles: 'deny',
+    headers: { 'x-timestamp': Date.now(), 'x-sent': true }
+  };
+
+  res.sendFile('pal.html', options, (error) => {
+    if (error) {
+      res.end();
+    }
+    else {
+      console.log( 'Server Message: Send:', 'pal.html' );
+    }
+  });
+});
+
+// ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
+app.post(
+  '/session/create',
+  // usersController.authenticateAjax
+  // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
+  function(req, res) {
+    console.log('authenticateAjax処理開始');
+    passport.authenticate('local', function(err, user, info) {
+      if (err) {
+        res.status(401);
+        res.end();
+        return;
+      }
+
+      if (user) {
+        // ----- ログイン処理 ------------------------------------------
+        req.login(user, function(err) {
+          if (err) {
+            res.status(401);
+            res.end();
+            return;
+          }
+          res.status(200).jsonp(user);
+          res.end();
+          return;
+        });
+      }
+      else {
+        res.status(401).jsonp(info);
+        res.end();
+        return;
+      }
+    })(req, res);
+  },
+);
+
+// ------ Ajaxの/user/logoutのget処理 --------------------------------
+app.get('/session/delete', (req, res) => {
+  // ------ ログアウトの処理 -----------------------------------------
+  req.logout();
+  res.status(200);
+  res.end();
+  return;
+});
+
+// ------ 認証されているかどうかの判定処理 ---------------------------
+app.get('/session/read', (req, res) => {
+  // ------ req.isAuthenticated()は認証されていればtrueを返す --------
+  if (req.isAuthenticated()) {
+    console.log('200を返しました');
+    res.status(200);
+    res.send( JSON.stringify( req.user ) );
+    res.end();
+  }
+  else {
+    // Non-Authoritative Informationのコード 203を返す
+    console.log('203を返しました');
+    res.status(203);
+    res.send({ email: 'anonymous' });
+    res.end();
+  }
+});
+
+// Ajaxリクエストのフォームデータを処理する
+app.post(
+  '/user/create',
+  // usersController.validateItem(),
+  // ----- validateする項目を定義する --------------------------------
+  () => {
+    // バリデーションルール
+    return [
+      // textフィールドの前後の空白を取り除きHTMLエスケープします
+      check('text').trim().escape(),
+      check('email')
+        .isEmail().withMessage(
+          '正しいEメールアドレスである必要があります'
+        )
+        .normalizeEmail(),
+      check('password').isLength({min: 5}).withMessage(
+        'パスワードは少なくとも5桁必要です。'
+      ),
+      check('zipCode')
+        .isLength({min: 7, max: 7}).withMessage(
+          '郵便番号は7桁必要です。'
+        )
+        .isInt().withMessage('郵便番号には数字を入力して下さい。')
+    ];
+  },
+  // ----- validate関数を定義する ------------------------------------
+  // usersController.validateAjax
+  // ------ Ajaxでpostされたときのvalidate関数を追加 -----------------
+  (req, res) => {
+    const getUserParams = body => {
+      return {
+        name: {
+          first: body.first,
+          last: body.last
+        },
+        email: body.email,
+        password: body.password,
+        zipCode: body.zipCode
+      };
+    };
+    //------ 検証結果を格納する --------------------------------------
+    const result = validationResult(req);
+
+    // 検証結果にエラーがあれば --------------------------------------
+    console.log(req.body);
+    if (!result.isEmpty()) {
+      let messages = result.array().map(e => {
+        return {value: e.value, msg: e.msg, param: e.param};
+      });
+
+      res.status(422).jsonp(messages);
+      res.end();
+    }
+    else {
+      //----- Ajaxのパラメータでユーザを作る -------------------------
+      // let newUser = new User(getUserParams(req.body));
+
+      // フォームのパラメータでユーザを作る
+      // User.register(newUser, req.body.password, (error, user) => {
+      //   if (user) {
+      //     // status 201: Created リクエストは成功し、その結果新たな
+      //     // リソースが作成された
+      //     res.status(201);
+      //     res.end();
+      //   }
+      //   else {
+      //     if (error.name === 'UserExistsError') {
+      //       console.log(
+      //         `ユーザアカウントの作成のエラー: ${error.message}`
+      //       );
+      //       // status 409: Emailがすでに登録されている
+      //       res.status(409)
+      //         .jsonp([{
+      //           value: 'req.body.email',
+      //           msg: error.message, param: 'email'
+      //         }]);
+      //       res.end();
+      //     }
+      //     else {
+      //       console.log(`不明のエラー: ${error.name}`);
+      //       console.log(`不明のエラー: ${error.message}`);
+      //       res.status(422).jsonp(error.message);
+      //       res.end();
+      //     }
+      //   }
+      // });
+    }
+    return;
+  }
+);
+
+// app.get('/chat', homeController.chat);
+
 // ---------------- サーバ構成終了 -----------------------------------
 
 // ---------------- サーバ起動開始 -----------------------------------
@@ -210,7 +349,7 @@ else {
 const io = require('socket.io')(server);
 
 require('./controllers/chatController')(io);
-require('./controllers/eventController')(io);
+// require('./controllers/eventController')(io);
 
 module.exports = server;
 // ---------------- サーバ起動終了 ---------------------------------------------

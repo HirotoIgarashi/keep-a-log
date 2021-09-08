@@ -1,5 +1,7 @@
 'use strict';
 
+console.log('message.jsが呼ばれました');
+
 const mongoose = require('mongoose');
 const {Schema} = require('mongoose');
 

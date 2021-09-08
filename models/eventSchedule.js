@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
@@ -33,4 +35,3 @@ const eventScheduleSchema = new Schema({
   timestamps: true
 });
 module.exports = mongoose.model('EventSchedule', eventScheduleSchema);
-

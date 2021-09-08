@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 const passportLocalMongoose = require('passport-local-mongoose');

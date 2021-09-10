@@ -149,7 +149,7 @@ app.use(morgan('combined'));
 // routes/index.jsを使う ---------------------------------------------
 // app.use('/', router);
 
-const homeController = require('./controllers/homeController');
+// const homeController = require('./controllers/homeController');
 
 // pal.htmlの配信
 // ホームページの経路を作る
@@ -346,9 +346,9 @@ else {
 }
 
 // サーバのインスタンスをsocket.ioに渡す -----------------------------
-const io = require('socket.io')(server);
+// const io = require('socket.io')(server);
 
-require('./controllers/chatController')(io);
+// require('./controllers/chatController')(io);
 // require('./controllers/eventController')(io);
 
 module.exports = server;

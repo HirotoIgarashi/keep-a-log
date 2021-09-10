@@ -262,17 +262,17 @@ app.post(
   // usersController.validateAjax
   // ------ Ajaxでpostされたときのvalidate関数を追加 -----------------
   (req, res) => {
-    const getUserParams = body => {
-      return {
-        name: {
-          first: body.first,
-          last: body.last
-        },
-        email: body.email,
-        password: body.password,
-        zipCode: body.zipCode
-      };
-    };
+    // const getUserParams = body => {
+    //   return {
+    //     name: {
+    //       first: body.first,
+    //       last: body.last
+    //     },
+    //     email: body.email,
+    //     password: body.password,
+    //     zipCode: body.zipCode
+    //   };
+    // };
     //------ 検証結果を格納する --------------------------------------
     const result = validationResult(req);
 

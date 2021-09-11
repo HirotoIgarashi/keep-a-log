@@ -2,14 +2,6 @@
  * app.js - 汎用ルーティングを備えたExpressサーバ
 */
 
-/*jslint          node    : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true, unparam : true
-*/
-/*global */
-
 // ---------------- モジュールスコープ変数開始 -----------------------
 'use strict';
 // 待ち受けるポートの8000を定義する
@@ -172,7 +164,8 @@ app.post(
   '/session/create',
   // usersController.authenticateAjax
   // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
-  function(req, res) {
+  // function(req, res) {
+  (req, res) => {
     console.log('authenticateAjax処理開始');
     passport.authenticate('local', function(err, user, info) {
       if (err) {
@@ -274,16 +267,14 @@ app.post(
     const result = validationResult(req);
 
     // 検証結果にエラーがあれば --------------------------------------
-    console.log(req.body);
     if (!result.isEmpty()) {
       let messages = result.array().map(e => {
         return {value: e.value, msg: e.msg, param: e.param};
       });
-
       res.status(422).jsonp(messages);
       res.end();
     }
-    else {
+    // else {
       //----- Ajaxのパラメータでユーザを作る -------------------------
       // let newUser = new User(getUserParams(req.body));
 
@@ -316,7 +307,7 @@ app.post(
       //     }
       //   }
       // });
-    }
+    // }
     return;
   }
 );

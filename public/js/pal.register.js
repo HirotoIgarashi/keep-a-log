@@ -258,12 +258,13 @@ pal.register = (() => {
 
   // --------------------- パブリックメソッド開始 --------------------
   // -- パブリックメソッド(initModule)開始 ---------------------------
-  const initModule = function (main_section) {
+  const initModule = function (mainSection) {
     // mainセクションの子要素をすべて削除する
-    pal.util.emptyElement(main_section);
+    // pal.util.emptyElementById(mainSection);
+    util.dom.emptyElement(mainSection);
 
     // document fragmentを追加する
-    main_section.appendChild(makeRegisterForm());
+    mainSection.appendChild(makeRegisterForm());
 
     let inputFirstNameElement = document.getElementById('inputFirstName');
     inputFirstNameElement.focus();

@@ -19,9 +19,10 @@ pal.registSchedule = (function () {
     configMap = {
       settable_map  : { color_name: true },
       color_name    : 'blue'
-    },
-    onHashchange,
-    configModule, initModule;
+    };
+    // onHashchange,
+    // configModule,
+    // initModule;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -50,7 +51,7 @@ pal.registSchedule = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onHashchange = function ( main_section ) {
+  const onHashchange = function ( main_section ) {
     var
       current_hash = pal.bom.getLocationHash(),
       schedule_main,
@@ -64,7 +65,7 @@ pal.registSchedule = (function () {
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
-    pal.util.emptyElement( main_section );
+    util.dom.emptyElement( main_section );
 
     // メニューを表示する
     main_section.appendChild( menu );
@@ -153,7 +154,7 @@ pal.registSchedule = (function () {
   // 戻り値: true
   // 例外発行: なし
   //
-  configModule = function ( input_map ) {
+  const configModule = function ( input_map ) {
     pal.butil.setConfigMap({
       input_map     : input_map,
       settable_map  : configMap.settable_map,
@@ -170,13 +171,12 @@ pal.registSchedule = (function () {
   // 戻り値: true
   // 例外発行: なし
   //
-  initModule = function ( main_section ) {
+  const initModule = function ( main_section ) {
 
     // mainセクションの子要素をすべて削除する
     // mainセクションの子要素の削除は下位のモジュールにまかせる
-    console.log( main_section );
 
-    pal.util.emptyElement( main_section );
+    util.dom.emptyElement( main_section );
 
     // hashの状態により表示を切り替える
     onHashchange( main_section );

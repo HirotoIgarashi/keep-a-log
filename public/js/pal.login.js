@@ -16,10 +16,10 @@ pal.login = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
   var
-    request = null,
-    onReceiveLogin,
-    initModule,
-    onClickLogin;
+    request = null;
+    // onReceiveLogin,
+    // initModule,
+    // onClickLogin;
   //--------------------- モジュールスコープ変数終了 -----------------
 
   //--------------------- ユーティリティメソッド開始 -----------------
@@ -108,7 +108,7 @@ pal.login = (function () {
 
   // --------------------- イベントハンドラ開始 ----------------------
   // 例: onClickButton = function ( event ) {};
-  onClickLogin = (event) => {
+  const onClickLogin = (event) => {
     const requestType = 'POST';
     const url = '/session/create';
 
@@ -132,7 +132,7 @@ pal.login = (function () {
   };
 
   // --------------------- Loginの結果の処理 -------------------------
-  onReceiveLogin = function () {
+  const onReceiveLogin = function () {
     const message_area = document.getElementById('message-area');
     const userInfo = document.getElementById('pal-dom-user-info');
 
@@ -186,7 +186,7 @@ pal.login = (function () {
   // 戻り値: true
   // 例外発行: なし
   //
-  initModule = function () {
+  const initModule = function () {
     const main_section = document.getElementById( 'pal-main' );
 
     // mainセクションの子要素をすべて削除する

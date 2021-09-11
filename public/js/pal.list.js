@@ -3,15 +3,6 @@
  * カスタムオブジェクトをリスト表示する機能
 */
 
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true
-*/
-
-/*global pal */
-
 pal.list = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
@@ -84,7 +75,7 @@ pal.list = (function () {
             main_section = document.getElementById( 'pal-main' );
 
             // mainセクションの子要素をすべて削除する
-            pal.util.emptyElement( main_section );
+            util.dom.emptyElement( main_section );
 
             // document fragmentを追加する
             main_section.appendChild( list_page );
@@ -422,7 +413,7 @@ pal.list = (function () {
 
             // message_wrapperの中身を追加する
             current_node.firstElementChild.nextElementSibling.textContent = '編集を中止するにはキャンセル、編集が終了したら更新の確認をクリックしてください。';
-            
+
             // formを生成する
             // form要素を取得する。event_linstenerにonBlurInputをセットする
             form_fragment = action_object.makeFormElement( onBlurInput );
@@ -669,7 +660,7 @@ pal.list = (function () {
       element.text( 'データ件数は' + object.length + '件です。' );
     }
     else {
-      element.textContent = 'データ件数は' + object.length + '件です。'; 
+      element.textContent = 'データ件数は' + object.length + '件です。';
     }
 
   };
@@ -686,7 +677,7 @@ pal.list = (function () {
 
     element = document.createElement( 'a' );
     element.setAttribute( 'href', href );
-    element.textContent = text; 
+    element.textContent = text;
 
     return element;
   };

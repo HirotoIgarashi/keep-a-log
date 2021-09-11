@@ -19,17 +19,6 @@
 /*global pal */
 
 pal.util = (() => {
-  var
-    setConfigMap,
-    showElement,
-    hideElement,
-    toggleElement,
-    toggleTip,
-    inputChangeCallback,
-    getTargetValue,
-    addEventListener,
-    checkInputField;
-
   // 実装予定の関数
   // getTargetValue       : eventを受け取り値を返す
   // removeEventListener  : フォームの送信をキャンセルする関数
@@ -85,38 +74,6 @@ pal.util = (() => {
   };
   // ユーティリティメソッド/addChange/終了
 
-  // パブリックメソッド/setConfigMap/開始
-  // 目的: 機能モジュールで構成を行うための共通コード
-  // 引数:
-  //  * input_map     - 構成するキーバリューマップ
-  //  * settable_map  - 構成できるキーのマップ
-  //  * config_map    - 構成を適用するマップ
-  // 戻り値: true
-  // 例外発行: 入力キーが許可されていない場合は例外を発行する
-  //
-  // setConfigMap = function ( arg_map ) {
-  //   var
-  //     input_map = arg_map.input_map,
-  //     settable_map = arg_map.settable_map,
-  //     config_map = arg_map.configMap,
-  //     key_name, error;
-
-  //   for ( key_name in input_map ) {
-  //     if ( input_map.hasOwnProperty( key_name ) ) {
-  //       if ( settable_map.hasOwnProperty( key_name ) ) {
-  //         config_map[key_name] = input_map[key_name];
-  //       }
-  //       else {
-  //         error = makeError( 'Bad Input', 
-  //           'Setting config key |' + key_name + '| is not supported'
-  //         );
-  //         throw error;
-  //       }
-  //     }
-  //   }
-  // };
-  // パブリックメソッド/setConfigMap/終了
-
   // パブリックメソッド/clearFormAll/開始
   // 目的: Form要素の値をすべてクリアする
   // 引数: なし
@@ -166,13 +123,13 @@ pal.util = (() => {
   // パブリックメソッド/emptyElementById/開始
   // 目的: 引数のid値を持つHTML要素の下位の要素をすべて削除する
   // 引数:
-  //  * element_id  : idの値
+  //  * elementId  : idの値
   // 戻り値: なし
   // 例外発行: なし
   //
-  const emptyElementById = (element_id) => {
+  const emptyElementById = (elementId) => {
     // 新規作成のアンカーを削除する
-    let element = document.getElementById(element_id);
+    let element = document.getElementById(elementId);
     while (element && element.firstChild) {
       element.removeChild(element.firstChild);
     }
@@ -183,15 +140,15 @@ pal.util = (() => {
   // 目的: HTML要素id値を引数を受け取りhidden="true"の状態を見えるように
   //      する。
   // 引数:
-  //  * element_id  : 見えるようにするHTML要素のid値
+  //  * elementId  : 見えるようにするHTML要素のid値
   // 戻り値: なし
   // 例外発行: なし
   //
-  showElement = (element_id, show_callback) => {
+  const showElement = (elementId, show_callback) => {
     var
       element;
     // 要素の取得
-    element  = document.getElementById( element_id );
+    element  = document.getElementById( elementId );
 
     // 要素を表示する
     element.hidden = false;
@@ -212,15 +169,15 @@ pal.util = (() => {
   // 目的: HTML要素id値を引数を受け取りhidden="true"の状態にする
   //      する。
   // 引数:
-  //  * element_id  : 隠すHTML要素のid値
+  //  * elementId  : 隠すHTML要素のid値
   // 戻り値: なし
   // 例外発行: なし
   //
-  hideElement = (element_id, hide_callback) => {
+  const hideElement = (elementId, hide_callback) => {
     var
       element;
     // 要素の取得
-    element  = document.getElementById( element_id );
+    element  = document.getElementById( elementId );
 
     // 要素を表示する
     element.hidden = true;
@@ -244,7 +201,7 @@ pal.util = (() => {
   // 戻り値: なし
   // 例外発行: なし
   //
-  toggleElement = (before_id, after_id, show_callback, hide_callback) => {
+  const toggleElement = (before_id, after_id, show_callback, hide_callback) => {
     var
       before_element,
       after_element;
@@ -296,7 +253,7 @@ pal.util = (() => {
   // 戻り値: なし
   // 例外発行: なし
   //
-  toggleTip = (input_element, tip) => {
+  const toggleTip = (input_element, tip) => {
     // 初期の状態ではtipを非表示にする
     tip.hidden = true;
     // input要素がフォーカスされたらtipを表示する
@@ -321,7 +278,7 @@ pal.util = (() => {
   // 戻り値: なし
   // 例外発行: なし
   //
-  inputChangeCallback = (input_element, callback) => {
+  const inputChangeCallback = (input_element, callback) => {
     input_element.addEventListener( 'change', () => {
       callback();
     });
@@ -336,7 +293,7 @@ pal.util = (() => {
   // 戻り値: input要素の値
   // 例外発行: なし
   //
-  getTargetValue = (event) => {
+  const getTargetValue = (event) => {
     var
       theEvent  = event || window.event,
       target    = theEvent.target || theEvent.srcElement;
@@ -351,14 +308,14 @@ pal.util = (() => {
   // 引数:
   //  * eventObj      : イベントに対応したオブジェクト
   //  * event         : イベント
-  //  * eventHandler  : 呼び出される関数 
+  //  * eventHandler  : 呼び出される関数
   // 戻り値: なし
   // 例外発行: なし
   // 動作: DOMレベル2のイベントモデル(DOM Model)では、addEventListenerを
   //        使ってイベントハンドラを設定します。
   //        IEのイベントモデル(IE Model)ではattachEventを設定します。
   //
-  addEventListener = (eventObj, event, eventHandler) => {
+  const addEventListener = (eventObj, event, eventHandler) => {
     if ( document.addEventListener ) {
       eventObj.addEventListener( event, eventHandler, false );
     }
@@ -379,20 +336,19 @@ pal.util = (() => {
   //         妥当でなければ : false
   // 例外発行: なし
   //
-  checkInputField = (event, checkFunc) => {
+  const checkInputField = (event, checkFunc) => {
     var
       //theEvent  = event || window.event,
       //target    = theEvent.target || theEvent.srcElement,
       txtInput  = getTargetValue( event );
 
-    return checkFunc( txtInput ); 
+    return checkFunc( txtInput );
   };
   // パブリックメソッド/checkInputField/終了
 
   return {
     makeError           : makeError,
     addChange           : addChange,
-    setConfigMap        : setConfigMap,
     clearFormAll        : clearFormAll,
     emptyElementById    : emptyElementById,
     showElement         : showElement,

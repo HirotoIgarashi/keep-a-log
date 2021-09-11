@@ -176,7 +176,8 @@ app.post(
 
       if (user) {
         // ----- ログイン処理 ------------------------------------------
-        req.login(user, function(err) {
+        // req.login(user, function(err) {
+        req.login(user, (err) => {
           if (err) {
             res.status(401);
             res.end();

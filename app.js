@@ -10,7 +10,6 @@
 */
 /*global */
 
-// この行は70桁です --------------------------------------------------
 // ---------------- モジュールスコープ変数開始 -----------------------
 'use strict';
 // 待ち受けるポートの8000を定義する
@@ -89,11 +88,9 @@ app.use(methodOverride('_method', {
 // URLエンコードされたデータを解析する
 app.use(express.json());
 
-app.use(
-  express.urlencoded({
-    extended: false
-  })
-);
+app.use(express.urlencoded(
+  { extended: false }
+));
 
 app.use(expressSession({
   secret  : 'keepalog',

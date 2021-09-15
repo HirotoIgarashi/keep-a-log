@@ -7,16 +7,9 @@
  * MITライセンス
 */
 
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : true,
-  white   : true
-*/
-/*global $, pal, ActiveXObject */
+'use strict';
 
 pal.util_b = (() => {
-  'use strict';
   //------------------ モジュールスコープ変数開始 ------------------------------
   var
     configMap = {
@@ -226,7 +219,7 @@ pal.util_b = (() => {
   // 例外発行: なし
   //
   sendXmlHttpRequest = (requestType, url, async, responseHandle, sendData) => {
-    var request = null;
+    let request = null;
 
     if ( window.XMLHttpRequest ) {
       // Mozillaベースのブラウザの場合
@@ -281,6 +274,7 @@ pal.util_b = (() => {
         // POSTの場合はContent-Headerが必要です。
         request.setRequestHeader( 'Content-Type', 'application/json' );
         request.send(requestData);
+        console.log('Ajaxリクエストを実行しました');
       }
       else {
         request.send(null);

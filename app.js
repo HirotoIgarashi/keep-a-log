@@ -9,7 +9,7 @@ const port = 8000;
 
 // expressのモジュールをロードする
 const express = require('express');
-const { check, validationResult } = require('express-validator');
+// const { check, validationResult } = require('express-validator');
 
 // expressアプリケーションをapp定数に代入
 const app = express();
@@ -142,7 +142,7 @@ app.use(morgan('combined'));
 
 // pal.htmlの配信
 // ホームページの経路を作る
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
   const options = {
     root: path.join( __dirname, './public' ),
     dotfiles: 'deny',
@@ -160,39 +160,37 @@ app.get('/', (req, res) => {
 });
 
 // ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
-app.post(
-  '/session/create',
+app.post( '/session/create', (req, res, next) => {
   // usersController.authenticateAjax
   // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
   // function(req, res) {
-  (req, res) => {
-    console.log('authenticateAjax処理開始');
-    passport.authenticate('local', function(err, user, info) {
-      if (err) {
-        res.status(401);
-        res.end();
-        return;
-      }
+  console.log('authenticateAjax処理開始');
+  passport.authenticate('local', function(err, user, info) {
+    if (err) {
+      res.status(401);
+      res.end();
+      return;
+    }
 
-      if (user) {
-        // ----- ログイン処理 ------------------------------------------
-        // req.login(user, function(err) {
-        req.login(user, (err) => {
-          if (err) {
-            res.status(401);
-            res.end();
-            return;
-          }
-          res.status(200).jsonp(user);
+    if (user) {
+      // ----- ログイン処理 ------------------------------------------
+      // req.login(user, function(err) {
+      req.login(user, (err) => {
+        if (err) {
+          res.status(401);
           res.end();
           return;
-        });
-      }
-      else {
-        res.status(401).jsonp(info);
+        }
+        res.status(200).jsonp(user);
         res.end();
         return;
-      }
+      });
+    }
+    else {
+      res.status(401).jsonp(info);
+      res.end();
+      return;
+    }
     })(req, res);
   },
 );
@@ -210,14 +208,14 @@ app.get('/session/delete', (req, res) => {
 app.get('/session/read', (req, res) => {
   // ------ req.isAuthenticated()は認証されていればtrueを返す --------
   if (req.isAuthenticated()) {
-    console.log('200を返しました');
+    console.log('Server Message: GET /session/read に200(Authenticatd)を返しました');
     res.status(200);
     res.send( JSON.stringify( req.user ) );
     res.end();
   }
   else {
     // Non-Authoritative Informationのコード 203を返す
-    console.log('203を返しました');
+    console.log('Server Message: GET /session/read に203(Non-Authoritabive)を返しました');
     res.status(203);
     res.send({ email: 'anonymous' });
     res.end();
@@ -225,93 +223,98 @@ app.get('/session/read', (req, res) => {
 });
 
 // Ajaxリクエストのフォームデータを処理する
-app.post(
-  '/user/create',
-  // usersController.validateItem(),
-  // ----- validateする項目を定義する --------------------------------
-  () => {
-    // バリデーションルール
-    return [
-      // textフィールドの前後の空白を取り除きHTMLエスケープします
-      check('text').trim().escape(),
-      check('email')
-        .isEmail().withMessage(
-          '正しいEメールアドレスである必要があります'
-        )
-        .normalizeEmail(),
-      check('password').isLength({min: 5}).withMessage(
-        'パスワードは少なくとも5桁必要です。'
-      ),
-      check('zipCode')
-        .isLength({min: 7, max: 7}).withMessage(
-          '郵便番号は7桁必要です。'
-        )
-        .isInt().withMessage('郵便番号には数字を入力して下さい。')
-    ];
-  },
-  // ----- validate関数を定義する ------------------------------------
-  // usersController.validateAjax
-  // ------ Ajaxでpostされたときのvalidate関数を追加 -----------------
-  (req, res) => {
-    // const getUserParams = body => {
-    //   return {
-    //     name: {
-    //       first: body.first,
-    //       last: body.last
-    //     },
-    //     email: body.email,
-    //     password: body.password,
-    //     zipCode: body.zipCode
-    //   };
-    // };
-    //------ 検証結果を格納する --------------------------------------
-    const result = validationResult(req);
-
-    // 検証結果にエラーがあれば --------------------------------------
-    if (!result.isEmpty()) {
-      let messages = result.array().map(e => {
-        return {value: e.value, msg: e.msg, param: e.param};
-      });
-      res.status(422).jsonp(messages);
-      res.end();
-    }
-    // else {
-      //----- Ajaxのパラメータでユーザを作る -------------------------
-      // let newUser = new User(getUserParams(req.body));
-
-      // フォームのパラメータでユーザを作る
-      // User.register(newUser, req.body.password, (error, user) => {
-      //   if (user) {
-      //     // status 201: Created リクエストは成功し、その結果新たな
-      //     // リソースが作成された
-      //     res.status(201);
-      //     res.end();
-      //   }
-      //   else {
-      //     if (error.name === 'UserExistsError') {
-      //       console.log(
-      //         `ユーザアカウントの作成のエラー: ${error.message}`
-      //       );
-      //       // status 409: Emailがすでに登録されている
-      //       res.status(409)
-      //         .jsonp([{
-      //           value: 'req.body.email',
-      //           msg: error.message, param: 'email'
-      //         }]);
-      //       res.end();
-      //     }
-      //     else {
-      //       console.log(`不明のエラー: ${error.name}`);
-      //       console.log(`不明のエラー: ${error.message}`);
-      //       res.status(422).jsonp(error.message);
-      //       res.end();
-      //     }
-      //   }
-      // });
-    // }
-    return;
-  }
-);
+app.post('/user/create', (req, res, next) => {
+  const { title } = req.body;
+  console.log(req.body);
+  res.status(500);
+  res.end();
+  return;
+});
+// app.post('/user/create', () => {
+//   // usersController.validateItem(),
+//   // ----- validateする項目を定義する --------------------------------
+//   // バリデーションルール
+//   return [
+//     // textフィールドの前後の空白を取り除きHTMLエスケープします
+//     check('text').trim().escape(),
+//     check('email')
+//       .isEmail().withMessage(
+//         '正しいEメールアドレスである必要があります'
+//       )
+//       .normalizeEmail(),
+//     check('password').isLength({min: 5}).withMessage(
+//       'パスワードは少なくとも5桁必要です。'
+//     ),
+//     check('zipCode')
+//       .isLength({min: 7, max: 7}).withMessage(
+//         '郵便番号は7桁必要です。'
+//       )
+//       .isInt().withMessage('郵便番号には数字を入力して下さい。')
+//   ];
+// },
+// // ----- validate関数を定義する ------------------------------------
+// // usersController.validateAjax
+// // ------ Ajaxでpostされたときのvalidate関数を追加 -----------------
+// (req, res) => {
+//   const getUserParams = body => {
+//     return {
+//       name: {
+//         first: body.first,
+//         last: body.last
+//       },
+//       email: body.email,
+//       password: body.password,
+//       zipCode: body.zipCode
+//     };
+//   };
+//   //------ 検証結果を格納する --------------------------------------
+//   const result = validationResult(req);
+//
+//   // 検証結果にエラーがあれば --------------------------------------
+//   if (!result.isEmpty()) {
+//     let messages = result.array().map(e => {
+//       return {value: e.value, msg: e.msg, param: e.param};
+//     });
+//     res.status(422).jsonp(messages);
+//     res.end();
+//   }
+//   else {
+//     //----- Ajaxのパラメータでユーザを作る -------------------------
+//     let newUser = new User(getUserParams(req.body));
+//
+//     // フォームのパラメータでユーザを作る
+//     User.register(newUser, req.body.password, (error, user) => {
+//       if (user) {
+//         // status 201: Created リクエストは成功し、その結果新たな
+//         // リソースが作成された
+//         res.status(201);
+//         res.end();
+//       }
+//       else {
+//         if (error.name === 'UserExistsError') {
+//           console.log(
+//             `ユーザアカウントの作成のエラー: ${error.message}`
+//           );
+//           // status 409: Emailがすでに登録されている
+//           res.status(409)
+//             .jsonp([{
+//               value: 'req.body.email',
+//               msg: error.message, param: 'email'
+//           }]);
+//           res.end();
+//         }
+//         else {
+//           console.log(`不明のエラー: ${error.name}`);
+//           console.log(`不明のエラー: ${error.message}`);
+//           res.status(422).jsonp(error.message);
+//           res.end();
+//         }
+//       }
+//     });
+//   }
+//   return;
+// }
+// );
 
 // app.get('/chat', homeController.chat);
 

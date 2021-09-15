@@ -2,17 +2,8 @@
 
 /*
  * pal.register.js
- * 登録機能
+ * ユーザ登録機能
 */
-
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true
-*/
-
-/*global pal util */
 
 pal.register = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
@@ -41,7 +32,7 @@ pal.register = (() => {
     let h2Element = util.dom.createElement('h2');
     h2Element = util.dom.innerHTML(
       h2Element,
-      '新しいユーザを作成する:'
+      'ユーザ登録:'
     );
 
     // -----formタグの作成 -------------------------------------------
@@ -102,7 +93,7 @@ pal.register = (() => {
     // ----- Eメールのlabel ------------------------------------------
     let emailLabelAndInput = util.dom.createLabelAndInput({
       'for': 'inputEmail',
-      'innerHTML': 'Email address',
+      'innerHTML': 'メールアドレス',
       'type': 'email',
       'name': 'email',
       'id': 'inputEmail',
@@ -115,25 +106,25 @@ pal.register = (() => {
     let inputEmailResponse = util.dom.createElement('div');
 
     // -----郵便番号のlabelとinput -----------------------------------
-    let zipCodeLabelAndInput = util.dom.createLabelAndInput({
-      'for': 'inputZipCode',
-      'innerHTML': '郵便番号',
-      'type': 'text',
-      'name': 'zipCode',
-      'id': 'inputZipCode',
-      'placeholder': '郵便番号',
-      'required': true,
-      'autofocus': false
-    });
+    // let zipCodeLabelAndInput = util.dom.createLabelAndInput({
+    //   'for': 'inputZipCode',
+    //   'innerHTML': '郵便番号',
+    //   'type': 'text',
+    //   'name': 'zipCode',
+    //   'id': 'inputZipCode',
+    //   'placeholder': '郵便番号',
+    //   'required': true,
+    //   'autofocus': false
+    // });
 
     // -----郵便番号のvalidate結果の表示エリア------------------------
-    let inputZipCodeResponse = util.dom.createElement('div');
+    // let inputZipCodeResponse = util.dom.createElement('div');
 
     // -----ボタンを生成 ---------------------------------------------
     let submitButton = util.dom.createElement('button');
     util.dom.setAttribute(submitButton, 'type', 'submit');
     util.dom.setAttribute(submitButton, 'id', 'registerUser');
-    util.dom.innerHTML(submitButton, 'サインイン');
+    util.dom.innerHTML(submitButton, '登録');
 
     // -----メッセージエリアを生成 -----------------------------------
     let messageArea = util.dom.createElement('div');
@@ -146,16 +137,16 @@ pal.register = (() => {
     util.dom.appendChild(formElement, firstLabelAndInput[1]);
     util.dom.appendChild(formElement, lastLabelAndInput[0]);
     util.dom.appendChild(formElement, lastLabelAndInput[1]);
+    util.dom.appendChild(formElement, emailLabelAndInput[0]);
+    util.dom.appendChild(formElement, emailLabelAndInput[1]);
+    util.dom.appendChild(formElement, inputEmailResponse);
     util.dom.appendChild(formElement, passwordLabelAndInput[0]);
     util.dom.appendChild(formElement, passwordLabelAndInput[1]);
     util.dom.appendChild(formElement, divShowPassword);
     util.dom.appendChild(formElement, inputPasswordResponse);
-    util.dom.appendChild(formElement, emailLabelAndInput[0]);
-    util.dom.appendChild(formElement, emailLabelAndInput[1]);
-    util.dom.appendChild(formElement, inputEmailResponse);
-    util.dom.appendChild(formElement, zipCodeLabelAndInput[0]);
-    util.dom.appendChild(formElement, zipCodeLabelAndInput[1]);
-    util.dom.appendChild(formElement, inputZipCodeResponse);
+    // util.dom.appendChild(formElement, zipCodeLabelAndInput[0]);
+    // util.dom.appendChild(formElement, zipCodeLabelAndInput[1]);
+    // util.dom.appendChild(formElement, inputZipCodeResponse);
     util.dom.appendChild(formElement, submitButton);
     util.dom.appendChild(divElement, messageArea);
 
@@ -168,7 +159,6 @@ pal.register = (() => {
   // --------------------- イベントハンドラ開始 ----------------------
   // -- イベントハンドラ(onClickRegister)開始 ------------------------
   const onClickRegister = (event) => {
-
     // XMLHttpRequestによる送信を行う
     const requestType = 'POST';
     const url = '/user/create';
@@ -182,8 +172,9 @@ pal.register = (() => {
     form_map.last = document.getElementById('inputLastName').value;
     form_map.password = document.getElementById('inputPassword').value;
     form_map.email = document.getElementById('inputEmail').value;
-    form_map.zipCode = document.getElementById('inputZipCode').value;
+    // form_map.zipCode = document.getElementById('inputZipCode').value;
 
+    console.log('登録ボタンが押されました');
     // XMLHttpRequestによる送信
     request = pal.util_b.sendXmlHttpRequest(
       requestType,
@@ -194,7 +185,8 @@ pal.register = (() => {
     );
 
     // inputフォームを初期化する
-    resetInputForm(['password', 'email', 'zipCode']);
+    // resetInputForm(['password', 'email', 'zipCode']);
+    resetInputForm(['password', 'email']);
 
   };
   // -- イベントハンドラ(onClickRegister)終了 ------------------------
@@ -228,12 +220,12 @@ pal.register = (() => {
         switch (request.status) {
           case 401:
             message_area.textContent =
-              'E-mailアドレスかパスワードが不正です。ステータス: ' +
+              'メールアドレスかパスワードが不正です。ステータス: ' +
                 request.status;
             break;
           case 409:
             message_area.textContent =
-              '入力されたEmailアドレスはすでに使われています。ステータス: ' +
+            '入力されたメールアドレスはすでに使われています。ステータス: ' +
                 request.status;
             break;
           case 422:
@@ -260,7 +252,6 @@ pal.register = (() => {
   // -- パブリックメソッド(initModule)開始 ---------------------------
   const initModule = function (mainSection) {
     // mainセクションの子要素をすべて削除する
-    // pal.util.emptyElementById(mainSection);
     util.dom.emptyElement(mainSection);
 
     // document fragmentを追加する
@@ -279,8 +270,8 @@ pal.register = (() => {
     });
 
     // サインインボタンにonClickRegisterイベントを登録する -----------
-    let register_button = document.getElementById('registerUser');
-    register_button.addEventListener('click', onClickRegister);
+    let registerButton = document.getElementById('registerUser');
+    registerButton.addEventListener('click', onClickRegister);
 
     return true;
   };

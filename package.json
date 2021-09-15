@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "file-system": "node app",
     "start": "nodemon app.js",
     "test": "mocha --reporter spec --exit"
   },

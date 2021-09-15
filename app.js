@@ -9,6 +9,10 @@ const port = 8000;
 
 // expressのモジュールをロードする
 const express = require('express');
+const { v4: uuid4 } = require('uuid');
+
+// 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
+const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
 // const { check, validationResult } = require('express-validator');
 
 // expressアプリケーションをapp定数に代入
@@ -105,7 +109,7 @@ app.use(expressSession({
 app.use(connectFlash());
 
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
@@ -125,7 +129,7 @@ app.use(passport.session());
 // passport.serializeUser(User.serializeUser());
 // passport.deserializeUser(User.deserializeUser());
 // ------------------ passportの設定終了 -----------------------------
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
   res.locals.loggedIn = req.isAuthenticated();
   res.locals.currentUser = req.user;
   res.locals.flashMessages = req.flash();
@@ -142,7 +146,7 @@ app.use(morgan('combined'));
 
 // pal.htmlの配信
 // ホームページの経路を作る
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
   const options = {
     root: path.join( __dirname, './public' ),
     dotfiles: 'deny',
@@ -224,11 +228,38 @@ app.get('/session/read', (req, res) => {
 
 // Ajaxリクエストのフォームデータを処理する
 app.post('/user/create', (req, res, next) => {
-  const { title } = req.body;
-  console.log(req.body);
-  res.status(500);
+  const { first, last, email, password } = req.body;
+  console.log(first);
+  console.log(last);
+  console.log(email);
+  console.log(password);
+  // バリデーションが失敗したらステータスコード400(Bad Request)を返す
+  if (typeof first !== 'string' || !first) {
+    const err = new Error('first is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+  if (typeof last !== 'string' || !last) {
+    const err = new Error('last is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+  if (typeof email !== 'string' || !email) {
+    const err = new Error('email is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+  if (typeof password !== 'string' || !password) {
+    const err = new Error('password is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+  // メールアドレスが重複していたらステータスコード509()を返す
+  // バリデーションが成功していればデータストレージに格納する
+  // データストレージへの格納が失敗したらステータスコード500(?)を返す
+  // データストレージへの格納が成功したらステータスコード201(Created)を返す
+  res.status(201).json({ first: first, last: last, email: email, password: password })
   res.end();
-  return;
 });
 // app.post('/user/create', () => {
 //   // usersController.validateItem(),
@@ -315,6 +346,10 @@ app.post('/user/create', (req, res, next) => {
 //   return;
 // }
 // );
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(err.statusCode || 500).json({ error: err.message });
+});
 
 // app.get('/chat', homeController.chat);
 

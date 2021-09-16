@@ -9,7 +9,7 @@ const port = 8000;
 
 // expressのモジュールをロードする
 const express = require('express');
-const { v4: uuid4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 // 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
 const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
@@ -164,7 +164,7 @@ app.get('/', (req, res) => {
 });
 
 // ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
-app.post( '/session/create', (req, res, next) => {
+app.post('/session/create', (req, res, next) => {
   // usersController.authenticateAjax
   // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
   // function(req, res) {
@@ -256,10 +256,15 @@ app.post('/user/create', (req, res, next) => {
   }
   // メールアドレスが重複していたらステータスコード509()を返す
   // バリデーションが成功していればデータストレージに格納する
+  const user = { id: uuidv4(), first: first, last: last, email: email, password: password }
+
+  console.log(user);
+
+  dataStorage.create(user).then(() => res.status(201).json(user), next)
   // データストレージへの格納が失敗したらステータスコード500(?)を返す
   // データストレージへの格納が成功したらステータスコード201(Created)を返す
-  res.status(201).json({ first: first, last: last, email: email, password: password })
-  res.end();
+  // res.status(201).json({ first: first, last: last, email: email, password: password })
+  // res.end();
 });
 // app.post('/user/create', () => {
 //   // usersController.validateItem(),

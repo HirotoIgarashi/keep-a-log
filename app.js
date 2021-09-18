@@ -6,47 +6,33 @@
 'use strict';
 // 待ち受けるポートの8000を定義する
 const port = 8000;
-
 // expressのモジュールをロードする
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
-
-// 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
-const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
-// const { check, validationResult } = require('express-validator');
-
 // expressアプリケーションをapp定数に代入
 const app = express();
-
+const { v4: uuidv4 } = require('uuid');
+// 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
+const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
 // method-overrideモジュールをロードして
 const methodOverride = require('method-override');
-
 const path = require('path');
-
 const favicon = require('serve-favicon');
-
 const expressSession = require('express-session');
-
 const connectFlash = require('connect-flash');
-
 // passportモジュールをロード
 const passport = require('passport');
 
 const redis = require('redis');
 const RedisStore = require('connect-redis')(expressSession);
-const client = redis.createClient();
-
+const redisClient = redis.createClient();
 // Express.jsのRouterをロード ----------------------------------------
 // const router = require('./routes/index');
-
 const morgan = require('morgan');
-
 // Userモデルをロードする
 // const User = require('./models/user');
 
 // セッションのタイムアウト時間を30日に設定する
 const expire_time = 1000 * 60 * 60 * 24 * 30;
-
 // ---------------- モジュールスコープ変数終了 -----------------------
 
 // ---------------- ユーティリティメソッド開始 -----------------------
@@ -55,7 +41,6 @@ const expire_time = 1000 * 60 * 60 * 24 * 30;
 // ---------------- サーバ構成開始 -----------------------------------
 // トークンを利用する ------------------------------------------------
 app.set('token', process.env.TOKEN || 'paltoken');
-
 // テストなら、ポート8001を使う
 if (process.env.NODE_ENV === 'test') {
   app.set('port', 8001 );
@@ -67,12 +52,10 @@ else {
 
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
-
 console.log(`Server Message: Expressが使っているビューエンジンは\
 ${app.get('view engine')} です`);
 
 app.use(express.static('public'));
-
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
@@ -83,10 +66,7 @@ app.use(methodOverride('_method', {
 
 // URLエンコードされたデータを解析する
 app.use(express.json());
-
-app.use(express.urlencoded(
-  { extended: false }
-));
+app.use(express.urlencoded( { extended: false } ));
 
 app.use(expressSession({
   secret  : 'keepalog',
@@ -98,7 +78,7 @@ app.use(expressSession({
   store   : new RedisStore({
     host       : 'localhost',
     port       : 6379,
-    client     : client,
+    client     : redisClient,
     disableTTL : true
   }),
   saveUninitialized : false,
@@ -107,20 +87,16 @@ app.use(expressSession({
 
 // connect-flashをミドルウェアとして使う -----------------------------
 app.use(connectFlash());
-
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
 app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
-
 // ------------------ passportの設定開始 -----------------------------
 // passportを初期化
 app.use(passport.initialize());
-
 // Express.jsのセッションを使うようにpassportを設定する
 app.use(passport.session());
-
 // Userのログインストラテジーを設定
 // passport.use(User.createStrategy());
 
@@ -135,20 +111,16 @@ app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
-
 // morganの「combined」フォーマットでログを出すように指示します。 ----
 app.use(morgan('combined'));
-
 // routes/index.jsを使う ---------------------------------------------
 // app.use('/', router);
-
 // const homeController = require('./controllers/homeController');
-
 // pal.htmlの配信
 // ホームページの経路を作る
 app.get('/', (req, res) => {
   const options = {
-    root: path.join( __dirname, './public' ),
+    root: path.join(__dirname, './public'),
     dotfiles: 'deny',
     headers: { 'x-timestamp': Date.now(), 'x-sent': true }
   };
@@ -158,12 +130,12 @@ app.get('/', (req, res) => {
       res.end();
     }
     else {
-      console.log( 'Server Message: Send:', 'pal.html' );
+      console.log('Server Message: Send:', 'pal.html');
     }
   });
 });
 
-// ------ Ajaxでpostされたときの/user/loginのpostの処理 --------------
+// --- Ajaxでpostされたときの/user/loginのpostの処理 ------------
 app.post('/session/create', (req, res, next) => {
   // usersController.authenticateAjax
   // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
@@ -263,7 +235,7 @@ app.post('/user/create', (req, res, next) => {
         if (user.email === email) {
           console.log('重複したメールアドレスがあります')
           // status 409: Emailがすでに登録されている
-          const err = new Error('email addres is duplicated');
+          const err = new Error('入力されたメールアドレスはすでに使われています');
           err.statusCode = 409;
           res.status(409)
             .json([{
@@ -271,7 +243,6 @@ app.post('/user/create', (req, res, next) => {
               msg: err.message, param: 'email'
           }]);
           res.end();
-          // return next(err);
           return;
         }
       }

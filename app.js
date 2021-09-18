@@ -254,13 +254,38 @@ app.post('/user/create', (req, res, next) => {
     err.statusCode = 400;
     return next(err);
   }
-  // メールアドレスが重複していたらステータスコード509()を返す
-  // バリデーションが成功していればデータストレージに格納する
-  const user = { id: uuidv4(), first: first, last: last, email: email, password: password }
 
-  console.log(user);
+  dataStorage.fetchAll('user')
+    .then(users => {
+      console.log(`users: ${users}`);
+      // メールアドレスが重複していたらステータスコード509()を返す
+      for (const user of users) {
+        if (user.email === email) {
+          console.log('重複したメールアドレスがあります')
+          // status 409: Emailがすでに登録されている
+          const err = new Error('email addres is duplicated');
+          err.statusCode = 409;
+          res.status(409)
+            .json([{
+              value: 'req.body.email',
+              msg: err.message, param: 'email'
+          }]);
+          res.end();
+          // return next(err);
+          return;
+        }
+      }
+      // バリデーションが成功していればデータストレージに格納する
+      const user = {
+        id: uuidv4(),
+        first: first, last: last,
+        email: email, password: password
+      }
+      console.log(user);
+      dataStorage.create(user, 'user')
+        .then(() => res.status(201).json(user), next)
+    })
 
-  dataStorage.create(user).then(() => res.status(201).json(user), next)
   // データストレージへの格納が失敗したらステータスコード500(?)を返す
   // データストレージへの格納が成功したらステータスコード201(Created)を返す
   // res.status(201).json({ first: first, last: last, email: email, password: password })

@@ -17,22 +17,22 @@ chai.use(chaiHTTP);
 require('../app');
 
 const testUserParam = {
-  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
+  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768'
 };
 
 const noFirstUserParam = {
-  last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
+  last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768'
 };
 
 const noLastUserParam = {
-  first: '五十嵐', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: '1350004'
+  first: '五十嵐', email: 'hiroto@gmail.com', password: 'hiroto3768'
 };
 
 const noEmailUserParam = {
   first: '五十嵐',
   last: '浩人',
-  password: 'hiroto3768',
-  zipCode: '1350004'
+  password: 'hiroto3768'
+  // zipCode: '1350004'
 };
 
 const noZipCodeUserParam = {
@@ -45,27 +45,31 @@ const noZipCodeUserParam = {
 const noPasswordUserParam = {
   first: '五十嵐',
   last: '浩人',
-  email: 'hiroto@gmail.com', zipCode: '1350004'
+  email: 'hiroto@gmail.com'// , zipCode: '1350004'
 };
 
 const shortPasswordUserParam = {
-  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hi', zipCode: '1350004'
+  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hi'// , zipCode: '1350004'
 };
 
 const zipCodeSix = {
-  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768', zipCode: '135000'
+  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768'
+  // , zipCode: '135000'
 };
 
 const zipCodeEight = {
-  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768', zipCode: '13500008'
+  first: '五十嵐', last: '浩人', email: 'test@gmail.com', password: 'hiroto3768'
+  // , zipCode: '13500008'
 };
 
 const zipCodeInvalid = {
-  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768', zipCode: 'abcdefg'
+  first: '五十嵐', last: '浩人', email: 'hiroto@gmail.com', password: 'hiroto3768'
+  // , zipCode: 'abcdefg'
 };
 
 const invalidEmail = {
-  first: '五十嵐', last: '浩人', email: 'hirotogmail.com', password: 'hiroto3768', zipCode: '1350004'
+  first: '五十嵐', last: '浩人', email: 'hirotogmail.com', password: 'hiroto3768'
+  // , zipCode: '1350004'
 };
 
 describe('usersControllerのテスト', () => {
@@ -320,4 +324,3 @@ describe('usersControllerのテスト', () => {
 
   });
 });
-

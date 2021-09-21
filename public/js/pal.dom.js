@@ -188,17 +188,14 @@ pal.dom = (() => {
 
   const onReceiveSession = () => {
     if ( request && request.readyState === 4 ) {
-      console.log(request);
       let response_map = JSON.parse(request.responseText);
 
       if (request.status === 200 ) {
-        console.log(response_map);
         elementMap.logout[0].style.visibility = 'visible';
         elementMap.login[0].style.visibility = 'hidden';
         elementMap.register[0].style.visibility = 'hidden';
         elementMap.user_info.textContent =
-          // `${response_map.name.first} ${response_map.name.last}
-        `${response_map} としてログインしています`;
+          `${response_map.first} ${response_map.last} としてログインしています`;
       }
       else {
         elementMap.logout[0].style.visibility = 'hidden';

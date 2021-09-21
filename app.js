@@ -19,9 +19,6 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const session = require('express-session');
 const connectFlash = require('connect-flash');
-// passportモジュールをロード
-const passport = require('passport');
-
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 const redisClient = redis.createClient();
@@ -90,33 +87,11 @@ app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
-// ------------------ passportの設定開始 -----------------------------
-// passportを初期化
-app.use(passport.initialize());
-// Express.jsのセッションを使うようにpassportを設定する
-app.use(passport.session());
-// Userのログインストラテジーを設定
-// passport.use(User.createStrategy());
-// ユーザデータのシリアライズ／デシリアライズを行うように、
-// passportを設定する
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-// ------------------ passportの設定終了 -----------------------------
-app.use((req, res, next) => {
-  res.locals.loggedIn = req.isAuthenticated();
-  res.locals.currentUser = req.user;
-  res.locals.flashMessages = req.flash();
-  next();
-});
 // morganの「combined」フォーマットでログを出すように指示します。 ----
 app.use(morgan('combined'));
 // appの設定 end
 
-// routes/index.jsを使う ---------------------------------------------
-// app.use('/', router);
-// const homeController = require('./controllers/homeController');
-// pal.htmlの配信
-// ホームページの経路を作る
+// ホームページの経路を作る、pal.htmlの配信
 app.get('/', (req, res) => {
   const options = {
     root: path.join(__dirname, './public'),
@@ -136,21 +111,12 @@ app.get('/', (req, res) => {
 
 // --- Ajaxでpostされたときの/user/loginのpostの処理 ------------
 app.post('/session/create', (req, res, next) => {
-  // usersController.authenticateAjax
-  // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
-  // function(req, res) {
   console.log('ログイン処理開始');
-  console.log('req.body: ' + JSON.stringify(req.body));
-  console.log('req.body.email: ' + req.body.email);
 
   // データストレージからemailに一致するデータを取得する
   dataStorage.fetchByMailaddress(req.body.email, 'user')
     .then(records => {
       const user = records[0];
-
-      console.log('records: ' + records);
-      console.log('records[0]: ' + records[0]);
-      console.log('user: ' + user);
 
       // 一致するemailがなければ401を返す
       if (user === undefined) {
@@ -165,10 +131,10 @@ app.post('/session/create', (req, res, next) => {
         console.log('ログイン処理を行います')
         req.session.regenerate((err) => {
           if (!err) {
-            console.log('セッションにメールアドレスを追加しました')
-            req.session.username = user.email;
-            console.log(req.session);
-            console.log(req.session.username);
+            console.log('セッションにユーザ情報を追加しました')
+            console.log(user);
+            // req.session.username = user.email;
+            req.session.user = user;
             res.status(200).json(user);
             res.end();
             return;
@@ -193,17 +159,15 @@ app.post('/session/create', (req, res, next) => {
 
 // ------ 認証されているかどうかの判定処理 ---------------------------
 app.get('/session/read', (req, res) => {
-  console.log('req.session: ' + JSON.stringify(req.session));
-  // ------ req.isAuthenticated()は認証されていればtrueを返す --------
-  if (req.session.username) {
+  console.log(req.session);
+  if (req.session.user) {
     console.log('Server Message: GET /session/read に200(Authenticatd)を返しました');
-    console.log(req.session);
     res.status(200);
-    res.send(JSON.stringify(req.session.username));
+    res.send(JSON.stringify(req.session.user));
     res.end();
   }
   else {
-  // Non-Authoritative Informationのコード 203を返す
+    // Non-Authoritative Informationのコード 203を返す
     console.log('Server Message: GET /session/read に203(Non-Authoritabive)を返しました');
     res.status(203);
     res.send({ email: 'anonymous' });

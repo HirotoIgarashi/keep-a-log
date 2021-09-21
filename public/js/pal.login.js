@@ -3,15 +3,6 @@
  * login機能
 */
 
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true
-*/
-
-/*global pal util */
-
 pal.login = (function () {
   'use strict';
   //--------------------- モジュールスコープ変数開始 -----------------
@@ -215,7 +206,6 @@ pal.login = (function () {
 
   // パブリックメソッドを返す
   return {
-    // configModule  : configModule,
     initModule    : initModule
   };
   // --------------------- パブリックメソッド終了 --------------------

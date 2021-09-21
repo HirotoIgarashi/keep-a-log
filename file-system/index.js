@@ -22,6 +22,9 @@ exports.fetchAll = async (savePath) => {
   )
 }
 
+exports.fetchByMailaddress = (mailAddress, savePath) => exports.fetchAll(savePath)
+  .then(all => all.filter(item => item.email === mailAddress))
+
 exports.create = (user, savePath) =>
   writeFile(`${__dirname}/${savePath}/${user.id}.json`, JSON.stringify(user))
 

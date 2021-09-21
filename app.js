@@ -69,7 +69,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,
+    secure: false,
     httpOnly: false,
     expires   : new Date(Date.now() + expire_time)
   },
@@ -83,22 +83,6 @@ app.use(session({
 // URLエンコードされたデータを解析する
 app.use(express.json());
 app.use(express.urlencoded( { extended: false } ));
-// app.use(expressSession({
-//   secret  : 'keepalog',
-//   cookie  : {
-//     secure    : false,
-//     httpOnly  : false,
-//     expires   : new Date(Date.now() + expire_time)
-//   },
-//   store   : new RedisStore({
-//     host       : 'localhost',
-//     port       : 6379,
-//     client     : redisClient,
-//     disableTTL : true
-//   }),
-//   saveUninitialized : false,
-//   resave            : false
-// }));
 // connect-flashをミドルウェアとして使う -----------------------------
 app.use(connectFlash());
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
@@ -155,62 +139,86 @@ app.post('/session/create', (req, res, next) => {
   // usersController.authenticateAjax
   // ----- Ajaxのときのpassportのローカルストレージでユーザを認証-----
   // function(req, res) {
-  console.log('authenticateAjax処理開始');
-  passport.authenticate('local', function(err, user, info) {
-    if (err) {
-      res.status(401);
-      res.end();
-      return;
-    }
+  console.log('ログイン処理開始');
+  console.log('req.body: ' + JSON.stringify(req.body));
+  console.log('req.body.email: ' + req.body.email);
 
-    if (user) {
-      // ----- ログイン処理 ------------------------------------------
-      // req.login(user, function(err) {
-      req.login(user, (err) => {
-        if (err) {
-          res.status(401);
-          res.end();
-          return;
-        }
-        res.status(200).jsonp(user);
+  // データストレージからemailに一致するデータを取得する
+  dataStorage.fetchByMailaddress(req.body.email, 'user')
+    .then(records => {
+      const user = records[0];
+
+      console.log('records: ' + records);
+      console.log('records[0]: ' + records[0]);
+      console.log('user: ' + user);
+
+      // 一致するemailがなければ401を返す
+      if (user === undefined) {
+        console.log('一致するメールアドレスがありません')
+        res.status(401);
         res.end();
         return;
-      });
-    }
-    else {
-      res.status(401).jsonp(info);
-      res.end();
-      return;
-    }
-    })(req, res);
-  },
-);
+      }
 
-// ------ Ajaxの/user/logoutのget処理 --------------------------------
-app.get('/session/delete', (req, res) => {
-  // ------ ログアウトの処理 -----------------------------------------
-  req.logout();
-  res.status(200);
-  res.end();
-  return;
+      // 該当するemailがありパスワードが一致していれば200を返す
+      if (req.body.password === user.password) {
+        console.log('ログイン処理を行います')
+        req.session.regenerate((err) => {
+          if (!err) {
+            console.log('セッションにメールアドレスを追加しました')
+            req.session.username = user.email;
+            console.log(req.session);
+            console.log(req.session.username);
+            res.status(200).json(user);
+            res.end();
+            return;
+          }
+          else {
+            console.log('Session処理でエラーが発生しました')
+            res.status(401);
+            res.end();
+            return;
+          }
+        });
+      }
+      // パスワードが一致していなければ401を返す
+      else {
+        console.log('パスワードが一致しません')
+        res.status(401);
+        res.end();
+        return;
+      }
+    }, next)
 });
 
 // ------ 認証されているかどうかの判定処理 ---------------------------
 app.get('/session/read', (req, res) => {
+  console.log('req.session: ' + JSON.stringify(req.session));
   // ------ req.isAuthenticated()は認証されていればtrueを返す --------
-  if (req.isAuthenticated()) {
+  if (req.session.username) {
     console.log('Server Message: GET /session/read に200(Authenticatd)を返しました');
+    console.log(req.session);
     res.status(200);
-    res.send( JSON.stringify( req.user ) );
+    res.send(JSON.stringify(req.session.username));
     res.end();
   }
   else {
-    // Non-Authoritative Informationのコード 203を返す
+  // Non-Authoritative Informationのコード 203を返す
     console.log('Server Message: GET /session/read に203(Non-Authoritabive)を返しました');
     res.status(203);
     res.send({ email: 'anonymous' });
     res.end();
   }
+});
+
+// ------ Ajaxの/user/logoutのget処理 --------------------------------
+app.get('/session/delete', (req, res) => {
+  // ------ ログアウトの処理 -----------------------------------------
+  req.session.destroy((err) => {
+    res.status(200);
+    res.end();
+    return;
+  });
 });
 
 // Ajaxリクエストのフォームデータを処理する
@@ -271,11 +279,6 @@ app.post('/user/create', (req, res, next) => {
       dataStorage.create(user, 'user')
         .then(() => res.status(201).json(user), next)
     })
-
-  // データストレージへの格納が失敗したらステータスコード500(?)を返す
-  // データストレージへの格納が成功したらステータスコード201(Created)を返す
-  // res.status(201).json({ first: first, last: last, email: email, password: password })
-  // res.end();
 });
 // app.post('/user/create', () => {
 //   // usersController.validateItem(),

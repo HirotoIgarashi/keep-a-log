@@ -5,14 +5,6 @@
  * PALのDOM(Document Object Model)制御モジュール
 */
 
-/*jslint          browser : true, continue  : true,
-  devel   : true, indent  : 2,    maxerr    : 50,
-  newcap  : true, nomen   : true, plusplus  : true,
-  regexp  : true, sloppy  : true, vars      : false,
-  white   : true
-*/
-/*global pal util*/
-
 pal.dom = (() => {
   //--------------------- モジュールスコープ変数開始 -----------------
   const configMap = {
@@ -32,20 +24,8 @@ pal.dom = (() => {
     // onResize,
   //--------------------- モジュールスコープ変数終了 -----------------
   //--------------------- ユーティリティメソッド開始 -----------------
-  // ユーティリティメソッド/supportsTemplate/開始
-  // <template>の機能を検知する
-  // 概要:
-  // 用例:
-  // 目的:
-  // 引数:
-  // 動作: templateタグがcontentプロパティを持っていたらtrueを返す
-  // 戻り値:
-  //  * true  - templateタグを利用できる
-  //  * false - templateタグを利用できない
-  // 例外発行: なし
   const supportsTemplate = function () {
-    var
-      template  = document.createElement('template');
+    var template  = document.createElement('template');
 
     return template.content !== undefined;
   };
@@ -100,7 +80,7 @@ pal.dom = (() => {
   //  * currentLocationHash: カレントのハッシュの値を格納する。
   // 戻り値: なし
   // 例外発行: なし
-  // 
+  //
   const setSection = () => {
     // mainセクションを取得する
     const mainSection = document.getElementById('pal-main');
@@ -208,21 +188,23 @@ pal.dom = (() => {
 
   const onReceiveSession = () => {
     if ( request && request.readyState === 4 ) {
+      console.log(request);
       let response_map = JSON.parse(request.responseText);
 
       if (request.status === 200 ) {
+        console.log(response_map);
         elementMap.logout[0].style.visibility = 'visible';
         elementMap.login[0].style.visibility = 'hidden';
         elementMap.register[0].style.visibility = 'hidden';
         elementMap.user_info.textContent =
-          `${response_map.name.first} ${response_map.name.last}
-としてログインしています`;
+          // `${response_map.name.first} ${response_map.name.last}
+        `${response_map} としてログインしています`;
       }
       else {
         elementMap.logout[0].style.visibility = 'hidden';
         elementMap.login[0].style.visibility = 'visible';
         elementMap.register[0].style.visibility = 'visible';
-        elementMap.user_info.textContent = response_map.email;
+        elementMap.user_info.textContent = 'こんにちはゲストさん';
       }
     }
   };

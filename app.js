@@ -17,13 +17,13 @@ const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
 const methodOverride = require('method-override');
 const path = require('path');
 const favicon = require('serve-favicon');
-const expressSession = require('express-session');
+const session = require('express-session');
 const connectFlash = require('connect-flash');
 // passportモジュールをロード
 const passport = require('passport');
 
 const redis = require('redis');
-const RedisStore = require('connect-redis')(expressSession);
+const RedisStore = require('connect-redis')(session);
 const redisClient = redis.createClient();
 // Express.jsのRouterをロード ----------------------------------------
 // const router = require('./routes/index');
@@ -55,24 +55,22 @@ app.set('view engine', 'ejs');
 console.log(`Server Message: Expressが使っているビューエンジンは\
 ${app.get('view engine')} です`);
 
+// appの設定 start
 app.use(express.static('public'));
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
 // ミドルウェアとして使うようにアプリケーションルータを設定
 app.use(methodOverride('_method', {
   methods: ['POST', 'GET']
 }));
-
-// URLエンコードされたデータを解析する
-app.use(express.json());
-app.use(express.urlencoded( { extended: false } ));
-
-app.use(expressSession({
-  secret  : 'keepalog',
-  cookie  : {
-    secure    : false,
-    httpOnly  : false,
+app.set('trust proxy', 1);
+app.use(session({
+  secret: 'keepalog',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: true,
+    httpOnly: false,
     expires   : new Date(Date.now() + expire_time)
   },
   store   : new RedisStore({
@@ -80,11 +78,27 @@ app.use(expressSession({
     port       : 6379,
     client     : redisClient,
     disableTTL : true
-  }),
-  saveUninitialized : false,
-  resave            : false
+  })
 }));
-
+// URLエンコードされたデータを解析する
+app.use(express.json());
+app.use(express.urlencoded( { extended: false } ));
+// app.use(expressSession({
+//   secret  : 'keepalog',
+//   cookie  : {
+//     secure    : false,
+//     httpOnly  : false,
+//     expires   : new Date(Date.now() + expire_time)
+//   },
+//   store   : new RedisStore({
+//     host       : 'localhost',
+//     port       : 6379,
+//     client     : redisClient,
+//     disableTTL : true
+//   }),
+//   saveUninitialized : false,
+//   resave            : false
+// }));
 // connect-flashをミドルウェアとして使う -----------------------------
 app.use(connectFlash());
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
@@ -99,7 +113,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Userのログインストラテジーを設定
 // passport.use(User.createStrategy());
-
 // ユーザデータのシリアライズ／デシリアライズを行うように、
 // passportを設定する
 // passport.serializeUser(User.serializeUser());
@@ -113,6 +126,8 @@ app.use((req, res, next) => {
 });
 // morganの「combined」フォーマットでログを出すように指示します。 ----
 app.use(morgan('combined'));
+// appの設定 end
+
 // routes/index.jsを使う ---------------------------------------------
 // app.use('/', router);
 // const homeController = require('./controllers/homeController');

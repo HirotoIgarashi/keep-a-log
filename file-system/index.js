@@ -22,6 +22,24 @@ exports.fetchAll = async (savePath) => {
   )
 }
 
+exports.isDupulicated = (obj, savePath) => exports.fetchAll(savePath)
+  .then(records => {
+      console.log(`records: ${JSON.stringify(records)}`);
+      console.log(`obj: ${JSON.stringify(obj)}`);
+      console.log(Object.keys(obj));
+      const key = Object.keys(obj)[0];
+      for (const record of records) {
+        console.log(record);
+        console.log(record[key]);
+        console.log(obj[key]);
+        if (record[key] === obj[key]) {
+          return true;
+        }
+      }
+      return false;
+  })
+
+
 exports.fetchByMailaddress = (mailAddress, savePath) => exports.fetchAll(savePath)
   .then(all => all.filter(item => item.email === mailAddress))
 

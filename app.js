@@ -188,10 +188,6 @@ app.get('/session/delete', (req, res) => {
 // Ajaxリクエストのフォームデータを処理する
 app.post('/user/create', (req, res, next) => {
   const { first, last, email, password } = req.body;
-  console.log(first);
-  console.log(last);
-  console.log(email);
-  console.log(password);
   // バリデーションが失敗したらステータスコード400(Bad Request)を返す
   if (typeof first !== 'string' || !first) {
     const err = new Error('first is required');
@@ -214,34 +210,31 @@ app.post('/user/create', (req, res, next) => {
     return next(err);
   }
 
-  dataStorage.fetchAll('user')
-    .then(users => {
-      console.log(`users: ${users}`);
-      // メールアドレスが重複していたらステータスコード509()を返す
-      for (const user of users) {
-        if (user.email === email) {
-          console.log('重複したメールアドレスがあります')
-          // status 409: Emailがすでに登録されている
-          const err = new Error('入力されたメールアドレスはすでに使われています');
-          err.statusCode = 409;
-          res.status(409)
-            .json([{
-              value: 'req.body.email',
-              msg: err.message, param: 'email'
-          }]);
-          res.end();
-          return;
+  dataStorage.isDupulicated({ email: email }, 'user')
+    .then(dupulicated => {
+      if (dupulicated) {
+        console.log('重複したメールアドレスがあります')
+        // status 409: Emailがすでに登録されている
+        const err = new Error('入力されたメールアドレスはすでに使われています');
+        err.statusCode = 409;
+        res.status(409)
+        .json([{
+          value: 'req.body.email',
+          msg: err.message, param: 'email'
+        }]);
+        res.end();
+        return;
+      }
+      else {
+        // バリデーションが成功していればデータストレージに格納する
+        const user = {
+          id: uuidv4(),
+          first: first, last: last,
+          email: email, password: password
         }
+        dataStorage.create(user, 'user')
+          .then(() => res.status(201).json(user), next)
       }
-      // バリデーションが成功していればデータストレージに格納する
-      const user = {
-        id: uuidv4(),
-        first: first, last: last,
-        email: email, password: password
-      }
-      console.log(user);
-      dataStorage.create(user, 'user')
-        .then(() => res.status(201).json(user), next)
     })
 });
 // app.post('/user/create', () => {

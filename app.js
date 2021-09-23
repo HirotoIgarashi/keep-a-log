@@ -159,7 +159,6 @@ app.post('/session/create', (req, res, next) => {
 
 // ------ 認証されているかどうかの判定処理 ---------------------------
 app.get('/session/read', (req, res) => {
-  console.log(req.session);
   if (req.session.user) {
     console.log('Server Message: GET /session/read に200(Authenticatd)を返しました');
     res.status(200);

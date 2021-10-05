@@ -1,3 +1,4 @@
+'use strict';
 /*
  * pal.js
  * ルート名前空間モジュール
@@ -11,10 +12,7 @@
 */
 /*global pal:true */
 
-// pal = (function () {
 pal = (() => {
-  'use strict';
-
   const initModule = (id) => {
     let content = document.getElementById(id);
 

@@ -6,6 +6,7 @@
 */
 
 pal.dom = (() => {
+
   //--------------------- モジュールスコープ変数開始 -----------------
   const configMap = {
     logout_title          : 'ログアウトします。',
@@ -161,9 +162,12 @@ pal.dom = (() => {
 
   // DOMメソッド/makeFooter/開始 -------------------------------------
   const makeFooter = () => {
+    // import { createFragment } from ('./modules/dom.js');
     let frag = util.dom.createFragment();
+    // let frag = createFragment();
 
     let spanElement = util.dom.createElement( 'span', {
+    // let spanElement = createElement( 'span', {
       id: 'pal-dom-date-info'
     });
     // -----HTMLを組み立てる------------------------------------------

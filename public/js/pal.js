@@ -12,7 +12,7 @@
 */
 /*global pal:true */
 
-pal = (() => {
+const pal = (() => {
   const initModule = (id) => {
     let content = document.getElementById(id);
 

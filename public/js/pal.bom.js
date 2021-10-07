@@ -1,5 +1,4 @@
 'use strict';
-
 /*
  * pal.shell.js
  * PALのBOM(Browser Object Model)コントロールモジュール

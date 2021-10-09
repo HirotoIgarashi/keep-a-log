@@ -28,6 +28,8 @@ pal.util_b = (() => {
     encodeHtml,
     getEmSize,
     getTimestamp,
+    sendXmlHttpRequest,
+    init_send_request,
     getTplContent,
     getNowDateJp,
     getIsoExtFormat,
@@ -153,7 +155,7 @@ pal.util_b = (() => {
       // 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
       now_jp = (
         now.getFullYear() + '年' +
-        (now.getMonth() + 1) + '月' +
+        ( now.getMonth() + 1 ) + '月' +
         now.getDate() + '日 ' +
         day_jp[now.getDay()] + ' ' +
         now.toLocaleTimeString()
@@ -162,7 +164,7 @@ pal.util_b = (() => {
     else if (option === 'date and day') {
       now_jp = (
         now.getFullYear() + '年' +
-        (now.getMonth() + 1) + '月' +
+        ( now.getMonth() + 1 ) + '月' +
         now.getDate() + '日 ' +
         day_jp[now.getDay()]
       );
@@ -200,6 +202,92 @@ pal.util_b = (() => {
   };
   // getIsoExtFormat/終了
 
+  // sendXmlHttpRequest開始
+  // 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
+  //       サーバに送信します。
+  // 必須引数:
+  //  * requestType     : HTTPリクエストの形式。GETかPOSTを指定します
+  //  * url             : リクエスト先のURL
+  //  * async           : 非同期呼び出しを行うか否かを指定します
+  //  * responseHandle  : レスポンスを処理する関数
+  //  * arguments[4]    : 5番目の引数はPOSTリクエストによって送信される
+  //                      文字列を表します
+  // オプション引数: なし
+  // 設定:
+  //  * xmlhttp
+  // 戻り値: なし
+  // 例外発行: なし
+  //
+  sendXmlHttpRequest = (requestType, url, async, responseHandle, sendData) => {
+    let request = null;
+
+    if ( window.XMLHttpRequest ) {
+      // Mozillaベースのブラウザの場合
+      request = new XMLHttpRequest();
+    }
+    else if ( window.ActiveXObject ) {
+      // Internet Explorerの場合
+      request = new ActiveXObject( "Msxml2.XMLHTTP" );
+      if ( !request ) {
+        request = new ActiveXObject( "Miforsoft.XMLHTTP" );
+      }
+    }
+
+    // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
+    // 進みます。
+    if ( request ) {
+
+      if ( requestType.toLowerCase() !== 'post' ) {
+        init_send_request( request, requestType, url, async, responseHandle );
+      }
+      else {
+        // POSTの場合、5番目の引数で指定された値を送信します。
+        if ( sendData !== null && sendData.length > 0 ) {
+          init_send_request( request, requestType, url, async, responseHandle, sendData );
+        }
+      }
+
+      return request;
+
+    }
+
+    alert( 'このブラウザはAjaxに対応していません。' );
+    return false;
+
+  };
+  // sendXmlHttpRequest終了
+  // init_send_request開始
+  init_send_request = (
+    request,
+    requestType,
+    url,
+    async,
+    responseHandle,
+    requestData) => {
+
+    try {
+      // HTTPレスポンスを処理するための関数を指定します。
+      request.onreadystatechange = responseHandle;
+      request.open( requestType, url, async );
+
+      if ( requestType.toLowerCase() === "post" ) {
+        // POSTの場合はContent-Headerが必要です。
+        request.setRequestHeader( 'Content-Type', 'application/json' );
+        request.send(requestData);
+        console.log('Ajaxリクエストを実行しました');
+      }
+      else {
+        request.send(null);
+      }
+
+    }
+    catch ( errv ) {
+      alert(  'サーバーに接続できません。' +
+              'しばらくたってからやり直して下さい。\n' +
+              'エラーの詳細: ' + errv.message );
+    }
+  };
+  // init_send_request終了
 
   // ユーティリティメソッド/createObjectLocal/開始
   // 目的: オブジェクトとlocalStorageのkeyを受け取りObjectを保存する。
@@ -258,7 +346,7 @@ pal.util_b = (() => {
   // 戻り値: keyの値
   // 例外発行: なし
   readObjectLocal = (local_storage_key) => {
-    let item;
+    var item;
 
     // localStorageからaction-listの値を読み込む
     item = window.localStorage.getItem( local_storage_key );
@@ -270,8 +358,9 @@ pal.util_b = (() => {
 
   // ユーティリティメソッド/makeStringObject/開始
   makeStringObject = (object) => {
-    let key;
-    let string_object = {};
+    var
+      key,
+      string_object = {};
 
     for ( key in object ) {
       if ( typeof object[ key ] === 'string' && object[ key ] ) {
@@ -291,6 +380,7 @@ pal.util_b = (() => {
     getEmSize           : getEmSize,
     getTimestamp        : getTimestamp,
     getTplContent       : getTplContent,
+    sendXmlHttpRequest  : sendXmlHttpRequest,
     getNowDateJp        : getNowDateJp,
     getIsoExtFormat     : getIsoExtFormat,
     createObjectLocal   : createObjectLocal,

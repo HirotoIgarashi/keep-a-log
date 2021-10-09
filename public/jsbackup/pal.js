@@ -14,7 +14,9 @@
 
 const pal = (() => {
   const initModule = (id) => {
+    console.log(id);
     let content = document.getElementById(id);
+    console.log(content);
 
     if ( pal.bom && content) {
       pal.bom.initModule(content);

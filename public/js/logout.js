@@ -4,9 +4,11 @@
 */
 
 'use strict';
+
+import { sendXmlHttpRequest } from "./controlDom.js";
+
 //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
-
 //--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- ユーティリティメソッド開始 -----------------
@@ -50,21 +52,19 @@ const makeLogOutPage = () => {
 //--------------------- DOMメソッド終了 ----------------------------
 
 // --------------------- イベントハンドラ開始 ----------------------
-const onClickAgree = function ( event ) {
-  var
-    requestType = 'GET',
-    url = '/session/delete';
+const onClickAgree = function (event) {
+  let requestType = 'GET';
+  let url = '/session/delete';
 
   event.preventDefault();
 
   // XMLHttpRequestによる送信
-  request = pal.util_b.sendXmlHttpRequest(
+  request = sendXmlHttpRequest(
     requestType,
     url,
     true,
     onReceiveLogout
   );
-
 };
 
 //------ Loginの結果の処理/開始 ------------------------------------

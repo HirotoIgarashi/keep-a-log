@@ -5,7 +5,7 @@
  * ユーザ登録機能
 */
 
-import { sendXmlHttpRequest } from "./utilCore.js";
+import { sendXmlHttpRequest } from "./controlDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;

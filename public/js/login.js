@@ -2,6 +2,9 @@
 // login機能
 
 'use strict';
+
+import { sendXmlHttpRequest } from "./controlDom.js";
+
   //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
 //--------------------- モジュールスコープ変数終了 -----------------
@@ -105,7 +108,7 @@ const onClickLogin = (event) => {
   form_map.password = document.getElementById('inputPassword').value;
 
   // XMLHttpRequestによる送信
-  request = pal.util_b.sendXmlHttpRequest(
+  request = sendXmlHttpRequest(
     requestType,
     url,
     true,

@@ -1,3 +1,5 @@
+'use strict';
+
 import { makeTop } from "./top.js";
 import { getNowDateJp } from "./utilCore.js";
 import { login } from "./login.js";
@@ -5,9 +7,8 @@ import { logout } from "./logout.js";
 import { register } from "./register.js";
 import { menu } from "./menu.js";
 import { cycleSystem } from "./cycleSystem.js";
-import { list, onHashchange } from "./list.js";
-
-'use strict';
+import { onHashchange as hashChangeToList } from "./list.js";
+import { onHashchange as hashChangetoCalender } from "./calendar.js";
 
 // DOMメソッド/setElementMap/開始
 export let elementMap = {};
@@ -89,7 +90,7 @@ export const setSection = () => {
       menu(mainSection);
       break;
     case '#calendar':
-      pal.calendar.onHashchange(mainSection);
+      hashChangetoCalender(mainSection);
       setButtonPressed('pal-nav-calendar');
       break;
     case '#event':
@@ -100,7 +101,7 @@ export const setSection = () => {
       pal.browserInformation.initModule(mainSection);
       break;
     case '#list':
-      onHashchange(mainSection);
+      hashChangeToList(mainSection);
       break;
     case '#lab':
       pal.lab.initModule(mainSection);

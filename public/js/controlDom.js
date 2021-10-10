@@ -1,57 +1,17 @@
-'use strict';
-
 import { makeTop } from "./top.js";
 import { getNowDateJp } from "./utilCore.js";
+import { login } from "./login.js";
+import { logout } from "./logout.js";
+import { register } from "./register.js";
+import { menu } from "./menu.js";
+import { cycleSystem } from "./cycleSystem.js";
+import { list, onHashchange } from "./list.js";
 
-// モジュールスコープ変数開始 -----------------
-const configMap = {
-  logout_title          : 'ログアウトします。',
-  login_title           : 'IDとパスワードでログインします。',
-  register_title        : 'IDとパスワードを登録します。',
-  menu_retracted_title  : 'クリックしてメニューを開きます',
-  menu_extended_title   : 'クリックしてメニューを閉じます'
-};
+'use strict';
 
-let request;  // XMLHttpRequest
-let elementMap = {};
-let stateMap = { $container: null };
-// onResize,
-//--------------------- モジュールスコープ変数終了 -----------------
-//--------------------- ユーティリティメソッド開始 -----------------
-const supportsTemplate = function () {
-  const template  = document.createElement('template');
-  return template.content !== undefined;
-};
-// ユーティリティメソッド/supportsTemplate/終了
-
-//----- ユーティリティメソッド/readSession/開始 --------------------
-const readSession = function () {
-  const requestType = 'GET';
-  const url = '/session/read';
-  // AjaxによりGETする
-  request = sendXmlHttpRequest(
-    requestType, url, true, onReceiveSession
-  );
-};
-//----- ユーティリティメソッド/readSession/終了 --------------------
-
-// ユーティリティメソッド/toggle_menu/開始
-const toggle_menu = () => {
-  // ボタンとメニューのノードを取得 --------------------------------
-  const site_button = document.querySelector('.pal-dom-header-menu');
-  const site_menu = document.querySelector('[aria-label="サイト"]');
-  // メニューの表示非表示を切り替える
-  let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
-
-  site_button.setAttribute( 'aria-expanded', String(!expanded) );
-  site_menu.hidden = expanded;
-};
-// ユーティリティメソッド/toggle_menu/終了
-//--------------------- ユーティリティメソッド終了 -----------------
-
-//--------------------- DOMメソッド開始 ----------------------------
 // DOMメソッド/setElementMap/開始
-const setElementMap = () => {
+export let elementMap = {};
+export const setElementMap = () => {
   elementMap = {
     top       : document.getElementsByClassName('pal-dom-header-title'),
     user_info : document.getElementById('pal-dom-user-info'),
@@ -62,6 +22,37 @@ const setElementMap = () => {
   };
 };
 // DOMメソッド/setElementMap/終了
+
+export const onReceiveSession = () => {
+  let request;  // XMLHttpRequest
+  if ( request && request.readyState === 4 ) {
+    let response_map = JSON.parse(request.responseText);
+
+    if (request.status === 200 ) {
+      elementMap.logout[0].style.visibility = 'visible';
+      elementMap.login[0].style.visibility = 'hidden';
+      elementMap.register[0].style.visibility = 'hidden';
+      elementMap.user_info.textContent =
+        `${response_map.first} ${response_map.last} としてログインしています`;
+    }
+    else {
+      elementMap.logout[0].style.visibility = 'hidden';
+      elementMap.login[0].style.visibility = 'visible';
+      elementMap.register[0].style.visibility = 'visible';
+      elementMap.user_info.textContent = 'こんにちはゲストさん';
+    }
+  }
+};
+//----- ユーティリティメソッド/readSession/開始 --------------------
+export const readSession = () => {
+  const requestType = 'GET';
+  const url = '/session/read';
+  // AjaxによりGETする
+  sendXmlHttpRequest(
+    requestType, url, true, onReceiveSession
+  );
+};
+//----- ユーティリティメソッド/readSession/終了 --------------------
 
 // DOMメソッド/setSection/開始 -------------------------------------
 // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を
@@ -86,16 +77,16 @@ export const setSection = () => {
   // ロケーションハッシュの最初の文字列で処理を振り分ける
   switch (firstHash) {
     case '#login':
-      pal.login.initModule(mainSection);
+      login(mainSection);
       break;
     case '#logout':
-      pal.logout.initModule(mainSection);
+      logout(mainSection);
       break;
     case '#register':
-      pal.register.initModule(mainSection);
+      register(mainSection);
       break;
     case '#menu':
-      pal.menu.initModule(mainSection);
+      menu(mainSection);
       break;
     case '#calendar':
       pal.calendar.onHashchange(mainSection);
@@ -109,7 +100,7 @@ export const setSection = () => {
       pal.browserInformation.initModule(mainSection);
       break;
     case '#list':
-      pal.list.onHashchange(mainSection);
+      onHashchange(mainSection);
       break;
     case '#lab':
       pal.lab.initModule(mainSection);
@@ -118,7 +109,7 @@ export const setSection = () => {
       pal.registSchedule.onHashchange(mainSection);
       break;
     case '#cycle_system':
-      pal.cycleSystem.initModule(mainSection);
+      cycleSystem(mainSection);
       break;
     default:
       readSession();
@@ -128,7 +119,6 @@ export const setSection = () => {
   }
 };
 // DOMメソッド/setSection/終了 -------------------------------------
-
 
 // hashが変更されときの処理 ----------------------------------------
 const setButtonPressed = ((data) => {
@@ -151,55 +141,8 @@ const setButtonPressed = ((data) => {
   }
 });
 
-// DOMメソッド/makeFooter/開始 -------------------------------------
-const makeFooter = () => {
-  // import { createFragment } from ('./modules/dom.js');
-  let frag = util.dom.createFragment();
-  // let frag = createFragment();
-
-  let spanElement = util.dom.createElement( 'span', {
-  // let spanElement = createElement( 'span', {
-    id: 'pal-dom-date-info'
-  });
-  // -----HTMLを組み立てる------------------------------------------
-
-  util.dom.appendChild(frag, spanElement);
-
-  return frag;
-};
-// DOMメソッド/makeFooter/終了 -------------------------------------
 //--------------------- DOMメソッド終了 ----------------------------
 // --------------------- イベントハンドラ開始 ----------------------
-const onClickTop = ( /* event */ ) => setLocationHash('');
-
-const onClickLogout = ( /* event */ ) =>
-  setLocationHash('logout');
-
-const onClickLogin = ( /* event */ ) =>
-  setLocationHash('login');
-
-const onClickRegister = ( /* event */ ) =>
-  setLocationHash('register');
-
-const onReceiveSession = () => {
-  if ( request && request.readyState === 4 ) {
-    let response_map = JSON.parse(request.responseText);
-
-    if (request.status === 200 ) {
-      elementMap.logout[0].style.visibility = 'visible';
-      elementMap.login[0].style.visibility = 'hidden';
-      elementMap.register[0].style.visibility = 'hidden';
-      elementMap.user_info.textContent =
-        `${response_map.first} ${response_map.last} としてログインしています`;
-    }
-    else {
-      elementMap.logout[0].style.visibility = 'hidden';
-      elementMap.login[0].style.visibility = 'visible';
-      elementMap.register[0].style.visibility = 'visible';
-      elementMap.user_info.textContent = 'こんにちはゲストさん';
-    }
-  }
-};
 // onResize = function () {
 //   var
 //     header,
@@ -255,11 +198,67 @@ const onReceiveSession = () => {
 // 例外発行: なし
 //
 export const initDom = (content) => {
+  // ユーティリティメソッド/toggle_menu/開始
+  const toggle_menu = () => {
+    // ボタンとメニューのノードを取得 --------------------------------
+    const site_button = document.querySelector('.pal-dom-header-menu');
+    const site_menu = document.querySelector('[aria-label="サイト"]');
+    // メニューの表示非表示を切り替える
+    let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+
+    site_button.setAttribute( 'aria-expanded', String(!expanded) );
+    site_menu.hidden = expanded;
+  };
+  // ユーティリティメソッド/toggle_menu/終了
+  //--------------------- ユーティリティメソッド開始 -----------------
+  const supportsTemplate = function () {
+    const template  = document.createElement('template');
+    return template.content !== undefined;
+  };
+  // ユーティリティメソッド/supportsTemplate/終了
+  const configMap = {
+    logout_title          : 'ログアウトします。',
+    login_title           : 'IDとパスワードでログインします。',
+    register_title        : 'IDとパスワードを登録します。',
+    menu_retracted_title  : 'クリックしてメニューを開きます',
+    menu_extended_title   : 'クリックしてメニューを閉じます'
+  };
+
+  let stateMap = { $container: null };
+
+  // DOMメソッド/makeFooter/開始 -------------------------------------
+  const makeFooter = () => {
+    // import { createFragment } from ('./modules/dom.js');
+    let frag = util.dom.createFragment();
+    // let frag = createFragment();
+
+    let spanElement = util.dom.createElement( 'span', {
+      // let spanElement = createElement( 'span', {
+      id: 'pal-dom-date-info'
+    });
+    // -----HTMLを組み立てる------------------------------------------
+
+    util.dom.appendChild(frag, spanElement);
+
+    return frag;
+  };
+  // DOMメソッド/makeFooter/終了 -------------------------------------
   const mainPage = document.querySelector('#main-page').content;
   let site_button;
   let site_button_rect;
   let site_menu;
   let menu_ahchor;
+
+  const onClickTop = ( /* event */ ) => setLocationHash('');
+
+  const onClickLogout = ( /* event */ ) =>
+    setLocationHash('logout');
+
+  const onClickLogin = ( /* event */ ) =>
+    setLocationHash('login');
+
+  const onClickRegister = ( /* event */ ) =>
+    setLocationHash('register');
 
   // HTMLをロードし、jQueryコレクションをマッピングする
   stateMap.$container = content;

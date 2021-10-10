@@ -10,7 +10,7 @@ import { getTplContent } from "./utilCore.js";
 
 //--------------------- DOMメソッド開始 ----------------------------
 // DOMメソッド/makeNav/開始 ----------------------------------------
-const makeNav = () => {
+export const makeNav = () => {
   let frag = util.dom.createFragment();
   let ulElement = util.dom.createElement('ul', {
     id: 'pal-main-nav-list'

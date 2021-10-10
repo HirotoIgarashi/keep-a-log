@@ -15,14 +15,13 @@ export const getTimestamp = () => {
 // 設定:
 // 戻り値: 引数のIDの値のコンテンツ
 // 例外発行: なし
-export const getTplContent = (template_id) => {
+export const getTplContent = (templateId) => {
   let content;
+  let tpl = document.getElementById(templateId);
 
-  let tpl = document.getElementById(template_id);
-  if (document.getElementById(template_id)) {
+  if (document.getElementById(templateId)) {
     content = tpl.content.cloneNode( true );
   }
-
   return content;
 };
 // getTplContent/終了
@@ -51,7 +50,7 @@ export const getNowDateJp = (option) => {
     // 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
     now_jp = (
       now.getFullYear() + '年' +
-      ( now.getMonth() + 1 ) + '月' +
+      (now.getMonth() + 1) + '月' +
       now.getDate() + '日 ' +
       day_jp[now.getDay()] + ' ' +
       now.toLocaleTimeString()
@@ -78,7 +77,7 @@ export const getNowDateJp = (option) => {
 // 設定:
 // 戻り値: ISO9601形式の文字列
 // 例外発行: なし
-export const getIsoExtFormat = (date_object) => {
+export const getIsoExtFormat = (dateObject) => {
   const pad = (number) => {
     if ( number < 10 ) {
       return '0' + number;
@@ -87,11 +86,11 @@ export const getIsoExtFormat = (date_object) => {
   }
   // YYYY-MM-DDThh:mmの文字列を生成する(:ssは不要)
 
-  return date_object.getFullYear() +
-    '-' + pad( date_object.getMonth() + 1 ) +
-    '-' + pad( date_object.getDate() ) +
-    'T' + pad( date_object.getHours() ) +
-    ':' + pad( date_object.getMinutes() )
+  return dateObject.getFullYear() +
+    '-' + pad(dateObject.getMonth() + 1) +
+    '-' + pad(dateObject.getDate()) +
+    'T' + pad(dateObject.getHours()) +
+    ':' + pad(dateObject.getMinutes())
     ;
 };
 // getIsoExtFormat/終了
@@ -107,19 +106,18 @@ export const getIsoExtFormat = (date_object) => {
 // 設定:
 // 戻り値:
 // 例外発行: なし
-export const createObjectLocal = (local_storage_key, list, callback) => {
-  let i;
-  let save_array = [];
-  let save_object;
+export const createObjectLocal = (localStorageKey, list, callback) => {
+  let saveArray = [];
+  let saveObject;
 
-  for (i = 0; i < list.length; i += 1) {
-    save_object = makeStringObject(list[i]);
-    save_array.push(save_object);
+  for (let i = 0; i < list.length; i += 1) {
+    saveObject = makeStringObject(list[i]);
+    saveArray.push(saveObject);
   }
 
   // localStorageにリストを追加/上書きする
   window.localStorage
-    .setItem(local_storage_key, JSON.stringify(save_array));
+    .setItem(localStorageKey, JSON.stringify(saveArray));
 
   if (callback) {
     callback(list);
@@ -129,13 +127,13 @@ export const createObjectLocal = (local_storage_key, list, callback) => {
 
 // ユーティリティメソッド/updateObjectLocal/開始
 export const updateObjectLocal = () => {
-  console.log( 'updateObjectLocalが呼ばれました' );
+  console.log('updateObjectLocalが呼ばれました');
 };
 // ユーティリティメソッド/updateObjectLocal/終了
 
 // ユーティリティメソッド/deleteObjectLocal/開始
 export const deleteObjectLocal = () => {
-  console.log( 'deleteObjectLocalが呼ばれました' );
+  console.log('deleteObjectLocalが呼ばれました');
 };
 // ユーティリティメソッド/deleteObjectLocal/終了
 
@@ -147,27 +145,26 @@ export const deleteObjectLocal = () => {
 // 設定:
 // 戻り値: keyの値
 // 例外発行: なし
-export const readObjectLocal = (local_storage_key) => {
+export const readObjectLocal = (localStorageKey) => {
   let item;
 
   // localStorageからaction-listの値を読み込む
-  item = window.localStorage.getItem( local_storage_key );
+  item = window.localStorage.getItem(localStorageKey);
 
   return JSON.parse(item);
-
 };
 // ユーティリティメソッド/readObjectLocal/終了
 
 // ユーティリティメソッド/makeStringObject/開始
 export const makeStringObject = (object) => {
   let key;
-  let string_object = {};
+  let stringObject = {};
 
   for (key in object) {
-    if ( typeof object[ key ] === 'string' && object[ key ] ) {
-      string_object[ key ] = object[ key ];
+    if (typeof object[key] === 'string' && object[key]) {
+      stringObject[key] = object[key];
     }
   }
-  return string_object;
+  return stringObject;
 };
 // ユーティリティメソッド/makeStringObject/終了

@@ -9,6 +9,10 @@ import { menu } from "./menu.js";
 import { cycleSystem } from "./cycleSystem.js";
 import { onHashchange as hashChangeToList } from "./list.js";
 import { onHashchange as hashChangetoCalender } from "./calendar.js";
+import { event } from "./event.js";
+import { browserInformation } from "./browserInformation.js";
+import { lab } from "./lab.js";
+import { registSchedule } from "./registSchedule.js";
 
 // DOMメソッド/setElementMap/開始
 export let elementMap = {};
@@ -94,20 +98,20 @@ export const setSection = () => {
       setButtonPressed('pal-nav-calendar');
       break;
     case '#event':
-      pal.event.initModule(mainSection);
+      event(mainSection);
       setButtonPressed('pal-nav-event');
       break;
     case '#browser_information':
-      pal.browserInformation.initModule(mainSection);
+      browserInformation(mainSection);
       break;
     case '#list':
       hashChangeToList(mainSection);
       break;
     case '#lab':
-      pal.lab.initModule(mainSection);
+      lab(mainSection);
       break;
     case '#regist_schedule':
-      pal.registSchedule.onHashchange(mainSection);
+      registSchedule(mainSection);
       break;
     case '#cycle_system':
       cycleSystem(mainSection);

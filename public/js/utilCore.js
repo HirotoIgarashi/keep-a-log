@@ -172,4 +172,87 @@ export const makeStringObject = (object) => {
   return string_object;
 };
 // ユーティリティメソッド/makeStringObject/終了
+
+// init_send_request開始
+export const initSendRequest = (
+  request,
+  requestType,
+  url,
+  async,
+  responseHandle,
+  requestData) => {
+
+  try {
+    // HTTPレスポンスを処理するための関数を指定します。
+    request.onreadystatechange = responseHandle;
+    request.open( requestType, url, async );
+
+    if ( requestType.toLowerCase() === "post" ) {
+      // POSTの場合はContent-Headerが必要です。
+      request.setRequestHeader( 'Content-Type', 'application/json' );
+      request.send(requestData);
+      console.log('Ajaxリクエストを実行しました');
+    }
+    else {
+      request.send(null);
+    }
+  }
+  catch ( errv ) {
+    alert(  'サーバーに接続できません。' +
+          'しばらくたってからやり直して下さい。\n' +
+          'エラーの詳細: ' + errv.message );
+  }
+};
+// init_send_request終了
+
+// sendXmlHttpRequest開始
+// 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
+//       サーバに送信します。
+// 必須引数:
+//  * requestType     : HTTPリクエストの形式。GETかPOSTを指定します
+//  * url             : リクエスト先のURL
+//  * async           : 非同期呼び出しを行うか否かを指定します
+//  * responseHandle  : レスポンスを処理する関数
+//  * arguments[4]    : 5番目の引数はPOSTリクエストによって送信される
+//                      文字列を表します
+// オプション引数: なし
+// 設定:
+//  * xmlhttp
+// 戻り値: なし
+// 例外発行: なし
+//
+export const sendXmlHttpRequest = (requestType, url, async, responseHandle, sendData) => {
+  let request = null;
+
+  if ( window.XMLHttpRequest ) {
+    // Mozillaベースのブラウザの場合
+    request = new XMLHttpRequest();
+  }
+  else if ( window.ActiveXObject ) {
+    // Internet Explorerの場合
+    request = new ActiveXObject( "Msxml2.XMLHTTP" );
+    if ( !request ) {
+      request = new ActiveXObject( "Miforsoft.XMLHTTP" );
+    }
+  }
+
+  // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
+  // 進みます。
+  if (request) {
+
+    if (requestType.toLowerCase() !== 'post') {
+      initSendRequest( request, requestType, url, async, responseHandle );
+    }
+    else {
+      // POSTの場合、5番目の引数で指定された値を送信します。
+      if (sendData !== null && sendData.length > 0) {
+        initSendRequest( request, requestType, url, async, responseHandle, sendData );
+      }
+    }
+    return request;
+  }
+  alert( 'このブラウザはAjaxに対応していません。' );
+  return false;
+};
+// sendXmlHttpRequest終了
 //------------------ ユーティリティメソッド終了 ------------------------------

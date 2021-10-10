@@ -1,9 +1,11 @@
 'use strict';
 
 /*
- * pal.register.js
+ * register.js
  * ユーザ登録機能
 */
+
+import { sendXmlHttpRequest } from "./utilCore.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
@@ -161,7 +163,7 @@ const onClickRegister = (event) => {
 
   console.log('登録ボタンが押されました');
   // XMLHttpRequestによる送信
-  request = pal.util_b.sendXmlHttpRequest(
+  request = sendXmlHttpRequest(
     requestType,
     url,
     true,

@@ -9,7 +9,6 @@ export const onHashchange = () => {
 // イベントハンドラ/onHashchange/終了
 
 export const makeDom = (id) => {
-  console.log(id);
   // 与えられたidをDOMの中から探す
   let content = document.getElementById(id);
   console.log(content);

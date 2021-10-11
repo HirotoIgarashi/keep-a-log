@@ -108,26 +108,6 @@ pal.util_b = (() => {
   };
   // getTimestamp終了
 
-  // getTplContent/開始
-  // 目的: テンプレートからコンテンツを取得して返す。
-  // 必須引数: IDの値
-  // オプション引数: なし
-  // 設定:
-  // 戻り値: 引数のIDの値のコンテンツ
-  // 例外発行: なし
-  getTplContent = (template_id) => {
-    var tpl,
-        content;
-
-    tpl = document.getElementById( template_id );
-    if ( tpl ) {
-      content = tpl.content.cloneNode( true );
-    }
-
-    return content;
-  };
-  // getTplContent/終了
-
   // getNowDateJp/開始
   // 目的: 2017年5月21日 日曜日 21:50:45の形式で文字列を生成する
   // 必須引数: IDの値

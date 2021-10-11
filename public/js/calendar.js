@@ -6,6 +6,7 @@
 'use strict';
 
 import { setLocationHash, getLocationHash } from "./controlDom.js";
+import { setButtonPressed } from "./event.js";
 
 //--------------------- DOMメソッド開始 ----------------------------
 const makeCalendar = () => {
@@ -142,7 +143,7 @@ export const onHashchange = (mainSection) => {
   if (!document.querySelector('#pal-event-nav')) {
     palMainNav.insertBefore(pal.event.makeNav(), palMainNav.firstChild);
   }
-  pal.event.setButtonPressed();
+  setButtonPressed();
 
   // 現在のhashから年の値と月の値を取得する
   let matchString = currentHash.match(pattern);

@@ -6,6 +6,7 @@
 'use strict';
 
 import { getLocationHash } from "./controlDom.js";
+import { getTplContent } from "./utilDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 var
@@ -42,8 +43,8 @@ const onHashchange = function ( main_section ) {
   var
     current_hash = getLocationHash(),
     schedule_main,
-    menu              = pal.util_b.getTplContent( 'schedule-registration' ),
-    dayly             = pal.util_b.getTplContent( 'schedule-registration-dayly' ),
+    menu              = getTplContent( 'schedule-registration' ),
+    dayly             = getTplContent( 'schedule-registration-dayly' ),
     current_page,
     anchor_list,
     select_button,

@@ -3,8 +3,9 @@
  * 実験用のモジュール
 */
 
-
 'use strict';
+
+import { getTplContent, toggleElement, showElement, hideElement } from "./utilDom.js";
 //--------------------- モジュールスコープ変数開始 -----------------
 var
   configMap = {
@@ -53,7 +54,7 @@ const configModule = function ( input_map ) {
 export const lab = ( $container ) => {
   var
     mainSection,
-    helloWorld  = pal.util_b.getTplContent( 'lab' );
+    helloWorld  = getTplContent('lab');
 
   stateMap.$container = $container;
 
@@ -66,11 +67,11 @@ export const lab = ( $container ) => {
   // document fragmentを追加する
   mainSection.appendChild( helloWorld );
 
-  pal.util.toggleElement(
+  toggleElement(
     'pal-lab-play',
     'pal-lab-pause',
-    pal.util.showElement.bind( this, 'pal-lab-form' ),
-    pal.util.hideElement.bind( this, 'pal-lab-form' )
+    showElement.bind(this, 'pal-lab-form'),
+    hideElement.bind(this, 'pal-lab-form')
   );
 
   return true;

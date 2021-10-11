@@ -3,11 +3,13 @@
  * サイクルシステム用のモジュール
 */
 'use strict';
+
 import { getTplContent } from "./utilCore.js";
+import { getNowDateJp } from "./utilCore.js";
+import { toggleTip, checkInputField, addEventListener } from "./utilDom.js";
+
 //--------------------- モジュールスコープ変数開始 -----------------
-var
-  // initTab,
-  initDailyTab;
+let initDailyTab;
 //--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- ユーティリティメソッド開始 -----------------
@@ -164,7 +166,7 @@ initDailyTab = function () {
 
   // 関連する要素とコレクションを取得する
   current_date = document.getElementById( 'pal-cyclesystem-current-date' );
-  current_date.textContent = pal.util_b.getNowDateJp( 'date and day' );
+  current_date.textContent = getNowDateJp( 'date and day' );
 
   // デイリータブパネル初期設定
   // 関連する要素とコレクションを取得する
@@ -201,17 +203,17 @@ initDailyTab = function () {
   submit_button.setAttribute( 'aria-pressed', 'false' );
 
   // tipの表示/非表示を切り替える
-  pal.util.toggleTip( title, title_tip );
-  pal.util.toggleTip( start_hour, start_time_hour_tip );
-  pal.util.toggleTip( start_minute, start_time_minute_tip );
-  pal.util.toggleTip( required_hour, require_time_hour_tip );
-  pal.util.toggleTip( required_minute, require_time_minute_tip );
-  // pal.util.toggleTip( priority, priority_tip );
-  pal.util.toggleTip( complete_status, complete_status_tip );
+  toggleTip( title, title_tip );
+  toggleTip( start_hour, start_time_hour_tip );
+  toggleTip( start_minute, start_time_minute_tip );
+  toggleTip( required_hour, require_time_hour_tip );
+  toggleTip( required_minute, require_time_minute_tip );
+  // toggleTip( priority, priority_tip );
+  toggleTip( complete_status, complete_status_tip );
 
   // titleが空かチェックする
   checkTitle = function ( event ) {
-    if ( pal.util.checkInputField( event, pal.util.isNonEmpty ) ) {
+    if (checkInputField(event, pal.util.isNonEmpty)) {
       // 空でないとき
       title_alert.hidden = true;
       title.setAttribute( 'aria-invalid', 'false' );
@@ -224,7 +226,7 @@ initDailyTab = function () {
   };
 
   // input要素に入力値の妥当性チェック処理を追加する
-  pal.util.addEventListener( title, 'blur', checkTitle );
+  addEventListener( title, 'blur', checkTitle );
   // 開始時間の時が整数かつ0から23までかをチェックする
   checkStartTimeHour = function( event ) {
     var
@@ -245,7 +247,7 @@ initDailyTab = function () {
   };
 
   // 開始時間の時の値をチェックするイベントハンドラーを追加する。
-  pal.util.addEventListener( start_hour, 'input', checkStartTimeHour );
+  addEventListener( start_hour, 'input', checkStartTimeHour );
 
   // 開始時間の分が整数かつ0から59までかをチェックする
   checkStartTimeMinute = function( event ) {
@@ -267,7 +269,7 @@ initDailyTab = function () {
   };
 
   // 開始時間の分の値をチェックするイベントハンドラーを追加する。
-  pal.util.addEventListener( start_minute, 'input', checkStartTimeMinute );
+  addEventListener( start_minute, 'input', checkStartTimeMinute );
 
   // 所要時間の時が整数かをチェックする
   checkRequiredTimeHour = function( event ) {
@@ -289,7 +291,7 @@ initDailyTab = function () {
   };
 
   // 所要時間の時の値をチェックするイベントハンドラーを追加する。
-  pal.util.addEventListener( required_hour, 'input', checkRequiredTimeHour );
+  addEventListener( required_hour, 'input', checkRequiredTimeHour );
 
   // 所要時間の分が整数かつ0から59までかをチェックする
   checkRequiredTimeMinute = function( event ) {
@@ -311,7 +313,7 @@ initDailyTab = function () {
   };
 
   // 所要時間の分の値をチェックするイベントハンドラーを追加する。
-  pal.util.addEventListener( required_minute, 'input', checkRequiredTimeMinute );
+  addEventListener( required_minute, 'input', checkRequiredTimeMinute );
 
   // 新規作成ボタンが押されたときの処理
   // ・ 新規作成ボタンを隠す

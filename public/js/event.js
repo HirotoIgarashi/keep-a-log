@@ -136,7 +136,7 @@ const mergeList = ((event, eventSchedule) => {
 });
 
 // hashが変更されときの処理 ----------------------------------------
-const setButtonPressed = ((element) => {
+export const setButtonPressed = ((element) => {
   // element以下の全てのボタンのaria-pressed属性の値をfalseにする
   let liEventNav =
     util.dom.querySelectorAll('#pal-event-nav li button');

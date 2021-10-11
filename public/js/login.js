@@ -122,9 +122,15 @@ const onClickLogin = (event) => {
 const onReceiveLogin = function () {
   const message_area = document.getElementById('message-area');
   const userInfo = document.getElementById('pal-dom-user-info');
+  let response;
 
   if ( request && request.readyState === 4 ) {
-    let response = JSON.parse(request.response);
+
+    console.log(request.response);
+    
+    if (request.response) {
+      response = JSON.parse(request.response);
+    }
 
     if (request.status === 200) {
     // ----- ログインが成功したときの処理 ------------------------

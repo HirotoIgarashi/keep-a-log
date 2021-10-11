@@ -196,12 +196,17 @@ const onReceiveRegister = function () {
     else {
       let responseArray = JSON.parse(request.response);
 
+      console.log(responseArray);
+      console.log(typeof responseArray);
+
       // validate結果を表示する
-      responseArray.forEach((response) => {
-        let inputTag = document.querySelector(`input[name='${response.param}']`);
-        inputTag.style.borderColor = 'red';
-        inputTag.nextElementSibling.innerHTML += response.msg;
-      });
+      if (typeof responseArray !== 'object') {
+        responseArray.forEach((response) => {
+          let inputTag = document.querySelector(`input[name='${response.param}']`);
+          inputTag.style.borderColor = 'red';
+          inputTag.nextElementSibling.innerHTML += response.msg;
+        });
+      }
 
       message_area.removeAttribute('hidden');
       switch (request.status) {

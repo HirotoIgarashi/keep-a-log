@@ -690,7 +690,7 @@ var
 export const onHashchange = (main_section) => {
     switch ( location.hash ) {
       case '#list':
-        initModule( main_section );
+        list(main_section);
         break;
       case '#list/new':
         list_ui.show_create_form();

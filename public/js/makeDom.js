@@ -14,7 +14,7 @@ export const makeDom = (id) => {
   console.log(content);
 
   if (content) {
-    initDom( content );
+    initDom(content);
     // URIのハッシュ変更イベントを処理する。
     // これはすべての機能モジュールを設定して初期化した後に行う。
     // そうしないと、トリガーイベントを処理できる状態になっていない。

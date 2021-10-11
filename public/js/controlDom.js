@@ -202,19 +202,11 @@ const setButtonPressed = ((data) => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const initDom = (content) => {
-  // ユーティリティメソッド/toggle_menu/開始
-  const toggle_menu = () => {
-    // ボタンとメニューのノードを取得 --------------------------------
-    const site_button = document.querySelector('.pal-dom-header-menu');
-    const site_menu = document.querySelector('[aria-label="サイト"]');
-    // メニューの表示非表示を切り替える
-    let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+export const controlDom = (id) => {
+  // 与えられたidをDOMの中から探す
+  let content = document.getElementById(id);
+  console.log(content);
 
-    site_button.setAttribute( 'aria-expanded', String(!expanded) );
-    site_menu.hidden = expanded;
-  };
-  // ユーティリティメソッド/toggle_menu/終了
   //--------------------- ユーティリティメソッド開始 -----------------
   const supportsTemplate = function () {
     const template  = document.createElement('template');
@@ -348,6 +340,14 @@ export const initDom = (content) => {
     },
     1000
   );
+  // URIのハッシュ変更イベントを処理する。
+  // これはすべての機能モジュールを設定して初期化した後に行う。
+  // そうしないと、トリガーイベントを処理できる状態になっていない。
+  // トリガーイベントはアンカーがロード状態と見なせることを保証する
+  // ために使う
+  if (Object.prototype.hasOwnProperty.call(window, "onhashchange")) {
+     window.addEventListener( "hashchange", onHashchange, false );
+  }
 };
 // パブリックメソッド/initModule/終了
 
@@ -397,8 +397,8 @@ export const sendXmlHttpRequest = (requestType, url, async, responseHandle, send
 
   // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
   // 進みます。
-  if ( request ) {
-    if ( requestType.toLowerCase() !== 'post' ) {
+  if (request) {
+    if (requestType.toLowerCase() !== 'post') {
       initSendRequest( request, requestType, url, async, responseHandle );
     }
     else {
@@ -426,9 +426,9 @@ export const initSendRequest = (
   try {
     // HTTPレスポンスを処理するための関数を指定します。
     request.onreadystatechange = responseHandle;
-    request.open( requestType, url, async );
+    request.open(requestType, url, async);
 
-    if ( requestType.toLowerCase() === "post" ) {
+    if (requestType.toLowerCase() === "post") {
       // POSTの場合はContent-Headerが必要です。
       request.setRequestHeader( 'Content-Type', 'application/json' );
       request.send(requestData);
@@ -438,10 +438,28 @@ export const initSendRequest = (
       request.send(null);
     }
   }
-  catch ( err ) {
-    alert(  'サーバーに接続できません。' +
-            'しばらくたってからやり直して下さい。\n' +
-            'エラーの詳細: ' + err.message );
+  catch (err) {
+    alert('サーバーに接続できません。' +
+          'しばらくたってからやり直して下さい。\n' +
+          'エラーの詳細: ' + err.message );
   }
 };
 // initSendRequest終了
+// イベントハンドラ/onHashchange/開始
+const onHashchange = () => {
+  setSection();
+};
+// イベントハンドラ/onHashchange/終了
+
+// ユーティリティメソッド/toggle_menu/開始
+const toggle_menu = () => {
+  // ボタンとメニューのノードを取得 --------------------------------
+  const site_button = document.querySelector('.pal-dom-header-menu');
+  const site_menu = document.querySelector('[aria-label="サイト"]');
+  // メニューの表示非表示を切り替える
+  let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+
+  site_button.setAttribute( 'aria-expanded', String(!expanded) );
+  site_menu.hidden = expanded;
+};
+// ユーティリティメソッド/toggle_menu/終了

@@ -4,6 +4,11 @@
 */
 
 'use strict';
+
+import { array } from "./array.js";
+import { socketio } from "./socketio.js";
+
+
 //--------------------- モジュールスコープ変数開始 -----------------
 var
   configMap = {
@@ -949,7 +954,7 @@ export const list = ($container) => {
   stateMap.$container = $container;
 
   // custom_arrayの初期化 localStorageから読み込む
-  pal.array.initModule();
+  array();
 
   // Socket.IOオブジェクトsioを生成する
   event_map = {
@@ -959,7 +964,7 @@ export const list = ($container) => {
     'objectdelete'  : object_delete
   };
 
-  pal.socketio.initModule( '/list', event_map );
+  socketio('/list', event_map);
 
   // State Patternを初期化して最初の画面を表示する
   list_ui.initialize();

@@ -503,7 +503,6 @@
     <script src="js/util.date.js"></script>
 
     <script type="module" src="js/modules/dom.js"></script>
-    <script type="module" src="js/makeDom.js"></script>
     <script type="module" src="js/controlDom.js"></script>
     <script type="module" src="js/top.js"></script>
     <script type="module" src="js/utilCore.js"></script>
@@ -519,9 +518,12 @@
     <script type="module" src="js/lab.js"></script>
     <script type="module" src="js/registSchedule.js"></script>
     <script type="module" src="js/utilDom.js"></script>
+    <script type="module" src="js/array.js"></script>
+    <script type="module" src="js/socketio.js"></script>
 
     <script src="js/pal.util_b.js"></script>
     <!--
+    <script type="module" src="js/makeDom.js"></script>
     <script src="js/pal.util.js"></script>
     <script src="js/pal.bom.js"></script>
     <script src="js/pal.dom.js"></script>
@@ -537,10 +539,10 @@
     <script src="js/pal.browserInformation.js"></script>
     <script src="js/pal.lab.js"></script>
     <script src="js/pal.registSchedule.js"></script>
+    <script src="js/pal.array.js"></script>
+    <script src="js/pal.socketio.js"></script>
   -->
     <script src="js/pal.schema.js"></script>
-    <script src="js/pal.socketio.js"></script>
-    <script src="js/pal.array.js"></script>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <!--
@@ -624,11 +626,9 @@
     <div id="pal"></div>
 
     <script type="module">
-      import { makeDom } from "./js/makeDom.js";
-      document.addEventListener(
-        'DOMContentLoaded',
-        (event) => {
-          makeDom('pal');
+      import {controlDom} from "./js/controlDom.js";
+      document.addEventListener('DOMContentLoaded', (event) => {
+        controlDom('pal');
       });
     </script>
 

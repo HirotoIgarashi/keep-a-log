@@ -3,7 +3,12 @@
 
 'use strict';
 
-import { sendXmlHttpRequest } from "./controlDom.js";
+import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import {
+  createFragment, createElement, setAttribute,
+  innerHTML, createLabelAndInput, appendChild,
+  getElementById, emptyElement
+} from "./utilDom.js";
 
   //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
@@ -11,20 +16,20 @@ let request = null;
 
   //--------------------- ユーティリティメソッド開始 -----------------
 const makeLoginForm = () => {
-  let frag = util.dom.createFragment();
+  let frag = createFragment();
   // -----divタグの作成 --------------------------------------------
-  let divElement = util.dom.createElement('div');
-  util.dom.setAttribute(divElement, 'class', 'data-form');
+  let divElement = createElement('div');
+  setAttribute(divElement, 'class', 'data-form');
 
-  let h2Element = util.dom.createElement('h2');
-  h2Element = util.dom.innerHTML(
+  let h2Element = createElement('h2');
+  h2Element = innerHTML(
     h2Element,
     'ログインする:'
   );
 
   // -----formタグの作成 -------------------------------------------
-  let formElement = util.dom.createElement('form');
-  let passwordLabelAndInput = util.dom.createLabelAndInput({
+  let formElement = createElement('form');
+  let passwordLabelAndInput = createLabelAndInput({
     'for': 'inputPassword',
     'innerHTML': 'パスワード',
     'type': 'password',
@@ -36,17 +41,17 @@ const makeLoginForm = () => {
   });
 
   // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-  let showPasswordCheckbox = util.dom.createElement('input');
-  util.dom.setAttribute(showPasswordCheckbox, 'type', 'checkbox');
-  util.dom.setAttribute(showPasswordCheckbox, 'id', 'showPassword');
-  let showPasswordLabel = util.dom.createElement('label');
-  util.dom.innerHTML(showPasswordLabel, 'パスワードを表示');
+  let showPasswordCheckbox = createElement('input');
+  setAttribute(showPasswordCheckbox, 'type', 'checkbox');
+  setAttribute(showPasswordCheckbox, 'id', 'showPassword');
+  let showPasswordLabel = createElement('label');
+  innerHTML(showPasswordLabel, 'パスワードを表示');
 
   // -----パスワードのvalidate結果の表示エリアとinput --------------
-  let inputPasswordResponse = util.dom.createElement('div');
+  let inputPasswordResponse = createElement('div');
 
   // ----- Eメールのlabel ------------------------------------------
-  let emailLabelAndInput = util.dom.createLabelAndInput({
+  let emailLabelAndInput = createLabelAndInput({
     'for': 'inputEmail',
     'innerHTML': 'Email address',
     'type': 'email',
@@ -58,33 +63,33 @@ const makeLoginForm = () => {
   });
 
   // -----Eメールのvalidate結果の表示エリア-------------------------
-  let inputEmailResponse = util.dom.createElement('div');
+  let inputEmailResponse = createElement('div');
 
   // -----ボタンを生成 ---------------------------------------------
-  let submitButton = util.dom.createElement('button');
-  util.dom.setAttribute(submitButton, 'type', 'submit');
-  util.dom.setAttribute(submitButton, 'id', 'loginUser');
-  util.dom.innerHTML(submitButton, 'ログイン');
+  let submitButton = createElement('button');
+  setAttribute(submitButton, 'type', 'submit');
+  setAttribute(submitButton, 'id', 'loginUser');
+  innerHTML(submitButton, 'ログイン');
 
   // -----メッセージエリアを生成 -----------------------------------
-  let messageArea = util.dom.createElement('div');
-  util.dom.setAttribute(messageArea, 'id', 'message-area');
+  let messageArea = createElement('div');
+  setAttribute(messageArea, 'id', 'message-area');
 
   // -----HTMLを組み立てる------------------------------------------
-  util.dom.appendChild(divElement, formElement);
-  util.dom.appendChild(formElement, h2Element);
-  util.dom.appendChild(formElement, emailLabelAndInput[0]);
-  util.dom.appendChild(formElement, emailLabelAndInput[1]);
-  util.dom.appendChild(formElement, inputEmailResponse);
-  util.dom.appendChild(formElement, passwordLabelAndInput[0]);
-  util.dom.appendChild(formElement, passwordLabelAndInput[1]);
-  util.dom.appendChild(formElement, inputPasswordResponse);
-  util.dom.appendChild(formElement, showPasswordCheckbox);
-  util.dom.appendChild(formElement, showPasswordLabel);
-  util.dom.appendChild(formElement, submitButton);
-  util.dom.appendChild(divElement, messageArea);
+  appendChild(divElement, formElement);
+  appendChild(formElement, h2Element);
+  appendChild(formElement, emailLabelAndInput[0]);
+  appendChild(formElement, emailLabelAndInput[1]);
+  appendChild(formElement, inputEmailResponse);
+  appendChild(formElement, passwordLabelAndInput[0]);
+  appendChild(formElement, passwordLabelAndInput[1]);
+  appendChild(formElement, inputPasswordResponse);
+  appendChild(formElement, showPasswordCheckbox);
+  appendChild(formElement, showPasswordLabel);
+  appendChild(formElement, submitButton);
+  appendChild(divElement, messageArea);
 
-  util.dom.appendChild(frag, divElement);
+  appendChild(frag, divElement);
 
   return frag;
 };
@@ -104,8 +109,8 @@ const onClickLogin = (event) => {
   event.preventDefault();
 
   // フォームから入力された値を取得する
-  form_map.email = document.getElementById('inputEmail').value;
-  form_map.password = document.getElementById('inputPassword').value;
+  form_map.email = getElementById('inputEmail').value;
+  form_map.password = getElementById('inputPassword').value;
 
   // XMLHttpRequestによる送信
   request = sendXmlHttpRequest(
@@ -120,14 +125,14 @@ const onClickLogin = (event) => {
 
 // --------------------- Loginの結果の処理 -------------------------
 const onReceiveLogin = function () {
-  const message_area = document.getElementById('message-area');
-  const userInfo = document.getElementById('pal-dom-user-info');
+  const message_area = getElementById('message-area');
+  const userInfo = getElementById('pal-dom-user-info');
   let response;
 
   if ( request && request.readyState === 4 ) {
 
     console.log(request.response);
-    
+
     if (request.response) {
       response = JSON.parse(request.response);
     }
@@ -141,9 +146,9 @@ const onReceiveLogin = function () {
 
       userInfo.innerHTML = response.email;
 
-      setTimeout( function () {
+      setTimeout(() => {
         message_area.setAttribute( 'hidden', 'hidden' );
-        pal.bom.setLocationHash( '' );
+        setLocationHash( '' );
       }, 2000);
     }
     else {
@@ -180,24 +185,24 @@ const onReceiveLogin = function () {
 // 例外発行: なし
 //
 export const login = () => {
-  const main_section = document.getElementById( 'pal-main' );
+  const main_section = getElementById( 'pal-main' );
 
   // mainセクションの子要素をすべて削除する
-  util.dom.emptyElement( main_section );
+  emptyElement( main_section );
 
   //----- ログインフォームを表示する -------------------------------
   main_section.appendChild(makeLoginForm());
 
   //----- パスワードを表示する機能を追加する -----------------------
-  const password = document.getElementById('inputPassword');
-  const showPassword = document.getElementById( 'showPassword' );
+  const password = getElementById('inputPassword');
+  const showPassword = getElementById( 'showPassword' );
 
   showPassword.addEventListener('change', () => {
     let type = showPassword.checked ? 'text' : 'password';
     password.setAttribute( 'type', type );
   });
 
-  let login_button = document.getElementById('loginUser');
+  let login_button = getElementById('loginUser');
 
   login_button.addEventListener('click', onClickLogin);
 

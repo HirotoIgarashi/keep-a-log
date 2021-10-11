@@ -5,7 +5,12 @@
 
 'use strict';
 
-import { sendXmlHttpRequest } from "./controlDom.js";
+import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import {
+  createFragment, createElement, innerHTML,
+  setAttribute, appendChild, getElementById,
+  emptyElement
+} from "./utilDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
@@ -16,36 +21,33 @@ let request = null;
 
 //--------------------- DOMメソッド開始 ----------------------------
 const makeLogOutPage = () => {
-  let frag = util.dom.createFragment();
+  let frag = createFragment();
   // -----divタグの作成 --------------------------------------------
-  let divElement = util.dom.createElement('div');
-  let h2Element = util.dom.createElement('h2');
-  h2Element = util.dom.innerHTML(
-    h2Element,
-    'ログアウトします:'
-  );
+  let divElement = createElement('div');
+  let h2Element = createElement('h2');
+  h2Element = innerHTML( h2Element, 'ログアウトします:' );
 
   // -----agreeボタンを生成 ---------------------------------------------
-  let agreeButton = util.dom.createElement('button');
-  util.dom.setAttribute(agreeButton, 'id', 'agree');
-  util.dom.innerHTML(agreeButton, 'はい');
+  let agreeButton = createElement('button');
+  setAttribute(agreeButton, 'id', 'agree');
+  innerHTML(agreeButton, 'はい');
 
   // -----cancelボタンを生成 ---------------------------------------------
-  let cancelButton = util.dom.createElement('button');
-  util.dom.setAttribute(cancelButton, 'id', 'cancel');
-  util.dom.innerHTML(cancelButton, 'キャンセル');
+  let cancelButton = createElement('button');
+  setAttribute(cancelButton, 'id', 'cancel');
+  innerHTML(cancelButton, 'キャンセル');
 
   // -----メッセージエリアを生成 -----------------------------------
-  let messageArea = util.dom.createElement('div');
-  util.dom.setAttribute(messageArea, 'id', 'message-area');
+  let messageArea = createElement('div');
+  setAttribute(messageArea, 'id', 'message-area');
 
   // -----HTMLを組み立てる------------------------------------------
-  util.dom.appendChild(divElement, h2Element);
-  util.dom.appendChild(divElement, agreeButton);
-  util.dom.appendChild(divElement, cancelButton);
-  util.dom.appendChild(divElement, messageArea);
+  appendChild(divElement, h2Element);
+  appendChild(divElement, agreeButton);
+  appendChild(divElement, cancelButton);
+  appendChild(divElement, messageArea);
 
-  util.dom.appendChild(frag, divElement);
+  appendChild(frag, divElement);
 
   return frag;
 };
@@ -69,14 +71,14 @@ const onClickAgree = function (event) {
 
 //------ Loginの結果の処理/開始 ------------------------------------
 const onReceiveLogout = function () {
-  const messageArea = document.getElementById('message-area');
+  const messageArea = getElementById('message-area');
 
   if ( request && request.readyState === 4 ) {
     if ( request.status === 200 ) {
       messageArea.textContent =
         'ログアウトしました。ステータス: ' + request.status;
       setTimeout( function () {
-        pal.bom.setLocationHash('');
+        setLocationHash('');
       }, 2000);
     }
     else {
@@ -105,7 +107,7 @@ const onReceiveLogout = function () {
 
 // キャンセルボタンクリックされたときの処理/開始
 const onClickCancel = function () {
-  pal.bom.setLocationHash('');
+  setLocationHash('');
 };
 // キャンセルボタンクリックされたときの処理/終了
 // --------------------- イベントハンドラ終了 ----------------------
@@ -119,15 +121,15 @@ const onClickCancel = function () {
 // 例外発行: なし
 //
 export const logout = () => {
-  const main_section = document.getElementById( 'pal-main' );
+  const main_section = getElementById( 'pal-main' );
 
   // mainセクションの子要素をすべて削除する
-  util.dom.emptyElement( main_section );
+  emptyElement( main_section );
 
   main_section.appendChild(makeLogOutPage());
 
-  const agreeButton = document.getElementById('agree');
-  const cancelButton = document.getElementById('cancel');
+  const agreeButton = getElementById('agree');
+  const cancelButton = getElementById('cancel');
 
   agreeButton.addEventListener('click', onClickAgree );
   cancelButton.addEventListener('click', onClickCancel );

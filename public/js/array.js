@@ -81,7 +81,7 @@ custom_array.deleteObject = function ( object, callback ) {
   }
 };
 
-const readObjectArray = function () {
+export const readObjectArray = function () {
   return custom_array;
 };
 

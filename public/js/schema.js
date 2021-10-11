@@ -324,7 +324,6 @@ export const makeAction = function ( arg_map ) {
   pal.util.addChange(action);
 
   return action;
-
 };
 //--------------------- ユーティリティメソッド終了 -----------------
 

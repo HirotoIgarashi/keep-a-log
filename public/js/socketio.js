@@ -11,8 +11,7 @@ var
   readObject,
   updateObject,
   deleteObject,
-  getRemoteId,
-  readObjectList;
+  getRemoteId;
 
 makeSio = function (namespace) {
   var socket = io.connect(namespace);
@@ -69,7 +68,7 @@ getRemoteId = function ( key, value, callback ) {
 // メソッド/getObjectRemoteId/終了
 
 // メソッド/readObjectList/開始
-readObjectList = function () {
+export const readObjectList = function () {
   stateMap.sio.emit( 'readobject', JSON.stringify( {} ) );
 };
 // メソッド/readObjectList/終了

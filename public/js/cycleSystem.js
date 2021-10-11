@@ -4,9 +4,14 @@
 */
 'use strict';
 
-import { getTplContent } from "./utilCore.js";
-import { getNowDateJp } from "./utilCore.js";
-import { toggleTip, checkInputField, addEventListener } from "./utilDom.js";
+import {
+  getTplContent, isNonEmpty, isInteger, isRange, getNowDateJp
+} from "./utilCore.js";
+import {
+  toggleTip, checkInputField, addEventListener,
+  emptyElement, querySelector, getElementById,
+  getTargetValue, clearFormAll
+} from "./utilDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 let initDailyTab;
@@ -24,7 +29,7 @@ const initTab = function () {
     switchTab;
 
   // 関連する要素とコレクションを取得する
-  tabbed  = document.querySelector('.tabbed');
+  tabbed  = querySelector('.tabbed');
   tablist = tabbed.querySelector('ul');
   tabs    = tablist.querySelectorAll('a');
   panels  = tabbed.querySelectorAll('[id^="section"]');
@@ -165,34 +170,34 @@ initDailyTab = function () {
     checkRequiredTimeMinute;
 
   // 関連する要素とコレクションを取得する
-  current_date = document.getElementById( 'pal-cyclesystem-current-date' );
+  current_date = getElementById( 'pal-cyclesystem-current-date' );
   current_date.textContent = getNowDateJp( 'date and day' );
 
   // デイリータブパネル初期設定
   // 関連する要素とコレクションを取得する
-  add_button = document.getElementById( 'pal-task-add' );
-  cancel_button = document.getElementById( 'pal-task-add-cancel' );
-  add_form = document.getElementById( 'pal-task-add-form' );
-  submit_button = document.getElementById( 'task-add-button' );
-  // start_time = document.getElementById( 'start-time' );
-  // required_time = document.getElementById( 'required-time' );
-  title_alert = document.getElementById( 'title-alert' );
-  start_hour_alert = document.getElementById( 'start-hour-alert' );
-  start_minute_alert = document.getElementById( 'start-minute-alert' );
-  required_hour_alert = document.getElementById( 'required-hour-alert' );
-  required_minute_alert = document.getElementById( 'required-minute-alert' );
-  title               = document.getElementById( 'title' );
-  start_hour          = document.getElementById( 'start-time-hour' );
-  start_minute        = document.getElementById( 'start-time-minute' );
-  required_hour       = document.getElementById( 'required-time-hour' );
-  required_minute     = document.getElementById( 'required-time-minute' );
-  title_tip           = document.getElementById( 'title-tip' );
-  start_time_hour_tip     = document.getElementById( 'start-time-hour-tip' );
-  start_time_minute_tip   = document.getElementById( 'start-time-minute-tip' );
-  require_time_hour_tip   = document.getElementById( 'required-time-hour-tip' );
-  require_time_minute_tip = document.getElementById( 'required-time-minute-tip' );
-  complete_status     = document.getElementById( 'complete-status' );
-  complete_status_tip = document.getElementById( 'complete-status-tip' );
+  add_button = getElementById( 'pal-task-add' );
+  cancel_button = getElementById( 'pal-task-add-cancel' );
+  add_form = getElementById( 'pal-task-add-form' );
+  submit_button = getElementById( 'task-add-button' );
+  // start_time = getElementById( 'start-time' );
+  // required_time = getElementById( 'required-time' );
+  title_alert = getElementById( 'title-alert' );
+  start_hour_alert = getElementById( 'start-hour-alert' );
+  start_minute_alert = getElementById( 'start-minute-alert' );
+  required_hour_alert = getElementById( 'required-hour-alert' );
+  required_minute_alert = getElementById( 'required-minute-alert' );
+  title               = getElementById( 'title' );
+  start_hour          = getElementById( 'start-time-hour' );
+  start_minute        = getElementById( 'start-time-minute' );
+  required_hour       = getElementById( 'required-time-hour' );
+  required_minute     = getElementById( 'required-time-minute' );
+  title_tip           = getElementById( 'title-tip' );
+  start_time_hour_tip     = getElementById( 'start-time-hour-tip' );
+  start_time_minute_tip   = getElementById( 'start-time-minute-tip' );
+  require_time_hour_tip   = getElementById( 'required-time-hour-tip' );
+  require_time_minute_tip = getElementById( 'required-time-minute-tip' );
+  complete_status     = getElementById( 'complete-status' );
+  complete_status_tip = getElementById( 'complete-status-tip' );
 
   // 初期の設定。
   // キャンセルボタンとフォームを隠す
@@ -213,7 +218,7 @@ initDailyTab = function () {
 
   // titleが空かチェックする
   checkTitle = function ( event ) {
-    if (checkInputField(event, pal.util.isNonEmpty)) {
+    if (checkInputField(event, isNonEmpty)) {
       // 空でないとき
       title_alert.hidden = true;
       title.setAttribute( 'aria-invalid', 'false' );
@@ -232,10 +237,10 @@ initDailyTab = function () {
     var
       min = 0,
       max = 23,
-      inputValue = pal.util.getTargetValue( event );
+      inputValue = getTargetValue( event );
 
-    if (pal.util.isInteger(inputValue) &&
-      pal.util.isRange(inputValue, min, max)) {
+    if (isInteger(inputValue) &&
+      isRange(inputValue, min, max)) {
       // 整数でかつ0から23の間の数値だったらアラートを表示しない
       start_hour_alert.hidden = true;
       start_hour.setAttribute( 'aria-invalid', 'false' );
@@ -254,10 +259,10 @@ initDailyTab = function () {
     var
       min = 0,
       max = 59,
-      inputValue = pal.util.getTargetValue( event );
+      inputValue = getTargetValue( event );
 
-    if ( pal.util.isInteger( inputValue ) &&
-      pal.util.isRange( inputValue, min, max )) {
+    if (isInteger( inputValue) &&
+      isRange( inputValue, min, max )) {
       // 整数でかつ0から23の間の数値だったらアラートを表示しない
       start_minute_alert.hidden = true;
       start_minute.setAttribute( 'aria-invalid', 'false' );
@@ -276,10 +281,10 @@ initDailyTab = function () {
     var
       min = 0,
       max = 59,
-      inputValue = pal.util.getTargetValue( event );
+      inputValue = getTargetValue( event );
 
-    if ( pal.util.isInteger( inputValue ) &&
-      pal.util.isRange( inputValue, min, max )) {
+    if (isInteger(inputValue) &&
+      isRange(inputValue, min, max)) {
       // 整数でかつ0から23の間の数値だったらアラートを表示しない
       required_hour_alert.hidden = true;
       required_hour.setAttribute( 'aria-invalid', 'false' );
@@ -298,10 +303,10 @@ initDailyTab = function () {
     var
       min = 0,
       max = 59,
-      inputValue = pal.util.getTargetValue( event );
+      inputValue = getTargetValue( event );
 
-    if ( pal.util.isInteger( inputValue ) &&
-      pal.util.isRange( inputValue, min, max )) {
+    if (isInteger(inputValue) &&
+      isRange( inputValue, min, max )) {
       // 整数でかつ0から23の間の数値だったらアラートを表示しない
       required_minute_alert.hidden = true;
       required_minute.setAttribute( 'aria-invalid', 'false' );
@@ -350,7 +355,7 @@ initDailyTab = function () {
     this.setAttribute( 'aria-pressed', 'true' );
 
     // formの値をすべてクリアする
-    pal.util.clearFormAll();
+    clearFormAll();
 
     add_form.hidden = true;
   });
@@ -385,7 +390,7 @@ initDailyTab = function () {
     cancel_button.setAttribute( 'aria-pressed', 'true' );
 
     // formの値をすべてクリアする
-    pal.util.clearFormAll();
+    clearFormAll();
     this.setAttribute( 'aria-pressed', 'true' );
     // フォームを隠す
     add_form.hidden = true;
@@ -397,7 +402,7 @@ export const cycleSystem = (mainSection) => {
   let menu = getTplContent('cycle-system-tmpl');
 
   // mainセクションの子要素をすべて削除する
-  util.dom.emptyElement( mainSection );
+  emptyElement( mainSection );
 
   // メニューを表示する
   if ( menu ) {

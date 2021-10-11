@@ -5,8 +5,9 @@
 
 'use strict';
 
-import { array } from "./array.js";
-import { socketio } from "./socketio.js";
+import { array, readObjectArray } from "./array.js";
+import { socketio, readObjectList } from "./socketio.js";
+import { getTplContent } from "./utilCore.js";
 
 
 //--------------------- モジュールスコープ変数開始 -----------------
@@ -27,7 +28,6 @@ var
   sync_number_of_data,
   current_node,
   onObjectCreate,
-  // onObjectRead,
   onObjectUpdate,
   onObjectDelete,
   object_create,
@@ -69,7 +69,7 @@ var
             // new-action-wrapper,
             // new-form-wrapper,
             // target
-            list_page  = pal.util_b.getTplContent( 'list-page' );
+            list_page  = getTplContent('list-page');
 
           this.target = target;
 
@@ -83,7 +83,7 @@ var
           main_section.appendChild( list_page );
 
           // localStorageからaction objectリストを読み込む
-          object_array = pal.array.readObjectArray();
+          object_array = readObjectArray();
 
           // changeイベントを発生させる
           // targetにaction objectが描画される
@@ -99,7 +99,7 @@ var
           }
 
           // コールバックはobject_read
-          pal.socketio.readObjectList( object_read );
+          readObjectList( object_read );
         },
         enter : function () {
           var
@@ -241,7 +241,7 @@ var
           // object_arrayに追加する
           object_array.createObject( action_object, onObjectCreate );
           // object_arrayを更新する
-          object_array = pal.array.readObjectArray();
+          object_array = readObjectArray();
 
           // chageイベントを発生させる
           action_object.change();
@@ -432,7 +432,7 @@ var
           object_array.updateObject( action_object, onObjectUpdate );
 
           // object_arrayを更新する
-          object_array = pal.array.readObjectArray();
+          object_array = readObjectArray();
 
           // chageイベントを発生させる
           action_object.change();
@@ -511,7 +511,7 @@ var
           // object_arrayから削除する。onObjectDeleteはコールバック
           object_array.deleteObject( action_object, onObjectDelete );
           // object_arrayを更新する
-          object_array = pal.array.readObjectArray();
+          object_array = readObjectArray();
           // chageイベントを発生させる
           action_object.change();
           this.target.changeState( this.target.states.list_form );
@@ -787,7 +787,7 @@ export const onHashchange = (main_section) => {
       // object_arrayに追加する
       object_array.updateObject( action_object );
       // object_arrayを更新する
-      object_array = pal.array.readObjectArray();
+      object_array = readObjectArray();
 
       action_object.change();
     }
@@ -829,7 +829,7 @@ export const onHashchange = (main_section) => {
       object_array.updateObject( action_object );
 
       // object_arrayを更新する
-      object_array = pal.array.readObjectArray();
+      object_array = readObjectArray();
 
       // chageイベントを発生させる
       action_object.change();
@@ -878,7 +878,7 @@ export const onHashchange = (main_section) => {
           object_array.deleteObject( action_object );
 
           // object_arrayを更新する
-          object_array = pal.array.readObjectArray();
+          object_array = readObjectArray();
 
           // chageイベントを発生させる
           action_object.change();

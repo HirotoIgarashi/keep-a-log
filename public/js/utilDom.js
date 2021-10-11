@@ -255,10 +255,9 @@ export const inputChangeCallback = (input_element, callback) => {
 // 戻り値: input要素の値
 // 例外発行: なし
 //
-const getTargetValue = (event) => {
-  var
-    theEvent  = event || window.event,
-    target    = theEvent.target || theEvent.srcElement;
+export const getTargetValue = (event) => {
+  let theEvent = event || window.event;
+  let target = theEvent.target || theEvent.srcElement;
 
   return target.value;
 };

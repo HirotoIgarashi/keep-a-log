@@ -5,9 +5,12 @@
 
 'use strict';
 
+import { setLocationHash } from "./controlDom.js";
+import { makeAction } from "./schema.js";
 import { array, readObjectArray } from "./array.js";
 import { socketio, readObjectList } from "./socketio.js";
-import { getTplContent } from "./utilCore.js";
+import { getTplContent, getTimestamp } from "./utilCore.js";
+import { emptyElement, emptyElementById, clearFormAll } from "./utilDom.js";
 
 
 //--------------------- モジュールスコープ変数開始 -----------------
@@ -77,7 +80,7 @@ var
           main_section = document.getElementById( 'pal-main' );
 
           // mainセクションの子要素をすべて削除する
-          util.dom.emptyElement( main_section );
+          emptyElement( main_section );
 
           // document fragmentを追加する
           main_section.appendChild( list_page );
@@ -135,7 +138,7 @@ var
             this.setAttribute( 'class', 'hidden' );
             cancel_button.setAttribute( 'class', '' );
             upload_button.setAttribute( 'class', '' );
-            pal.bom.setLocationHash( '#list/new');
+            setLocationHash( '#list/new');
           });
 
           // キャンセルボタンが押されたら、
@@ -147,7 +150,7 @@ var
             this.setAttribute( 'class', 'hidden' );
             new_button.setAttribute( 'class', '' );
             upload_button.setAttribute( 'class', 'hidden' );
-            pal.bom.setLocationHash( '#list');
+            setLocationHash( '#list');
           });
         },
         execute : function () {
@@ -190,7 +193,7 @@ var
             upload_button;
 
           // action objectを生成する
-          action_object = pal.schema.makeAction({});
+          action_object = makeAction({});
           // action_objectが変更されたときのコールバック関数
           // onChangeObjectをセットする
           // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -215,7 +218,7 @@ var
           upload_button.addEventListener( 'click', function () {
             this.setAttribute( 'class', 'hidden' );
             list_ui.confirm_create();
-            pal.bom.setLocationHash( '#list');
+            setLocationHash( '#list');
           });
 
         },
@@ -236,7 +239,7 @@ var
           // 例外発行: なし
 
           // _local_idプロパティにtime stampをセットする
-          action_object._local_id = pal.util_b.getTimestamp();
+          action_object._local_id = getTimestamp();
 
           // object_arrayに追加する
           object_array.createObject( action_object, onObjectCreate );
@@ -250,7 +253,7 @@ var
             function () {
               if ( action_object.name !== '' ) {
                 // formの値をすべてクリアする
-                pal.util.clearFormAll();
+                clearFormAll();
               }
             },
           800);
@@ -267,11 +270,11 @@ var
           // 戻り値:
           // 例外発行: なし
           // formの値をすべてクリアする
-          pal.util.clearFormAll();
+          clearFormAll();
 
           // 削除する
-          pal.util.emptyElementById( 'new-action-wrapper' );
-          pal.util.emptyElementById( 'new-form-wrapper' );
+          emptyElementById( 'new-action-wrapper' );
+          emptyElementById( 'new-form-wrapper' );
           return false;
         }
       },
@@ -366,11 +369,11 @@ var
         },
         exit        : function () {
           // crud-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild );
+          emptyElement( current_node.firstElementChild );
             // message-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
+          emptyElement( current_node.firstElementChild.nextElementSibling );
             // detail-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.lastElementChild );
+          emptyElement( current_node.lastElementChild );
         }
       },
       update_form   : {
@@ -445,11 +448,11 @@ var
           previous_object = {};
 
           // crud-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild );
+          emptyElement( current_node.firstElementChild );
           // message-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
+          emptyElement( current_node.firstElementChild.nextElementSibling );
             // detail-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.lastElementChild );
+          emptyElement( current_node.lastElementChild );
         }
       },
       delete_form   : {
@@ -518,9 +521,9 @@ var
         },
         exit            : function () {
           // .crud-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild );
+          emptyElement( current_node.firstElementChild );
           // message-wrapperの中身を削除する
-          pal.util.emptyElement( current_node.firstElementChild.nextElementSibling );
+          emptyElement( current_node.firstElementChild.nextElementSibling );
           // .action-wrapper自体を削除する
           current_node.removeChild( current_node.lastElementChild );
           return false;
@@ -748,7 +751,7 @@ export const onHashchange = (main_section) => {
     }
 
     // locationを#list/detailにする
-    pal.bom.setLocationHash( '#list/detail' );
+    setLocationHash( '#list/detail' );
 
     return true;
 
@@ -777,7 +780,7 @@ export const onHashchange = (main_section) => {
 
       create_data = data[0].ops;
       // action objectを生成する
-      action_object = pal.schema.makeAction( create_data );
+      action_object = makeAction( create_data );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -802,7 +805,7 @@ export const onHashchange = (main_section) => {
 
     for ( i = 0; i < data[0].length; i += 1 ) {
       // action objectを生成する
-      action_object = pal.schema.makeAction( data[0][i] );
+      action_object = makeAction( data[0][i] );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -819,7 +822,7 @@ export const onHashchange = (main_section) => {
 
     if ( data[0].lastErrorObject.n === 1 ) {
       // action objectを生成する
-      action_object = pal.schema.makeAction( data[0].value );
+      action_object = makeAction( data[0].value );
       // action_objectが変更されたときのコールバック関数
       // onChangeObjectをセットする
       // onChangeObjectから呼ばれるsync_object_and_domの中で
@@ -867,7 +870,7 @@ export const onHashchange = (main_section) => {
         // 見つかった
         if ( find_flag ) {
           // action objectを生成する
-          action_object = pal.schema.makeAction( data[0].ops );
+          action_object = makeAction( data[0].ops );
           // action_objectが変更されたときのコールバック関数onChangeObjectを
           // セットする
           // onChangeObjectから呼ばれるsync_object_and_domの中で

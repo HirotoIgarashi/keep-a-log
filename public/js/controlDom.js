@@ -2,7 +2,7 @@
 
 import { getNowDateJp } from "./utilCore.js";
 import {
-  createElement, createFragment,
+  createElement, createDocumentFragment,
   appendChild, getElementById, getElementsByClassName,
   querySelector, querySelectorAll
 } from "./utilDom.js";
@@ -40,10 +40,8 @@ let stateMap = { container: null };
 
 // DOMメソッド/makeFooter/開始 -------------------------------------
 const makeFooter = () => {
-  let frag = createFragment();
-  // let frag = createFragment();
-  let spanElement = createElement( 'span', {
-    // let spanElement = createElement( 'span', {
+  let frag = createDocumentFragment();
+  let spanElement = createElement('span', {
     id: 'pal-dom-date-info'
   });
   // -----HTMLを組み立てる------------------------------------------

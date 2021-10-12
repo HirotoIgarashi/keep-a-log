@@ -7,7 +7,7 @@
 
 import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
 import {
-  createFragment, createElement, innerHTML,
+  createDocumentFragment, createElement, innerHTML,
   setAttribute, appendChild, getElementById,
   emptyElement
 } from "./utilDom.js";
@@ -21,7 +21,7 @@ let request = null;
 
 //--------------------- DOMメソッド開始 ----------------------------
 const makeLogOutPage = () => {
-  let frag = createFragment();
+  let frag = createDocumentFragment();
   // -----divタグの作成 --------------------------------------------
   let divElement = createElement('div');
   let h2Element = createElement('h2');

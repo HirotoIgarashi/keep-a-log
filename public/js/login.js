@@ -5,7 +5,7 @@
 
 import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
 import {
-  createFragment, createElement, setAttribute,
+  createDocumentFragment, createElement, setAttribute,
   innerHTML, createLabelAndInput, appendChild,
   getElementById, emptyElement
 } from "./utilDom.js";
@@ -16,7 +16,7 @@ let request = null;
 
   //--------------------- ユーティリティメソッド開始 -----------------
 const makeLoginForm = () => {
-  let frag = createFragment();
+  let frag = createDocumentFragment();
   // -----divタグの作成 --------------------------------------------
   let divElement = createElement('div');
   setAttribute(divElement, 'class', 'data-form');

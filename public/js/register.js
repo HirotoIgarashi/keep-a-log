@@ -1,11 +1,16 @@
-'use strict';
-
 /*
  * register.js
  * ユーザ登録機能
 */
 
-import { sendXmlHttpRequest } from "./controlDom.js";
+'use strict';
+
+import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import {
+  emptyElement, createDocumentFragment, querySelector,
+  createElement, setAttribute, innerHTML,
+  createLabelAndInput, appendChild, getElementById
+} from "./utilDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
 let request = null;
@@ -14,7 +19,7 @@ let request = null;
 //--------------------- ユーティリティメソッド開始 -----------------
 const resetInputForm = (nameValueArray) => {
   nameValueArray.forEach((value) => {
-    let inputTag = document.querySelector(`input[name='${value}']`);
+    let inputTag = querySelector(`input[name='${value}']`);
 
     inputTag.style.borderColor = 'initial';
     inputTag.nextElementSibling.innerHTML = '';
@@ -25,22 +30,22 @@ const resetInputForm = (nameValueArray) => {
 
 //--------------------- DOMメソッド開始 ----------------------------
 const makeRegisterForm = () => {
-  let frag = util.dom.createFragment();
+  let frag = createDocumentFragment();
   // -----divタグの作成 --------------------------------------------
-  let divElement = util.dom.createElement('div');
-  util.dom.setAttribute(divElement, 'class', 'data-form');
+  let divElement = createElement('div');
+  setAttribute(divElement, 'class', 'data-form');
 
-  let h2Element = util.dom.createElement('h2');
-  h2Element = util.dom.innerHTML(
+  let h2Element = createElement('h2');
+  h2Element = innerHTML(
     h2Element,
     'ユーザ登録:'
   );
 
   // -----formタグの作成 -------------------------------------------
-  let formElement = util.dom.createElement('form');
+  let formElement = createElement('form');
 
   // -----姓のlabelとinput -----------------------------------------
-  let firstLabelAndInput = util.dom.createLabelAndInput({
+  let firstLabelAndInput = createLabelAndInput({
     'for': 'inputFirstName',
     'innerHTML': '姓',
     'type': 'text',
@@ -53,7 +58,7 @@ const makeRegisterForm = () => {
   // -----姓のlabelとinput -----------------------------------------
 
   // -----名のlabelとinput -----------------------------------------
-  let lastLabelAndInput = util.dom.createLabelAndInput({
+  let lastLabelAndInput = createLabelAndInput({
     'for': 'inputLastName',
     'innerHTML': '名',
     'type': 'text',
@@ -64,7 +69,7 @@ const makeRegisterForm = () => {
     'autofocus': false
   });
   // -----パスワードのlabelとinput ---------------------------------
-  let passwordLabelAndInput = util.dom.createLabelAndInput({
+  let passwordLabelAndInput = createLabelAndInput({
     'for': 'inputPassword',
     'innerHTML': 'パスワード',
     'type': 'password',
@@ -76,23 +81,23 @@ const makeRegisterForm = () => {
   });
 
   // checkboxとlabelを囲むdivを作成する ----------------------------
-  let divShowPassword = util.dom.createElement('div');
+  let divShowPassword = createElement('div');
 
   // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-  let showPasswordCheckbox = util.dom.createElement('input');
-  util.dom.setAttribute(showPasswordCheckbox, 'type', 'checkbox');
-  util.dom.setAttribute(showPasswordCheckbox, 'id', 'showPassword');
-  let showPasswordLabel = util.dom.createElement('label');
-  util.dom.innerHTML(showPasswordLabel, 'パスワードを表示');
+  let showPasswordCheckbox = createElement('input');
+  setAttribute(showPasswordCheckbox, 'type', 'checkbox');
+  setAttribute(showPasswordCheckbox, 'id', 'showPassword');
+  let showPasswordLabel = createElement('label');
+  innerHTML(showPasswordLabel, 'パスワードを表示');
 
-  util.dom.appendChild(divShowPassword, showPasswordCheckbox);
-  util.dom.appendChild(divShowPassword, showPasswordLabel);
+  appendChild(divShowPassword, showPasswordCheckbox);
+  appendChild(divShowPassword, showPasswordLabel);
 
   // -----パスワードのvalidate結果の表示エリアとinput --------------
-  let inputPasswordResponse = util.dom.createElement('div');
+  let inputPasswordResponse = createElement('div');
 
   // ----- Eメールのlabel ------------------------------------------
-  let emailLabelAndInput = util.dom.createLabelAndInput({
+  let emailLabelAndInput = createLabelAndInput({
     'for': 'inputEmail',
     'innerHTML': 'メールアドレス',
     'type': 'email',
@@ -104,40 +109,40 @@ const makeRegisterForm = () => {
   });
 
   // -----Eメールのvalidate結果の表示エリア-------------------------
-  let inputEmailResponse = util.dom.createElement('div');
+  let inputEmailResponse = createElement('div');
 
 
   // -----ボタンを生成 ---------------------------------------------
-  let submitButton = util.dom.createElement('button');
-  util.dom.setAttribute(submitButton, 'type', 'submit');
-  util.dom.setAttribute(submitButton, 'id', 'registerUser');
-  util.dom.innerHTML(submitButton, '登録');
+  let submitButton = createElement('button');
+  setAttribute(submitButton, 'type', 'submit');
+  setAttribute(submitButton, 'id', 'registerUser');
+  innerHTML(submitButton, '登録');
 
   // -----メッセージエリアを生成 -----------------------------------
-  let messageArea = util.dom.createElement('div');
-  util.dom.setAttribute(messageArea, 'id', 'message-area');
+  let messageArea = createElement('div');
+  setAttribute(messageArea, 'id', 'message-area');
 
   // -----HTMLを組み立てる------------------------------------------
-  util.dom.appendChild(divElement, formElement);
-  util.dom.appendChild(formElement, h2Element);
-  util.dom.appendChild(formElement, firstLabelAndInput[0]);
-  util.dom.appendChild(formElement, firstLabelAndInput[1]);
-  util.dom.appendChild(formElement, lastLabelAndInput[0]);
-  util.dom.appendChild(formElement, lastLabelAndInput[1]);
-  util.dom.appendChild(formElement, emailLabelAndInput[0]);
-  util.dom.appendChild(formElement, emailLabelAndInput[1]);
-  util.dom.appendChild(formElement, inputEmailResponse);
-  util.dom.appendChild(formElement, passwordLabelAndInput[0]);
-  util.dom.appendChild(formElement, passwordLabelAndInput[1]);
-  util.dom.appendChild(formElement, divShowPassword);
-  util.dom.appendChild(formElement, inputPasswordResponse);
-  // util.dom.appendChild(formElement, zipCodeLabelAndInput[0]);
-  // util.dom.appendChild(formElement, zipCodeLabelAndInput[1]);
-  // util.dom.appendChild(formElement, inputZipCodeResponse);
-  util.dom.appendChild(formElement, submitButton);
-  util.dom.appendChild(divElement, messageArea);
+  appendChild(divElement, formElement);
+  appendChild(formElement, h2Element);
+  appendChild(formElement, firstLabelAndInput[0]);
+  appendChild(formElement, firstLabelAndInput[1]);
+  appendChild(formElement, lastLabelAndInput[0]);
+  appendChild(formElement, lastLabelAndInput[1]);
+  appendChild(formElement, emailLabelAndInput[0]);
+  appendChild(formElement, emailLabelAndInput[1]);
+  appendChild(formElement, inputEmailResponse);
+  appendChild(formElement, passwordLabelAndInput[0]);
+  appendChild(formElement, passwordLabelAndInput[1]);
+  appendChild(formElement, divShowPassword);
+  appendChild(formElement, inputPasswordResponse);
+  // appendChild(formElement, zipCodeLabelAndInput[0]);
+  // appendChild(formElement, zipCodeLabelAndInput[1]);
+  // appendChild(formElement, inputZipCodeResponse);
+  appendChild(formElement, submitButton);
+  appendChild(divElement, messageArea);
 
-  util.dom.appendChild(frag, divElement);
+  appendChild(frag, divElement);
 
   return frag;
 };
@@ -155,11 +160,11 @@ const onClickRegister = (event) => {
   event.preventDefault();
 
   // フォームから入力された値を取得する
-  form_map.first = document.getElementById('inputFirstName').value;
-  form_map.last = document.getElementById('inputLastName').value;
-  form_map.password = document.getElementById('inputPassword').value;
-  form_map.email = document.getElementById('inputEmail').value;
-  // form_map.zipCode = document.getElementById('inputZipCode').value;
+  form_map.first = getElementById('inputFirstName').value;
+  form_map.last = getElementById('inputLastName').value;
+  form_map.password = getElementById('inputPassword').value;
+  form_map.email = getElementById('inputEmail').value;
+  // form_map.zipCode = getElementById('inputZipCode').value;
 
   console.log('登録ボタンが押されました');
   // XMLHttpRequestによる送信
@@ -181,7 +186,7 @@ const onClickRegister = (event) => {
 // -- イベントハンドラ(onReceiveRegister)開始 ----------------------
 // Registerの結果の処理
 const onReceiveRegister = function () {
-  const message_area = document.getElementById('message-area');
+  const message_area = getElementById('message-area');
 
   if (request && request.readyState === 4) {
     if (request.status === 201) {
@@ -190,7 +195,7 @@ const onReceiveRegister = function () {
         'ユーザを作成しました。ステータス: ' + request.status;
       setTimeout(function () {
         message_area.setAttribute('hidden', 'hidden');
-        pal.bom.setLocationHash('');
+        setLocationHash('');
       }, 5000);
     }
     else {
@@ -202,7 +207,7 @@ const onReceiveRegister = function () {
       // validate結果を表示する
       if (typeof responseArray !== 'object') {
         responseArray.forEach((response) => {
-          let inputTag = document.querySelector(`input[name='${response.param}']`);
+          let inputTag = querySelector(`input[name='${response.param}']`);
           inputTag.style.borderColor = 'red';
           inputTag.nextElementSibling.innerHTML += response.msg;
         });
@@ -244,17 +249,17 @@ const onReceiveRegister = function () {
 // -- パブリックメソッド(register)開始 ---------------------------
 export const register = mainSection => {
     // mainセクションの子要素をすべて削除する
-  util.dom.emptyElement(mainSection);
+  emptyElement(mainSection);
 
   // document fragmentを追加する
   mainSection.appendChild(makeRegisterForm());
 
-  let inputFirstNameElement = document.getElementById('inputFirstName');
+  let inputFirstNameElement = getElementById('inputFirstName');
   inputFirstNameElement.focus();
 
   //----- パスワードを表示する機能を追加する -----------------------
-  const password = document.getElementById('inputPassword');
-  const showPassword = document.getElementById('showPassword');
+  const password = getElementById('inputPassword');
+  const showPassword = getElementById('showPassword');
 
   showPassword.addEventListener('change', () => {
     let type = showPassword.checked ? 'text' : 'password';
@@ -262,7 +267,7 @@ export const register = mainSection => {
   });
 
   // サインインボタンにonClickRegisterイベントを登録する -----------
-  let registerButton = document.getElementById('registerUser');
+  let registerButton = getElementById('registerUser');
   registerButton.addEventListener('click', onClickRegister);
 
   return true;

@@ -6,40 +6,22 @@
 'use strict';
 
 import { getLocationHash } from "./controlDom.js";
-import { getTplContent } from "./utilDom.js";
+import {
+  getTplContent, emptyElement, querySelector,
+  querySelectorAll
+} from "./utilDom.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
-var
-  configMap = {
-    settable_map  : { color_name: true },
-    color_name    : 'blue'
-  };
+// var
+//   configMap = {
+//     settable_map  : { color_name: true },
+//     color_name    : 'blue'
+//   };
 //--------------------- モジュールスコープ変数終了 -----------------
-
-//--------------------- ユーティリティメソッド開始 -----------------
-// ユーティリティメソッド/example_method/開始
-// 目的:
-// 必須引数:
-//  * do_extend(プール値) trueはスライダーを拡大し、falseは格納する。
-// オプション引数:
-//  * callback(関数) アニメーションの完了後に実行される。
-// 設定:
-//  * chat_extend_time, chat_retract_time
-//  * chat_extend_height
-// 戻り値: boolean
-//  * true: スライダーアニメーションが動作した。
-//  * false: スライダーアニメーションが動作していない。
-// 例外発行: なし
-// example_method = function () {
-//   var example;
-//   return example;
-// };
-// ユーティリティメソッド/example_method/終了
-//--------------------- ユーティリティメソッド終了 -----------------
 
 // --------------------- イベントハンドラ開始 ----------------------
 // 例: onClickButton = function ( event ) {};
-const onHashchange = function ( main_section ) {
+const onHashchange = ( main_section ) => {
   var
     current_hash = getLocationHash(),
     schedule_main,
@@ -52,13 +34,13 @@ const onHashchange = function ( main_section ) {
 
   // mainセクションの子要素をすべて削除する
   // mainセクションの子要素の削除は下位のモジュールにまかせる
-  util.dom.emptyElement( main_section );
+  emptyElement( main_section );
 
   // メニューを表示する
   main_section.appendChild( menu );
 
   // ボタンとメニューのノードを取得
-  select_button = document.querySelector( '#schedule-registration-menu button' );
+  select_button = querySelector( '#schedule-registration-menu button' );
   select_menu = select_button.nextElementSibling;
 
   // 初期の(メニューが閉じているときの)状態と設定
@@ -76,8 +58,8 @@ const onHashchange = function ( main_section ) {
     this.setAttribute( 'aria-expanded', String(!expanded) );
     select_menu.hidden = expanded;
 
-    expand_svg = document.querySelector( '#expand-button' );
-    contract_svg = document.querySelector( '#contract-button' );
+    expand_svg = querySelector( '#expand-button' );
+    contract_svg = querySelector( '#contract-button' );
 
     if (expanded) {
       expand_svg.setAttribute( 'display', 'inline' );
@@ -90,13 +72,13 @@ const onHashchange = function ( main_section ) {
   }, false );
 
   // 現在のページを取得する
-  current_page = document.querySelector( '#schedule-registration-menu li a.current-page' );
+  current_page = querySelector( '#schedule-registration-menu li a.current-page' );
 
   current_page.setAttribute( 'class', '' );
 
   // current_hashからcurrent-pageを設定する
   // anchor_listを取得する
-  anchor_list = document.querySelectorAll( '#schedule-registration-menu li a' );
+  anchor_list = querySelectorAll( '#schedule-registration-menu li a' );
 
   // 初期ロードのときのcurrent_hashは'#regist_schedule'になっているので
   if (current_hash === '#regist_schedule') {
@@ -112,7 +94,7 @@ const onHashchange = function ( main_section ) {
   }
 
   // LocationHashの値により登録フォームを表示する
-  schedule_main = document.querySelector( '#schedule-main' );
+  schedule_main = querySelector( '#schedule-main' );
 
   if (current_hash === '#regist_schedule' ||
       current_hash === '#regist_schedule/dayly') {
@@ -133,14 +115,14 @@ const onHashchange = function ( main_section ) {
 // 戻り値: true
 // 例外発行: なし
 //
-const configModule = function ( input_map ) {
-  pal.butil.setConfigMap({
-    input_map     : input_map,
-    settable_map  : configMap.settable_map,
-    config_map    : configMap
-  });
-  return true;
-};
+// const configModule = function ( input_map ) {
+//   pal.butil.setConfigMap({
+//     input_map     : input_map,
+//     settable_map  : configMap.settable_map,
+//     config_map    : configMap
+//   });
+//   return true;
+// };
 // パブリックメソッド/configModule/終了
 
 // パブリックメソッド/initModule/開始
@@ -150,14 +132,13 @@ const configModule = function ( input_map ) {
 // 戻り値: true
 // 例外発行: なし
 //
-export const registSchedule = (main_section) => {
+export const registSchedule = (mainSection) => {
   // mainセクションの子要素をすべて削除する
   // mainセクションの子要素の削除は下位のモジュールにまかせる
-
-  util.dom.emptyElement( main_section );
+  emptyElement(mainSection);
 
   // hashの状態により表示を切り替える
-  onHashchange( main_section );
+  onHashchange(mainSection);
 
   return true;
 };

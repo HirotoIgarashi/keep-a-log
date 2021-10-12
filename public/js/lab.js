@@ -5,67 +5,29 @@
 
 'use strict';
 
-import { getTplContent, toggleElement, showElement, hideElement } from "./utilDom.js";
-//--------------------- モジュールスコープ変数開始 -----------------
-var
-  configMap = {
-    settable_map  : { color_name: true },
-    color_name    : 'blue'
-  },
-  stateMap = { $container : null };
-//--------------------- モジュールスコープ変数終了 -----------------
-
-//--------------------- ユーティリティメソッド開始 -----------------
-//--------------------- ユーティリティメソッド終了 -----------------
-
-//--------------------- DOMメソッド開始 ----------------------------
-//--------------------- DOMメソッド終了 ----------------------------
-
-// --------------------- イベントハンドラ開始 ----------------------
-// --------------------- イベントハンドラ終了 ----------------------
+import {
+  getTplContent, toggleElement, showElement, hideElement,
+  emptyElement, getElementById
+} from "./utilDom.js";
 
 // --------------------- パブリックメソッド開始 --------------------
-// パブリックメソッド/configModule/開始
-// 目的: 許可されたキーの構成を調整する
-// 引数: 設定可能なキーバリューマップ
-//  * color_name  - 使用する色
-// 設定:
-//  * configMap.settable_map 許可されたキーを宣言する
-// 戻り値: true
-// 例外発行: なし
-//
-const configModule = function ( input_map ) {
-  pal.butil.setConfigMap({
-    input_map     : input_map,
-    settable_map  : configMap.settable_map,
-    config_map    : configMap
-  });
-  return true;
-};
-// パブリックメソッド/configModule/終了
-
-// パブリックメソッド/initModule/開始
+// パブリックメソッド/lab/開始
 // 目的: モジュールを初期化する
 // 引数:
 //  * $container この機能が使うjQuery要素
 // 戻り値: true
 // 例外発行: なし
 //
-export const lab = ( $container ) => {
-  var
-    mainSection,
-    helloWorld  = getTplContent('lab');
-
-  stateMap.$container = $container;
+export const lab = () => {
+  let mainSection;
+  let helloWorld  = getTplContent('lab');
 
   // mainセクションを取得する
-  mainSection = document.getElementById( 'pal-main' );
-
+  mainSection = getElementById( 'pal-main' );
   // mainセクションの子要素をすべて削除する
-  util.dom.emptyElement( mainSection );
-
+  emptyElement( mainSection );
   // document fragmentを追加する
-  mainSection.appendChild( helloWorld );
+  mainSection.appendChild(helloWorld);
 
   toggleElement(
     'pal-lab-play',
@@ -73,7 +35,6 @@ export const lab = ( $container ) => {
     showElement.bind(this, 'pal-lab-form'),
     hideElement.bind(this, 'pal-lab-form')
   );
-
   return true;
 };
 // パブリックメソッド/initModule/終了

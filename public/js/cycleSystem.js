@@ -20,23 +20,16 @@ let initDailyTab;
 //--------------------- ユーティリティメソッド開始 -----------------
 
 //--------------------- DOMメソッド開始 ----------------------------
-const initTab = function () {
-  var
-    tabbed,
-    tablist,
-    tabs,
-    panels,
-    switchTab;
-
+const initTab = () => {
   // 関連する要素とコレクションを取得する
-  tabbed  = querySelector('.tabbed');
-  tablist = tabbed.querySelector('ul');
-  tabs    = tablist.querySelectorAll('a');
-  panels  = tabbed.querySelectorAll('[id^="section"]');
+  let tabbed  = querySelector('.tabbed');
+  let tablist = tabbed.querySelector('ul');
+  let tabs    = tablist.querySelectorAll('a');
+  let panels  = tabbed.querySelectorAll('[id^="section"]');
 
   // ユーティリティメソッド/switchTab/開始
   // タブ切り替え機能
-  switchTab = function switchTab( oldTab, newTab ) {
+  let switchTab = function switchTab( oldTab, newTab ) {
     var
       index,
       oldIndex;
@@ -75,12 +68,9 @@ const initTab = function () {
 
     // マウスユーザのタブのクリックを処理する
     tab.addEventListener( 'click', function ( e ) {
-      var
-        currentTab;
-        // dir;
-
       e.preventDefault();
-      currentTab = tablist.querySelector( '[aria-selected]' );
+
+      let currentTab = tablist.querySelector( '[aria-selected]' );
       if ( e.currentTarget !== currentTab ) {
         switchTab( currentTab, e.currentTarget );
       }
@@ -88,11 +78,8 @@ const initTab = function () {
 
     // キーボードユーザ用のキーダウンイベントの処理
     tab.addEventListener( 'keydown', function ( e ) {
-      var
-        index,
-        dir;
       // タブノードリスト内の現在のタブのインデックスを取得する
-      index = Array.prototype.indexOf.call( tabs, e.currentTarget );
+      let index = Array.prototype.indexOf.call( tabs, e.currentTarget );
 
       // ユーザがどちらのキーを押しているかを調べ、必要に応じて
       // 新しいタブのインデックスを計算する
@@ -100,19 +87,19 @@ const initTab = function () {
       // 37 : 左矢印
       // 39 : 右矢印
       // 40 : 下矢印
-      dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : e.which === 40 ? 'down' : null;
+      let dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : e.which === 40 ? 'down' : null;
 
-      if ( dir !== null ) {
+      if (dir !== null) {
         e.preventDefault();
         // 下向きのキーが押されている場合は、開いているパネルに
         // フォーカスを移動し、そうでない場合は隣接するタブに
         // 切り替えます
         // 下のif文は三項演算子の書き換えです
-        if ( dir === 'down' ) {
+        if (dir === 'down') {
           panels[ i ].focus();
         }
-        else if ( tabs[ dir ] ){
-          switchTab( e.currentTarget, tabs[ dir ] );
+        else if (tabs[dir]){
+          switchTab(e.currentTarget, tabs[dir]);
         }
        }
     });
@@ -239,8 +226,7 @@ initDailyTab = function () {
       max = 23,
       inputValue = getTargetValue( event );
 
-    if (isInteger(inputValue) &&
-      isRange(inputValue, min, max)) {
+    if (isInteger(inputValue) && isRange(inputValue, min, max)) {
       // 整数でかつ0から23の間の数値だったらアラートを表示しない
       start_hour_alert.hidden = true;
       start_hour.setAttribute( 'aria-invalid', 'false' );
@@ -325,7 +311,7 @@ initDailyTab = function () {
   // ・ キャンセルボタンを表示する
   // ・ フォームを表示する
   // ・ INPUT要素の初期値を設定する
-  add_button.addEventListener( 'click', function () {
+  add_button.addEventListener('click', () => {
     this.hidden     = true;
     this.setAttribute( 'aria-pressed', 'true' );
     cancel_button.hidden  = false;
@@ -348,11 +334,11 @@ initDailyTab = function () {
   // ・ キャンセルボタンを隠す
   // ・ formの値をすべてクリアする
   // ・ フォームを隠す
-  cancel_button.addEventListener( 'click', function () {
+  cancel_button.addEventListener('click', () => {
     add_button.hidden = false;
-    add_button.setAttribute( 'aria-pressed', 'false' );
+    add_button.setAttribute('aria-pressed', 'false');
     this.hidden = true;
-    this.setAttribute( 'aria-pressed', 'true' );
+    this.setAttribute('aria-pressed', 'true');
 
     // formの値をすべてクリアする
     clearFormAll();
@@ -371,7 +357,7 @@ initDailyTab = function () {
   // ・ キャンセルボタンを隠す
   // ・ formの値をすべてクリアする
   // ・ フォームを隠す
-  submit_button.addEventListener( 'click', function () {
+  submit_button.addEventListener('click', () => {
     // 必須項目のチェック
 
     // 入力値の妥当性チェック

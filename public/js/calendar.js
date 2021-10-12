@@ -5,46 +5,54 @@
 
 'use strict';
 
+import {
+  getDate, getNowDate, getMonth,
+  getYear, getPrviousMonthDate, getNextMonthDate,
+  getBeginingOfTheWeek, getDaysLater, getYMDString
+} from "./utilDate.js";
 import { setLocationHash, getLocationHash } from "./controlDom.js";
-import { setButtonPressed } from "./event.js";
+import {
+  createDocumentFragment, createElement, appendByTreeArray,
+  setAttribute, innerHTML, emptyElement,
+  querySelector, querySelectorAll
+} from "./utilDom.js";
+import { setButtonPressed, makeNav } from "./event.js";
 
 //--------------------- DOMメソッド開始 ----------------------------
 const makeCalendar = () => {
-  let frag = util.dom.createFragment();
+  let frag = createDocumentFragment();
   // h1タグの作成
-  let h1Tag =
-    util.dom.createElement('h1', { textContent: 'カレンダー' });
+  let h1Tag = createElement('h1', { textContent: 'カレンダー' });
   // navタグの作成
-  let navTag =
-    util.dom.createElement('nav', { id: 'calendar-menu' });
+  let navTag = createElement('nav', { id: 'calendar-menu' });
   // ulタグの作成
-  let ulTag = util.dom.createElement('ul');
+  let ulTag = createElement('ul');
   // liタグの作成
-  let liToday = util.dom.createElement('li');
+  let liToday = createElement('li');
   // anchorタグの作成
   let anchorToday =
-    util.dom.createElement('a', { textContent: '今月' });
+    createElement('a', { textContent: '今月' });
   // liタグの作成
-  let liPre = util.dom.createElement('li');
+  let liPre = createElement('li');
   // anchorタグの作成
-  let anchorPre = util.dom.createElement(
+  let anchorPre = createElement(
     'a',
     { href: '#calendar/previous-month', innerHTML: '<先月' }
   );
   // liタグの作成
-  let liMonth = util.dom.createElement('li');
+  let liMonth = createElement('li');
   // spanタグの作成
-  let spanBlank = util.dom.createElement('span');
+  let spanBlank = createElement('span');
   // liタグの作成
-  let liNext = util.dom.createElement('li');
+  let liNext = createElement('li');
   // anchorタグの作成
-  let anchorNext = util.dom.createElement(
+  let anchorNext = createElement(
     'a',
     { href: '#calendar/next-month', innerHTML: '翌月>' }
   );
 
   // HTMLを組み立てる-----------------------------------------------
-  util.dom.appendByTreeArray([
+  appendByTreeArray([
     navTag, [
       ulTag, [
         liToday, [ anchorToday ],
@@ -58,32 +66,32 @@ const makeCalendar = () => {
   // calendar用navタグの作成
   const dayArray = ['月','火','水','木','金','土','日'];
 
-  let navCalendar = util.dom.createElement('nav', {
+  let navCalendar = createElement('nav', {
     id: 'calendar-frame'
   });
 
-  let ulCalendar =  util.dom.createElement('ul');
+  let ulCalendar =  createElement('ul');
 
   for (let i = 0; i < 42; i = i +1) {
-    let liDate = util.dom.createElement('li');
+    let liDate = createElement('li');
     // liタグにspanタグとulタグ追加する ----------------------------
-    let spanTag = util.dom.createElement('span');
-    let ulTag = util.dom.createElement('ul');
+    let spanTag = createElement('span');
+    let ulTag = createElement('ul');
 
-    util.dom.appendByTreeArray([ liDate, [spanTag, ulTag] ]);
+    appendByTreeArray([ liDate, [spanTag, ulTag] ]);
 
     // 曜日の設定 --------------------------------------------------
     if (i < 7) {
       let spanTags = liDate.getElementsByTagName('span');
-      util.dom.setAttribute(liDate, 'class', 'column-title');
-      util.dom.innerHTML(spanTags[0], dayArray[i]);
+      setAttribute(liDate, 'class', 'column-title');
+      innerHTML(spanTags[0], dayArray[i]);
     }
 
-    util.dom.appendByTreeArray([ ulCalendar, [liDate] ]);
+    appendByTreeArray([ ulCalendar, [liDate] ]);
   }
 
   // HTMLを組み立てる-----------------------------------------------
-  util.dom.appendByTreeArray([
+  appendByTreeArray([
     frag, [ h1Tag, navTag, navCalendar, [ ulCalendar ] ]
   ])
   // -----HTMLを組み立てる------------------------------------------
@@ -94,34 +102,18 @@ const makeCalendar = () => {
 // --------------------- イベントハンドラ開始 ----------------------
 // 例: onClickButton = function ( event ) {};
 export const onHashchange = (mainSection) => {
-  // const menu = pal.util_b.getTplContent('calendar-tmpl');
+  // const menu = getTplContent('calendar-tmpl');
   const pattern = /^#calendar\/([0-9]+)\/([0-9]+)/;
 
-  let now = util.date.getNowDate();
-  let nowYear = util.date.getYear(now);
-  let nowMonth = util.date.getMonth(now);
-  let currentDate;
-  let currentYear;
-  let currentMonth;
-  let previousDate;
-  let previousYear;
-  let previousMonth;
-  let nextDate;
-  let nextYear;
-  let nextMonth;
-  let menuElements;
-  let menuMonthElements;
-  let menuYearMonth;
-  let menuPrevious;
-  let menuNext;
-  let currentHash;
-  let beginingDate;
+  let now = getNowDate();
+  let nowYear = getYear(now);
+  let nowMonth = getMonth(now);
   let liElement;
   let calendarDate;
   let calendarList = [];
 
   // LocationHashを求める ------------------------------------------
-  currentHash = getLocationHash();
+  let currentHash = getLocationHash();
 
   // 初期画面は現在の日付のカレンダーを表示する
   if ( currentHash === '#calendar' ) {
@@ -132,47 +124,46 @@ export const onHashchange = (mainSection) => {
   }
 
   // mainセクションの子要素をすべて削除する ------------------------
-  // pal.util.emptyElement(mainSection);
-  util.dom.emptyElement(mainSection);
+  emptyElement(mainSection);
 
   // カレンダーを表示する ------------------------------------------
   mainSection.appendChild(makeCalendar());
 
   // pal-main-nav-calendarを表示する -------------------------------
-  let palMainNav = document.querySelector('#pal-main-nav');
-  if (!document.querySelector('#pal-event-nav')) {
-    palMainNav.insertBefore(pal.event.makeNav(), palMainNav.firstChild);
+  let palMainNav = querySelector('#pal-main-nav');
+  if (!querySelector('#pal-event-nav')) {
+    palMainNav.insertBefore(makeNav(), palMainNav.firstChild);
   }
   setButtonPressed();
 
   // 現在のhashから年の値と月の値を取得する
   let matchString = currentHash.match(pattern);
-  currentYear = matchString[1];
-  currentMonth = matchString[2];
+  let currentYear = matchString[1];
+  let currentMonth = matchString[2];
 
   // Dateオブジェクトを生成する
-  currentDate = util.date.getDate(currentYear, currentMonth);
+  let currentDate = getDate(currentYear, currentMonth);
 
   // カレンダーメニューのDOM要素を取得する -------------------------
-  menuElements = document.querySelectorAll('#calendar-menu ul li');
-  menuMonthElements = menuElements[0].firstElementChild;
-  menuPrevious = menuElements[1].firstElementChild;
-  menuYearMonth = menuElements[2].firstElementChild;
-  menuNext = menuElements[3].firstElementChild;
+  let menuElements = querySelectorAll('#calendar-menu ul li');
+  let menuMonthElements = menuElements[0].firstElementChild;
+  let menuPrevious = menuElements[1].firstElementChild;
+  let menuYearMonth = menuElements[2].firstElementChild;
+  let menuNext = menuElements[3].firstElementChild;
 
   // 今月をクリックしたときのhrefの値を設定する --------------------
-  util.dom.setAttribute(
+  setAttribute(
     menuMonthElements,
     'href',
     `#calendar/${nowYear}/${nowMonth}`
   );
 
   // 先月をクリックしたときのhrefの値を設定する --------------------
-  previousDate = util.date.getPrviousMonthDate(currentDate);
-  previousYear = util.date.getYear(previousDate);
-  previousMonth = util.date.getMonth(previousDate);
+  let previousDate = getPrviousMonthDate(currentDate);
+  let previousYear = getYear(previousDate);
+  let previousMonth = getMonth(previousDate);
 
-  util.dom.setAttribute(
+  setAttribute(
     menuPrevious,
     'href',
     `#calendar/${previousYear}/${previousMonth}`
@@ -182,11 +173,11 @@ export const onHashchange = (mainSection) => {
   menuYearMonth.textContent = `${currentYear}年${currentMonth}月`;
 
   // 翌月をクリックしたときのhrefの値を設定する --------------------
-  nextDate = util.date.getNextMonthDate(currentDate);
-  nextYear = util.date.getYear(nextDate);
-  nextMonth = util.date.getMonth(nextDate);
+  let nextDate = getNextMonthDate(currentDate);
+  let nextYear = getYear(nextDate);
+  let nextMonth = getMonth(nextDate);
 
-  util.dom.setAttribute(
+  setAttribute(
     menuNext,
     'href',
     `#calendar/${nextYear}/${nextMonth}`
@@ -194,17 +185,17 @@ export const onHashchange = (mainSection) => {
 
   // カレンダーの表示 ----------------------------------------------
   // 週の初めの日を求める ------------------------------------------
-  beginingDate = util.date.getBeginingOfTheWeek(currentDate);
+  let beginingDate = getBeginingOfTheWeek(currentDate);
 
   // カレンダー用のリストを作る。7 x 6 = 42コ
   for (let i = 0; i < 42; i = i + 1 ) {
     // 1日後の日付を取得する
-    calendarDate = util.date.getDaysLater(beginingDate, i);
+    calendarDate = getDaysLater(beginingDate, i);
     calendarList.push(calendarDate);
   }
 
   // カレンダーのlist要素をループする
-  liElement = document.querySelector('#calendar-frame ul li');
+  liElement = querySelector('#calendar-frame ul li');
 
   // 曜日を表示している行をとばす
   for (let i = 0; i < 7; i = i + 1 ) {
@@ -217,27 +208,27 @@ export const onHashchange = (mainSection) => {
 
     spanTags[0].textContent = currentCalenderList.getDate();
 
-    let currentCalenderListString = util.date.getYMDString(currentCalenderList);
+    let currentCalenderListString = getYMDString(currentCalenderList);
 
-    let nowDateString = util.date.getYMDString(now);
+    let nowDateString = getYMDString(now);
 
-    util.dom.setAttribute(
+    setAttribute(
       liElement,
       'content',
       currentCalenderListString
     );
 
     // 今月かどうか ------------------------------------------------
-    if (util.date.getMonth(currentCalenderList) ===
-        util.date.getMonth(currentDate)) {
+    if (getMonth(currentCalenderList) ===
+        getMonth(currentDate)) {
       // 今日だったらclass属性の値にcurrent-monthとtodayを加える
       if (currentCalenderListString === nowDateString) {
-        util.dom.setAttribute(
+        setAttribute(
           liElement, 'class', 'current-month today'
         );
       }
       else {
-        util.dom.setAttribute(
+        setAttribute(
           liElement, 'class', 'current-month'
         );
       }
@@ -258,11 +249,9 @@ export const onHashchange = (mainSection) => {
 //
 export const initModule = (mainSection) => {
   // mainセクションの子要素をすべて削除する ------------------------
-  pal.util.emptyElement(mainSection);
-
+  emptyElement(mainSection);
   // hashの状態により表示を切り替える ------------------------------
   onHashchange(mainSection);
-
   return true;
 };
 // パブリックメソッド/initModule/終了

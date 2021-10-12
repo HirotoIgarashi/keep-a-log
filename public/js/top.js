@@ -6,7 +6,7 @@
 'use strict';
 import { getTplContent, compose } from "./utilCore.js";
 import {
-  createFragment, createElement, appendByTreeArray,
+  createDocumentFragment, createElement, appendByTreeArray,
   appendChildCurried, emptyElement, getElementById,
   querySelector
 } from "./utilDom.js";
@@ -14,7 +14,7 @@ import {
 //--------------------- DOMメソッド開始 ----------------------------
 // DOMメソッド/makeNav/開始 ----------------------------------------
 export const makeNav = () => {
-  let frag = createFragment();
+  let frag = createDocumentFragment();
   let ulElement = createElement('ul', {
     id: 'pal-main-nav-list'
   });

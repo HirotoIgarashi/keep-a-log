@@ -298,10 +298,7 @@ export const addEventListener = (eventObj, event, eventHandler) => {
 // 例外発行: なし
 //
 export const checkInputField = (event, checkFunc) => {
-  var
-    //theEvent  = event || window.event,
-    //target    = theEvent.target || theEvent.srcElement,
-    txtInput  = getTargetValue( event );
+  let txtInput  = getTargetValue(event);
 
   return checkFunc( txtInput );
 };
@@ -325,17 +322,19 @@ export const getTplContent = (templateId) => {
 };
 // getTplContent/終了
 
-export const getElementById =
-  (id) => document.getElementById(id);
+export const getElementById = (id) => document.getElementById(id);
+
+export const createTextNode = (text) => document.createTextNode(text);
+
 export const getElementsByClassName =
   (className) => document.getElementsByClassName(className);
 
 export const querySelector = (selector) => document.querySelector(selector);
 export const querySelectorAll = (selector) => document.querySelectorAll(selector);
 
-const getValue = (element) => element.value;
+export const getValue = (element) => element.value;
 
-const setValue = (value) => {
+export const setValue = (value) => {
   return (element) => element.setAttribute('value', value);
 };
 
@@ -354,7 +353,7 @@ export const emptyElement = (element) => {
 };
 // パブリックメソッド/emptyElement/終了
 
-export const createFragment = () => document.createDocumentFragment();
+export const createDocumentFragment = () => document.createDocumentFragment();
 
 export const createElement = (arg, option) => {
   if (typeof arg === 'string') {
@@ -425,25 +424,25 @@ export const createElement = (arg, option) => {
   }
 };
 
-const createAnchor = (option) => (createElement('a', option));
-const createDt = (option) => (createElement('dt', option));
-const createDd = (option) => (createElement('dd', option));
-const createDl = (option) => (createElement('dl', option));
-const createDiv = (option) => (createElement('div', option));
-const createButton = (option) => (createElement('button', option));
-const createH1 = (option) => (createElement('h1', option));
-const createH2 = (option) => (createElement('h2', option));
-const createH3 = (option) => (createElement('h3', option));
-const createUl = (option) => (createElement('ul', option));
-const createLi = (option) => (createElement('li', option));
-const createNav = (option) => (createElement('nav', option));
+export const createAnchor = (option) => (createElement('a', option));
+export const createDt = (option) => (createElement('dt', option));
+export const createDd = (option) => (createElement('dd', option));
+export const createDl = (option) => (createElement('dl', option));
+export const createDiv = (option) => (createElement('div', option));
+export const createButton = (option) => (createElement('button', option));
+export const createH1 = (option) => (createElement('h1', option));
+export const createH2 = (option) => (createElement('h2', option));
+export const createH3 = (option) => (createElement('h3', option));
+export const createUl = (option) => (createElement('ul', option));
+export const createLi = (option) => (createElement('li', option));
+export const createNav = (option) => (createElement('nav', option));
 
 export const innerHTML = (element, html) => {
   element.innerHTML = html;
   return element;
 };
 
-const addClickEventListener = (func) => {
+export const addClickEventListener = (func) => {
   return (element) => {
     element.addEventListener('click', func);
   };
@@ -454,7 +453,7 @@ export const setAttribute = (element, name, value) => {
   return element;
 };
 
-const setAttributeCurried = (value) => {
+export const setAttributeCurried = (value) => {
   return (name) => {
     return (element) => {
       element.setAttribute(name, value);
@@ -485,7 +484,7 @@ export const appendChildCurried = (element) => {
 };
 
 // 要素の前に要素を挿入する ----------------------------------------
-const insertBefore =
+export const insertBefore =
   ((source, destination) =>
    destination.insertBefore(source, destination.firstChild));
 
@@ -541,7 +540,7 @@ export const createLabelAndInput = (param) => {
 const callbackById =
   (id, callback) => callback(document.getElementById(id))
 
-const makeForm = (obj) => {
+export const makeForm = (obj) => {
   let form = createElement('form');
 
   Object.keys(obj).forEach((key) => {
@@ -597,7 +596,7 @@ const makeForm = (obj) => {
   return form;
 };
 
-const getValueFromForm = (
+export const getValueFromForm = (
   param, event, eventSchedule, eventParam, eventScheduleParam
 ) => {
 

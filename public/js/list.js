@@ -8,17 +8,22 @@
 import { setLocationHash } from "./controlDom.js";
 import { makeAction } from "./schema.js";
 import { array, readObjectArray } from "./array.js";
-import { socketio, readObjectList } from "./socketio.js";
-import { getTplContent, getTimestamp } from "./utilCore.js";
-import { emptyElement, emptyElementById, clearFormAll } from "./utilDom.js";
+import {
+  socketio,
+  createObject, readObjectList, updateObject, deleteObject
+} from "./socketio.js";
+import {
+  getTplContent, getTimestamp, makeStringObject
+} from "./utilCore.js";
+import { emptyElement, emptyElementById, addChange, clearFormAll } from "./utilDom.js";
 
 
 //--------------------- モジュールスコープ変数開始 -----------------
 var
-  configMap = {
-    settable_map  : { color_name: true },
-    color_name    : 'blue'
-  },
+  // configMap = {
+  //   settable_map  : { color_name: true },
+  //   color_name    : 'blue'
+  // },
   stateMap = { $container : null },
   make_anchor_element,
   action_object,
@@ -96,7 +101,7 @@ var
               onObjectCreate();
             }
 
-            pal.util.addChange( object_array[i] );
+            addChange( object_array[i] );
             object_array[i].change( onChangeObject );
             object_array[i].change();
           }
@@ -900,22 +905,22 @@ export const onHashchange = (main_section) => {
     var
       send_data;
 
-    send_data = pal.util_b.makeStringObject( action_object );
+    send_data = makeStringObject( action_object );
 
-    pal.socketio.createObject( send_data, object_create );
+    createObject( send_data, object_create );
   };
 
   onObjectUpdate = function() {
     var
       send_data;
 
-    send_data = pal.util_b.makeStringObject( action_object );
+    send_data = makeStringObject( action_object );
 
     if ( send_data._id ) {
-      pal.socketio.updateObject( send_data, object_update );
+      updateObject( send_data, object_update );
     }
     else {
-      pal.socketio.createObject( send_data, object_create );
+      createObject( send_data, object_create );
     }
 
   };
@@ -924,9 +929,9 @@ export const onHashchange = (main_section) => {
     var
       send_data;
 
-    send_data = pal.util_b.makeStringObject( action_object );
+    send_data = makeStringObject( action_object );
 
-    pal.socketio.deleteObject( send_data, object_delete );
+    deleteObject( send_data, object_delete );
   };
   // ------------------ コールバック処理終了 --------------------
 
@@ -940,14 +945,14 @@ export const onHashchange = (main_section) => {
   // 戻り値: true
   // 例外発行: なし
   //
-  export const configModule = (input_map) => {
-    pal.util.setConfigMap({
-      input_map     : input_map,
-      settable_map  : configMap.settable_map,
-      config_map    : configMap
-    });
-    return true;
-  };
+  // export const configModule = (input_map) => {
+  //   pal.util.setConfigMap({
+  //     input_map     : input_map,
+  //     settable_map  : configMap.settable_map,
+  //     config_map    : configMap
+  //   });
+  //   return true;
+  // };
   // パブリックメソッド/configModule/終了
 
 // パブリックメソッド/list/開始

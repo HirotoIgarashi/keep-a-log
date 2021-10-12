@@ -3,18 +3,18 @@
 */
 
 'use strict';
+
+import { setLocationHash } from "./controlDom.js"
+import { getTplContent } from "./utilDom.js"
+
 //--------------------- モジュールスコープ変数開始 -----------------
 var
-  configMap = {
-    settable_map  : { color_name: true },
-    color_name    : 'blue'
-  },
   stateMap = { $container : null },
   jqueryMap = {},
   onClickSimpleList,
   onClickBrowserInformation,
   onClickLab,
-  setJqueryMap, configModule, initModule;
+  setJqueryMap;
 //--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- DOMメソッド開始 ----------------------------
@@ -30,39 +30,19 @@ setJqueryMap = function () {
 // --------------------- イベントハンドラ開始 ----------------------
 // 例: onClickButton = function ( event ) {};
 onClickSimpleList = function ( /* event */  ) {
-  pal.bom.setLocationHash( 'list' );
+  setLocationHash( 'list' );
 };
 
 onClickBrowserInformation = function ( /* event */  ) {
-  pal.bom.setLocationHash( 'browser_information' );
+  setLocationHash( 'browser_information' );
 };
 
 onClickLab = function ( /* event */  ) {
-  pal.bom.setLocationHash( 'lab' );
+  setLocationHash( 'lab' );
 };
 // --------------------- イベントハンドラ終了 ----------------------
 
-// --------------------- パブリックメソッド開始 --------------------
-// パブリックメソッド/configModule/開始
-// 目的: 許可されたキーの構成を調整する
-// 引数: 設定可能なキーバリューマップ
-//  * color_name  - 使用する色
-// 設定:
-//  * configMap.settable_map 許可されたキーを宣言する
-// 戻り値: true
-// 例外発行: なし
-//
-configModule = function ( input_map ) {
-  pal.util.setConfigMap({
-    input_map     : input_map,
-    settable_map  : configMap.settable_map,
-    config_map    : configMap
-  });
-  return true;
-};
-// パブリックメソッド/configModule/終了
-
-// パブリックメソッド/initModule/開始
+// パブリックメソッド/menu/開始
 // 目的: モジュールを初期化する
 // 引数:
 //  * $container この機能が使うjQuery要素
@@ -70,7 +50,7 @@ configModule = function ( input_map ) {
 // 例外発行: なし
 //
 export const menu = ($container) => {
-  var menu_page  = pal.util_b.getTplContent( 'pal-menu' );
+  var menu_page  = getTplContent( 'pal-menu' );
 
   stateMap.$container = $container;
   setJqueryMap();
@@ -95,4 +75,4 @@ export const menu = ($container) => {
 
   return true;
 };
-  // パブリックメソッド/initModule/終了
+  // パブリックメソッド/menu/終了

@@ -9,7 +9,8 @@ module.exports = {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
         "window": true,
-        "ActiveXObject": true
+        "ActiveXObject": true,
+        "io": true
     },
     "parserOptions": {
         "ecmaVersion": 2018,

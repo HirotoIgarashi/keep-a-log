@@ -172,13 +172,13 @@ export const makeStringObject = (object) => {
 // JavaScriptのcore機能のユーティリティ ------------------------------
 
 // エラーを出力する
-const fail = (thing) => { throw new Error(thing) };
+export const fail = (thing) => { throw new Error(thing) };
 
   // 警告を出力する
-const warn = (thing) => console.log(["警告:", thing].join(''));
+export const warn = (thing) => console.log(["警告:", thing].join(''));
 
 // 情報を出力する
-const note = (thing) => console.log(["情報:", thing].join(''));
+export const note = (thing) => console.log(["情報:", thing].join(''));
 
 // 関数合成 --------------------------------------------------------
 // const compose = (f, g) => {
@@ -189,7 +189,7 @@ const note = (thing) => console.log(["情報:", thing].join(''));
 export const compose = (...fs) => x => fs.reduceRight((acc, f) => f(acc), x);
 
 // 関数を引数にとり2段階までカリー化を行う
-const curry2 = (fun) => {
+export const curry2 = (fun) => {
   return (secondArg) => {
     return (firstArg) => fun(firstArg, secondArg);
   }
@@ -264,13 +264,13 @@ export const isNonEmpty = (value) => {
 //
 export const isRange = (value, min, max) => {
   let valueNumber;
-  if ( typeof value === 'string' ) {
-    valueNumber = Number( value );
+  if (typeof value === 'string') {
+    valueNumber = Number(value);
   }
   else {
     valueNumber = value;
   }
-  if ( min > valueNumber || valueNumber > max ) {
+  if (min > valueNumber || valueNumber > max) {
     return false;
   }
   return true;
@@ -279,7 +279,7 @@ export const isRange = (value, min, max) => {
 
 const isEven = (n) => (n%2) === 0;
 
-const isOdd = not(isEven);
+export const isOdd = not(isEven);
 
 // existy:何かの存在の有無を判定する関数
 const existy = (x) => x != null;
@@ -288,11 +288,11 @@ const existy = (x) => x != null;
 const truthy = (x) => (x !== false) && existy(x);
 
 // <=演算子の単純なスキン
-const lessOrEqual = (x, y) => x <= y;
+export const lessOrEqual = (x, y) => x <= y;
 // プレディケート(predicate)関数終了 -------------------------------
 
 // コンパレータ(comparator)関数開始 --------------------------------
-const compareLessThanOrEqual = (x, y) => {
+export const compareLessThanOrEqual = (x, y) => {
   if (x < y) {
     return -1;
   }
@@ -302,7 +302,7 @@ const compareLessThanOrEqual = (x, y) => {
   return 0;
 };
 
-const comparator = (pred) => {
+export const comparator = (pred) => {
   return (x, y) => {
     if (truthy(pred(x, y))) {
       return -1;
@@ -317,7 +317,7 @@ const comparator = (pred) => {
 };
 // コンパレータ(comparator)関数終了 --------------------------------
 // <=演算子の単純なスキン
-const compareNumbers = (x, y) => x - y;
+export const compareNumbers = (x, y) => x - y;
 
 // underscoreの_.result関数の書き換え
 // valueが関数の名前だった場合、その関数を利用してその結果を
@@ -344,7 +344,7 @@ const doWhen = (cond, action) => {
   }
 };
 
-const executeIfHasFunction = (target, name) => {
+export const executeIfHasFunction = (target, name) => {
   return doWhen(existy(target[name]), () => {
     var result = executeFunctionInObject(target, name);
     console.log(['結果は', result].join(''));
@@ -372,4 +372,4 @@ const nth = (data, index) => {
 };
 
 // 2番目の要素を返す関数 -------------------------------------------
-const second = (array) => nth(array, 1);
+export const second = (array) => nth(array, 1);

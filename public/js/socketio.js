@@ -6,12 +6,7 @@
 'use strict';
 var
   stateMap = { sio  : null },
-  makeSio, getSio,
-  createObject,
-  readObject,
-  updateObject,
-  deleteObject,
-  getRemoteId;
+  makeSio, getSio;
 
 makeSio = function (namespace) {
   var socket = io.connect(namespace);
@@ -34,31 +29,31 @@ getSio = function ( namespace ) {
 };
 
 // メソッド/createObject/開始
-createObject = function ( object ) {
+export const createObject = function ( object ) {
   stateMap.sio.emit( 'createobject', JSON.stringify( object ) );
 };
 // メソッド/createObject/終了
 
 // メソッド/readObject/開始
-readObject = function ( object ) {
+export const readObject = function ( object ) {
   stateMap.sio.emit( 'readobject', JSON.stringify( object ) );
 };
 // メソッド/readObject/終了
 
 // メソッド/updateObject/開始
-updateObject = function ( object ) {
+export const updateObject = function ( object ) {
   stateMap.sio.emit( 'updateobject', JSON.stringify( object ) );
 };
 // メソッド/updateObject/終了
 
 // メソッド/deleteObject/開始
-deleteObject = function ( object ) {
+export const deleteObject = function ( object ) {
   stateMap.sio.emit( 'deleteobject', JSON.stringify( object ) );
 };
 // メソッド/deleteObject/終了
 
 // メソッド/getObjectRemoteId/開始
-getRemoteId = function ( key, value, callback ) {
+export const getRemoteId = function ( key, value, callback ) {
   console.log( key, value );
 
   stateMap.sio.on( 'remoteidget', callback );

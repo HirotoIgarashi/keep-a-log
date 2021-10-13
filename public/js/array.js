@@ -5,7 +5,8 @@
 
 'use strict';
 
-import {readObjectLocal, createObjectLocal} from "./utilCore.js";
+import { readObjectLocal, createObjectLocal } from "./utilCore.js";
+import { makeAction } from "./schema.js";
 
 let custom_array = [];
 
@@ -16,8 +17,8 @@ custom_array.createObject = function (object, callback) {
   callback();
 };
 
-const readObject = function (map) {
-  console.log( map );
+export const readObject = (map) => {
+  console.log(map);
   return custom_array;
 };
 
@@ -48,7 +49,7 @@ custom_array.updateObject = function ( object, callback ) {
   }
 
   // オブジェクトをlocalStorageに保存する。
-  pal.util_b.createObjectLocal( 'action-list', custom_array );
+  createObjectLocal( 'action-list', custom_array );
 
   if ( callback ) {
     callback();
@@ -111,7 +112,7 @@ export const array = function () {
         }
       }
 
-      action_object = pal.schema.makeAction( work_object );
+      action_object = makeAction(work_object);
 
       // リストに追加する
       custom_array.push( action_object );

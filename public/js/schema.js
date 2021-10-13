@@ -4,6 +4,9 @@
 */
 
 'use strict';
+
+import { addChange } from "./utilDom.js";
+
 //--------------------- モジュールスコープ変数開始 -----------------
 var
   objectCreate,
@@ -321,7 +324,7 @@ export const makeAction = function ( arg_map ) {
   extendObject( action, arg_map );
 
   // actionオブジェクトにchange関数を追加する
-  pal.util.addChange(action);
+  addChange(action);
 
   return action;
 };
@@ -333,23 +336,6 @@ export const makeAction = function ( arg_map ) {
 // --------------------- イベントハンドラ開始 ----------------------
 // 例: onClickButton = function ( event ) {};
 // --------------------- イベントハンドラ終了 ----------------------
-
-// --------------------- パブリックメソッド開始 --------------------
-// パブリックメソッド/configModule/開始
-// 目的: 許可されたキーの構成を調整する
-// 引数: 設定可能なキーバリューマップ
-//  * color_name  - 使用する色
-// 設定:
-// 戻り値: true
-// 例外発行: なし
-//
-const configModule = function ( input_map ) {
-  pal.butil.setConfigMap({
-    input_map     : input_map
-  });
-  return true;
-};
-// パブリックメソッド/configModule/終了
 
 // パブリックメソッド/initModule/開始
 // 目的: モジュールを初期化する

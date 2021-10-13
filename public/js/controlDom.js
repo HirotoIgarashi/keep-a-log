@@ -74,16 +74,13 @@ export const controlDom = (id) => {
   let site_menu;
   let menu_ahchor;
 
-  const onClickTop = ( /* event */ ) => setLocationHash('');
+  const onClickTop = (/* event */) => setLocationHash('');
 
-  const onClickLogout = ( /* event */ ) =>
-    setLocationHash('logout');
+  const onClickLogout = (/* event */) => setLocationHash('logout');
 
-  const onClickLogin = ( /* event */ ) =>
-    setLocationHash('login');
+  const onClickLogin = (/* event */) => setLocationHash('login');
 
-  const onClickRegister = ( /* event */ ) =>
-    setLocationHash('register');
+  const onClickRegister = (/* event */) => setLocationHash('register');
 
   // HTMLをロードしマッピングする
   stateMap.container = content;
@@ -151,7 +148,6 @@ export const controlDom = (id) => {
 
   // ボタンのaria-pressed属性をtrueにする --------------------------
   setButtonPressed('pal-nav-home');
-
   // セッションがあるかを確認する ----------------------------------
   readSession();
 
@@ -202,7 +198,9 @@ export const getLocationHash = () => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const sendXmlHttpRequest = (requestType, url, async, responseHandle, sendData) => {
+export const sendXmlHttpRequest = (
+  requestType, url, async, responseHandle, sendData
+) => {
   let request = null;
 
   if (window.XMLHttpRequest) {
@@ -221,12 +219,14 @@ export const sendXmlHttpRequest = (requestType, url, async, responseHandle, send
   // 進みます。
   if (request) {
     if (requestType.toLowerCase() !== 'post') {
-      initSendRequest( request, requestType, url, async, responseHandle );
+      initSendRequest(request, requestType, url, async, responseHandle);
     }
     else {
       // POSTの場合、5番目の引数で指定された値を送信します。
       if ( sendData !== null && sendData.length > 0 ) {
-        initSendRequest( request, requestType, url, async, responseHandle, sendData );
+        initSendRequest(
+          request, requestType, url, async, responseHandle, sendData
+        );
       }
     }
     return request;

@@ -90,7 +90,7 @@ export const controlDom = (id) => {
     content.appendChild(mainPage);
   }
   else {
-    console.log( 'templateは利用できません。' );
+    console.log('templateは利用できません。');
   }
 
   // footerを表示する ----------------------------------------------
@@ -143,7 +143,7 @@ export const controlDom = (id) => {
   menu_ahchor = querySelectorAll('#pal-nav-menu a' );
 
   for (let i = 0; i < menu_ahchor.length; i = i + 1 ) {
-    menu_ahchor[ i ].addEventListener('click', toggle_menu, false );
+    menu_ahchor[i].addEventListener('click', toggle_menu, false );
   }
 
   // ボタンのaria-pressed属性をtrueにする --------------------------
@@ -360,9 +360,23 @@ export const setElementMap = () => {
   };
 };
 // DOMメソッド/setElementMap/終了
+//----- ユーティリティメソッド/readSession/開始 --------------------
+export const readSession = () => {
+  const requestType = 'GET';
+  const url = '/session/read';
+  // AjaxによりGETする
+  sendXmlHttpRequest(requestType, url, true, onReceiveSession);
+};
+//----- ユーティリティメソッド/readSession/終了 --------------------
+
 //----- ユーティリティメソッド/onReceiveSession/開始 --------------------
 export const onReceiveSession = () => {
   let request;  // XMLHttpRequest
+
+  console.log(request);
+  console.log(request.readyState);
+  console.log(request.status);
+
   if ( request && request.readyState === 4 ) {
     let response_map = JSON.parse(request.responseText);
 
@@ -382,15 +396,6 @@ export const onReceiveSession = () => {
   }
 };
 //----- ユーティリティメソッド/onReceiveSession/終了 --------------------
-//----- ユーティリティメソッド/readSession/開始 --------------------
-export const readSession = () => {
-  const requestType = 'GET';
-  const url = '/session/read';
-  // AjaxによりGETする
-  sendXmlHttpRequest(requestType, url, true, onReceiveSession);
-};
-//----- ユーティリティメソッド/readSession/終了 --------------------
-
 // hashが変更されときの処理 ----------------------------------------
 const setButtonPressed = ((data) => {
   const palNavHome = getElementById('pal-nav-home');

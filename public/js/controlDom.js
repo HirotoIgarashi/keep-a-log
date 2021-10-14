@@ -1,10 +1,8 @@
 'use strict';
 
 import { getNowDateJp } from "./utilCore.js";
-import {
-  createElement, createDocumentFragment,
-  appendChild, getElementById, getElementsByClassName,
-  querySelector, querySelectorAll
+import { createElement, createDocumentFragment, appendChild, getElementById,
+  getElementsByClassName, querySelector, querySelectorAll
 } from "./utilDom.js";
 import { makeTop } from "./top.js";
 import { login } from "./login.js";
@@ -43,9 +41,7 @@ let request = null;
 // DOMメソッド/makeFooter/開始 -------------------------------------
 const makeFooter = () => {
   let frag = createDocumentFragment();
-  let spanElement = createElement('span', {
-    id: 'pal-dom-date-info'
-  });
+  let spanElement = createElement('span', { id: 'pal-dom-date-info' });
   // -----HTMLを組み立てる------------------------------------------
   appendChild(frag, spanElement);
   return frag;
@@ -54,11 +50,10 @@ const makeFooter = () => {
 
 // --------------------- パブリックメソッド開始 --------------------
 // パブリックメソッド/controlDom/開始
-// 用例: controlDom( $('#app_div_id') );
+// 用例: controlDom(id);
 // 目的:
 // 引数:
-//  * $append_target (例: $('#app_div_id'))
-//  1つのDOMコンテナを表すjQueryコレクション
+//  * id
 // 動作:
 //  containerにUIのシェルを含め、機能モジュールを構成して初期化する。
 //  シェルはURIアンカーやCookieの管理などのブラウザ全体に及ぶ問題を担当する。
@@ -68,8 +63,6 @@ const makeFooter = () => {
 export const controlDom = (id) => {
   // 与えられたidをDOMの中から探す
   let content = getElementById(id);
-  console.log(content);
-
   const mainPage = querySelector('#main-page').content;
   let site_button;
   let site_button_rect;
@@ -372,12 +365,6 @@ export const readSession = () => {
 
 //----- ユーティリティメソッド/onReceiveSession/開始 --------------------
 export const onReceiveSession = () => {
-  // let request;  // XMLHttpRequest
-
-  console.log(request);
-  console.log(request.readyState);
-  console.log(request.status);
-
   if ( request && request.readyState === 4 ) {
     let response_map = JSON.parse(request.responseText);
 

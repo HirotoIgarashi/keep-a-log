@@ -38,6 +38,8 @@ const configMap = {
 
 let stateMap = { container: null };
 
+let request = null;
+
 // DOMメソッド/makeFooter/開始 -------------------------------------
 const makeFooter = () => {
   let frag = createDocumentFragment();
@@ -52,7 +54,7 @@ const makeFooter = () => {
 
 // --------------------- パブリックメソッド開始 --------------------
 // パブリックメソッド/controlDom/開始
-// 用例: pal.dom.initModule( $('#app_div_id') );
+// 用例: controlDom( $('#app_div_id') );
 // 目的:
 // 引数:
 //  * $append_target (例: $('#app_div_id'))
@@ -198,10 +200,9 @@ export const getLocationHash = () => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const sendXmlHttpRequest = (
-  requestType, url, async, responseHandle, sendData
-) => {
-  let request = null;
+export const sendXmlHttpRequest = (requestType, url, async, responseHandle,
+  sendData ) => {
+  // let request = null;
 
   if (window.XMLHttpRequest) {
     // Mozillaベースのブラウザの場合
@@ -371,7 +372,7 @@ export const readSession = () => {
 
 //----- ユーティリティメソッド/onReceiveSession/開始 --------------------
 export const onReceiveSession = () => {
-  let request;  // XMLHttpRequest
+  // let request;  // XMLHttpRequest
 
   console.log(request);
   console.log(request.readyState);

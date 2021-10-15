@@ -14,7 +14,7 @@ import {
 let request = null;
 //--------------------- モジュールスコープ変数終了 -----------------
 
-  //--------------------- ユーティリティメソッド開始 -----------------
+//--------------------- ユーティリティメソッド開始 -----------------
 const makeLoginForm = () => {
   let frag = createDocumentFragment();
   // -----divタグの作成 --------------------------------------------
@@ -88,7 +88,6 @@ const makeLoginForm = () => {
   appendChild(formElement, showPasswordLabel);
   appendChild(formElement, submitButton);
   appendChild(divElement, messageArea);
-
   appendChild(frag, divElement);
 
   return frag;
@@ -125,7 +124,7 @@ const onClickLogin = (event) => {
 
 // --------------------- Loginの結果の処理 -------------------------
 const onReceiveLogin = function () {
-  const message_area = getElementById('message-area');
+  const messageArea = getElementById('message-area');
   const userInfo = getElementById('pal-dom-user-info');
   let response;
 
@@ -139,35 +138,32 @@ const onReceiveLogin = function () {
 
     if (request.status === 200) {
     // ----- ログインが成功したときの処理 ------------------------
-
-    message_area.removeAttribute( 'hidden' );
-    message_area.textContent =
-      'ログインしました。ステータス: ' + request.status;
-
+      messageArea.removeAttribute( 'hidden' );
+      messageArea.textContent = 'ログインしました。ステータス: ' + request.status;
       userInfo.innerHTML = response.email;
 
       setTimeout(() => {
-        message_area.setAttribute( 'hidden', 'hidden' );
+        messageArea.setAttribute( 'hidden', 'hidden' );
         setLocationHash( '' );
       }, 2000);
     }
     else {
-      message_area.removeAttribute( 'hidden' );
+      messageArea.removeAttribute( 'hidden' );
       switch (request.status) {
         case 401:
           console.log(response);
-          // message_area.textContent =
+          // messageArea.textContent =
           // 'E-mailアドレスかパスワードが不正です。ステータス: ' +
           // request.status;
-          message_area.textContent = `${response.message}`;
+          messageArea.textContent = `${response.message}`;
           break;
         case 500:
-          message_area.textContent =
+          messageArea.textContent =
             'サーバエラーが発生しました。ステータス: ' +
               request.status;
           break;
         default:
-          message_area.textContent =
+          messageArea.textContent =
             'エラーが発生しました。ステータス: ' + request.status;
       }
     }
@@ -185,21 +181,21 @@ const onReceiveLogin = function () {
 // 例外発行: なし
 //
 export const login = () => {
-  const main_section = getElementById( 'pal-main' );
+  const mainSection = getElementById('pal-main');
 
   // mainセクションの子要素をすべて削除する
-  emptyElement( main_section );
+  emptyElement(mainSection);
 
   //----- ログインフォームを表示する -------------------------------
-  main_section.appendChild(makeLoginForm());
+  mainSection.appendChild(makeLoginForm());
 
   //----- パスワードを表示する機能を追加する -----------------------
   const password = getElementById('inputPassword');
-  const showPassword = getElementById( 'showPassword' );
+  const showPassword = getElementById('showPassword');
 
   showPassword.addEventListener('change', () => {
     let type = showPassword.checked ? 'text' : 'password';
-    password.setAttribute( 'type', type );
+    password.setAttribute('type', type);
   });
 
   let login_button = getElementById('loginUser');

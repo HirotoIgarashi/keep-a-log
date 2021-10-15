@@ -132,13 +132,13 @@ export const controlDom = (id) => {
   site_button_rect = site_button.getBoundingClientRect();
   site_menu.style.top = site_button_rect.bottom + 'px';
 
-  site_button.addEventListener('click', toggle_menu, false );
+  site_button.addEventListener('click', toggleMenu, false );
 
   // メニューのaタグを取得
   menu_ahchor = querySelectorAll('#pal-nav-menu a' );
 
   for (let i = 0; i < menu_ahchor.length; i = i + 1 ) {
-    menu_ahchor[i].addEventListener('click', toggle_menu, false );
+    menu_ahchor[i].addEventListener('click', toggleMenu, false );
   }
 
   // ボタンのaria-pressed属性をtrueにする --------------------------
@@ -177,98 +177,27 @@ export const getLocationHash = () => {
 };
 // パブリックメソッド/getLocationHash/終了
 
-// sendXmlHttpRequest開始
-// 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
-//       サーバに送信します。
-// 必須引数:
-//  * requestType     : HTTPリクエストの形式。GETかPOSTを指定します
-//  * url             : リクエスト先のURL
-//  * async           : 非同期呼び出しを行うか否かを指定します
-//  * responseHandle  : レスポンスを処理する関数
-//  * arguments[4]    : 5番目の引数はPOSTリクエストによって送信される
-//                      文字列を表します
-// オプション引数: なし
-// 設定:
-//  * xmlhttp
-// 戻り値: なし
-// 例外発行: なし
-//
-export const sendXmlHttpRequest = (requestType, url, async, responseHandle,
-  sendData ) => {
-  // let request = null;
-
-  if (window.XMLHttpRequest) {
-    // Mozillaベースのブラウザの場合
-    request = new XMLHttpRequest();
-  }
-  else if (window.ActiveXObject) {
-    // Internet Explorerの場合
-    request = new ActiveXObject("Msxml2.XMLHTTP");
-    if ( !request ) {
-      request = new ActiveXObject("Miforsoft.XMLHTTP");
-    }
-  }
-
-  // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
-  // 進みます。
-  if (request) {
-    if (requestType.toLowerCase() !== 'post') {
-      initSendRequest(request, requestType, url, async, responseHandle);
-    }
-    else {
-      // POSTの場合、5番目の引数で指定された値を送信します。
-      if ( sendData !== null && sendData.length > 0 ) {
-        initSendRequest(
-          request, requestType, url, async, responseHandle, sendData
-        );
-      }
-    }
-    return request;
-  }
-  alert( 'このブラウザはAjaxに対応していません。' );
-  return false;
+// DOMメソッド/setElementMap/開始
+export const setElementMap = () => {
+  elementMap = {
+    top       : getElementsByClassName('pal-dom-header-title'),
+    user_info : getElementById('pal-dom-user-info'),
+    date_info : getElementById('pal-dom-date-info'),
+    logout    : getElementsByClassName('pal-dom-header-logout'),
+    login     : getElementsByClassName('pal-dom-header-login'),
+    register  : getElementsByClassName('pal-dom-header-register')
+  };
 };
-// sendXmlHttpRequest終了
+// DOMメソッド/setElementMap/終了
 
-// initSendRequest開始
-export const initSendRequest = (
-  request,
-  requestType,
-  url,
-  async,
-  responseHandle,
-  requestData) => {
-
-  try {
-    // HTTPレスポンスを処理するための関数を指定します。
-    request.onreadystatechange = responseHandle;
-    request.open(requestType, url, async);
-
-    if (requestType.toLowerCase() === "post") {
-      // POSTの場合はContent-Headerが必要です。
-      request.setRequestHeader( 'Content-Type', 'application/json' );
-      request.send(requestData);
-      console.log('Ajaxリクエストを実行しました');
-    }
-    else {
-      request.send(null);
-    }
-  }
-  catch (err) {
-    alert('サーバーに接続できません。' +
-          'しばらくたってからやり直して下さい。\n' +
-          'エラーの詳細: ' + err.message );
-  }
-};
-// initSendRequest終了
 // イベントハンドラ/onHashchange/開始
 const onHashchange = () => {
   setSection();
 };
 // イベントハンドラ/onHashchange/終了
 
-// ユーティリティメソッド/toggle_menu/開始
-const toggle_menu = () => {
+// ユーティリティメソッド/toggleMenu/開始
+const toggleMenu = () => {
   // ボタンとメニューのノードを取得 --------------------------------
   const site_button = querySelector('.pal-dom-header-menu');
   const site_menu = querySelector('[aria-label="サイト"]');
@@ -278,7 +207,8 @@ const toggle_menu = () => {
   site_button.setAttribute( 'aria-expanded', String(!expanded) );
   site_menu.hidden = expanded;
 };
-// ユーティリティメソッド/toggle_menu/終了
+// ユーティリティメソッド/toggleMenu/終了
+
 // DOMメソッド/setSection/開始 -------------------------------------
 // 目的: URLのハッシュが変更されたら呼ばれる。ハッシュの値を
 // 取得して必要なモジュールを呼び出す
@@ -342,18 +272,7 @@ export const setSection = () => {
   }
 };
 // DOMメソッド/setSection/終了 -------------------------------------
-// DOMメソッド/setElementMap/開始
-export const setElementMap = () => {
-  elementMap = {
-    top       : getElementsByClassName('pal-dom-header-title'),
-    user_info : getElementById('pal-dom-user-info'),
-    date_info : getElementById('pal-dom-date-info'),
-    logout    : getElementsByClassName('pal-dom-header-logout'),
-    login     : getElementsByClassName('pal-dom-header-login'),
-    register  : getElementsByClassName('pal-dom-header-register')
-  };
-};
-// DOMメソッド/setElementMap/終了
+
 //----- ユーティリティメソッド/readSession/開始 --------------------
 export const readSession = () => {
   const requestType = 'GET';
@@ -363,17 +282,98 @@ export const readSession = () => {
 };
 //----- ユーティリティメソッド/readSession/終了 --------------------
 
+// sendXmlHttpRequest開始
+// 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
+//       サーバに送信します。
+// 必須引数:
+//  * requestType     : HTTPリクエストの形式。GETかPOSTを指定します
+//  * url             : リクエスト先のURL
+//  * async           : 非同期呼び出しを行うか否かを指定します
+//  * responseHandle  : レスポンスを処理する関数
+//  * arguments[4]    : 5番目の引数はPOSTリクエストによって送信される
+//                      文字列を表します
+// オプション引数: なし
+// 設定:
+//  * xmlhttp
+// 戻り値: なし
+// 例外発行: なし
+//
+export const sendXmlHttpRequest = (requestType, url, async, responseHandle,
+  sendData ) => {
+  // let request = null;
+
+  if (window.XMLHttpRequest) {
+    // Mozillaベースのブラウザの場合
+    request = new XMLHttpRequest();
+  }
+  else if (window.ActiveXObject) {
+    // Internet Explorerの場合
+    request = new ActiveXObject("Msxml2.XMLHTTP");
+    if (!request) {
+      request = new ActiveXObject("Miforsoft.XMLHTTP");
+    }
+  }
+
+  // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
+  // 進みます。
+  if (request) {
+    if (requestType.toLowerCase() !== 'post') {
+      // POSTリクエスト以外の処理
+      initSendRequest(request, requestType, url, async, responseHandle);
+    }
+    else {
+      // POSTの場合、5番目の引数で指定された値を送信します。
+      if (sendData !== null && sendData.length > 0) {
+        initSendRequest(
+          request, requestType, url, async, responseHandle, sendData
+        );
+      }
+    }
+    return request;
+  }
+  alert( 'このブラウザはAjaxに対応していません。' );
+  return false;
+};
+// sendXmlHttpRequest終了
+
+// initSendRequest開始
+export const initSendRequest = (request, requestType, url, async,
+  responseHandle, requestData) => {
+
+  try {
+    // HTTPレスポンスを処理するための関数を指定します。
+    request.onreadystatechange = responseHandle;
+    request.open(requestType, url, async);
+
+    if (requestType.toLowerCase() === "post") {
+      // POSTの場合はContent-Headerが必要です。
+      request.setRequestHeader( 'Content-Type', 'application/json' );
+      request.send(requestData);
+      console.log('Ajaxリクエストを実行しました');
+    }
+    else {
+      request.send(null);
+    }
+  }
+  catch (err) {
+    alert('サーバーに接続できません。' +
+          'しばらくたってからやり直して下さい。\n' +
+          'エラーの詳細: ' + err.message );
+  }
+};
+// initSendRequest終了
+
 //----- ユーティリティメソッド/onReceiveSession/開始 --------------------
 export const onReceiveSession = () => {
   if ( request && request.readyState === 4 ) {
-    let response_map = JSON.parse(request.responseText);
+    let responseMap = JSON.parse(request.responseText);
 
     if (request.status === 200 ) {
       elementMap.logout[0].style.visibility = 'visible';
       elementMap.login[0].style.visibility = 'hidden';
       elementMap.register[0].style.visibility = 'hidden';
       elementMap.user_info.textContent =
-        `${response_map.first} ${response_map.last} としてログインしています`;
+        `${responseMap.first} ${responseMap.last} としてログインしています`;
     }
     else {
       elementMap.logout[0].style.visibility = 'hidden';
@@ -404,7 +404,6 @@ const setButtonPressed = ((data) => {
     getElementById(`${data}`).setAttribute('aria-pressed', 'true');
   }
 });
-
 // --------------------- イベントハンドラ開始 ----------------------
 // onResize = function () {
 //   var

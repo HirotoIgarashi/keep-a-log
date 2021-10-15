@@ -111,7 +111,6 @@ const makeRegisterForm = () => {
   // -----Eメールのvalidate結果の表示エリア-------------------------
   let inputEmailResponse = createElement('div');
 
-
   // -----ボタンを生成 ---------------------------------------------
   let submitButton = createElement('button');
   setAttribute(submitButton, 'type', 'submit');
@@ -136,9 +135,6 @@ const makeRegisterForm = () => {
   appendChild(formElement, passwordLabelAndInput[1]);
   appendChild(formElement, divShowPassword);
   appendChild(formElement, inputPasswordResponse);
-  // appendChild(formElement, zipCodeLabelAndInput[0]);
-  // appendChild(formElement, zipCodeLabelAndInput[1]);
-  // appendChild(formElement, inputZipCodeResponse);
   appendChild(formElement, submitButton);
   appendChild(divElement, messageArea);
 
@@ -179,22 +175,21 @@ const onClickRegister = (event) => {
   // inputフォームを初期化する
   // resetInputForm(['password', 'email', 'zipCode']);
   resetInputForm(['password', 'email']);
-
 };
 // -- イベントハンドラ(onClickRegister)終了 ------------------------
 
 // -- イベントハンドラ(onReceiveRegister)開始 ----------------------
 // Registerの結果の処理
 const onReceiveRegister = function () {
-  const message_area = getElementById('message-area');
+  const messageArea = getElementById('message-area');
 
   if (request && request.readyState === 4) {
     if (request.status === 201) {
-      message_area.removeAttribute('hidden');
-      message_area.textContent =
+      messageArea.removeAttribute('hidden');
+      messageArea.textContent =
         'ユーザを作成しました。ステータス: ' + request.status;
       setTimeout(function () {
-        message_area.setAttribute('hidden', 'hidden');
+        messageArea.setAttribute('hidden', 'hidden');
         setLocationHash('');
       }, 5000);
     }
@@ -213,30 +208,29 @@ const onReceiveRegister = function () {
         });
       }
 
-      message_area.removeAttribute('hidden');
+      messageArea.removeAttribute('hidden');
       switch (request.status) {
         case 401:
-          message_area.textContent =
+          messageArea.textContent =
             'メールアドレスかパスワードが不正です。ステータス: ' +
-              request.status;
+            request.status;
           break;
         case 409:
-          message_area.textContent =
-          '入力されたメールアドレスはすでに使われています。ステータス: ' +
+          messageArea.textContent =
+            '入力されたメールアドレスはすでに使われています。ステータス: ' +
             request.status;
             break;
         case 422:
-          message_area.textContent =
+          messageArea.textContent =
             '入力された値が正しくありません。再度入力してください ステータス: ' +
-              request.status;
+            request.status;
           break;
         case 500:
-          message_area.textContent =
-            'サーバエラーが発生しました。ステータス: ' +
-              request.status;
+          messageArea.textContent =
+            'サーバエラーが発生しました。ステータス: ' + request.status;
           break;
         default:
-          message_area.textContent =
+          messageArea.textContent =
             'エラーが発生しました。ステータス: ' + request.status;
       }
     }

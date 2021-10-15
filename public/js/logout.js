@@ -25,7 +25,7 @@ const makeLogOutPage = () => {
   // -----divタグの作成 --------------------------------------------
   let divElement = createElement('div');
   let h2Element = createElement('h2');
-  h2Element = innerHTML( h2Element, 'ログアウトします:' );
+  h2Element = innerHTML(h2Element, 'ログアウトします:');
 
   // -----agreeボタンを生成 ---------------------------------------------
   let agreeButton = createElement('button');
@@ -79,10 +79,10 @@ const onReceiveLogout = function () {
         'ログアウトしました。ステータス: ' + request.status;
       setTimeout( function () {
         setLocationHash('');
-      }, 2000);
+      }, 1500);
     }
     else {
-      switch ( request.status ) {
+      switch (request.status) {
         case 404:
           messageArea.textContent =
             'URLが存在しません。ステータス: ' + request.status;
@@ -121,12 +121,12 @@ const onClickCancel = function () {
 // 例外発行: なし
 //
 export const logout = () => {
-  const main_section = getElementById( 'pal-main' );
+  const mainSection = getElementById( 'pal-main' );
 
   // mainセクションの子要素をすべて削除する
-  emptyElement( main_section );
+  emptyElement( mainSection );
 
-  main_section.appendChild(makeLogOutPage());
+  mainSection.appendChild(makeLogOutPage());
 
   const agreeButton = getElementById('agree');
   const cancelButton = getElementById('cancel');

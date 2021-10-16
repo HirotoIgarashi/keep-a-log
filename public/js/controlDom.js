@@ -16,7 +16,7 @@ import { menu } from "./menu.js";
 import { cycleSystem } from "./cycleSystem.js";
 import { onHashchange as hashChangeToList } from "./list.js";
 import { onHashchange as hashChangetoCalender } from "./calendar.js";
-import { event } from "./event.js";
+import { initEvent } from "./event.js";
 import { browserInformation } from "./browserInformation.js";
 import { lab } from "./lab.js";
 import { registSchedule } from "./registSchedule.js";
@@ -66,9 +66,9 @@ export const controlDom = (id) => {
   // 与えられたidをDOMの中から探す
   let content = getElementById(id);
   const mainPage = querySelector('#main-page').content;
-  let site_button;
-  let site_button_rect;
-  let site_menu;
+  let siteButton;
+  let siteButtonRect;
+  let siteMenu;
   let menu_ahchor;
 
   const onClickTop = (/* event */) => setLocationHash('');
@@ -119,25 +119,25 @@ export const controlDom = (id) => {
   elementMap.register[0].addEventListener('click', onClickRegister);
 
   // ボタンとメニューのノードを取得
-  site_button = querySelector('.pal-dom-header-menu');
-  site_menu = querySelector('[aria-label="サイト"]');
+  siteButton = querySelector('.pal-dom-header-menu');
+  siteMenu = querySelector('[aria-label="サイト"]');
 
   // 初期の(メニューが閉じているときの)状態と設定
-  site_button.setAttribute('aria-expanded', 'false');
-  site_button.hidden = false;
-  site_menu.hidden = true;
+  siteButton.setAttribute('aria-expanded', 'false');
+  siteButton.hidden = false;
+  siteMenu.hidden = true;
 
   // サイトボタンの位置座標を取得してメニューの表示位置を指定する
   // サイトボタンのbottomをサイトメニューのtopに指定する
-  site_button_rect = site_button.getBoundingClientRect();
-  site_menu.style.top = site_button_rect.bottom + 'px';
+  siteButtonRect = siteButton.getBoundingClientRect();
+  siteMenu.style.top = siteButtonRect.bottom + 'px';
 
-  site_button.addEventListener('click', toggleMenu, false );
+  siteButton.addEventListener('click', toggleMenu, false );
 
   // メニューのaタグを取得
   menu_ahchor = querySelectorAll('#pal-nav-menu a' );
 
-  for (let i = 0; i < menu_ahchor.length; i = i + 1 ) {
+  for (let i = 0; i < menu_ahchor.length; i = i + 1) {
     menu_ahchor[i].addEventListener('click', toggleMenu, false );
   }
 
@@ -199,13 +199,13 @@ const onHashchange = () => {
 // ユーティリティメソッド/toggleMenu/開始
 const toggleMenu = () => {
   // ボタンとメニューのノードを取得 --------------------------------
-  const site_button = querySelector('.pal-dom-header-menu');
-  const site_menu = querySelector('[aria-label="サイト"]');
+  const siteButton = querySelector('.pal-dom-header-menu');
+  const siteMenu = querySelector('[aria-label="サイト"]');
   // メニューの表示非表示を切り替える
-  let expanded = site_button.getAttribute( 'aria-expanded' ) === 'true';
+  let expanded = siteButton.getAttribute( 'aria-expanded' ) === 'true';
 
-  site_button.setAttribute( 'aria-expanded', String(!expanded) );
-  site_menu.hidden = expanded;
+  siteButton.setAttribute('aria-expanded', String(!expanded));
+  siteMenu.hidden = expanded;
 };
 // ユーティリティメソッド/toggleMenu/終了
 
@@ -246,7 +246,7 @@ export const setSection = () => {
       setButtonPressed('pal-nav-calendar');
       break;
     case '#event':
-      event(mainSection);
+      initEvent(mainSection);
       setButtonPressed('pal-nav-event');
       break;
     case '#browser_information':

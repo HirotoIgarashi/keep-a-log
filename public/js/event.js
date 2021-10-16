@@ -698,9 +698,7 @@ const makeWeeklySchedule= () => {
     'data-day': dayEnglishArray[1]
   });
 
-  let previousButton = createButton({
-    type: 'button', innerHTML: '<'
-  });
+  let previousButton = createButton({ type: 'button', innerHTML: '<' });
 
   previousButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -964,7 +962,6 @@ const onHashchange = () => {
 
 // onClickRegistButton開始 -----------------------------------------
 const onClickRegistButton = (e) => {
-
   e.preventDefault();
 
   // フォームから値を取得する
@@ -1043,7 +1040,6 @@ const onClickCancel = () => history.back()
 
 // onClickAgree開始 ------------------------------------------------
 const onClickAgree = (e) => {
-
   e.preventDefault();
 
   const currentHash = getLocationHash();
@@ -1279,7 +1275,7 @@ socket.on('event createWeekly complete', (data) => {
 // 戻り値: true
 // 例外発行: なし
 //
-export const event = (mainSection) => {
+export const initEvent = (mainSection) => {
   let hashArray = onHashchange(mainSection);
   let crud = hashArray[1];
   let eventId = hashArray[2];

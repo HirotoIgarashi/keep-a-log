@@ -214,12 +214,12 @@ export const toggleTip = (input_element, tip) => {
   // 初期の状態ではtipを非表示にする
   tip.hidden = true;
   // input要素がフォーカスされたらtipを表示する
-  input_element.addEventListener('focus', () => {
+  addEventListener(input_element, 'focus', () => {
     tip.hidden = false;
   });
 
   // input要素のフォーカスが外れたらtipを非表示にする
-  input_element.addEventListener('blur', () => {
+  addEventListener(input_element, 'blur', () => {
     tip.hidden = true;
   });
 
@@ -236,7 +236,7 @@ export const toggleTip = (input_element, tip) => {
 // 例外発行: なし
 //
 export const inputChangeCallback = (input_element, callback) => {
-  input_element.addEventListener( 'change', () => {
+  addEventListener(input_element, 'change', () => {
     callback();
   });
 };
@@ -313,9 +313,9 @@ export const supportsTemplate = () => {
 // 設定:
 // 戻り値: 引数のIDの値のコンテンツ
 // 例外発行: なし
-export const getTplContent = (templateId) => {
+export const getTplContent = templateId => {
   let content;
-  let tpl = getElementById( templateId );
+  let tpl = getElementById(templateId);
 
   if (tpl) {
     content = tpl.content.cloneNode(true);
@@ -390,7 +390,7 @@ export const createElement = (arg, option) => {
     let element = null;
     // オブジェクトが渡されたときの処理 ----------------------------
     // tagNameがあれば
-    if (arg.tagName) {element = document.createElement(arg.tagName);}
+    if (arg.tagName) {element = createElement(arg.tagName);}
 
     // idがあれば
     if (arg.id) {setAttribute(element, 'id', arg.id);}

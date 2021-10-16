@@ -4,6 +4,10 @@ import { getNowDateJp } from "./utilCore.js";
 import { createElement, createDocumentFragment, appendChild, getElementById,
   getElementsByClassName, querySelector, querySelectorAll
 } from "./utilDom.js";
+import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
+  // setRequestHeader,
+  sendRequest
+} from "./utilAjax.js";
 import { makeTop } from "./top.js";
 import { login } from "./login.js";
 import { logout } from "./logout.js";
@@ -144,7 +148,8 @@ export const controlDom = (id) => {
   // ボタンのaria-pressed属性をtrueにする --------------------------
   setButtonPressed('pal-nav-home');
   // セッションがあるかを確認する ----------------------------------
-  readSession();
+  // readSession();
+  readSessionStatus();
 
   //----- フッターに日時を表示する(初回) ---------------------------
   elementMap.date_info.textContent = getNowDateJp();
@@ -265,13 +270,68 @@ export const setSection = () => {
       cycleSystem(mainSection);
       break;
     default:
-      readSession();
+      // readSession();
+      readSessionStatus();
       makeTop(mainSection);
       setButtonPressed('pal-nav-home');
       break;
   }
 };
 // DOMメソッド/setSection/終了 -------------------------------------
+
+//----- ユーティリティメソッド/readSessionStatus/開始 --------------------
+const readSessionStatus = () => {
+  let xhr;
+  const requestType = 'GET';
+  const url = '/session/read';
+  const async = true;
+  // const sendData = undefined;
+  const onReceiveSession = () => {
+    if (xhr && xhr.readyState === 0) {
+      console.log('open()はまだ呼び出されていない。')
+    }
+    else if (xhr && xhr.readyState === 1) {
+      console.log('open()が呼び出された。')
+    }
+    else if (xhr && xhr.readyState === 2) {
+      console.log('ヘッダを受け取った。')
+    }
+    else if (xhr && xhr.readyState === 3) {
+      console.log('レスポンスボディを受信中である。')
+    }
+    else if (xhr && xhr.readyState === 4) {
+      console.log('レスポンスの受信が完了した。')
+      let responseMap = JSON.parse(xhr.responseText);
+
+      if (xhr.status === 200 ) {
+        elementMap.logout[0].style.visibility = 'visible';
+        elementMap.login[0].style.visibility = 'hidden';
+        elementMap.register[0].style.visibility = 'hidden';
+        elementMap.user_info.textContent =
+          `${responseMap.first} ${responseMap.last} としてログインしています`;
+      }
+      else {
+        elementMap.logout[0].style.visibility = 'hidden';
+        elementMap.login[0].style.visibility = 'visible';
+        elementMap.register[0].style.visibility = 'visible';
+        elementMap.user_info.textContent = 'こんにちはゲストさん';
+      }
+    }
+  };
+
+  // let xhr = null;
+  // XMLHttpRequestオブジェクトのインスタンスを生成する
+  xhr = createXMLHttpRequest();
+
+  // 受信した後の処理ほ登録する
+  xhr = setOnreadystatechange(xhr, onReceiveSession);
+  // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする
+  xhr = openXMLHttpRequest(xhr, requestType, url, async);
+  // xhr = setRequestHeader(xhr, 'application/json');
+  // リクエストを送信する
+  xhr = sendRequest(xhr);
+};
+//----- ユーティリティメソッド/readSessionStatus/終了 --------------------
 
 //----- ユーティリティメソッド/readSession/開始 --------------------
 export const readSession = () => {
@@ -352,20 +412,21 @@ export const initSendRequest = (request, requestType, url, async,
       console.log('Ajaxリクエストを実行しました');
     }
     else {
+      // POST以外。普通はGET
       request.send(null);
     }
   }
   catch (err) {
     alert('サーバーに接続できません。' +
           'しばらくたってからやり直して下さい。\n' +
-          'エラーの詳細: ' + err.message );
+          'エラーの詳細: ' + err.message);
   }
 };
 // initSendRequest終了
 
 //----- ユーティリティメソッド/onReceiveSession/開始 --------------------
 export const onReceiveSession = () => {
-  if ( request && request.readyState === 4 ) {
+  if (request && request.readyState === 4) {
     let responseMap = JSON.parse(request.responseText);
 
     if (request.status === 200 ) {

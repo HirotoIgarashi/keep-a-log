@@ -63,7 +63,7 @@ export const controlDom = (id) => {
   let siteButton;
   let siteButtonRect;
   let siteMenu;
-  let menu_ahchor;
+  let menuAnchor;
 
   const onClickTop = (/* event */) => setLocationHash('');
   const onClickLogout = (/* event */) => setLocationHash('logout');
@@ -115,9 +115,9 @@ export const controlDom = (id) => {
   siteMenu.style.top = siteButtonRect.bottom + 'px';
   addEventListener(siteButton, 'click', toggleMenu, false );
   // メニューのaタグを取得
-  menu_ahchor = querySelectorAll('#pal-nav-menu a' );
-  for (let i = 0; i < menu_ahchor.length; i = i + 1) {
-    addEventListener(menu_ahchor[i], 'click', toggleMenu, false );
+  menuAnchor = querySelectorAll('#pal-nav-menu a' );
+  for (let i = 0; i < menuAnchor.length; i = i + 1) {
+    addEventListener(menuAnchor[i], 'click', toggleMenu, false );
   }
   // ボタンのaria-pressed属性をtrueにする --------------------------
   setButtonPressed('pal-nav-home');

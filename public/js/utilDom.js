@@ -486,9 +486,8 @@ export const appendChildCurried = (element) => {
 };
 
 // 要素の前に要素を挿入する ----------------------------------------
-export const insertBefore =
-  ((source, destination) =>
-   destination.insertBefore(source, destination.firstChild));
+export const insertBefore = ((source, destination) =>
+  destination.insertBefore(source, destination.firstChild));
 
 // ツリー構造を受取りツリー構造を返す ------------------------------
 export const appendByTreeArray = (treeArray) => {
@@ -539,8 +538,7 @@ export const createLabelAndInput = (param) => {
   return [labelElement, inputElement];
 };
 
-const callbackById =
-  (id, callback) => callback(getElementById(id))
+const callbackById = (id, callback) => callback(getElementById(id))
 
 export const makeForm = (obj) => {
   let form = createElement('form');
@@ -594,7 +592,6 @@ export const makeForm = (obj) => {
       form.appendChild(div);
     }
   });
-
   return form;
 };
 
@@ -631,8 +628,7 @@ export const getValueFromForm = (
     }
     else {
       console.log(
-        'eventWeeklyParamとeventParamかeventScheduleParamが\
-一致です'
+        'eventWeeklyParamとeventParamかeventScheduleParamが一致します'
       );
     }
   });

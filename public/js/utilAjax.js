@@ -41,7 +41,7 @@ export const setRequestHeader = (request, contentType) => {
   return request;
 }
 
-export const sendRequest = (request) => {
+export const sendGetRequest = (request) => {
   request.send(null);
   return request;
 }

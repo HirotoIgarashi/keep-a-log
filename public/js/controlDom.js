@@ -6,7 +6,7 @@ import { createElement, createDocumentFragment, appendChild, getElementById,
 } from "./utilDom.js";
 import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
   // setRequestHeader,
-  sendRequest
+  sendGetRequest
 } from "./utilAjax.js";
 import { makeTop } from "./top.js";
 import { login } from "./login.js";
@@ -39,8 +39,6 @@ const configMap = {
 };
 
 let stateMap = { container: null };
-
-let request = null;
 
 // DOMメソッド/makeFooter/開始 -------------------------------------
 const makeFooter = () => {
@@ -94,13 +92,11 @@ export const controlDom = (id) => {
 
   // footerを表示する ----------------------------------------------
   appendChild(querySelector('#pal-footer'), makeFooter());
-
   // ウィンドウのサイズが変更されたときのイベント
   // window.addEventListener( 'resize', onResize );
 
   // DOM要素を取得する ---------------------------------------------
   setElementMap();
-
   // 機能モジュールを設定して初期化する/開始
   makeTop(mainPage);
 
@@ -148,7 +144,6 @@ export const controlDom = (id) => {
   // ボタンのaria-pressed属性をtrueにする --------------------------
   setButtonPressed('pal-nav-home');
   // セッションがあるかを確認する ----------------------------------
-  // readSession();
   readSessionStatus();
 
   //----- フッターに日時を表示する(初回) ---------------------------
@@ -270,7 +265,6 @@ export const setSection = () => {
       cycleSystem(mainSection);
       break;
     default:
-      // readSession();
       readSessionStatus();
       makeTop(mainSection);
       setButtonPressed('pal-nav-home');
@@ -335,122 +329,10 @@ const readSessionStatus = () => {
   xhr = openXMLHttpRequest(xhr, requestType, url, async);
   // xhr = setRequestHeader(xhr, 'application/json');
   // リクエストを送信する
-  xhr = sendRequest(xhr);
+  xhr = sendGetRequest(xhr);
 };
 //----- ユーティリティメソッド/readSessionStatus/終了 --------------------
 
-//----- ユーティリティメソッド/readSession/開始 --------------------
-export const readSession = () => {
-  const requestType = 'GET';
-  const url = '/session/read';
-  // AjaxによりGETする
-  sendXmlHttpRequest(requestType, url, true, onReceiveSession);
-};
-//----- ユーティリティメソッド/readSession/終了 --------------------
-
-// sendXmlHttpRequest開始
-// 目的: ブラウザごとに適切なXMLHttpRequestオブジェクトを生成して
-//       サーバに送信します。
-// 必須引数:
-//  * requestType     : HTTPリクエストの形式。GETかPOSTを指定します
-//  * url             : リクエスト先のURL
-//  * async           : 非同期呼び出しを行うか否かを指定します
-//  * responseHandle  : レスポンスを処理する関数
-//  * arguments[4]    : 5番目の引数はPOSTリクエストによって送信される
-//                      文字列を表します
-// オプション引数: なし
-// 設定:
-//  * xmlhttp
-// 戻り値: なし
-// 例外発行: なし
-//
-export const sendXmlHttpRequest = (requestType, url, async, responseHandle,
-  sendData ) => {
-  // let request = null;
-
-  if (window.XMLHttpRequest) {
-    // Mozillaベースのブラウザの場合
-    request = new XMLHttpRequest();
-  }
-  else if (window.ActiveXObject) {
-    // Internet Explorerの場合
-    request = new ActiveXObject("Msxml2.XMLHTTP");
-    if (!request) {
-      request = new ActiveXObject("Miforsoft.XMLHTTP");
-    }
-  }
-
-  // XMLHttpRequestオブジェクトが正しく生成された場合のみ、以降の処理に
-  // 進みます。
-  if (request) {
-    if (requestType.toLowerCase() !== 'post') {
-      // POSTリクエスト以外の処理
-      initSendRequest(request, requestType, url, async, responseHandle);
-    }
-    else {
-      // POSTの場合、5番目の引数で指定された値を送信します。
-      if (sendData !== null && sendData.length > 0) {
-        initSendRequest(
-          request, requestType, url, async, responseHandle, sendData
-        );
-      }
-    }
-    return request;
-  }
-  alert( 'このブラウザはAjaxに対応していません。' );
-  return false;
-};
-// sendXmlHttpRequest終了
-
-// initSendRequest開始
-export const initSendRequest = (request, requestType, url, async,
-  responseHandle, requestData) => {
-
-  try {
-    // HTTPレスポンスを処理するための関数を指定します。
-    request.onreadystatechange = responseHandle;
-    request.open(requestType, url, async);
-
-    if (requestType.toLowerCase() === "post") {
-      // POSTの場合はContent-Headerが必要です。
-      request.setRequestHeader( 'Content-Type', 'application/json' );
-      request.send(requestData);
-      console.log('Ajaxリクエストを実行しました');
-    }
-    else {
-      // POST以外。普通はGET
-      request.send(null);
-    }
-  }
-  catch (err) {
-    alert('サーバーに接続できません。' +
-          'しばらくたってからやり直して下さい。\n' +
-          'エラーの詳細: ' + err.message);
-  }
-};
-// initSendRequest終了
-
-//----- ユーティリティメソッド/onReceiveSession/開始 --------------------
-export const onReceiveSession = () => {
-  if (request && request.readyState === 4) {
-    let responseMap = JSON.parse(request.responseText);
-
-    if (request.status === 200 ) {
-      elementMap.logout[0].style.visibility = 'visible';
-      elementMap.login[0].style.visibility = 'hidden';
-      elementMap.register[0].style.visibility = 'hidden';
-      elementMap.user_info.textContent =
-        `${responseMap.first} ${responseMap.last} としてログインしています`;
-    }
-    else {
-      elementMap.logout[0].style.visibility = 'hidden';
-      elementMap.login[0].style.visibility = 'visible';
-      elementMap.register[0].style.visibility = 'visible';
-      elementMap.user_info.textContent = 'こんにちはゲストさん';
-    }
-  }
-};
-//----- ユーティリティメソッド/onReceiveSession/終了 --------------------
 // hashが変更されときの処理 ----------------------------------------
 const setButtonPressed = ((data) => {
   const palNavHome = getElementById('pal-nav-home');

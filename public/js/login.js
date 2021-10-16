@@ -3,16 +3,15 @@
 
 'use strict';
 
-import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import { setLocationHash } from "./controlDom.js";
 import {
   createDocumentFragment, createElement, setAttribute,
   innerHTML, createLabelAndInput, appendChild,
   getElementById, emptyElement
 } from "./utilDom.js";
-
-  //--------------------- モジュールスコープ変数開始 -----------------
-let request = null;
-//--------------------- モジュールスコープ変数終了 -----------------
+import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
+  setRequestHeader, sendPostRequest
+} from "./utilAjax.js";
 
 //--------------------- ユーティリティメソッド開始 -----------------
 const makeLoginForm = () => {
@@ -100,77 +99,78 @@ const makeLoginForm = () => {
 // --------------------- イベントハンドラ開始 ----------------------
 // 例: onClickButton = function ( event ) {};
 const onClickLogin = (event) => {
+  let xhr;
   const requestType = 'POST';
   const url = '/session/create';
-
-  let form_map = {};
+  const async = true;
+  let formMap = {};
 
   event.preventDefault();
 
   // フォームから入力された値を取得する
-  form_map.email = getElementById('inputEmail').value;
-  form_map.password = getElementById('inputPassword').value;
+  formMap.email = getElementById('inputEmail').value;
+  formMap.password = getElementById('inputPassword').value;
 
-  // XMLHttpRequestによる送信
-  request = sendXmlHttpRequest(
-    requestType,
-    url,
-    true,
-    onReceiveLogin,
-    JSON.stringify(form_map)
-  );
+  // --------------------- Loginの結果の処理 -------------------------
+  const onReceiveLogin = function () {
+    const messageArea = getElementById('message-area');
+    const userInfo = getElementById('pal-dom-user-info');
+    let response;
 
-};
+    if ( xhr && xhr.readyState === 4 ) {
 
-// --------------------- Loginの結果の処理 -------------------------
-const onReceiveLogin = function () {
-  const messageArea = getElementById('message-area');
-  const userInfo = getElementById('pal-dom-user-info');
-  let response;
+      console.log(xhr.response);
 
-  if ( request && request.readyState === 4 ) {
+      if (xhr.response) {
+        response = JSON.parse(xhr.response);
+      }
 
-    console.log(request.response);
+      if (xhr.status === 200) {
+      // ----- ログインが成功したときの処理 ------------------------
+        messageArea.removeAttribute( 'hidden' );
+        messageArea.textContent = 'ログインしました。ステータス: ' + xhr.status;
+        userInfo.innerHTML = response.email;
 
-    if (request.response) {
-      response = JSON.parse(request.response);
-    }
-
-    if (request.status === 200) {
-    // ----- ログインが成功したときの処理 ------------------------
-      messageArea.removeAttribute( 'hidden' );
-      messageArea.textContent = 'ログインしました。ステータス: ' + request.status;
-      userInfo.innerHTML = response.email;
-
-      setTimeout(() => {
-        messageArea.setAttribute( 'hidden', 'hidden' );
-        setLocationHash( '' );
-      }, 2000);
-    }
-    else {
-      messageArea.removeAttribute( 'hidden' );
-      switch (request.status) {
-        case 401:
-          console.log(response);
-          // messageArea.textContent =
-          // 'E-mailアドレスかパスワードが不正です。ステータス: ' +
-          // request.status;
-          messageArea.textContent = `${response.message}`;
-          break;
-        case 500:
-          messageArea.textContent =
-            'サーバエラーが発生しました。ステータス: ' +
-              request.status;
-          break;
-        default:
-          messageArea.textContent =
-            'エラーが発生しました。ステータス: ' + request.status;
+        setTimeout(() => {
+          messageArea.setAttribute( 'hidden', 'hidden' );
+          setLocationHash( '' );
+        }, 2000);
+      }
+      else {
+        messageArea.removeAttribute( 'hidden' );
+        switch (xhr.status) {
+          case 401:
+            console.log(response);
+            // messageArea.textContent =
+            // 'E-mailアドレスかパスワードが不正です。ステータス: ' +
+            // xhr.status;
+            messageArea.textContent = `${response.message}`;
+            break;
+          case 500:
+            messageArea.textContent =
+              'サーバエラーが発生しました。ステータス: ' +
+                xhr.status;
+            break;
+          default:
+            messageArea.textContent =
+              'エラーが発生しました。ステータス: ' + xhr.status;
+        }
       }
     }
-  }
+  };
+  // --------------------- イベントハンドラ終了 ----------------------
+  // XMLHttpRequestによる送信
+  xhr = createXMLHttpRequest();
+  // 受信した後の処理ほ登録する
+  xhr = setOnreadystatechange(xhr, onReceiveLogin);
+  // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする
+  xhr = openXMLHttpRequest(xhr, requestType, url, async);
+  // POSTの場合はRequest Headerを設定する
+  xhr = setRequestHeader(xhr, 'application/json');
+  // リクエストを送信する
+  xhr = sendPostRequest(xhr, JSON.stringify(formMap));
 };
 
-// --------------------- イベントハンドラ終了 ----------------------
 
 // --------------------- パブリックメソッド開始 --------------------
 // パブリックメソッド/login/開始

@@ -5,15 +5,17 @@
 
 'use strict';
 
-import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import { setLocationHash } from "./controlDom.js";
 import {
   createDocumentFragment, createElement, innerHTML,
   setAttribute, appendChild, getElementById,
   emptyElement
 } from "./utilDom.js";
-
+import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
+  // setRequestHeader,
+  sendGetRequest
+} from "./utilAjax.js";
 //--------------------- モジュールスコープ変数開始 -----------------
-let request = null;
 //--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- ユーティリティメソッド開始 -----------------
@@ -54,56 +56,57 @@ const makeLogOutPage = () => {
 //--------------------- DOMメソッド終了 ----------------------------
 
 // --------------------- イベントハンドラ開始 ----------------------
-const onClickAgree = function (event) {
-  let requestType = 'GET';
-  let url = '/session/delete';
+const onClickAgree = (event) => {
+  let xhr;
+  const requestType = 'GET';
+  const url = '/session/delete';
+  const async = true;
 
   event.preventDefault();
 
-  // XMLHttpRequestによる送信
-  request = sendXmlHttpRequest(
-    requestType,
-    url,
-    true,
-    onReceiveLogout
-  );
-};
+  //------ Logout処理/開始 ------------------------------------
+  const onReceiveLogout = function () {
+    const messageArea = getElementById('message-area');
 
-//------ Loginの結果の処理/開始 ------------------------------------
-const onReceiveLogout = function () {
-  const messageArea = getElementById('message-area');
-
-  if ( request && request.readyState === 4 ) {
-    if ( request.status === 200 ) {
-      messageArea.textContent =
-        'ログアウトしました。ステータス: ' + request.status;
-      setTimeout( function () {
-        setLocationHash('');
-      }, 1500);
-    }
-    else {
-      switch (request.status) {
-        case 404:
-          messageArea.textContent =
-            'URLが存在しません。ステータス: ' + request.status;
-          break;
-        case 401:
-          messageArea.textContent =
-            'エラーが発生しました。ステータス: ' + request.status;
-          break;
-        case 500:
-          messageArea.textContent =
-            'サーバエラーが発生しました。ステータス: ' +
-              request.status;
-          break;
-        default:
-          messageArea.textContent =
-            'エラーが発生しました。ステータス: ' + request.status;
+    if (xhr && xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        messageArea.textContent = `ログアウトしました。ステータス: ${xhr.status}`;
+        setTimeout(() => setLocationHash(''), 1500);
+      }
+      else {
+        switch (xhr.status) {
+          case 404:
+            messageArea.textContent =
+              `URLが存在しません。ステータス: ${xhr.status}`;
+            break;
+          case 401:
+            messageArea.textContent =
+              `エラーが発生しました。ステータス: ${xhr.status}`;
+            break;
+          case 500:
+            messageArea.textContent =
+              `サーバエラーが発生しました。ステータス: ${xhr.status}`;
+            break;
+          default:
+            messageArea.textContent =
+              `エラーが発生しました。ステータス: ${xhr.status}`;
+        }
       }
     }
-  }
+  };
+  //------ Logout処理/終了 ------------------------------------
+
+  // XMLHttpRequestオブジェクトのインスタンスを生成する
+  xhr = createXMLHttpRequest();
+  // 受信した後の処理ほ登録する
+  xhr = setOnreadystatechange(xhr, onReceiveLogout);
+  // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする
+  xhr = openXMLHttpRequest(xhr, requestType, url, async);
+  // xhr = setRequestHeader(xhr, 'application/json');
+  // リクエストを送信する
+  xhr = sendGetRequest(xhr);
 };
-//------ Loginの結果の処理/終了 ------------------------------------
+
 
 // キャンセルボタンクリックされたときの処理/開始
 const onClickCancel = function () {
@@ -135,7 +138,6 @@ export const logout = () => {
   cancelButton.addEventListener('click', onClickCancel );
 
   return true;
-
 };
 // パブリックメソッド/initModule/終了
 

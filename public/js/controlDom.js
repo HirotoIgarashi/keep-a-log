@@ -310,6 +310,14 @@ const readSessionStatus = () => {
         elementMap.user_info.textContent =
           `${responseMap.first} ${responseMap.last} としてログインしています`;
       }
+      else if (xhr.status === 203 ) {
+        console.log('ステータス203が返されました。');
+        console.log(responseMap);
+        elementMap.logout[0].style.visibility = 'hidden';
+        elementMap.login[0].style.visibility = 'visible';
+        elementMap.register[0].style.visibility = 'visible';
+        elementMap.user_info.textContent = 'こんにちはゲストさん';
+      }
       else {
         elementMap.logout[0].style.visibility = 'hidden';
         elementMap.login[0].style.visibility = 'visible';
@@ -319,10 +327,8 @@ const readSessionStatus = () => {
     }
   };
 
-  // let xhr = null;
   // XMLHttpRequestオブジェクトのインスタンスを生成する
   xhr = createXMLHttpRequest();
-
   // 受信した後の処理ほ登録する
   xhr = setOnreadystatechange(xhr, onReceiveSession);
   // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする

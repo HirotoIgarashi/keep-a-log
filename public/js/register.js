@@ -5,15 +5,18 @@
 
 'use strict';
 
-import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+// import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
+import { setLocationHash } from "./controlDom.js";
 import {
   emptyElement, createDocumentFragment, querySelector,
   createElement, setAttribute, innerHTML,
   createLabelAndInput, appendChild, getElementById
 } from "./utilDom.js";
+import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
+  setRequestHeader, sendPostRequest
+} from "./utilAjax.js";
 
 //--------------------- モジュールスコープ変数開始 -----------------
-let request = null;
 //--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- ユーティリティメソッド開始 -----------------
@@ -148,96 +151,107 @@ const makeRegisterForm = () => {
 // -- イベントハンドラ(onClickRegister)開始 ------------------------
 const onClickRegister = (event) => {
   // XMLHttpRequestによる送信を行う
+  let xhr;
   const requestType = 'POST';
   const url = '/user/create';
+  const async = true;
+  let formMap = {};
 
-  let form_map = {};
+  // -- イベントハンドラ(onReceiveRegister)開始 ----------------------
+  // Registerの結果の処理
+  const onReceiveRegister = function () {
+    const messageArea = getElementById('message-area');
+
+    if (xhr && xhr.readyState === 4) {
+      if (xhr.status === 201) {
+        messageArea.removeAttribute('hidden');
+        messageArea.textContent =
+          'ユーザを作成しました。ステータス: ' + xhr.status;
+        setTimeout(function () {
+          messageArea.setAttribute('hidden', 'hidden');
+          setLocationHash('');
+        }, 5000);
+      }
+      else {
+        let responseArray = JSON.parse(xhr.response);
+
+        console.log(responseArray);
+        console.log(typeof responseArray);
+
+        // validate結果を表示する
+        if (typeof responseArray !== 'object') {
+          responseArray.forEach((response) => {
+            let inputTag = querySelector(`input[name='${response.param}']`);
+            inputTag.style.borderColor = 'red';
+            inputTag.nextElementSibling.innerHTML += response.msg;
+          });
+        }
+
+        messageArea.removeAttribute('hidden');
+        switch (xhr.status) {
+          case 401:
+            messageArea.textContent =
+              'メールアドレスかパスワードが不正です。ステータス: ' +
+              xhr.status;
+            break;
+          case 409:
+            messageArea.textContent =
+              '入力されたメールアドレスはすでに使われています。ステータス: ' +
+              xhr.status;
+              break;
+          case 422:
+            messageArea.textContent =
+              '入力された値が正しくありません。再度入力してください ステータス: ' +
+              xhr.status;
+            break;
+          case 500:
+            messageArea.textContent =
+              'サーバエラーが発生しました。ステータス: ' + xhr.status;
+            break;
+          default:
+            messageArea.textContent =
+              'エラーが発生しました。ステータス: ' + xhr.status;
+        }
+      }
+    }
+  };
+  // -- イベントハンドラ(onReceiveRegister)終了 ----------------------
+  // --------------------- イベントハンドラ終了 ----------------------
 
   event.preventDefault();
 
   // フォームから入力された値を取得する
-  form_map.first = getElementById('inputFirstName').value;
-  form_map.last = getElementById('inputLastName').value;
-  form_map.password = getElementById('inputPassword').value;
-  form_map.email = getElementById('inputEmail').value;
-  // form_map.zipCode = getElementById('inputZipCode').value;
+  formMap.first = getElementById('inputFirstName').value;
+  formMap.last = getElementById('inputLastName').value;
+  formMap.password = getElementById('inputPassword').value;
+  formMap.email = getElementById('inputEmail').value;
+  // formMap.zipCode = getElementById('inputZipCode').value;
+
+  xhr = createXMLHttpRequest();
+  // 受信した後の処理ほ登録する
+  xhr = setOnreadystatechange(xhr, onReceiveRegister);
+  // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする
+  xhr = openXMLHttpRequest(xhr, requestType, url, async);
+  // POSTの場合はRequest Headerを設定する
+  xhr = setRequestHeader(xhr, 'application/json');
+  // リクエストを送信する
+  xhr = sendPostRequest(xhr, JSON.stringify(formMap));
 
   console.log('登録ボタンが押されました');
   // XMLHttpRequestによる送信
-  request = sendXmlHttpRequest(
-    requestType,
-    url,
-    true,
-    onReceiveRegister,
-    JSON.stringify(form_map)
-  );
+  // request = sendXmlHttpRequest(
+  //   requestType,
+  //   url,
+  //   true,
+  //   onReceiveRegister,
+  //   JSON.stringify(formMap)
+  // );
 
   // inputフォームを初期化する
   // resetInputForm(['password', 'email', 'zipCode']);
   resetInputForm(['password', 'email']);
 };
 // -- イベントハンドラ(onClickRegister)終了 ------------------------
-
-// -- イベントハンドラ(onReceiveRegister)開始 ----------------------
-// Registerの結果の処理
-const onReceiveRegister = function () {
-  const messageArea = getElementById('message-area');
-
-  if (request && request.readyState === 4) {
-    if (request.status === 201) {
-      messageArea.removeAttribute('hidden');
-      messageArea.textContent =
-        'ユーザを作成しました。ステータス: ' + request.status;
-      setTimeout(function () {
-        messageArea.setAttribute('hidden', 'hidden');
-        setLocationHash('');
-      }, 5000);
-    }
-    else {
-      let responseArray = JSON.parse(request.response);
-
-      console.log(responseArray);
-      console.log(typeof responseArray);
-
-      // validate結果を表示する
-      if (typeof responseArray !== 'object') {
-        responseArray.forEach((response) => {
-          let inputTag = querySelector(`input[name='${response.param}']`);
-          inputTag.style.borderColor = 'red';
-          inputTag.nextElementSibling.innerHTML += response.msg;
-        });
-      }
-
-      messageArea.removeAttribute('hidden');
-      switch (request.status) {
-        case 401:
-          messageArea.textContent =
-            'メールアドレスかパスワードが不正です。ステータス: ' +
-            request.status;
-          break;
-        case 409:
-          messageArea.textContent =
-            '入力されたメールアドレスはすでに使われています。ステータス: ' +
-            request.status;
-            break;
-        case 422:
-          messageArea.textContent =
-            '入力された値が正しくありません。再度入力してください ステータス: ' +
-            request.status;
-          break;
-        case 500:
-          messageArea.textContent =
-            'サーバエラーが発生しました。ステータス: ' + request.status;
-          break;
-        default:
-          messageArea.textContent =
-            'エラーが発生しました。ステータス: ' + request.status;
-      }
-    }
-  }
-};
-// -- イベントハンドラ(onReceiveRegister)終了 ----------------------
-// --------------------- イベントハンドラ終了 ----------------------
 
 // --------------------- パブリックメソッド開始 --------------------
 // -- パブリックメソッド(register)開始 ---------------------------

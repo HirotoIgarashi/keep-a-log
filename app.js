@@ -177,7 +177,7 @@ app.get('/session/read', (req, res) => {
 // ------ Ajaxの/user/logoutのget処理 --------------------------------
 app.get('/session/delete', (req, res) => {
   // ------ ログアウトの処理 -----------------------------------------
-  req.session.destroy((err) => {
+  req.session.destroy(() => {
     res.status(200);
     res.end();
     return;
@@ -232,11 +232,15 @@ app.post('/user/create', (req, res, next) => {
           email: email, password: password
         }
         dataStorage.create(user, 'user')
-          .then(() => res.status(201).json(user), next)
+          .then(() => {
+            req.session.user = user;
+            res.status(201).json(user);
+          }, next)
       }
     })
+  return next;
 });
-// app.post('/user/create', () => {
+// app.post('/user/creat', () => {
 //   // usersController.validateItem(),
 //   // ----- validateする項目を定義する --------------------------------
 //   // バリデーションルール

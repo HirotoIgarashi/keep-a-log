@@ -45,3 +45,7 @@ export const sendRequest = (request) => {
   request.send(null);
   return request;
 }
+export const sendPostRequest = (request, requestData) => {
+  request.send(requestData);
+  return request;
+}

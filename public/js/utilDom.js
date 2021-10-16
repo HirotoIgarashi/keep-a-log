@@ -6,19 +6,19 @@
 // パブリックコンストラクタ/makeError/開始
 // 目的: エラーオブジェクトを作成する便利なラッパー
 // 引数:
-//  * name_text - エラー名
-//  * msg_text  - 長いエラーメッセージ
+//  * nameText - エラー名
+//  * msgText  - 長いエラーメッセージ
 //  * data      - エラーオブジェクトに付加するオプションのデータ
 // 戻り値: 新たに作成されたエラーオブジェクト
 // 例外発行: なし
 //
-export const makeError = (name_text, msg_text, data) => {
+export const makeError = (nameText, msgText, data) => {
   let error = new Error();
 
-  error.name = name_text;
-  error.message = msg_text;
+  error.name = nameText;
+  error.message = msgText;
 
-  if (data) { error.data = data; }
+  if (data) {error.data = data;}
   return error;
 };
 // パブリックコンストラクタ/makeError/終了
@@ -26,18 +26,18 @@ export const makeError = (name_text, msg_text, data) => {
 // ユーティリティメソッド/addChange/開始
 export const addChange = (ob) => {
   ob.change = (callback) => {
-    if ( callback ) {
-      if ( !this._change ) {
+    if (callback) {
+      if (!this._change) {
         this._change = [];
       }
-      this._change.push( callback );
+      this._change.push(callback);
     }
     else {
-      if ( !this._change ) {
+      if (!this._change) {
         return;
       }
-      for (let i = 0; i < this._change.length; i++ ) {
-        this._change[i].apply( this );
+      for (let i = 0; i < this._change.length; i++) {
+        this._change[i].apply(this);
       }
     }
   };
@@ -51,19 +51,19 @@ export const addChange = (ob) => {
 // 例外発行: なし
 //
 export const clearFormAll = () => {
-  for (let i = 0; i < document.forms.length; i += 1 ) {
-    clearForm( document.forms[i] );
+  for (let i = 0; i < document.forms.length; i += 1) {
+    clearForm(document.forms[i]);
   }
 };
 // パブリックメソッド/clearFormAll/終了
 const clearForm = (form) => {
-  for (let i = 0; i < form.elements.length; i += 1 ) {
-    clearElement( form.elements[i] );
+  for (let i = 0; i < form.elements.length; i += 1) {
+    clearElement(form.elements[i]);
   }
 };
 
 const clearElement = (element) => {
-  switch( element.type ) {
+  switch(element.type) {
     case 'hidden':
     case 'submit':
     case 'reset':
@@ -99,7 +99,7 @@ const clearElement = (element) => {
 //
 export const emptyElementById = (elementId) => {
   // 新規作成のアンカーを削除する
-  let element = document.getElementById(elementId);
+  let element = getElementById(elementId);
   while (element && element.firstChild) {
     element.removeChild(element.firstChild);
   }
@@ -116,13 +116,12 @@ export const emptyElementById = (elementId) => {
 //
 export const showElement = (elementId, showCallback) => {
   // 要素の取得
-  let element  = document.getElementById(elementId);
+  let element  = getElementById(elementId);
 
   // 要素を表示する
   element.hidden = false;
-
   // 要素を表示する WAI
-  element.setAttribute('aria-pressed', 'false');
+  setAttribute(element, 'aria-pressed', 'false');
 
   if (showCallback) {
     console.log('showCallback');
@@ -142,11 +141,11 @@ export const showElement = (elementId, showCallback) => {
 //
 export const hideElement = (elementId, hideCallback) => {
   // 要素の取得
-  let element  = document.getElementById(elementId);
+  let element  = getElementById(elementId);
   // 要素を表示する
   element.hidden = true;
   // 要素を表示する WAI
-  element.setAttribute('aria-pressed', 'true');
+  setAttribute(element, 'aria-pressed', 'true');
 
   if (hideCallback) {
     console.log('hide_callback');
@@ -163,45 +162,41 @@ export const hideElement = (elementId, hideCallback) => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const toggleElement = (before_id, after_id, show_callback, hide_callback) => {
-  var
-    before_element,
-    after_element;
-
+export const toggleElement = (beforeId, afterId, showCallback, hideCallback) => {
   // 要素の取得
-  before_element  = document.getElementById( before_id );
-  after_element = document.getElementById( after_id );
+  let beforeElement  = getElementById(beforeId);
+  let afterElement = getElementById(afterId);
 
   // 最初の要素の初期状態: 表示 この処理では何もしない
   // 2番目の要素の初期状態: 非表示
-  hideElement( after_id );
+  hideElement(afterId);
 
   // 最初の要素が押されたら、
   // ・ 最初の要素を非表示にする
   // ・ 2番目の要素を表示する
-  before_element.addEventListener( 'click', function () {
-    hideElement( before_id );
+  beforeElement.addEventListener( 'click', function () {
+    hideElement(beforeId);
 
-    if ( show_callback ) {
-      showElement( after_id, show_callback );
+    if (showCallback) {
+      showElement( afterId, showCallback );
     }
     else {
-      showElement( after_id );
+      showElement( afterId );
     }
   });
 
   // 2番目の要素が押されたら、
   // ・ 2番目の要素を非表示にする
   // ・ 最初の要素を表示する
-  after_element.addEventListener('click', () => {
-    if ( hide_callback ) {
-      hideElement( after_id, hide_callback );
+  afterElement.addEventListener('click', () => {
+    if (hideCallback) {
+      hideElement(afterId, hideCallback);
     }
     else {
-      hideElement( after_id );
+      hideElement(afterId);
     }
 
-    showElement( before_id );
+    showElement(beforeId);
   });
 };
 // パブリックメソッド/toggleElement/終了
@@ -304,6 +299,13 @@ export const checkInputField = (event, checkFunc) => {
 };
 // パブリックメソッド/checkInputField/終了
 
+//--------------------- ユーティリティメソッド開始 -----------------
+export const supportsTemplate = () => {
+  const template  = createElement('template');
+  return template.content !== undefined;
+};
+// ユーティリティメソッド/supportsTemplate/終了
+
 // getTplContent/開始
 // 目的: テンプレートからコンテンツを取得して返す。
 // 必須引数: IDの値
@@ -313,7 +315,7 @@ export const checkInputField = (event, checkFunc) => {
 // 例外発行: なし
 export const getTplContent = (templateId) => {
   let content;
-  let tpl = document.getElementById( templateId );
+  let tpl = getElementById( templateId );
 
   if (tpl) {
     content = tpl.content.cloneNode(true);
@@ -335,7 +337,7 @@ export const querySelectorAll = (selector) => document.querySelectorAll(selector
 export const getValue = (element) => element.value;
 
 export const setValue = (value) => {
-  return (element) => element.setAttribute('value', value);
+  return (element) => setAttribute(element, 'value', value);
 };
 
 // パブリックメソッド/emptyElement/開始
@@ -375,7 +377,7 @@ export const createElement = (arg, option) => {
           element.value = option[data];
         }
         else {
-          element.setAttribute(data, option[data])
+          setAttribute(element, data, option[data])
         }
       })
     }
@@ -538,7 +540,7 @@ export const createLabelAndInput = (param) => {
 };
 
 const callbackById =
-  (id, callback) => callback(document.getElementById(id))
+  (id, callback) => callback(getElementById(id))
 
 export const makeForm = (obj) => {
   let form = createElement('form');
@@ -547,48 +549,48 @@ export const makeForm = (obj) => {
     if (key === 'eventId' || key === 'eventScheduleId') {
       // inputタグの設定 ---------------------------------------------
       let input = createElement('input');
-      input.setAttribute('id', key);
-      input.setAttribute('class', obj[key]['class']);
+      setAttribute(input, 'id', key);
+      setAttribute(input, 'class', obj[key]['class']);
       form.appendChild(input);
     }
     else {
       let label = createElement('label');
-      label.setAttribute('for', key);
+      setAttribute(label, 'for', key);
       label.textContent = obj[key].labelText;
       form.appendChild(label);
 
       // inputタグの設定 ---------------------------------------------
       let input = createElement('input');
-      input.setAttribute('id', key);
+      setAttribute(input, 'id', key);
       // type属性の設定 ----------------------------------------------
       if (obj[key].type.name === 'String') {
-        input.setAttribute('type', 'text');
+        setAttribute(input, 'type', 'text');
       }
       else if (obj[key].type.name === 'Number') {
-        input.setAttribute('type', 'number');
+        setAttribute(input, 'type', 'number');
       }
       // min属性の設定 -----------------------------------------------
       if (obj[key].min) {
-        input.setAttribute('min', obj[key].min);
+        setAttribute(input, 'min', obj[key].min);
       }
       // max属性の設定 -----------------------------------------------
       if (obj[key].max) {
-        input.setAttribute('max', obj[key].max);
+        setAttribute(input, 'max', obj[key].max);
       }
-      input.setAttribute('name', key);
+      setAttribute(input, 'name', key);
       // placeholderの設定 -------------------------------------------
       if (obj[key].placeholder) {
-        input.setAttribute('placeholder', obj[key].placeholder);
+        setAttribute(input, 'placeholder', obj[key].placeholder);
       }
-      input.setAttribute('aria-describedby', key + '-tooltip');
+      setAttribute(input, 'aria-describedby', key + '-tooltip');
       // required属性の設定 ------------------------------------------
       if (obj[key].required === true) {
         input.required = true;
       }
       form.appendChild(input);
       let div = createElement('div');
-      div.setAttribute('roll', 'tooltip')
-      div.setAttribute('id', key + '-tooltip');
+      setAttribute(div, 'roll', 'tooltip')
+      setAttribute(div, 'id', key + '-tooltip');
       form.appendChild(div);
     }
   });

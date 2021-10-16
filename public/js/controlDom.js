@@ -2,7 +2,8 @@
 
 import { getNowDateJp } from "./utilCore.js";
 import { createElement, createDocumentFragment, appendChild, getElementById,
-  getElementsByClassName, querySelector, querySelectorAll
+  getElementsByClassName, querySelector, querySelectorAll,
+  setAttribute, addEventListener, supportsTemplate
 } from "./utilDom.js";
 import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
   // setRequestHeader,
@@ -23,17 +24,10 @@ import { registSchedule } from "./registSchedule.js";
 
 export let elementMap = {};
 
-//--------------------- ユーティリティメソッド開始 -----------------
-const supportsTemplate = () => {
-  const template  = createElement('template');
-  return template.content !== undefined;
-};
-// ユーティリティメソッド/supportsTemplate/終了
-
 const configMap = {
-  logout_title          : 'ログアウトします。',
-  login_title           : 'IDとパスワードでログインします。',
-  register_title        : 'IDとパスワードを登録します。',
+  logouttle          : 'ログアウトします。',
+  login_le           : 'IDとパスワードでログインします。',
+  registtitle        : 'IDとパスワードを登録します。',
   menu_retracted_title  : 'クリックしてメニューを開きます',
   menu_extended_title   : 'クリックしてメニューを閉じます'
 };
@@ -43,7 +37,7 @@ let stateMap = { container: null };
 // DOMメソッド/makeFooter/開始 -------------------------------------
 const makeFooter = () => {
   let frag = createDocumentFragment();
-  let spanElement = createElement('span', { id: 'pal-dom-date-info' });
+  let spanElement = createElement('span', {id: 'pal-dom-date-info'});
   // -----HTMLを組み立てる------------------------------------------
   appendChild(frag, spanElement);
   return frag;
@@ -63,20 +57,17 @@ const makeFooter = () => {
 // 例外発行: なし
 //
 export const controlDom = (id) => {
+  const mainPage = querySelector('#main-page').content;
   // 与えられたidをDOMの中から探す
   let content = getElementById(id);
-  const mainPage = querySelector('#main-page').content;
   let siteButton;
   let siteButtonRect;
   let siteMenu;
   let menu_ahchor;
 
   const onClickTop = (/* event */) => setLocationHash('');
-
   const onClickLogout = (/* event */) => setLocationHash('logout');
-
   const onClickLogin = (/* event */) => setLocationHash('login');
-
   const onClickRegister = (/* event */) => setLocationHash('register');
 
   // HTMLをロードしマッピングする
@@ -89,69 +80,54 @@ export const controlDom = (id) => {
   else {
     console.log('templateは利用できません。');
   }
-
   // footerを表示する ----------------------------------------------
   appendChild(querySelector('#pal-footer'), makeFooter());
   // ウィンドウのサイズが変更されたときのイベント
-  // window.addEventListener( 'resize', onResize );
+  // addEventListener(window, 'resize', onResize );
 
   // DOM要素を取得する ---------------------------------------------
   setElementMap();
   // 機能モジュールを設定して初期化する/開始
   makeTop(mainPage);
-
   // 機能モジュールを設定して初期化する/終了
-
   // クリックハンドラをバインドする
   // ヘッダーのトップ
-  elementMap.top[0].addEventListener('click', onClickTop);
-
+  addEventListener(elementMap.top[0], 'click', onClickTop);
   // ヘッダーのログアウト
-  elementMap.logout[0].setAttribute('title', configMap.logout_title);
-  elementMap.logout[0].addEventListener('click', onClickLogout);
-
+  setAttribute(elementMap.logout[0], 'title', configMap.logout_title);
+  addEventListener(elementMap.logout[0], 'click', onClickLogout);
   // ヘッダーのログイン要素
-  elementMap.login[0].setAttribute('title', configMap.login_title);
-  elementMap.login[0].addEventListener('click', onClickLogin);
-
+  setAttribute(elementMap.login[0], 'title', configMap.login_title);
+  addEventListener(elementMap.login[0], 'click', onClickLogin);
   // ヘッダーのサインアップ要素
-  elementMap.register[0].setAttribute('title', configMap.register_title);
-  elementMap.register[0].addEventListener('click', onClickRegister);
-
+  setAttribute(elementMap.register[0], 'title', configMap.register_title);
+  addEventListener(elementMap.register[0], 'click', onClickRegister);
   // ボタンとメニューのノードを取得
   siteButton = querySelector('.pal-dom-header-menu');
   siteMenu = querySelector('[aria-label="サイト"]');
-
   // 初期の(メニューが閉じているときの)状態と設定
-  siteButton.setAttribute('aria-expanded', 'false');
+  setAttribute(siteButton, 'aria-expanded', 'false');
   siteButton.hidden = false;
   siteMenu.hidden = true;
-
   // サイトボタンの位置座標を取得してメニューの表示位置を指定する
   // サイトボタンのbottomをサイトメニューのtopに指定する
   siteButtonRect = siteButton.getBoundingClientRect();
   siteMenu.style.top = siteButtonRect.bottom + 'px';
-
-  siteButton.addEventListener('click', toggleMenu, false );
-
+  addEventListener(siteButton, 'click', toggleMenu, false );
   // メニューのaタグを取得
   menu_ahchor = querySelectorAll('#pal-nav-menu a' );
-
   for (let i = 0; i < menu_ahchor.length; i = i + 1) {
-    menu_ahchor[i].addEventListener('click', toggleMenu, false );
+    addEventListener(menu_ahchor[i], 'click', toggleMenu, false );
   }
-
   // ボタンのaria-pressed属性をtrueにする --------------------------
   setButtonPressed('pal-nav-home');
   // セッションがあるかを確認する ----------------------------------
   readSessionStatus();
-
   //----- フッターに日時を表示する(初回) ---------------------------
-  elementMap.date_info.textContent = getNowDateJp();
-
+  elementMap.dateInfo.textContent = getNowDateJp();
   //------ フッターに日時を表示する(次回以降) ----------------------
   setInterval(() => {
-    elementMap.date_info.textContent = getNowDateJp();
+    elementMap.dateInfo.textContent = getNowDateJp();
   }, 1000 );
   // URIのハッシュ変更イベントを処理する。
   // これはすべての機能モジュールを設定して初期化した後に行う。
@@ -159,7 +135,7 @@ export const controlDom = (id) => {
   // トリガーイベントはアンカーがロード状態と見なせることを保証する
   // ために使う
   if (Object.prototype.hasOwnProperty.call(window, "onhashchange")) {
-     window.addEventListener( "hashchange", onHashchange, false );
+     addEventListener(window, "hashchange", onHashchange, false );
   }
 };
 // パブリックメソッド/initModule/終了
@@ -181,8 +157,8 @@ export const getLocationHash = () => {
 export const setElementMap = () => {
   elementMap = {
     top       : getElementsByClassName('pal-dom-header-title'),
-    user_info : getElementById('pal-dom-user-info'),
-    date_info : getElementById('pal-dom-date-info'),
+    userInfo : getElementById('pal-dom-user-info'),
+    dateInfo : getElementById('pal-dom-date-info'),
     logout    : getElementsByClassName('pal-dom-header-logout'),
     login     : getElementsByClassName('pal-dom-header-login'),
     register  : getElementsByClassName('pal-dom-header-register')
@@ -204,7 +180,7 @@ const toggleMenu = () => {
   // メニューの表示非表示を切り替える
   let expanded = siteButton.getAttribute( 'aria-expanded' ) === 'true';
 
-  siteButton.setAttribute('aria-expanded', String(!expanded));
+  setAttribute(siteButton, 'aria-expanded', String(!expanded));
   siteMenu.hidden = expanded;
 };
 // ユーティリティメソッド/toggleMenu/終了
@@ -301,7 +277,7 @@ const readSessionStatus = () => {
         elementMap.logout[0].style.visibility = 'visible';
         elementMap.login[0].style.visibility = 'hidden';
         elementMap.register[0].style.visibility = 'hidden';
-        elementMap.user_info.textContent =
+        elementMap.userInfo.textContent =
           `${responseMap.first} ${responseMap.last} としてログインしています`;
       }
       else if (xhr.status === 203 ) {
@@ -310,17 +286,16 @@ const readSessionStatus = () => {
         elementMap.logout[0].style.visibility = 'hidden';
         elementMap.login[0].style.visibility = 'visible';
         elementMap.register[0].style.visibility = 'visible';
-        elementMap.user_info.textContent = 'こんにちはゲストさん';
+        elementMap.userInfo.textContent = 'こんにちはゲストさん';
       }
       else {
         elementMap.logout[0].style.visibility = 'hidden';
         elementMap.login[0].style.visibility = 'visible';
         elementMap.register[0].style.visibility = 'visible';
-        elementMap.user_info.textContent = 'こんにちはゲストさん';
+        elementMap.userInfo.textContent = 'こんにちはゲストさん';
       }
     }
   };
-
   // XMLHttpRequestオブジェクトのインスタンスを生成する
   xhr = createXMLHttpRequest();
   // 受信した後の処理ほ登録する
@@ -346,11 +321,11 @@ const setButtonPressed = ((data) => {
 
   if (!data) {
     elementArray.forEach(
-      (element) => element.setAttribute('aria-pressed', 'false')
+      (element) => setAttribute(element, 'aria-pressed', 'false')
     );
   }
   else {
-    getElementById(`${data}`).setAttribute('aria-pressed', 'true');
+    setAttribute(getElementById(`${data}`), 'aria-pressed', 'true');
   }
 });
 // --------------------- イベントハンドラ開始 ----------------------

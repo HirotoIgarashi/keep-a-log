@@ -7,6 +7,7 @@ import { createElement, createDocumentFragment, appendChild, getElementById,
 } from "./utilDom.js";
 import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
   // setRequestHeader,
+  // onReceiveRequest,
   sendGetRequest
 } from "./utilAjax.js";
 import { makeTop } from "./top.js";
@@ -255,47 +256,76 @@ const readSessionStatus = () => {
   const requestType = 'GET';
   const url = '/session/read';
   const async = true;
-  // const sendData = undefined;
-  const onReceiveSession = () => {
-    if (xhr && xhr.readyState === 0) {
-      console.log('open()はまだ呼び出されていない。')
-    }
-    else if (xhr && xhr.readyState === 1) {
-      console.log('open()が呼び出された。')
-    }
-    else if (xhr && xhr.readyState === 2) {
-      console.log('ヘッダを受け取った。')
-    }
-    else if (xhr && xhr.readyState === 3) {
-      console.log('レスポンスボディを受信中である。')
-    }
-    else if (xhr && xhr.readyState === 4) {
-      console.log('レスポンスの受信が完了した。')
-      let responseMap = JSON.parse(xhr.responseText);
 
-      if (xhr.status === 200 ) {
-        elementMap.logout[0].style.visibility = 'visible';
-        elementMap.login[0].style.visibility = 'hidden';
-        elementMap.register[0].style.visibility = 'hidden';
-        elementMap.userInfo.textContent =
-          `${responseMap.first} ${responseMap.last} としてログインしています`;
-      }
-      else if (xhr.status === 203 ) {
-        console.log('ステータス203が返されました。');
-        console.log(responseMap);
-        elementMap.logout[0].style.visibility = 'hidden';
-        elementMap.login[0].style.visibility = 'visible';
-        elementMap.register[0].style.visibility = 'visible';
-        elementMap.userInfo.textContent = 'こんにちはゲストさん';
-      }
-      else {
-        elementMap.logout[0].style.visibility = 'hidden';
-        elementMap.login[0].style.visibility = 'visible';
-        elementMap.register[0].style.visibility = 'visible';
-        elementMap.userInfo.textContent = 'こんにちはゲストさん';
-      }
-    }
-  };
+  // const sendData = undefined;
+
+  // let callback = {
+  //   '200':() => {
+  //     console.log('レスポンスの受信が完了した。')
+  //     let responseMap = JSON.parse(xhr.responseText);
+  //     elementMap.logout[0].style.visibility = 'visible';
+  //     elementMap.login[0].style.visibility = 'hidden';
+  //     elementMap.register[0].style.visibility = 'hidden';
+  //     elementMap.userInfo.textContent =
+  //      `${responseMap.first} ${responseMap.last} としてログインしています`;
+  //   },
+  //   '203':() => {
+  //     console.log('レスポンスの受信が完了した。')
+  //     elementMap.logout[0].style.visibility = 'hidden';
+  //     elementMap.login[0].style.visibility = 'visible';
+  //     elementMap.register[0].style.visibility = 'visible';
+  //     elementMap.userInfo.textContent = 'こんにちはゲストさん';
+  //   },
+  //   'other':() => {
+  //     console.log('レスポンスの受信が完了した。')
+  //     elementMap.logout[0].style.visibility = 'hidden';
+  //     elementMap.login[0].style.visibility = 'visible';
+  //     elementMap.register[0].style.visibility = 'visible';
+  //     elementMap.userInfo.textContent = 'こんにちはゲストさん';
+  //   }
+  // }
+//
+  // const onReceiveSession = onReceiveRequest(xhr, callback);
+
+   const onReceiveSession = () => {
+     if (xhr && xhr.readyState === 0) {
+       console.log('open()はまだ呼び出されていない。')
+     }
+     else if (xhr && xhr.readyState === 1) {
+       console.log('open()が呼び出された。')
+     }
+     else if (xhr && xhr.readyState === 2) {
+       console.log('ヘッダを受け取った。')
+     }
+     else if (xhr && xhr.readyState === 3) {
+       console.log('レスポンスボディを受信中である。')
+     }
+     else if (xhr && xhr.readyState === 4) {
+       console.log('レスポンスの受信が完了した。')
+       let responseMap = JSON.parse(xhr.responseText);
+       if (xhr.status === 200 ) {
+         elementMap.logout[0].style.visibility = 'visible';
+         elementMap.login[0].style.visibility = 'hidden';
+         elementMap.register[0].style.visibility = 'hidden';
+         elementMap.userInfo.textContent =
+           `${responseMap.first} ${responseMap.last} としてログインしています`;
+       }
+       else if (xhr.status === 203 ) {
+         console.log('ステータス203が返されました。');
+         console.log(responseMap);
+         elementMap.logout[0].style.visibility = 'hidden';
+         elementMap.login[0].style.visibility = 'visible';
+         elementMap.register[0].style.visibility = 'visible';
+         elementMap.userInfo.textContent = 'こんにちはゲストさん';
+       }
+       else {
+         elementMap.logout[0].style.visibility = 'hidden';
+         elementMap.login[0].style.visibility = 'visible';
+         elementMap.register[0].style.visibility = 'visible';
+         elementMap.userInfo.textContent = 'こんにちはゲストさん';
+       }
+     }
+   };
   // XMLHttpRequestオブジェクトのインスタンスを生成する
   xhr = createXMLHttpRequest();
   // 受信した後の処理ほ登録する

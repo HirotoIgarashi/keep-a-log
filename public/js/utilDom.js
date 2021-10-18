@@ -14,10 +14,8 @@
 //
 export const makeError = (nameText, msgText, data) => {
   let error = new Error();
-
   error.name = nameText;
   error.message = msgText;
-
   if (data) {error.data = data;}
   return error;
 };
@@ -51,13 +49,13 @@ export const addChange = (ob) => {
 // 例外発行: なし
 //
 export const clearFormAll = () => {
-  for (let i = 0; i < document.forms.length; i += 1) {
+  for (let i = 0; i < document.forms.length; i++) {
     clearForm(document.forms[i]);
   }
 };
 // パブリックメソッド/clearFormAll/終了
 const clearForm = (form) => {
-  for (let i = 0; i < form.elements.length; i += 1) {
+  for (let i = 0; i < form.elements.length; i++) {
     clearElement(form.elements[i]);
   }
 };
@@ -162,9 +160,10 @@ export const hideElement = (elementId, hideCallback) => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const toggleElement = (beforeId, afterId, showCallback, hideCallback) => {
+export const toggleElement =
+  (beforeId, afterId, showCallback, hideCallback) => {
   // 要素の取得
-  let beforeElement  = getElementById(beforeId);
+  let beforeElement = getElementById(beforeId);
   let afterElement = getElementById(afterId);
 
   // 最初の要素の初期状態: 表示 この処理では何もしない
@@ -174,28 +173,26 @@ export const toggleElement = (beforeId, afterId, showCallback, hideCallback) => 
   // 最初の要素が押されたら、
   // ・ 最初の要素を非表示にする
   // ・ 2番目の要素を表示する
-  beforeElement.addEventListener( 'click', function () {
+  addEventListener(beforeElement, 'click', function () {
     hideElement(beforeId);
 
     if (showCallback) {
-      showElement( afterId, showCallback );
+      showElement(afterId, showCallback);
     }
     else {
-      showElement( afterId );
+      showElement(afterId);
     }
   });
-
   // 2番目の要素が押されたら、
   // ・ 2番目の要素を非表示にする
   // ・ 最初の要素を表示する
-  afterElement.addEventListener('click', () => {
+  addEventListener(afterElement, 'click', () => {
     if (hideCallback) {
       hideElement(afterId, hideCallback);
     }
     else {
       hideElement(afterId);
     }
-
     showElement(beforeId);
   });
 };
@@ -235,8 +232,8 @@ export const toggleTip = (input_element, tip) => {
 // 戻り値: なし
 // 例外発行: なし
 //
-export const inputChangeCallback = (input_element, callback) => {
-  addEventListener(input_element, 'change', () => {
+export const inputChangeCallback = (inputElement, callback) => {
+  addEventListener(inputElement, 'change', () => {
     callback();
   });
 };
@@ -253,7 +250,6 @@ export const inputChangeCallback = (input_element, callback) => {
 export const getTargetValue = (event) => {
   let theEvent = event || window.event;
   let target = theEvent.target || theEvent.srcElement;
-
   return target.value;
 };
 // パブリックメソッド/getTargetValue/終了
@@ -294,8 +290,7 @@ export const addEventListener = (eventObj, event, eventHandler) => {
 //
 export const checkInputField = (event, checkFunc) => {
   let txtInput  = getTargetValue(event);
-
-  return checkFunc( txtInput );
+  return checkFunc(txtInput);
 };
 // パブリックメソッド/checkInputField/終了
 
@@ -316,7 +311,6 @@ export const supportsTemplate = () => {
 export const getTplContent = templateId => {
   let content;
   let tpl = getElementById(templateId);
-
   if (tpl) {
     content = tpl.content.cloneNode(true);
   }
@@ -384,41 +378,29 @@ export const createElement = (arg, option) => {
     return element;
   }
   else if (typeof arg === 'object') {
-
     console.log('createElementの古いバージョンが呼ばれました');
-
     let element = null;
     // オブジェクトが渡されたときの処理 ----------------------------
     // tagNameがあれば
     if (arg.tagName) {element = createElement(arg.tagName);}
-
     // idがあれば
     if (arg.id) {setAttribute(element, 'id', arg.id);}
-
     // classがあれば
     if (arg.class) {setAttribute(element, 'class', arg.class);}
-
     // typeがあれば
     if (arg.type) {setAttribute(element, 'type', arg.type)}
-
     // textContentがあれば
     if (arg.textContent) {element.textContent = arg.textContent}
-
     // innerHTMLがあれば
     if (arg.innerHTML) {element.innerHTML = arg.innerHTML}
-
     // valueがあれば
     if (arg.value) {element.value = arg.value}
-
     // forがあれば
     if (arg.for) {setAttribute(element, 'for', arg.for)}
-
     // hrefがあれば
     if (arg.href) {setAttribute(element, 'href', arg.href)}
-
     // onfocusがあれば
     if (arg.onfocus) {setAttribute(element, 'onfocus', arg.onfocus)}
-
     return element;
   }
   else {
@@ -438,16 +420,13 @@ export const createH3 = (option) => (createElement('h3', option));
 export const createUl = (option) => (createElement('ul', option));
 export const createLi = (option) => (createElement('li', option));
 export const createNav = (option) => (createElement('nav', option));
-
 export const innerHTML = (element, html) => {
   element.innerHTML = html;
   return element;
 };
 
 export const addClickEventListener = (func) => {
-  return (element) => {
-    element.addEventListener('click', func);
-  };
+  return (element) => addEventListener(element, 'click', func);
 };
 
 export const setAttribute = (element, name, value) => {
@@ -458,7 +437,7 @@ export const setAttribute = (element, name, value) => {
 export const setAttributeCurried = (value) => {
   return (name) => {
     return (element) => {
-      element.setAttribute(name, value);
+      setAttribute(element, name, value);
       return element;
     };
   };
@@ -528,12 +507,8 @@ export const createLabelAndInput = (param) => {
     'id': param.id,
     'placeholder': param.placeholder
   });
-  if (param.autofocus) {
-    autofocusTrue(inputElement);
-  }
-  if (param.required) {
-    requiredTrue(inputElement);
-  }
+  if (param.autofocus) { autofocusTrue(inputElement); }
+  if (param.required) { requiredTrue(inputElement); }
 
   return [labelElement, inputElement];
 };
@@ -568,13 +543,9 @@ export const makeForm = (obj) => {
         setAttribute(input, 'type', 'number');
       }
       // min属性の設定 -----------------------------------------------
-      if (obj[key].min) {
-        setAttribute(input, 'min', obj[key].min);
-      }
+      if (obj[key].min) { setAttribute(input, 'min', obj[key].min); }
       // max属性の設定 -----------------------------------------------
-      if (obj[key].max) {
-        setAttribute(input, 'max', obj[key].max);
-      }
+      if (obj[key].max) { setAttribute(input, 'max', obj[key].max); }
       setAttribute(input, 'name', key);
       // placeholderの設定 -------------------------------------------
       if (obj[key].placeholder) {

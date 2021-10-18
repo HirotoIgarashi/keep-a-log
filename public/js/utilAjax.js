@@ -49,3 +49,24 @@ export const sendPostRequest = (request, requestData) => {
   request.send(requestData);
   return request;
 }
+
+export const onReceiveRequest = (xhr, callback) => {
+  console.log('onReceiveRequestが呼ばれました');
+  console.log(callback);
+  console.log(xhr);
+  if (xhr && xhr.readyState === 0) {
+    console.log('open()はまだ呼び出されていない。')
+  }
+  else if (xhr && xhr.readyState === 1) {
+    console.log('open()が呼び出された。')
+  }
+  else if (xhr && xhr.readyState === 2) {
+    console.log('ヘッダを受け取った。')
+  }
+  else if (xhr && xhr.readyState === 3) {
+    console.log('レスポンスボディを受信中である。')
+  }
+  else if (xhr && xhr.readyState === 4) {
+    console.log('レスポンスの受信が完了した。')
+  }
+};

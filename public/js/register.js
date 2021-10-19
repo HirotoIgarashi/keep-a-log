@@ -159,59 +159,50 @@ const onClickRegister = (event) => {
 
   // -- イベントハンドラ(onReceiveRegister)開始 ----------------------
   // Registerの結果の処理
-  const onReceiveRegister = function () {
+  const onReceiveRegister = () => {
     const messageArea = getElementById('message-area');
+    console.log(responseArray);
+    console.log(typeof responseArray);
+    let responseArray = JSON.parse(xhr.response);
+
+    messageArea.removeAttribute('hidden');
+
+    // validate結果を表示する
+    if (typeof responseArray !== 'object') {
+      responseArray.forEach((response) => {
+        let inputTag = querySelector(`input[name='${response.param}']`);
+        inputTag.style.borderColor = 'red';
+        inputTag.nextElementSibling.innerHTML += response.msg;
+      });
+    }
 
     if (xhr && xhr.readyState === 4) {
       if (xhr.status === 201) {
         messageArea.removeAttribute('hidden');
-        messageArea.textContent =
-          'ユーザを作成しました。ステータス: ' + xhr.status;
-        setTimeout(function () {
-          messageArea.setAttribute('hidden', 'hidden');
+        messageArea.textContent = 'ユーザを作成しました。ステータス: ' + xhr.status;
+        setTimeout(() => {
+          setAttribute(messageArea, 'hidden', 'hidden');
           setLocationHash('');
         }, 5000);
       }
+      else if (xhr.status === 401) {
+        messageArea.textContent =
+          `メールアドレスかパスワードが不正です。ステータス: ${xhr.status}`;
+      }
+      else if (xhr.status === 409) {
+        messageArea.textContent =
+          `入力されたメールアドレスはすでに使われています。ステータス: ${xhr.status}`;
+      }
+      else if (xhr.status === 422) {
+        messageArea.textContent =
+          `入力された値が正しくありません。再度入力してください ステータス: ${xhr.status}`;
+      }
+      else if (xhr.status === 500) {
+        messageArea.textContent =
+          `サーバエラーが発生しました。ステータス: ${xhr.status}`;
+      }
       else {
-        let responseArray = JSON.parse(xhr.response);
-
-        console.log(responseArray);
-        console.log(typeof responseArray);
-
-        // validate結果を表示する
-        if (typeof responseArray !== 'object') {
-          responseArray.forEach((response) => {
-            let inputTag = querySelector(`input[name='${response.param}']`);
-            inputTag.style.borderColor = 'red';
-            inputTag.nextElementSibling.innerHTML += response.msg;
-          });
-        }
-
-        messageArea.removeAttribute('hidden');
-        switch (xhr.status) {
-          case 401:
-            messageArea.textContent =
-              'メールアドレスかパスワードが不正です。ステータス: ' +
-              xhr.status;
-            break;
-          case 409:
-            messageArea.textContent =
-              '入力されたメールアドレスはすでに使われています。ステータス: ' +
-              xhr.status;
-              break;
-          case 422:
-            messageArea.textContent =
-              '入力された値が正しくありません。再度入力してください ステータス: ' +
-              xhr.status;
-            break;
-          case 500:
-            messageArea.textContent =
-              'サーバエラーが発生しました。ステータス: ' + xhr.status;
-            break;
-          default:
-            messageArea.textContent =
-              'エラーが発生しました。ステータス: ' + xhr.status;
-        }
+        messageArea.textContent = `エラーが発生しました。ステータス: ${xhr.status}`;
       }
     }
   };
@@ -238,17 +229,8 @@ const onClickRegister = (event) => {
   xhr = sendPostRequest(xhr, JSON.stringify(formMap));
 
   console.log('登録ボタンが押されました');
-  // XMLHttpRequestによる送信
-  // request = sendXmlHttpRequest(
-  //   requestType,
-  //   url,
-  //   true,
-  //   onReceiveRegister,
-  //   JSON.stringify(formMap)
-  // );
 
   // inputフォームを初期化する
-  // resetInputForm(['password', 'email', 'zipCode']);
   resetInputForm(['password', 'email']);
 };
 // -- イベントハンドラ(onClickRegister)終了 ------------------------

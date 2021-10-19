@@ -29,8 +29,8 @@ const configMap = {
   logouttle          : 'ログアウトします。',
   login_le           : 'IDとパスワードでログインします。',
   registtitle        : 'IDとパスワードを登録します。',
-  menu_retracted_title  : 'クリックしてメニューを開きます',
-  menu_extended_title   : 'クリックしてメニューを閉じます'
+  menu_retracted_title : 'クリックしてメニューを開きます',
+  menu_extended_title  : 'クリックしてメニューを閉じます'
 };
 
 let stateMap = { container: null };
@@ -117,7 +117,7 @@ export const controlDom = (id) => {
   addEventListener(siteButton, 'click', toggleMenu, false );
   // メニューのaタグを取得
   menuAnchor = querySelectorAll('#pal-nav-menu a' );
-  for (let i = 0; i < menuAnchor.length; i = i + 1) {
+  for (let i = 0; i < menuAnchor.length; i++) {
     addEventListener(menuAnchor[i], 'click', toggleMenu, false );
   }
   // ボタンのaria-pressed属性をtrueにする --------------------------
@@ -157,12 +157,12 @@ export const getLocationHash = () => {
 // DOMメソッド/setElementMap/開始
 export const setElementMap = () => {
   elementMap = {
-    top       : getElementsByClassName('pal-dom-header-title'),
+    top      : getElementsByClassName('pal-dom-header-title'),
     userInfo : getElementById('pal-dom-user-info'),
     dateInfo : getElementById('pal-dom-date-info'),
-    logout    : getElementsByClassName('pal-dom-header-logout'),
-    login     : getElementsByClassName('pal-dom-header-login'),
-    register  : getElementsByClassName('pal-dom-header-register')
+    logout   : getElementsByClassName('pal-dom-header-logout'),
+    login    : getElementsByClassName('pal-dom-header-login'),
+    register : getElementsByClassName('pal-dom-header-register')
   };
 };
 // DOMメソッド/setElementMap/終了
@@ -259,7 +259,7 @@ const readSessionStatus = () => {
 
   // const sendData = undefined;
 
-  // let callback = {
+  // let callbackParam = {
   //   '200':() => {
   //     console.log('レスポンスの受信が完了した。')
   //     let responseMap = JSON.parse(xhr.responseText);
@@ -275,17 +275,8 @@ const readSessionStatus = () => {
   //     elementMap.login[0].style.visibility = 'visible';
   //     elementMap.register[0].style.visibility = 'visible';
   //     elementMap.userInfo.textContent = 'こんにちはゲストさん';
-  //   },
-  //   'other':() => {
-  //     console.log('レスポンスの受信が完了した。')
-  //     elementMap.logout[0].style.visibility = 'hidden';
-  //     elementMap.login[0].style.visibility = 'visible';
-  //     elementMap.register[0].style.visibility = 'visible';
-  //     elementMap.userInfo.textContent = 'こんにちはゲストさん';
   //   }
   // }
-//
-  // const onReceiveSession = onReceiveRequest(xhr, callback);
 
    const onReceiveSession = () => {
      if (xhr && xhr.readyState === 0) {
@@ -325,11 +316,13 @@ const readSessionStatus = () => {
          elementMap.userInfo.textContent = 'こんにちはゲストさん';
        }
      }
-   };
+  };
+
   // XMLHttpRequestオブジェクトのインスタンスを生成する
   xhr = createXMLHttpRequest();
   // 受信した後の処理ほ登録する
   xhr = setOnreadystatechange(xhr, onReceiveSession);
+  // xhr = setOnreadystatechange(xhr, handleResponse);
   // XMLHttpRequestオブジェクトが正しく生成された場合、リクエストをopenする
   xhr = openXMLHttpRequest(xhr, requestType, url, async);
   // xhr = setRequestHeader(xhr, 'application/json');

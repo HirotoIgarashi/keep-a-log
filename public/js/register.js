@@ -10,7 +10,7 @@ import { setLocationHash } from "./controlDom.js";
 import {
   emptyElement, createDocumentFragment, querySelector,
   createElement, setAttribute, innerHTML,
-  createLabelAndInput, appendChild, getElementById
+  createLabelAndInput, appendChild, getElementById,
 } from "./utilDom.js";
 import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
   setRequestHeader, sendPostRequest
@@ -69,19 +69,40 @@ const makeRegisterForm = () => {
   });
 
   // ----- Eメールのlabel ------------------------------------------
-  let emailLabelAndInput = createLabelAndInput({
-    'for': 'inputEmail',
-    'innerHTML': 'メールアドレス',
-    'type': 'email',
-    'name': 'email',
-    'id': 'inputEmail',
-    'placeholder': 'Email Address',
-    'required': true,
-    'autofocus': false
-  });
+  let emailDiv = createElement('div');
+  setAttribute(emailDiv, 'class', 'field');
 
-  // -----Eメールのvalidate結果の表示エリア-------------------------
-  let inputEmailResponse = createElement('div');
+  let emailLabel = createElement('label');
+  setAttribute(emailLabel, 'for', 'inputEmail');
+
+  let emailSpan = createElement('span');
+  setAttribute(emailSpan, 'class', 'field-label');
+  emailSpan.textContent = 'メールアドレス';
+
+  appendChild(emailLabel, emailSpan);
+
+  let emailInput = createElement('input');
+  setAttribute(emailInput, 'type', 'text');
+  setAttribute(emailInput, 'id', 'inputEmail');
+  setAttribute(emailInput, 'name', 'inputEmail');
+  setAttribute(emailInput, 'value', '');
+
+  appendChild(emailDiv, emailLabel);
+  appendChild(emailDiv, emailInput);
+
+  // let emailLabelAndInput = createLabelAndInput({
+  //   'for': 'inputEmail',
+  //   'innerHTML': 'メールアドレス',
+  //   'type': 'email',
+  //   'name': 'email',
+  //   'id': 'inputEmail',
+  //   'placeholder': 'Email Address',
+  //   'required': true,
+  //   'autofocus': false
+  // });
+//
+  // // -----Eメールのvalidate結果の表示エリア-------------------------
+  // let inputEmailResponse = createElement('div');
 
   // -----パスワードのlabelとinput ---------------------------------
   let passwordLabelAndInput = createLabelAndInput({
@@ -129,9 +150,10 @@ const makeRegisterForm = () => {
   appendChild(formElement, lastLabelAndInput[0]);
   appendChild(formElement, lastLabelAndInput[1]);
 
-  appendChild(formElement, emailLabelAndInput[0]);
-  appendChild(formElement, emailLabelAndInput[1]);
-  appendChild(formElement, inputEmailResponse);
+  // appendChild(formElement, emailLabelAndInput[0]);
+  // appendChild(formElement, emailLabelAndInput[1]);
+  // appendChild(formElement, inputEmailResponse);
+  appendChild(formElement, emailDiv);
 
   appendChild(formElement, passwordLabelAndInput[0]);
   appendChild(formElement, passwordLabelAndInput[1]);

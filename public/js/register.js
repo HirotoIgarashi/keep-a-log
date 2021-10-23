@@ -23,7 +23,6 @@ import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
 const resetInputForm = (nameValueArray) => {
   nameValueArray.forEach((value) => {
     let inputTag = querySelector(`input[name='${value}']`);
-
     inputTag.style.borderColor = 'initial';
     inputTag.nextElementSibling.innerHTML = '';
   });
@@ -39,10 +38,7 @@ const makeRegisterForm = () => {
   setAttribute(divElement, 'class', 'data-form');
 
   let h2Element = createElement('h2');
-  h2Element = innerHTML(
-    h2Element,
-    'ユーザ登録:'
-  );
+  h2Element = innerHTML(h2Element, 'ユーザ登録');
 
   // -----formタグの作成 -------------------------------------------
   let formElement = createElement('form');
@@ -54,7 +50,7 @@ const makeRegisterForm = () => {
     'type': 'text',
     'name': 'first',
     'id': 'inputFirstName',
-    'placeholder': '姓',
+    'placeholder': '',
     'required': false,
     'autofocus': false
   });
@@ -67,14 +63,30 @@ const makeRegisterForm = () => {
     'type': 'text',
     'name': 'last',
     'id': 'inputLastName',
-    'placeholder': '名',
+    'placeholder': '',
     'required': false,
     'autofocus': false
   });
+
+  // ----- Eメールのlabel ------------------------------------------
+  let emailLabelAndInput = createLabelAndInput({
+    'for': 'inputEmail',
+    'innerHTML': 'メールアドレス',
+    'type': 'email',
+    'name': 'email',
+    'id': 'inputEmail',
+    'placeholder': 'Email Address',
+    'required': true,
+    'autofocus': false
+  });
+
+  // -----Eメールのvalidate結果の表示エリア-------------------------
+  let inputEmailResponse = createElement('div');
+  
   // -----パスワードのlabelとinput ---------------------------------
   let passwordLabelAndInput = createLabelAndInput({
     'for': 'inputPassword',
-    'innerHTML': 'パスワード',
+    'innerHTML': 'パスワードを設定する',
     'type': 'password',
     'name': 'password',
     'id': 'inputPassword',
@@ -99,34 +111,19 @@ const makeRegisterForm = () => {
   // -----パスワードのvalidate結果の表示エリアとinput --------------
   let inputPasswordResponse = createElement('div');
 
-  // ----- Eメールのlabel ------------------------------------------
-  let emailLabelAndInput = createLabelAndInput({
-    'for': 'inputEmail',
-    'innerHTML': 'メールアドレス',
-    'type': 'email',
-    'name': 'email',
-    'id': 'inputEmail',
-    'placeholder': 'Email Address',
-    'required': true,
-    'autofocus': false
-  });
-
-  // -----Eメールのvalidate結果の表示エリア-------------------------
-  let inputEmailResponse = createElement('div');
-
   // -----ボタンを生成 ---------------------------------------------
   let submitButton = createElement('button');
   setAttribute(submitButton, 'type', 'submit');
   setAttribute(submitButton, 'id', 'registerUser');
-  innerHTML(submitButton, '登録');
+  innerHTML(submitButton, 'ユーザを登録する');
 
   // -----メッセージエリアを生成 -----------------------------------
   let messageArea = createElement('div');
   setAttribute(messageArea, 'id', 'message-area');
 
   // -----HTMLを組み立てる------------------------------------------
+  appendChild(divElement, h2Element);
   appendChild(divElement, formElement);
-  appendChild(formElement, h2Element);
   appendChild(formElement, firstLabelAndInput[0]);
   appendChild(formElement, firstLabelAndInput[1]);
   appendChild(formElement, lastLabelAndInput[0]);

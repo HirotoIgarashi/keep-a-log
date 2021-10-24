@@ -90,20 +90,6 @@ const makeRegisterForm = () => {
   appendChild(emailDiv, emailLabel);
   appendChild(emailDiv, emailInput);
 
-  // let emailLabelAndInput = createLabelAndInput({
-  //   'for': 'inputEmail',
-  //   'innerHTML': 'メールアドレス',
-  //   'type': 'email',
-  //   'name': 'email',
-  //   'id': 'inputEmail',
-  //   'placeholder': 'Email Address',
-  //   'required': true,
-  //   'autofocus': false
-  // });
-//
-  // // -----Eメールのvalidate結果の表示エリア-------------------------
-  // let inputEmailResponse = createElement('div');
-
   // -----パスワードのlabelとinput ---------------------------------
   let passwordLabelAndInput = createLabelAndInput({
     'for': 'inputPassword',
@@ -150,9 +136,6 @@ const makeRegisterForm = () => {
   appendChild(formElement, lastLabelAndInput[0]);
   appendChild(formElement, lastLabelAndInput[1]);
 
-  // appendChild(formElement, emailLabelAndInput[0]);
-  // appendChild(formElement, emailLabelAndInput[1]);
-  // appendChild(formElement, inputEmailResponse);
   appendChild(formElement, emailDiv);
 
   appendChild(formElement, passwordLabelAndInput[0]);

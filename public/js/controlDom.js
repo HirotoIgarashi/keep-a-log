@@ -289,7 +289,7 @@ const readSessionStatus = () => {
        console.log('ヘッダを受け取った。')
      }
      else if (xhr && xhr.readyState === 3) {
-       console.log('レスポンスボディを受信中である。')
+       console.log('レスポンスボディを受信中です。')
      }
      else if (xhr && xhr.readyState === 4) {
        console.log('レスポンスの受信が完了した。')

@@ -22,9 +22,12 @@ import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
 //--------------------- ユーティリティメソッド開始 -----------------
 const resetInputForm = (nameValueArray) => {
   nameValueArray.forEach((value) => {
+
+    console.log(value);
+
     let inputTag = querySelector(`input[name='${value}']`);
     inputTag.style.borderColor = 'initial';
-    inputTag.nextElementSibling.innerHTML = '';
+    // inputTag.nextElementSibling.innerHTML = '';
   });
   return;
 };
@@ -165,22 +168,21 @@ const onClickRegister = (event) => {
   // Registerの結果の処理
   const onReceiveRegister = () => {
     const messageArea = getElementById('message-area');
-    console.log(responseArray);
-    console.log(typeof responseArray);
-    let responseArray = JSON.parse(xhr.response);
-
     messageArea.removeAttribute('hidden');
 
-    // validate結果を表示する
-    if (typeof responseArray !== 'object') {
-      responseArray.forEach((response) => {
-        let inputTag = querySelector(`input[name='${response.param}']`);
-        inputTag.style.borderColor = 'red';
-        inputTag.nextElementSibling.innerHTML += response.msg;
-      });
-    }
-
     if (xhr && xhr.readyState === 4) {
+
+      let responseArray = JSON.parse(xhr.response);
+
+      // validate結果を表示する
+      if (typeof responseArray !== 'object') {
+        responseArray.forEach((response) => {
+          let inputTag = querySelector(`input[name='${response.param}']`);
+          inputTag.style.borderColor = 'red';
+          inputTag.nextElementSibling.innerHTML += response.msg;
+        });
+      }
+
       if (xhr.status === 201) {
         messageArea.removeAttribute('hidden');
         messageArea.textContent = 'ユーザを作成しました。ステータス: ' + xhr.status;
@@ -220,7 +222,6 @@ const onClickRegister = (event) => {
   formMap.last = getElementById('inputLastName').value;
   formMap.password = getElementById('inputPassword').value;
   formMap.email = getElementById('inputEmail').value;
-  // formMap.zipCode = getElementById('inputZipCode').value;
 
   xhr = createXMLHttpRequest();
   // 受信した後の処理ほ登録する
@@ -235,7 +236,7 @@ const onClickRegister = (event) => {
   console.log('登録ボタンが押されました');
 
   // inputフォームを初期化する
-  resetInputForm(['password', 'email']);
+  resetInputForm(['password', 'inputEmail']);
 };
 // -- イベントハンドラ(onClickRegister)終了 ------------------------
 

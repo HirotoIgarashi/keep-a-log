@@ -71,7 +71,7 @@ const makeRegisterForm = () => {
     'autofocus': false
   });
 
-  // ----- Eメールのlabel ------------------------------------------
+  // ----- メールアドレスのlabel ------------------------------------------
   let emailDiv = createElement('div');
   setAttribute(emailDiv, 'class', 'field');
 
@@ -94,16 +94,54 @@ const makeRegisterForm = () => {
   appendChild(emailDiv, emailInput);
 
   // -----パスワードのlabelとinput ---------------------------------
-  let passwordLabelAndInput = createLabelAndInput({
-    'for': 'inputPassword',
-    'innerHTML': 'パスワードを設定する',
-    'type': 'password',
-    'name': 'password',
-    'id': 'inputPassword',
-    'placeholder': 'パスワード',
-    'required': true,
-    'autofocus': false
-  });
+  let passwordDiv = createElement('div');
+  setAttribute(passwordDiv, 'class', 'field');
+
+  let passwordLabel = createElement('label');
+  setAttribute(passwordLabel, 'for', 'inputPassword');
+
+  let passwordSpan = createElement('span');
+  setAttribute(passwordSpan, 'class', 'field-label');
+  passwordSpan.textContent = 'パスワード';
+
+  let passwordHintSpan = createElement('span');
+  setAttribute(passwordHintSpan, 'class', 'field-hint');
+  passwordHintSpan.textContent =
+    '数字を1文字以上含めて、8文字以内で入力してください';
+
+  appendChild(passwordLabel, passwordSpan);
+  appendChild(passwordLabel, passwordHintSpan);
+
+  let passwordRevealerDiv = createElement('div');
+  setAttribute(passwordRevealerDiv, 'class', 'passwordRevealer');
+
+  let passwordInput = createElement('input');
+  setAttribute(passwordInput, 'type', 'password');
+  setAttribute(passwordInput, 'id', 'inputPassword');
+  setAttribute(passwordInput, 'name', 'inputPassword');
+  setAttribute(passwordInput, 'value', '');
+
+  let passwordRevealerButton = createElement('button');
+  setAttribute(passwordRevealerButton, 'type', 'button');
+  passwordRevealerButton.textContent = '表示する';
+
+
+  appendChild(passwordRevealerDiv, passwordInput);
+  appendChild(passwordRevealerDiv, passwordRevealerButton);
+
+  appendChild(passwordDiv, passwordLabel);
+  appendChild(passwordDiv, passwordRevealerDiv);
+
+  // let passwordLabelAndInput = createLabelAndInput({
+  //   'for': 'inputPassword',
+  //   'innerHTML': 'パスワードを設定する',
+  //   'type': 'password',
+  //   'name': 'password',
+  //   'id': 'inputPassword',
+  //   'placeholder': 'パスワード',
+  //   'required': true,
+  //   'autofocus': false
+  // });
 
   // checkboxとlabelを囲むdivを作成する ----------------------------
   let divShowPassword = createElement('div');
@@ -141,8 +179,9 @@ const makeRegisterForm = () => {
 
   appendChild(formElement, emailDiv);
 
-  appendChild(formElement, passwordLabelAndInput[0]);
-  appendChild(formElement, passwordLabelAndInput[1]);
+  // appendChild(formElement, passwordLabelAndInput[0]);
+  // appendChild(formElement, passwordLabelAndInput[1]);
+  appendChild(formElement, passwordDiv);
   appendChild(formElement, divShowPassword);
   appendChild(formElement, inputPasswordResponse);
   appendChild(formElement, submitButton);

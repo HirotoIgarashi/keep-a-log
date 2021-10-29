@@ -18,6 +18,7 @@
   font-style  : italic;
 }
 
+/*
 .red {
   color : red;
 }
@@ -56,18 +57,22 @@ input[type=password]::-ms-reveal {
   width         : auto;
   padding-left  : 0.4em;
 }
+*/
 
 .data-form {
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 40px 20px;
+  /*max-width: 800px;
+  margin: 0 auto;*/
 }
 
+/*
 .data-form label {
   display: block;
 }
+*/
 
 .data-form input {
-  display: block;
+  width: auto;
   margin-bottom: 7px;
 }
 
@@ -77,6 +82,33 @@ button#registerUser {
 }
 
 .field {
+  max-width: 26em;
+  margin-bottom: 30px;
   padding-top: 1em;
   padding-bottom: 1em;
+}
+
+.field-label {
+  display: block;
+  font-weight: 700;
+}
+
+.field-hint {
+  color: #000;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.passwordRevealer {
+  position: relative;
+}
+
+.passwordRevealer input {
+  display: inline-block;
+  padding-right: 70px;
+}
+
+.passwordRevealer button {
+  display: inline-block;
+  font-size: 1.125em;
 }

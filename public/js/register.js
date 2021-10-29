@@ -58,6 +58,11 @@ const makeRegisterForm = () => {
     'autofocus': false
   });
   // -----姓のlabelとinput -----------------------------------------
+  let firstDiv = createElement('div');
+  setAttribute(firstDiv, 'class', 'field');
+
+  appendChild(firstDiv, firstLabelAndInput[0]);
+  appendChild(firstDiv, firstLabelAndInput[1]);
 
   // -----名のlabelとinput -----------------------------------------
   let lastLabelAndInput = createLabelAndInput({
@@ -71,19 +76,28 @@ const makeRegisterForm = () => {
     'autofocus': false
   });
 
-  // ----- メールアドレスのlabel ------------------------------------------
+  let lastDiv = createElement('div');
+  setAttribute(lastDiv, 'class', 'field');
+
+  appendChild(lastDiv, lastLabelAndInput[0]);
+  appendChild(lastDiv, lastLabelAndInput[1]);
+
+
   let emailDiv = createElement('div');
   setAttribute(emailDiv, 'class', 'field');
 
+  // ----- メールアドレスのlabel ------------------------------------------
   let emailLabel = createElement('label');
   setAttribute(emailLabel, 'for', 'inputEmail');
 
+  // ----- メールアドレスのspan ------------------------------------------
   let emailSpan = createElement('span');
   setAttribute(emailSpan, 'class', 'field-label');
   emailSpan.textContent = 'メールアドレス';
 
   appendChild(emailLabel, emailSpan);
 
+  // ----- メールアドレスのinput ------------------------------------------
   let emailInput = createElement('input');
   setAttribute(emailInput, 'type', 'text');
   setAttribute(emailInput, 'id', 'inputEmail');
@@ -132,30 +146,6 @@ const makeRegisterForm = () => {
   appendChild(passwordDiv, passwordLabel);
   appendChild(passwordDiv, passwordRevealerDiv);
 
-  // let passwordLabelAndInput = createLabelAndInput({
-  //   'for': 'inputPassword',
-  //   'innerHTML': 'パスワードを設定する',
-  //   'type': 'password',
-  //   'name': 'password',
-  //   'id': 'inputPassword',
-  //   'placeholder': 'パスワード',
-  //   'required': true,
-  //   'autofocus': false
-  // });
-
-  // checkboxとlabelを囲むdivを作成する ----------------------------
-  let divShowPassword = createElement('div');
-
-  // -----パスワードを表示するcheckboxとlabelを生成 ----------------
-  let showPasswordCheckbox = createElement('input');
-  setAttribute(showPasswordCheckbox, 'type', 'checkbox');
-  setAttribute(showPasswordCheckbox, 'id', 'showPassword');
-  let showPasswordLabel = createElement('label');
-  innerHTML(showPasswordLabel, 'パスワードを表示');
-
-  appendChild(divShowPassword, showPasswordCheckbox);
-  appendChild(divShowPassword, showPasswordLabel);
-
   // -----パスワードのvalidate結果の表示エリアとinput --------------
   let inputPasswordResponse = createElement('div');
 
@@ -172,17 +162,12 @@ const makeRegisterForm = () => {
   // -----HTMLを組み立てる------------------------------------------
   appendChild(divElement, h2Element);
   appendChild(divElement, formElement);
-  appendChild(formElement, firstLabelAndInput[0]);
-  appendChild(formElement, firstLabelAndInput[1]);
-  appendChild(formElement, lastLabelAndInput[0]);
-  appendChild(formElement, lastLabelAndInput[1]);
+  appendChild(formElement, firstDiv);
+  appendChild(formElement, lastDiv);
 
   appendChild(formElement, emailDiv);
 
-  // appendChild(formElement, passwordLabelAndInput[0]);
-  // appendChild(formElement, passwordLabelAndInput[1]);
   appendChild(formElement, passwordDiv);
-  appendChild(formElement, divShowPassword);
   appendChild(formElement, inputPasswordResponse);
   appendChild(formElement, submitButton);
   appendChild(divElement, messageArea);
@@ -275,7 +260,7 @@ const onClickRegister = (event) => {
   console.log('登録ボタンが押されました');
 
   // inputフォームを初期化する
-  resetInputForm(['password', 'inputEmail']);
+  resetInputForm(['inputPassword', 'inputEmail']);
 };
 // -- イベントハンドラ(onClickRegister)終了 ------------------------
 
@@ -292,13 +277,24 @@ export const register = mainSection => {
   inputFirstNameElement.focus();
 
   //----- パスワードを表示する機能を追加する -----------------------
-  const password = getElementById('inputPassword');
-  const showPassword = getElementById('showPassword');
+  const password = querySelector('.passwordRevealer input');
+  const showPassword = querySelector('.passwordRevealer button');
 
-  showPassword.addEventListener('change', () => {
-    let type = showPassword.checked ? 'text' : 'password';
-    password.setAttribute( 'type', type );
+  showPassword.addEventListener('click', () => {
+    if (showPassword.textContent === '表示する') {
+      showPassword.textContent = '隠す';
+      setAttribute(password, 'type', 'text');
+    }
+    else {
+      showPassword.textContent = '表示する';
+      setAttribute(password, 'type', 'password');
+    }
   });
+
+  // showPassword.addEventListener('change', () => {
+  //   let type = showPassword.checked ? 'text' : 'password';
+  //   password.setAttribute( 'type', type );
+  // });
 
   // サインインボタンにonClickRegisterイベントを登録する -----------
   let registerButton = getElementById('registerUser');

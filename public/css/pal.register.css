@@ -83,9 +83,15 @@ button#registerUser {
 
 .field {
   max-width: 26em;
-  margin-bottom: 30px;
   padding-top: 1em;
-  padding-bottom: 1em;
+}
+
+.field label {
+  display: block;
+}
+
+.field input {
+  display: block;
 }
 
 .field-label {

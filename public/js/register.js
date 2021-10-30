@@ -5,7 +5,6 @@
 
 'use strict';
 
-// import { sendXmlHttpRequest, setLocationHash } from "./controlDom.js";
 import { setLocationHash } from "./controlDom.js";
 import {
   emptyElement, createDocumentFragment, querySelector,
@@ -15,9 +14,6 @@ import {
 import { createXMLHttpRequest, openXMLHttpRequest,setOnreadystatechange,
   setRequestHeader, sendPostRequest
 } from "./utilAjax.js";
-
-//--------------------- モジュールスコープ変数開始 -----------------
-//--------------------- モジュールスコープ変数終了 -----------------
 
 //--------------------- ユーティリティメソッド開始 -----------------
 const resetInputForm = (nameValueArray) => {
@@ -86,7 +82,7 @@ const makeRegisterForm = () => {
   let emailDiv = createElement('div');
   setAttribute(emailDiv, 'class', 'field');
 
-  // ----- メールアドレスのlabel ------------------------------------------
+  // ----- メールアドレスのlabel ---------------------------------------------
   let emailLabel = createElement('label');
   setAttribute(emailLabel, 'for', 'inputEmail');
 

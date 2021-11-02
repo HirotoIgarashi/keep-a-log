@@ -18,61 +18,7 @@
   font-style  : italic;
 }
 
-/*
-.red {
-  color : red;
-}
-
-input[type=password]::-ms-reveal {
-  display : none;
-}
-
-.pal-register-ul {
-  -webkit-padding-start : 0.5em;
-}
-
-.pal-register-ul li {
-  display         : flex;
-  flex-wrap       : wrap;
-  align-items     : center;
-  padding-right   : 0.5em;
-  padding-bottom  : 0.5em;
-}
-
-.pal-register-ul li label {
-  width : 8em;
-}
-
-.pal-register-ul li input[type="text"],
-.pal-register-ul li input[type="password"] {
-  flex  : 1 1 auto;
-}
-
-.pal-register-ul li input[type="checkbox"] {
-  flex        : none;
-  width       : auto;
-}
-
-.pal-register-ul li input[type="checkbox"] ~ label {
-  width         : auto;
-  padding-left  : 0.4em;
-}
-*/
-
-.data-form {
-  padding: 40px 20px;
-  /*max-width: 800px;
-  margin: 0 auto;*/
-}
-
-/*
-.data-form label {
-  display: block;
-}
-*/
-
 .data-form input {
-  width: auto;
   margin-bottom: 7px;
 }
 
@@ -82,17 +28,31 @@ button#registerUser {
 }
 
 .field {
-  max-width: 26em;
-  padding-top: 1em;
+  max-width: 40em;
+  padding-bottom: 10px;
 }
 
 .field label {
   display: block;
 }
 
+input#inputFirstName {
+  width: 18em;
+}
+input#inputLastName {
+  width: 18em;
+}
+input#inputEmail {
+  width: 18em;
+}
+input#inputPassword {
+  width: 18em;
+}
+/*
 .field input {
   display: block;
 }
+*/
 
 .field-label {
   display: block;

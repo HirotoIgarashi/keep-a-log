@@ -32,12 +32,12 @@ const resetInputForm = (nameValueArray) => {
 //--------------------- DOMメソッド開始 ----------------------------
 const makeRegisterForm = () => {
   let frag = createDocumentFragment();
+  let h2Element = createElement('h2');
+  h2Element = innerHTML(h2Element, 'ユーザ登録');
+  appendChild(frag, h2Element);
   // -----divタグの作成 --------------------------------------------
   let divElement = createElement('div');
   setAttribute(divElement, 'class', 'data-form');
-
-  let h2Element = createElement('h2');
-  h2Element = innerHTML(h2Element, 'ユーザ登録');
 
   // -----formタグの作成 -------------------------------------------
   let formElement = createElement('form');
@@ -77,7 +77,6 @@ const makeRegisterForm = () => {
 
   appendChild(lastDiv, lastLabelAndInput[0]);
   appendChild(lastDiv, lastLabelAndInput[1]);
-
 
   let emailDiv = createElement('div');
   setAttribute(emailDiv, 'class', 'field');
@@ -156,7 +155,6 @@ const makeRegisterForm = () => {
   setAttribute(messageArea, 'id', 'message-area');
 
   // -----HTMLを組み立てる------------------------------------------
-  appendChild(divElement, h2Element);
   appendChild(divElement, formElement);
   appendChild(formElement, firstDiv);
   appendChild(formElement, lastDiv);

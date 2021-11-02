@@ -18,18 +18,23 @@
 
 #pal-main {
   grid-row : 2;
-  /*position: relative;*/
   background  : #eee;
+  margin-left: 30px;
+  margin-top: 10px;
+  margin-right: 30px;
+  margin-bottom: 20px;
 }
 
 #pal-main-nav {
   grid-row : 3;
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 10px;
 }
 
 #pal-footer {
   grid-row : 4;
-  /*display: block;*/
-  /*position: relative;*/
   background  : #9999cc;
   color       : #eee;
   font-size: 75%;
@@ -39,6 +44,8 @@
   display               : grid;
   grid-template-columns : 130px 4fr;
   grid-template-rows    : auto auto auto;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .pal-dom-header-title {

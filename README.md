@@ -43,8 +43,18 @@ githubからクローンする
 $ git clone https://github.com/HirotoIgarashi/keep-a-log.git
 ```
 
+```
 $ cd keep-a-log
+```
 
+```
 $ npm update
+```
 
+```
 $ npm install
+```
+
+```
+$ npm run file-system
+```

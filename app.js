@@ -325,7 +325,8 @@ app.post('/user/create', (req, res, next) => {
 //   return;
 // }
 // );
-app.use((err, req, res, next) => {
+// app.use((err, req, res, next) => {
+app.use((err, req, res ) => {
   console.log(err);
   res.status(err.statusCode || 500).json({ error: err.message });
 });

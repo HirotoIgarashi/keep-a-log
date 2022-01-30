@@ -10,12 +10,12 @@
   "dependencies": {
     "acorn": "^7.4.1",
     "ansi-styles": "^4.3.0",
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
-    "connect-redis": "^3.4.2",
+    "connect-redis": "^6.0.0",
     "cookie-parser": "^1.4.5",
-    "cradle": "^0.7.1",
+    "cradle": "^0.6.6",
     "date-utils": "^1.2.21",
     "debug": "^3.1.0",
     "ejs": "^3.1.5",
@@ -26,17 +26,18 @@
     "g": "^2.0.1",
     "glob": "^7.1.6",
     "http-status-codes": "^1.4.0",
-    "jade": "~1.11.0",
+    "jade": "^0.29.0",
     "JSV": "^4.0.2",
     "method-override": "^3.0.0",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.9",
     "morgan": "^1.10.0",
     "node-pre-gyp": "^0.14.0",
-    "npm": "^6.14.8",
+    "npm": "^6.14.16",
     "passport": "^0.4.1",
     "passport-local-mongoose": "^6.0.1",
     "pg": "^6.4.1",
+    "redis": "^4.0.2",
     "request": "^2.88.2",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.3.0"
@@ -44,6 +45,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "eslint": "^6.8.0"
+    "eslint": "^8.8.0"
   }
 }

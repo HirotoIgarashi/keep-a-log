@@ -48,10 +48,6 @@ cd keep-a-log
 ```
 
 ```bash
-npm update
-```
-
-```bash
 npm install
 ```
 

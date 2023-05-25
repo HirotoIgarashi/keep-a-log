@@ -9,16 +9,16 @@ Ubuntu 20.10からはMongoDBがリポジトリから外されられたので動�
 
 ~~MongoDBのインストール~~
 
-~~$ sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common~~
+~~sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common~~
 
-~~$ wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -~~
+~~wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -~~
 
-~~$ sudo add-apt-repository 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse'~~
+~~sudo add-apt-repository 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse'~~
 
-~~$ sudo apt install mongodb-org~~
+~~sudo apt install mongodb-org~~
 
 ~~MongoDBデーモンをシステム起動時に起動するようにする~~
-~~$ sudo systemctl enable --now mongod~~
+~~sudo systemctl enable --now mongod~~
 
 ~~MongoDBを起動する
 $ mongod~~
@@ -27,34 +27,34 @@ $ mongod~~
 redisのインストールが必要。
 Ubuntuの場合、redisのインストールは
 
-```
-$ sudo apt install redis
+```bash
+sudo apt install redis
 ```
 
 nodemonをインストールする。
 
-```
-$ npm install -g nodemon
+```bash
+npm install -g nodemon
 ```
 
 githubからクローンする
 
-```
-$ git clone https://github.com/HirotoIgarashi/keep-a-log.git
-```
-
-```
-$ cd keep-a-log
+```bash
+git clone https://github.com/HirotoIgarashi/keep-a-log.git
 ```
 
-```
-$ npm update
-```
-
-```
-$ npm install
+```bash
+cd keep-a-log
 ```
 
+```bash
+npm update
 ```
-$ npm run file-system
+
+```bash
+npm install
+```
+
+```bash
+npm run file-system
 ```

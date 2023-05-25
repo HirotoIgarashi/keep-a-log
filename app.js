@@ -1,9 +1,9 @@
 /*
  * app.js - 汎用ルーティングを備えたExpressサーバ
 */
+'use strict';
 
 // ---------------- モジュールスコープ変数開始 -----------------------
-'use strict';
 // 待ち受けるポートの8000を定義する
 const port = 8000;
 // expressのモジュールをロードする
@@ -19,9 +19,12 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const session = require('express-session');
 const connectFlash = require('connect-flash');
+
+// TODO: redis以外のストレージを使うようにする
 const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
 const redisClient = redis.createClient();
+const RedisStore = require('connect-redis')(session);
+
 // Express.jsのRouterをロード ----------------------------------------
 // const router = require('./routes/index');
 const morgan = require('morgan');
@@ -70,6 +73,7 @@ app.use(session({
     httpOnly: false,
     expires   : new Date(Date.now() + expire_time)
   },
+// TODO: redis以外のストレージを使うようにする
   store   : new RedisStore({
     host       : 'localhost',
     port       : 6379,

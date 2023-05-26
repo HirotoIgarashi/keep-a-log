@@ -27,15 +27,51 @@ $ mongod~~
 redisのインストールが必要。
 Ubuntuの場合、redisのインストールは
 
-```bash
-sudo apt install redis
-```
+~~~bash
+sudo apt install -y mysql-server
+~~~
+
+``` sudo apt install redis ```
+
+redisの使い方がよくわからいのでmysql-serverを使って見る。
+
+~~~bash
+sudo apt install -y mysql-server
+~~~
+
+TODO: ユーザーとテーブルの作成
+
+- MySQLにログイン
+
+~~~bash
+sudo mysql -u root
+~~~
+
+- ユーザの作成
+
+~~~sql
+CREATE USER test_user@'localhost' IDENTIFIED BY 'user_password';
+GRANT ALL PRIVILEGES ON *. * TO test_user@'localhost';
+~~~
+
+- 作成したユーザでログインする
+
+~~~bash
+mysql -u test_user -p
+~~~
+
+- テーブルを作成する
+
+~~~sql
+CREATE DATABASE user_app;
+show databases;
+~~~
 
 nodemonをインストールする。
 
-```bash
+~~~bash
 npm install -g nodemon
-```
+~~~
 
 githubからクローンする
 

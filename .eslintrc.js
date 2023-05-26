@@ -10,7 +10,8 @@ module.exports = {
         "SharedArrayBuffer": "readonly",
         "window": true,
         "ActiveXObject": true,
-        "io": true
+        "io": true,
+        "javascript.suggestionActions.enabled": false
     },
     "parserOptions": {
         "ecmaVersion": 2018,

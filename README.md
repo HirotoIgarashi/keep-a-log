@@ -27,16 +27,33 @@ $ mongod~~
 redisのインストールが必要。
 Ubuntuの場合、redisのインストールは
 
+``` sudo apt install redis ```
+
+redisの使い方がよくわからないのでmysql-serverを使って見る。
+
+MX Linuxの場合はデフォルトのリポジトリにmysql-serverがないので
+以下の手順に従います。
+
+TODO: MX Linuxにmysql-serverをインストールする手順がわかりません。
+
+~~~bash
+sudo apt update
+sudo apt install gnupg
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.25-1_all.dev
+~~~
+
+左上に「mysql-apt-configを設定します」というウインドウが表示されます。
+「which MySQL product do you wish to configure?」でリストボックスにOkを
+選択して右上のNextをクリックします。
+
 ~~~bash
 sudo apt install -y mysql-server
 ~~~
 
-``` sudo apt install redis ```
-
-redisの使い方がよくわからいのでmysql-serverを使って見る。
+ウィンドウが表示されますがrootのパスワードを設定して終了します。
 
 ~~~bash
-sudo apt install -y mysql-server
+sudo /etc/init.d/mysql start
 ~~~
 
 TODO: ユーザーとテーブルの作成

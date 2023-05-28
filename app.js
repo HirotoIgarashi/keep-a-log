@@ -19,14 +19,16 @@ const path = require('path');
 const favicon = require('serve-favicon');
 // sessionの設定
 const session = require('express-session');
-// express-mysql-sessionを使う
-const MySQLStore = require('express-mysql-session')(session);
-const connectFlash = require('connect-flash');
-
-// FIX: redis以外のストレージを使うようにする
+// TODO: mariadbを使うように書き換える
+// TODO: redis以外のストレージを使うようにする
 // const redis = require('redis');
 // const redisClient = redis.createClient();
 // const RedisStore = require('connect-redis')(session);
+// express-mysql-sessionを使う
+const MySQLStore = require('express-mysql-session')(session);
+
+const connectFlash = require('connect-flash');
+
 
 // Express.jsのRouterをロード ----------------------------------------
 // const router = require('./routes/index');
@@ -92,7 +94,8 @@ app.use(session({
   //   client     : redisClient,
   //   disableTTL : true
   // })
-// express-mysql-sessionを使ってみる
+  // express-mysql-sessionを使ってみる
+  // TODO: mariadbを使うように書き換える
   store   : new MySQLStore(options)
 }));
 // URLエンコードされたデータを解析する

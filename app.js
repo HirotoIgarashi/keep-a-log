@@ -17,11 +17,14 @@ const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
 const methodOverride = require('method-override');
 const path = require('path');
 const favicon = require('serve-favicon');
+
 // sessionの設定
 const session = require('express-session');
+
 const RedisStore = require('connect-redis')(session);
 // redisのバージョンは3.0.0である必要があります
 const redisClient = require('redis').createClient();
+// import {createClient} from 'redis';
 
 // TODO: redisを使うように書き換える
 // const redis = require('redis');
@@ -70,14 +73,6 @@ app.use(methodOverride('_method', {
 }));
 app.set('trust proxy', 1);
 
-// const options = {
-//     host: 'localhost',
-//     port: 3306,
-//     user: 'test_user',
-//     password: 'user_password',
-//     database: 'user_app'
-// };
-
 app.use(session({
   store   : new RedisStore({ client: redisClient}),
   secret: 'keepalog',
@@ -88,15 +83,6 @@ app.use(session({
     httpOnly: false,
     expires   : new Date(Date.now() + expire_time)
   }
-// TODO: redis以外のストレージを使うようにする
-  // store   : new RedisStore({
-  //   host       : 'localhost',
-  //   port       : 6379,
-  //   client     : redisClient,
-  //   disableTTL : true
-  // })
-  // express-mysql-sessionを使ってみる
-  // TODO: redisを使うように書き換える
 }));
 // URLエンコードされたデータを解析する
 app.use(express.json());

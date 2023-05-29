@@ -19,16 +19,16 @@ const path = require('path');
 const favicon = require('serve-favicon');
 // sessionの設定
 const session = require('express-session');
-// TODO: mariadbを使うように書き換える
-// TODO: redis以外のストレージを使うようにする
+const RedisStore = require('connect-redis')(session);
+// redisのバージョンは3.0.0である必要があります
+const redisClient = require('redis').createClient();
+
+// TODO: redisを使うように書き換える
 // const redis = require('redis');
 // const redisClient = redis.createClient();
 // const RedisStore = require('connect-redis')(session);
-// express-mysql-sessionを使う
-const MySQLStore = require('express-mysql-session')(session);
 
 const connectFlash = require('connect-flash');
-
 
 // Express.jsのRouterをロード ----------------------------------------
 // const router = require('./routes/index');
@@ -70,15 +70,16 @@ app.use(methodOverride('_method', {
 }));
 app.set('trust proxy', 1);
 
-const options = {
-    host: 'localhost',
-    port: 3306,
-    user: 'test_user',
-    password: 'user_password',
-    database: 'user_app'
-};
+// const options = {
+//     host: 'localhost',
+//     port: 3306,
+//     user: 'test_user',
+//     password: 'user_password',
+//     database: 'user_app'
+// };
 
 app.use(session({
+  store   : new RedisStore({ client: redisClient}),
   secret: 'keepalog',
   resave: false,
   saveUninitialized: false,
@@ -86,7 +87,7 @@ app.use(session({
     secure: false,
     httpOnly: false,
     expires   : new Date(Date.now() + expire_time)
-  },
+  }
 // TODO: redis以外のストレージを使うようにする
   // store   : new RedisStore({
   //   host       : 'localhost',
@@ -95,8 +96,7 @@ app.use(session({
   //   disableTTL : true
   // })
   // express-mysql-sessionを使ってみる
-  // TODO: mariadbを使うように書き換える
-  store   : new MySQLStore(options)
+  // TODO: redisを使うように書き換える
 }));
 // URLエンコードされたデータを解析する
 app.use(express.json());

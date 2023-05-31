@@ -24,12 +24,6 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 // redisのバージョンは3.0.0である必要があります
 const redisClient = require('redis').createClient();
-// import {createClient} from 'redis';
-
-// TODO: redisを使うように書き換える
-// const redis = require('redis');
-// const redisClient = redis.createClient();
-// const RedisStore = require('connect-redis')(session);
 
 const connectFlash = require('connect-flash');
 

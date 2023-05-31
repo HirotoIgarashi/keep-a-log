@@ -1,23 +1,16 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true,
+        "commonjs": true,
+        "es2021": true,
         "node": true
     },
     "extends": "eslint:recommended",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly",
-        "window": true,
-        "ActiveXObject": true,
-        "io": true,
-        "javascript.suggestionActions.enabled": false
-    },
+    "overrides": [
+    ],
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "ecmaVersion": "latest"
     },
     "rules": {
-      "consistent-return": ["error"]
     }
-};
+}

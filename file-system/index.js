@@ -1,4 +1,4 @@
-'use strice';
+'use strict';
 
 const fs = require('fs');
 const { extname } = require('path');

@@ -363,4 +363,4 @@ const io = require('socket.io')(server);
 require('./controllers/eventController')(io);
 
 module.exports = server;
-// ---------------- サーバ起動終了 ---------------------------------------------
+// ---------------- サーバ起動終了 -----------------------------------

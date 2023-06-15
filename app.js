@@ -93,7 +93,7 @@ app.use(morgan('combined'));
 // appの設定 end
 
 // ホームページの経路を作る、pal.htmlの配信
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   const options = {
     root: path.join(__dirname, './public'),
     dotfiles: 'deny',
@@ -327,7 +327,7 @@ app.post('/user/create', (req, res, next) => {
 // }
 // );
 // app.use((err, req, res, next) => {
-app.use((err, req, res ) => {
+app.use((err, _req, res ) => {
   console.log(err);
   res.status(err.statusCode || 500).json({ error: err.message });
 });

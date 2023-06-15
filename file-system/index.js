@@ -14,7 +14,6 @@ exports.fetchAll = async (savePath) => {
   // 同一ディレクスト内に存在するJSONファイルをすべて取得
   const files = (await readdir(`${__dirname}/${savePath}`))
     .filter(file => extname(file) === '.json')
-
   return Promise.all(
     files.map(file =>
       readFile(`${__dirname}/${savePath}/${file}`, 'utf8').then(JSON.parse)
@@ -56,6 +55,7 @@ exports.update = async (id, update, savePath) => {
       };
       return writeFile(fileName, JSON.stringify(user)).then(() => user);
     },
+    // ファイルが存在しない場合はnullを返し、それ以外はそのままエラーにする
     err => err.code === 'ENOENT' ? null : Promise.reject(err)
   )
 }

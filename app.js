@@ -4,7 +4,7 @@
 'use strict';
 
 // ---------------- モジュールスコープ変数開始 -----------------------
-// 待ち受けるポートの8000を定義する
+// 待ち受けるポートを8000に設定する
 const port = 8000;
 // expressのモジュールをロードする
 const express = require('express');
@@ -161,14 +161,16 @@ app.post('/session/create', (req, res, next) => {
 // ------ 認証されているかどうかの判定処理 ---------------------------
 app.get('/session/read', (req, res) => {
   if (req.session.user) {
-    console.log('Server Message: GET /session/read に200(Authenticatd)を返しました');
+    console.log('Server Message: GET /session/read に\
+      200(Authenticatd)を返しました');
     res.status(200);
     res.send(JSON.stringify(req.session.user));
     res.end();
   }
   else {
     // Non-Authoritative Informationのコード 203を返す
-    console.log('Server Message: GET /session/read に203(Non-Authoritabive)を返しました');
+    console.log('Server Message: GET /session/read に\
+      203(Non-Authoritabive)を返しました');
     res.status(203);
     res.send({ email: 'anonymous' });
     res.end();
@@ -215,7 +217,8 @@ app.post('/user/create', (req, res, next) => {
       if (dupulicated) {
         console.log('重複したメールアドレスがあります')
         // status 409: Emailがすでに登録されている
-        const err = new Error('入力されたメールアドレスはすでに使われています');
+        const err = 
+          new Error('入力されたメールアドレスはすでに使われています');
         err.statusCode = 409;
         res.status(409)
         .json([{

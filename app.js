@@ -92,8 +92,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// --- Ajaxでpostされたときの/user/loginのpostの処理 ------------
 app.post('/session/create', (req, res, next) => {
+  // Ajaxでpostされたときの/user/loginのpostの処理
   console.log('ログイン処理開始');
 
   // データストレージからemailに一致するデータを取得する
@@ -151,7 +151,7 @@ app.get('/session/read', (req, res) => {
   else {
     // Non-Authoritative Informationのコード 203を返す
     console.log(
-      'Server Message: GET /session/read に203(Non-Authoritabive)を返しました'
+      'Server Message: GET /session/read に203(Non-Authoritative)を返しました'
     );
     res.status(203);
     res.send({ email: 'anonymous' });
@@ -203,15 +203,13 @@ app.post('/user/create', (req, res, next) => {
           new Error('入力されたメールアドレスはすでに使われています');
         err.statusCode = 409;
         res.status(409)
-        .json(
-            [
-              {
-                value : 'req.body.email',
-                msg   : err.message,
-                param : 'email'
-              }
-            ]
-          );
+        .json([
+            {
+              value : 'req.body.email',
+              msg   : err.message,
+              param : 'email'
+            }
+        ]);
         res.end();
         return;
       }

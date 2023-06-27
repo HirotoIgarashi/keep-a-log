@@ -25,8 +25,8 @@ const morgan         = require('morgan');
 const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- モジュールスコープ変数終了 ---------------------------------
 
-// ---------------- ユーティリティメソッド開始 -----------------------
-// ---------------- ユーティリティメソッド終了 -----------------------
+// ---------------- ユーティリティメソッド開始 ---------------------------------
+// ---------------- ユーティリティメソッド終了 ---------------------------------
 
 // ---------------- サーバ構成開始 -----------------------------------
 // トークンを利用する ------------------------------------------------
@@ -47,40 +47,38 @@ console.log(
   ${app.get('view engine')} です`
 );
 
-// appの設定 start
-app.use(express.static('public'));
+app.use(express.static('public'));    // appの設定 start
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 // ミドルウェアとして使うようにアプリケーションルータを設定
-app.use(methodOverride('_method', {
-  methods: ['POST', 'GET']
-}));
+app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
 app.set('trust proxy', 1);
 
-app.use(session({
-  store   : new RedisStore({ client: redisClient}),
-  secret: 'keepalog',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: false,
-    expires   : new Date(Date.now() + expire_time)
+app.use(session(
+  { 
+    store             : new RedisStore({ client: redisClient}),
+    secret            : 'keepalog',
+    resave            : false,
+    saveUninitialized : false,
+    cookie            : {
+      secure   : false,
+      httpOnly : false,
+      expires  : new Date(Date.now() + expire_time)
+    } 
   }
-}));
+));
 // URLエンコードされたデータを解析する
 app.use(express.json());
 app.use(express.urlencoded( { extended: false } ));
-// connect-flashをミドルウェアとして使う -----------------------------
-app.use(connectFlash());
-// フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入 -
+
+app.use(connectFlash());      // connect-flashをミドルウェアとして使う
+// フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入
 app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
-// morganの「combined」フォーマットでログを出すように指示します。 ----
+// morganの「combined」フォーマットでログを出すように指示します。
 app.use(morgan('combined'));
-// appの設定 end
 
 // ホームページの経路を作る、pal.htmlの配信
 app.get('/', (_req, res) => {
@@ -108,7 +106,6 @@ app.post('/session/create', (req, res, next) => {
   dataStorage.fetchByMailaddress(req.body.email, 'user')
     .then(records => {
       const user = records[0];
-
       // 一致するemailがなければ401を返す
       if (user === undefined) {
         console.log('一致するメールアドレスがありません')
@@ -124,7 +121,6 @@ app.post('/session/create', (req, res, next) => {
           if (!err) {
             console.log('セッションにユーザ情報を追加しました')
             console.log(user);
-            // req.session.username = user.email;
             req.session.user = user;
             res.status(200).json(user);
             res.end();
@@ -148,19 +144,21 @@ app.post('/session/create', (req, res, next) => {
     }, next)
 });
 
-// ------ 認証されているかどうかの判定処理 ---------------------------
+// ------ 認証されているかどうかの判定処理 -------------------------------------
 app.get('/session/read', (req, res) => {
   if (req.session.user) {
-    console.log('Server Message: GET /session/read に\
-      200(Authenticatd)を返しました');
+    console.log(
+      'Server Message: GET /session/read に 200(Authenticatd)を返しました'
+    );
     res.status(200);
     res.send(JSON.stringify(req.session.user));
     res.end();
   }
   else {
     // Non-Authoritative Informationのコード 203を返す
-    console.log('Server Message: GET /session/read に\
-      203(Non-Authoritabive)を返しました');
+    console.log(
+      'Server Message: GET /session/read に203(Non-Authoritabive)を返しました'
+    );
     res.status(203);
     res.send({ email: 'anonymous' });
     res.end();
@@ -335,14 +333,14 @@ if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
   console.log(
     'Server Message: The Express.js server has started and is\
- listening on port number:' + `${app.get('port')}`);
+    listening on port number:' + `${app.get('port')}`);
   });
 }
 else {
   server = app.listen(port, () => {
   console.log(
     'Server Message: The Express.js server has started and is\
- listening on port number:' + `${app.get('port')}`);
+    listening on port number:' + `${app.get('port')}`);
   });
 }
 

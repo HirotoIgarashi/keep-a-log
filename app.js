@@ -17,7 +17,7 @@ const path           = require('path');
 const favicon        = require('serve-favicon');
 const session        = require('express-session');    // sessionの設定
 const RedisStore     = require('connect-redis')(session);
-// redisのバージョンは3.0.0である必要があります
+// TODO: redisのバージョンは3.0.0である必要があります
 const redisClient    = require('redis').createClient();
 const connectFlash   = require('connect-flash');
 const morgan         = require('morgan');
@@ -28,17 +28,15 @@ const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- ユーティリティメソッド開始 ---------------------------------
 // ---------------- ユーティリティメソッド終了 ---------------------------------
 
-// ---------------- サーバ構成開始 -----------------------------------
-// トークンを利用する ------------------------------------------------
+// ---------------- サーバ構成開始 ---------------------------------------------
+// トークンを利用する
 app.set('token', process.env.TOKEN || 'paltoken');
-// テストなら、ポート8001を使う
 if (process.env.NODE_ENV === 'test') {
+  // テストなら、ポート8001を使う
   app.set('port', 8001 );
 }
 // デフォルトは、port変数に従う
-else {
-  app.set('port', process.env.PORT || port );
-}
+else { app.set('port', process.env.PORT || port ); }
 
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
@@ -81,20 +79,16 @@ app.use((req, res, next) => {
 app.use(morgan('combined'));
 
 // ホームページの経路を作る、pal.htmlの配信
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
   const options = {
-    root: path.join(__dirname, './public'),
-    dotfiles: 'deny',
-    headers: { 'x-timestamp': Date.now(), 'x-sent': true }
+    root     : path.join(__dirname, './public'),
+    dotfiles : 'deny',
+    headers  : { 'x-timestamp': Date.now(), 'x-sent': true }
   };
 
   res.sendFile('pal.html', options, (error) => {
-    if (error) {
-      res.end();
-    }
-    else {
-      console.log('Server Message: Send:', 'pal.html');
-    }
+    if (error) { res.end(); }
+    else { console.log('Server Message: Send:', 'pal.html'); }
   });
 });
 
@@ -106,8 +100,8 @@ app.post('/session/create', (req, res, next) => {
   dataStorage.fetchByMailaddress(req.body.email, 'user')
     .then(records => {
       const user = records[0];
-      // 一致するemailがなければ401を返す
       if (user === undefined) {
+        // 一致するemailがなければ401を返す
         console.log('一致するメールアドレスがありません')
         res.status(401);
         res.end();
@@ -148,7 +142,7 @@ app.post('/session/create', (req, res, next) => {
 app.get('/session/read', (req, res) => {
   if (req.session.user) {
     console.log(
-      'Server Message: GET /session/read に 200(Authenticatd)を返しました'
+      'Server Message: GET /session/readに200(Authenticatd)を返しました'
     );
     res.status(200);
     res.send(JSON.stringify(req.session.user));
@@ -165,9 +159,9 @@ app.get('/session/read', (req, res) => {
   }
 });
 
-// ------ Ajaxの/user/logoutのget処理 --------------------------------
+// ------ Ajaxの/user/logoutのget処理 ------------------------------------------
 app.get('/session/delete', (req, res) => {
-  // ------ ログアウトの処理 -----------------------------------------
+  // ------ ログアウトの処理
   req.session.destroy(() => {
     res.status(200);
     res.end();
@@ -201,27 +195,34 @@ app.post('/user/create', (req, res, next) => {
   }
 
   dataStorage.isDupulicated({ email: email }, 'user')
+    // status 409: Emailがすでに登録されている
     .then(dupulicated => {
       if (dupulicated) {
         console.log('重複したメールアドレスがあります')
-        // status 409: Emailがすでに登録されている
         const err = 
           new Error('入力されたメールアドレスはすでに使われています');
         err.statusCode = 409;
         res.status(409)
-        .json([{
-          value: 'req.body.email',
-          msg: err.message, param: 'email'
-        }]);
+        .json(
+            [
+              {
+                value : 'req.body.email',
+                msg   : err.message,
+                param : 'email'
+              }
+            ]
+          );
         res.end();
         return;
       }
       else {
         // バリデーションが成功していればデータストレージに格納する
         const user = {
-          id: uuidv4(),
-          first: first, last: last,
-          email: email, password: password
+          id       : uuidv4(),
+          first    : first,
+          last     : last,
+          email    : email,
+          password : password
         }
         dataStorage.create(user, 'user')
           .then(() => {
@@ -327,28 +328,31 @@ app.use((err, _req, res ) => {
 
 // ---------------- サーバ構成終了 -----------------------------------
 
-// ---------------- サーバ起動開始 -----------------------------------
+// ---------------- サーバ起動開始 ---------------------------------------------
 let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
   console.log(
     'Server Message: The Express.js server has started and is\
-    listening on port number:' + `${app.get('port')}`);
+    listening on port number:' + `${app.get('port')}`
+    );
   });
 }
 else {
-  server = app.listen(port, () => {
-  console.log(
-    'Server Message: The Express.js server has started and is\
-    listening on port number:' + `${app.get('port')}`);
-  });
+  server = app.listen(
+    port,
+    () => {
+      console.log(
+'Server Message: \
+The Express.js server has started and is listening on port number:' +
+`${app.get('port')}`
+      ); 
+    }
+  );
 }
 
-// サーバのインスタンスをsocket.ioに渡す -----------------------------
-const io = require('socket.io')(server);
-
-// require('./controllers/chatController')(io);
+const io = require('socket.io')(server);// サーバのインスタンスをsocket.ioに渡す
 require('./controllers/eventController')(io);
 
 module.exports = server;
-// ---------------- サーバ起動終了 -----------------------------------
+// ---------------- サーバ起動終了 ---------------------------------------------

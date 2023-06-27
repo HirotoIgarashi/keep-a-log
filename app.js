@@ -3,39 +3,27 @@
 */
 'use strict';
 
-// ---------------- モジュールスコープ変数開始 -----------------------
-// 待ち受けるポートを8000に設定する
-const port = 8000;
-// expressのモジュールをロードする
-const express = require('express');
-// expressアプリケーションをapp定数に代入
-const app = express();
+// -----------------------------------------------------------------------------
+// ---------------- モジュールスコープ変数開始 ---------------------------------
+const port           = 8000    // 待ち受けるポートを8000に設定する
+const express        = require('express');   // expressのモジュールをロードする
+const app            = express();     // expressアプリケーションをapp定数に代入
 const { v4: uuidv4 } = require('uuid');
 // 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
-const dataStorage = require(`./${process.env.npm_lifecycle_event}`);
-// method-overrideモジュールをロードして
+const dataStorage    = require(`./${process.env.npm_lifecycle_event}`);
+// method-overrideモジュールをロードする
 const methodOverride = require('method-override');
-const path = require('path');
-const favicon = require('serve-favicon');
-
-// sessionの設定
-const session = require('express-session');
-
-const RedisStore = require('connect-redis')(session);
+const path           = require('path');
+const favicon        = require('serve-favicon');
+const session        = require('express-session');    // sessionの設定
+const RedisStore     = require('connect-redis')(session);
 // redisのバージョンは3.0.0である必要があります
-const redisClient = require('redis').createClient();
-
-const connectFlash = require('connect-flash');
-
-// Express.jsのRouterをロード ----------------------------------------
-// const router = require('./routes/index');
-const morgan = require('morgan');
-// Userモデルをロードする
-// const User = require('./models/user');
-
+const redisClient    = require('redis').createClient();
+const connectFlash   = require('connect-flash');
+const morgan         = require('morgan');
 // セッションのタイムアウト時間を30日に設定する
-const expire_time = 1000 * 60 * 60 * 24 * 30;
-// ---------------- モジュールスコープ変数終了 -----------------------
+const expire_time    = 1000 * 60 * 60 * 24 * 30;
+// ---------------- モジュールスコープ変数終了 ---------------------------------
 
 // ---------------- ユーティリティメソッド開始 -----------------------
 // ---------------- ユーティリティメソッド終了 -----------------------
@@ -54,8 +42,10 @@ else {
 
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
-console.log(`Server Message: Expressが使っているビューエンジンは\
-${app.get('view engine')} です`);
+console.log(
+  `Server Message: Expressが使っているビューエンジンは\
+  ${app.get('view engine')} です`
+);
 
 // appの設定 start
 app.use(express.static('public'));

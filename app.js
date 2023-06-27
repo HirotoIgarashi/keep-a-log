@@ -1,7 +1,7 @@
+'use strict';
 /*
  * app.js - 汎用ルーティングを備えたExpressサーバ
 */
-'use strict';
 
 // -----------------------------------------------------------------------------
 // ---------------- モジュールスコープ変数開始 ---------------------------------
@@ -44,7 +44,7 @@ else {
 app.set('view engine', 'ejs');
 console.log(
   `Server Message: Expressが使っているビューエンジンは\
-  ${app.get('view engine')} です`
+${app.get('view engine')}です。`
 );
 
 app.use(express.static('public'));    // appの設定 start

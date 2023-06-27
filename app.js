@@ -11,7 +11,6 @@ const app            = express();     // expressアプリケーションをapp�
 const { v4: uuidv4 } = require('uuid');
 // 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
 const dataStorage    = require(`./${process.env.npm_lifecycle_event}`);
-// method-overrideモジュールをロードする
 const methodOverride = require('method-override');
 const path           = require('path');
 const favicon        = require('serve-favicon');
@@ -22,6 +21,7 @@ const redisClient    = require('redis').createClient();
 const connectFlash   = require('connect-flash');
 const morgan         = require('morgan');
 // セッションのタイムアウト時間を30日に設定する
+//                     1秒  * 分 * 時 * 日 * 30日
 const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- モジュールスコープ変数終了 ---------------------------------
 
@@ -35,8 +35,10 @@ if (process.env.NODE_ENV === 'test') {
   // テストなら、ポート8001を使う
   app.set('port', 8001 );
 }
-// デフォルトは、port変数に従う
-else { app.set('port', process.env.PORT || port ); }
+else {
+  // デフォルトは、port変数に従う
+  app.set('port', process.env.PORT || port );
+}
 
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
@@ -58,7 +60,7 @@ app.use(session(
     secret            : 'keepalog',
     resave            : false,
     saveUninitialized : false,
-    cookie            : {
+    cookie : {
       secure   : false,
       httpOnly : false,
       expires  : new Date(Date.now() + expire_time)
@@ -161,7 +163,7 @@ app.get('/session/read', (req, res) => {
 
 // ------ Ajaxの/user/logoutのget処理 ------------------------------------------
 app.get('/session/delete', (req, res) => {
-  // ------ ログアウトの処理
+  // ログアウトの処理
   req.session.destroy(() => {
     res.status(200);
     res.end();

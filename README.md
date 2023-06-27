@@ -15,21 +15,35 @@ Ubuntu 20.10からはMongoDBがリポジトリから外されられたので動�
 wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
 ~~~
 
-~~sudo add-apt-repository 'deb [arch=amd64] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse'~~
+~~~bash
+sudo add-apt-repository 'deb [arch=amd64]\
+https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse'
+~~~
 
-~~sudo apt install mongodb-org~~
+~~~bash
+sudo apt install mongodb-org
+~~~
 
-~~MongoDBデーモンをシステム起動時に起動するようにする~~
-~~sudo systemctl enable --now mongod~~
+#### MongoDBデーモンをシステム起動時に起動するようにする
 
-~~MongoDBを起動する
-$ mongod~~
+~~~bash
+sudo systemctl enable --now mongod
+~~~
 
-~~あと~~
+#### MongoDBを起動する
+
+~~~bash
+mongod
+~~~
+
+#### その後の作業
+
 redisのインストールが必要。
 Ubuntuの場合、redisのインストールは
 
-``` sudo apt install redis ```
+~~~bash
+sudo apt install redis
+~~~
 
 redisの使い方がよくわからないのでmysql-serverを使って見る。
 

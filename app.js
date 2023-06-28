@@ -31,14 +31,10 @@ const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- サーバ構成開始 ---------------------------------------------
 // トークンを利用する
 app.set('token', process.env.TOKEN || 'paltoken');
-if (process.env.NODE_ENV === 'test') {
-  // テストなら、ポート8001を使う
-  app.set('port', 8001 );
-}
-else {
-  // デフォルトは、port変数に従う
-  app.set('port', process.env.PORT || port );
-}
+// テストなら、ポート8001を使う
+// デフォルトは、port変数に従う
+if (process.env.NODE_ENV === 'test') { app.set('port', 8001 ); }
+else { app.set('port', process.env.PORT || port ); }
 
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
@@ -162,8 +158,8 @@ app.get('/session/read', (req, res) => {
 });
 
 // ------ Ajaxの/user/logoutのget処理 ------------------------------------------
+// ログアウトの処理
 app.get('/session/delete', (req, res) => {
-  // ログアウトの処理
   req.session.destroy(() => {
     res.status(200);
     res.end();
@@ -201,17 +197,13 @@ app.post('/user/create', (req, res, next) => {
     .then(dupulicated => {
       if (dupulicated) {
         console.log('重複したメールアドレスがあります')
-        const err = 
-          new Error('入力されたメールアドレスはすでに使われています');
+        const err = new Error('入力されたメールアドレスはすでに使われています');
         err.statusCode = 409;
         res.status(409)
-        .json([
-            {
-              value : 'req.body.email',
-              msg   : err.message,
-              param : 'email'
-            }
-        ]);
+        .json([{
+            value : 'req.body.email',
+            msg   : err.message, param : 'email'
+          }]);
         res.end();
         return;
       }

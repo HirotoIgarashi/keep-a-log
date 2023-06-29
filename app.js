@@ -7,19 +7,15 @@
 // ---------------- モジュールスコープ変数開始 ---------------------------------
 const express        = require('express');   // expressのモジュールをロードする
 const app            = express();     // expressアプリケーションをapp定数に代入
-const morgan         = require('morgan');
+const logger         = require('morgan');
+const methodOverride = require('method-override');
 
 const port           = 8000    // 待ち受けるポートを8000に設定する
 const { v4: uuidv4 } = require('uuid');
 // 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
 const dataStorage    = require(`./${process.env.npm_lifecycle_event}`);
-const methodOverride = require('method-override');
 const path           = require('path');
 const favicon        = require('serve-favicon');
-const session        = require('express-session');    // sessionの設定
-const RedisStore     = require('connect-redis')(session);
-// TODO: redisのバージョンは3.0.0である必要があります
-const redisClient    = require('redis').createClient();
 const connectFlash   = require('connect-flash');
 // セッションのタイムアウト時間を30日に設定する
 //                     1秒  * 分 * 時 * 日 * 30日
@@ -38,15 +34,19 @@ console.log(
 ${app.get('view engine')}です。`
 );
 
-app.set('trust proxy', 1);
 // ミドルウェアとして使うようにアプリケーションルータを設定
 app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
 
 app.use(express.static('public'));    // appの設定 start
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.set('trust proxy', 1);
 
+// sessionの処理
+const session        = require('express-session');    // sessionの設定
+const RedisStore     = require('connect-redis')(session);
+// TODO: redisのバージョンは3.0.0である必要があります
+const redisClient    = require('redis').createClient();
+app.set('trust proxy', 1); // trust first proxy
 app.use(session(
   { 
     store             : new RedisStore({ client: redisClient}),
@@ -63,7 +63,6 @@ app.use(session(
 // URLエンコードされたデータを解析する
 app.use(express.json());
 app.use(express.urlencoded( { extended: false } ));
-
 app.use(connectFlash());      // connect-flashをミドルウェアとして使う
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入
 app.use((req, res, next) => {
@@ -71,7 +70,7 @@ app.use((req, res, next) => {
   next();
 });
 // morganの「combined」フォーマットでログを出すように指示します。
-app.use(morgan('combined'));
+app.use(logger('combined'));
 
 // ホームページの経路を作る、pal.htmlの配信
 app.get('/', (req, res) => {
@@ -80,7 +79,6 @@ app.get('/', (req, res) => {
     dotfiles : 'deny',
     headers  : { 'x-timestamp': Date.now(), 'x-sent': true }
   };
-
   res.sendFile('pal.html', options, (error) => {
     if (error) { res.end(); }
     else { console.log('Server Message: Send:', 'pal.html'); }
@@ -334,7 +332,8 @@ else {
       console.log(
 'Server Message: \
 The Express.js server has started and is listening on port number:' +
-`${app.get('port')}`
+// `${app.get('port')}`
+port
       ); 
     }
   );

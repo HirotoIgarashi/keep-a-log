@@ -1,13 +1,15 @@
-'use strict';
 /*
  * app.js - 汎用ルーティングを備えたExpressサーバ
 */
+'use strict';
 
 // -----------------------------------------------------------------------------
 // ---------------- モジュールスコープ変数開始 ---------------------------------
-const port           = 8000    // 待ち受けるポートを8000に設定する
 const express        = require('express');   // expressのモジュールをロードする
 const app            = express();     // expressアプリケーションをapp定数に代入
+const morgan         = require('morgan');
+
+const port           = 8000    // 待ち受けるポートを8000に設定する
 const { v4: uuidv4 } = require('uuid');
 // 実行されたスクリプトの名前に応じてデータストレージの実装を使い分ける
 const dataStorage    = require(`./${process.env.npm_lifecycle_event}`);
@@ -19,7 +21,6 @@ const RedisStore     = require('connect-redis')(session);
 // TODO: redisのバージョンは3.0.0である必要があります
 const redisClient    = require('redis').createClient();
 const connectFlash   = require('connect-flash');
-const morgan         = require('morgan');
 // セッションのタイムアウト時間を30日に設定する
 //                     1秒  * 分 * 時 * 日 * 30日
 const expire_time    = 1000 * 60 * 60 * 24 * 30;
@@ -29,13 +30,7 @@ const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- ユーティリティメソッド終了 ---------------------------------
 
 // ---------------- サーバ構成開始 ---------------------------------------------
-// トークンを利用する
-app.set('token', process.env.TOKEN || 'paltoken');
-// テストなら、ポート8001を使う
-// デフォルトは、port変数に従う
-if (process.env.NODE_ENV === 'test') { app.set('port', 8001 ); }
-else { app.set('port', process.env.PORT || port ); }
-
+// Config
 // ejsテンプレートを使う
 app.set('view engine', 'ejs');
 console.log(
@@ -43,11 +38,13 @@ console.log(
 ${app.get('view engine')}です。`
 );
 
+app.set('trust proxy', 1);
+// ミドルウェアとして使うようにアプリケーションルータを設定
+app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
+
 app.use(express.static('public'));    // appの設定 start
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-// ミドルウェアとして使うようにアプリケーションルータを設定
-app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
 app.set('trust proxy', 1);
 
 app.use(session(

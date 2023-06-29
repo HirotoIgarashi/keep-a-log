@@ -1,8 +1,8 @@
 'use strict';
 
 const path           = require('path');
-// Express.jsのRouterをロード ----------------------------------------
-const router = require('express').Router();
+// Express.jsのRouterをロード -------------------------------------------------
+const router         = require('express').Router();
 const dataStorage    = require(`../${process.env.npm_lifecycle_event}`);
 const { v4: uuidv4 } = require('uuid');
 
@@ -157,7 +157,6 @@ router.post('/user/create', (req, res, next) => {
 // const userRoutes = require('./userRoutes');
 // const usersRoutes = require('./usersRoutes');
 // const sessionRoutes = require('./sessionRoutes');
-// const homeRoutes = require('./homeRoutes');
 // const errorRoutes = require('./errorRoutes');
 
 // 関連する経路モジュールからの経路を、名前空間付きで使う ------------
@@ -165,7 +164,6 @@ router.post('/user/create', (req, res, next) => {
 // router.use('/users', usersRoutes);
 // router.use('/session', sessionRoutes);
 
-// router.use('/', homeRoutes);
 // router.use('/', errorRoutes);
 
 // index.jsからルータをエクスポート ----------------------------------

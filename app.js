@@ -84,10 +84,10 @@ app.use((err, req, res ) => {
 let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
-  console.log(
-    'Server Message: The Express.js server has started and is\
-    listening on port number:' + `${app.get('port')}`
-    );
+    console.log(
+      'Server Message: The Express.js server has started and is listening on\
+ port number:' + `${app.get('port')}`
+    ); 
   });
 }
 else {
@@ -95,10 +95,8 @@ else {
     port,
     () => {
       console.log(
-'Server Message: \
-The Express.js server has started and is listening on port number:' +
-// `${app.get('port')}`
-port
+'Server Message: The Express.js server has started and is listening on port \
+number:' + port
       ); 
     }
   );

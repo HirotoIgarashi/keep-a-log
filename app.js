@@ -59,12 +59,10 @@ app.use(express.json());
 app.use(express.urlencoded( { extended: false } ));
 app.use(connectFlash());      // connect-flashをミドルウェアとして使う
 // フラッシュメッセージをレスポンスのローカル変数flashMessagesに代入
-app.use(
-  (req, res, next) => {
-    res.locals.flashMessages = req.flash();
-    next();
-  }
-);
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash();
+  next();
+});
 // morganの「combined」フォーマットでログを出すように指示します。
 app.use(logger('combined'));
 

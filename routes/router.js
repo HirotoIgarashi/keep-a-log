@@ -7,17 +7,18 @@ const dataStorage    = require(`../${process.env.npm_lifecycle_event}`);
 const { v4: uuidv4 } = require('uuid');
 
 // ホームページの経路を作る、public/index.htmlの配信
-router.get('/', (req, res) => {
-  const options = {
-    root     : path.join(__dirname, '../public'),
-    dotfiles : 'deny',
-    headers  : { 'x-timestamp': Date.now(), 'x-sent': true }
-  };
-  res.sendFile('index.html', options, (error) => {
-    if (error) { res.end(); }
-    else { console.log('Server Message: Send:', 'index.html'); }
+router.route('/')
+  .get((req, res) => {
+    const options = {
+      root     : path.join(__dirname, '../public'),
+      dotfiles : 'deny',
+      headers  : { 'x-timestamp': Date.now(), 'x-sent': true } 
+    };
+    res.sendFile('index.html', options, (error) => {
+      if (error) { res.end(); }
+      else { console.log('Server Message: Send:', 'index.html'); }
+    }); 
   });
-});
 
 router.post('/session/create', (req, res, next) => {
   // Ajaxでpostされたときの/user/loginのpostの処理

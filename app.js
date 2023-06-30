@@ -63,17 +63,16 @@ app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   next();
 });
-// morganの「combined」フォーマットでログを出すように指示します。
+// morganのcombinedフォーマットでログを出すように指示します。
 app.use(logger('combined'));
 
 const router = require('./routes/router.js');
 app.use('/', router);
 
-app.use((err, req, res ) => {
-  console.log(err);
-  res.status(err.statusCode || 500).json({ error: err.message });
+app.use((req, res, next) => {
+  res.status(404).send('ページが見つかりません。');
+  next();
 });
-
 // app.get('/chat', homeController.chat);
 
 // ---------------- サーバ構成終了 ---------------------------------------------

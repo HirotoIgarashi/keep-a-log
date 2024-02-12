@@ -20,9 +20,8 @@ const expire_time    = 1000 * 60 * 60 * 24 * 30;
 // ---------------- モジュールスコープ変数終了 ---------------------------------
 
 // ---------------- サーバ構成開始 ---------------------------------------------
-// Config
 // ejsテンプレートを使う
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 console.log(
   `Server Message: Expressが使っているビューエンジンは\
 ${app.get('view engine')}です。`
@@ -69,12 +68,6 @@ app.use(logger('combined'));
 const router = require('./routes/router.js');
 app.use('/', router);
 
-app.use((req, res, next) => {
-  res.status(404).send('ページが見つかりません。');
-  next();
-});
-// app.get('/chat', homeController.chat);
-
 // ---------------- サーバ構成終了 ---------------------------------------------
 
 // ---------------- サーバ起動開始 ---------------------------------------------
@@ -82,7 +75,8 @@ let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
     console.log(
-'Server Message: The Express.js server has started and is listening on port   number:' + `${app.get('port')}`); 
+'Server Message: The Express.js server has started and is listening on port \
+number:' + `${app.get('port')}`); 
   });
 }
 else {
@@ -97,7 +91,8 @@ number:' + port
   );
 }
 
-const io = require('socket.io')(server);// サーバのインスタンスをsocket.ioに渡す
+// サーバのインスタンスをsocket.ioに渡す
+const io = require('socket.io')(server);
 require('./controllers/eventController')(io);
 
 module.exports = server;

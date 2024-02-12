@@ -154,6 +154,13 @@ router.post('/user/create', (req, res, next) => {
   return next;
 });
 
+router.use( ( req, res, next ) => {
+  res.status(404).json({ error: 'Page NotFound!' });
+  res.end();
+  // res.status(404).send('ページが見つかりません。');
+  // next();
+  return next();
+});
 // 同じディレクトリにある全部の経路モジュールをロード ----------------
 // const userRoutes = require('./userRoutes');
 // const usersRoutes = require('./usersRoutes');

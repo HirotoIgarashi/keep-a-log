@@ -23,8 +23,7 @@ const expire_time = 1000 * 60 * 60 * 24 * 30;
 // ejsテンプレートを使う
 // app.set('view engine', 'ejs');
 console.log(
-  `Server Message: Expressが使っているビューエンジンは\
-${app.get('view engine')}です。`
+  `Server Message: Expressが使っているビューエンジンは${app.get('view engine')}です。`
 );
 
 // ミドルウェアとして使うようにアプリケーションルータを設定
@@ -75,8 +74,7 @@ let server;
 if (process.env.NODE_ENV === 'test') {
   server = app.listen('8001', () => {
     console.log(
-      'Server Message: The Express.js server has started and is listening on port \
-number:' + `${app.get('port')}`);
+      'Server Message: The Express.js server has started and is listening on port number:' + `${app.get('port')}`);
   });
 }
 else {
@@ -84,8 +82,7 @@ else {
     port,
     () => {
       console.log(
-        'Server Message: The Express.js server has started and is listening on port \
-number:' + port
+        'Server Message: The Express.js server has started and is listening on port number:' + port
       );
     }
   );
